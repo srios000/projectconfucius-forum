@@ -11,17 +11,21 @@ import PostItem from "@/components/Posts/PostItem";
 import { auth, firestore } from "@/firebase/clientApp";
 import useCommunityData from "@/hooks/useCommunityData";
 import useCustomToast from "@/hooks/useCustomToast";
+import { useIntersectionObserver } from "@/hooks/useIntersectionObserver";
 import usePosts from "@/hooks/usePosts";
-import { Stack } from "@chakra-ui/react";
+import { Box, Spinner, Stack, Text } from "@chakra-ui/react";
 import {
   collection,
+  DocumentData,
   getDocs,
   limit,
   orderBy,
   query,
+  QueryDocumentSnapshot,
+  startAfter,
   where,
 } from "firebase/firestore";
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useAuthState } from "react-firebase-hooks/auth";
 
 export default function Home() {
@@ -36,38 +40,63 @@ export default function Home() {
     onDeletePost,
   } = usePosts();
   const showToast = useCustomToast();
+  const [lastVisible, setLastVisible] =
+    useState<QueryDocumentSnapshot<DocumentData> | null>(null);
+  const [noMorePosts, setNoMorePosts] = useState(false);
+  const observerOptions = useMemo(() => ({ threshold: 0.5 }), []);
+  const { ref, isIntersecting } = useIntersectionObserver(observerOptions);
 
   /**
    * Creates a home feed for a currently logged in user.
    * If the user is a member of any communities, it will display posts from those communities.
    * If the user is not a member of any communities, it will display generic posts.
    */
-  const buildUserHomeFeed = async () => {
-    setLoading(true);
-
+  const buildUserHomeFeed = async (initial = false) => {
     try {
       if (communityStateValue.mySnippets.length) {
+        if (loading) return;
+        setLoading(true);
         const myCommunityIds = communityStateValue.mySnippets.map(
           (snippet) => snippet.communityId
         ); // get all community ids that the user is a member of
-        const postQuery = query(
-          collection(firestore, "posts"),
-          where("communityId", "in", myCommunityIds),
-          // orderBy("voteStatus", "desc"),
-          limit(10)
-        ); // get all posts in community with certain requirements
+
+        let postQuery;
+        if (initial) {
+          postQuery = query(
+            collection(firestore, "posts"),
+            where("communityId", "in", myCommunityIds),
+            orderBy("createTime", "desc"),
+            limit(10)
+          );
+        } else {
+          if (!lastVisible) return;
+          postQuery = query(
+            collection(firestore, "posts"),
+            where("communityId", "in", myCommunityIds),
+            orderBy("createTime", "desc"),
+            startAfter(lastVisible),
+            limit(10)
+          );
+        }
+
         const postDocs = await getDocs(postQuery);
         const posts = postDocs.docs.map((doc) => ({
           id: doc.id,
           ...doc.data(),
         })); // get all posts in community
 
+        if (postDocs.docs.length < 10) setNoMorePosts(true);
+        if (postDocs.docs.length > 0)
+          setLastVisible(postDocs.docs[postDocs.docs.length - 1]);
+
         setPostStateValue((prev) => ({
           ...prev,
-          posts: posts as Post[],
+          posts: initial
+            ? (posts as Post[])
+            : [...prev.posts, ...(posts as Post[])],
         })); // set posts in state
       } else {
-        buildGenericHomeFeed();
+        buildGenericHomeFeed(initial);
       }
     } catch (error) {
       showToast({
@@ -83,20 +112,39 @@ export default function Home() {
   /**
    * Creates a generic home feed for a user that is not logged in.
    */
-  const buildGenericHomeFeed = async () => {
+  const buildGenericHomeFeed = async (initial = false) => {
+    if (loading) return;
     setLoading(true);
     try {
-      const postQuery = query(
-        collection(firestore, "posts"),
-        orderBy("voteStatus", "desc"),
-        limit(10)
-      ); // get all posts in community with certain requirements
+      let postQuery;
+      if (initial) {
+        postQuery = query(
+          collection(firestore, "posts"),
+          orderBy("voteStatus", "desc"),
+          limit(10)
+        );
+      } else {
+        if (!lastVisible) return;
+        postQuery = query(
+          collection(firestore, "posts"),
+          orderBy("voteStatus", "desc"),
+          startAfter(lastVisible),
+          limit(10)
+        );
+      }
 
       const postDocs = await getDocs(postQuery); // get all posts in community
       const posts = postDocs.docs.map((doc) => ({ id: doc.id, ...doc.data() })); // get all posts in community
+
+      if (postDocs.docs.length < 10) setNoMorePosts(true);
+      if (postDocs.docs.length > 0)
+        setLastVisible(postDocs.docs[postDocs.docs.length - 1]);
+
       setPostStateValue((prev) => ({
         ...prev,
-        posts: posts as Post[],
+        posts: initial
+          ? (posts as Post[])
+          : [...prev.posts, ...(posts as Post[])],
       })); // set posts in state
     } catch (error) {
       console.log("Error: buildGenericHomeFeed", error);
@@ -146,7 +194,9 @@ export default function Home() {
    */
   useEffect(() => {
     if (communityStateValue.mySnippets) {
-      buildUserHomeFeed();
+      setNoMorePosts(false);
+      setLastVisible(null);
+      buildUserHomeFeed(true);
     }
   }, [communityStateValue.snippetFetched]);
 
@@ -157,9 +207,28 @@ export default function Home() {
    */
   useEffect(() => {
     if (!user && !loadingUser) {
-      buildGenericHomeFeed();
+      setNoMorePosts(false);
+      setLastVisible(null);
+      buildGenericHomeFeed(true);
     }
   }, [user, loadingUser]);
+
+  useEffect(() => {
+    if (isIntersecting && !loading && !noMorePosts && lastVisible) {
+      if (user && communityStateValue.mySnippets.length) {
+        buildUserHomeFeed(false);
+      } else {
+        buildGenericHomeFeed(false);
+      }
+    }
+  }, [
+    isIntersecting,
+    loading,
+    noMorePosts,
+    lastVisible,
+    user,
+    communityStateValue.mySnippets,
+  ]);
 
   /**
    * Posts need to exist before trying to fetch votes for posts
@@ -181,7 +250,7 @@ export default function Home() {
     <PageContent>
       <>
         <CreatePostLink />
-        {loading ? (
+        {loading && postStateValue.posts.length === 0 ? (
           <PostLoader />
         ) : (
           <Stack gap={3}>
@@ -206,6 +275,21 @@ export default function Home() {
                 showCommunityImage={true}
               />
             ))}
+            {!noMorePosts ? (
+              <Box
+                ref={ref}
+                height="20px"
+                display="flex"
+                justifyContent="center"
+                alignItems="center"
+              >
+                {loading && <Spinner size="sm" />}
+              </Box>
+            ) : (
+              <Text textAlign="center" p={2} fontSize="sm" color="gray.500">
+                No more posts
+              </Text>
+            )}
           </Stack>
         )}
       </>
