@@ -40,7 +40,11 @@ const Header: React.FC<HeaderProps> = ({ communityData }) => {
   return (
     <Flex direction="column" width="100%" height="120px">
       <Box height="30%" bg="red.500" />
-      <Flex justify="center" bg="white" flexGrow={1}>
+      <Flex
+        justify="center"
+        bg={{ base: "white", _dark: "gray.800" }}
+        flexGrow={1}
+      >
         <Flex width="95%" maxWidth="1200px" align="center">
           {/* using state instead of fetching from db as no refresh of the page is required */}
           <CommunityIcon
@@ -87,7 +91,8 @@ const CommunityIcon = ({ imageURL }: CommunityIconProps) => {
       boxSize="66px"
       alt="Community icons"
       color="red.500"
-      border="3px solid white"
+      border="3px solid"
+      borderColor={{ base: "white", _dark: "gray.800" }}
       shadow="md"
     />
   ) : (
@@ -96,9 +101,10 @@ const CommunityIcon = ({ imageURL }: CommunityIconProps) => {
       as={HiArrowCircleUp}
       fontSize={64}
       color="red.500"
-      border="3px solid white"
+      border="3px solid"
+      borderColor={{ base: "white", _dark: "gray.800" }}
       borderRadius="full"
-      bg="white"
+      bg={{ base: "white", _dark: "gray.800" }}
       shadow="md"
     />
   );
@@ -185,6 +191,7 @@ export const CommunitySettings: React.FC<CommunitySettingsProps> = ({
             fontSize={20}
             onClick={() => setCommunitySettingsModalOpen(true)}
             iconColor="gray.500"
+            label="Community Settings"
           />
         </>
       )}

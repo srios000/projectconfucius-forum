@@ -21,7 +21,11 @@ const SubmitPostPage: React.FC = () => {
     <PageContent>
       <>
         <Box p="14px 0px">
-          <Text fontSize="20pt" fontWeight={700} color="black">
+          <Text
+            fontSize="20pt"
+            fontWeight={700}
+            color={{ base: "black", _dark: "white" }}
+          >
             Create Post
           </Text>
         </Box>
@@ -35,7 +39,7 @@ const SubmitPostPage: React.FC = () => {
           <Stack
             justifyContent="center"
             align="center"
-            bg="white"
+            bg={{ base: "white", _dark: "gray.800" }}
             p={5}
             borderRadius={10}
           >

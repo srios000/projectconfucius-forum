@@ -15,7 +15,7 @@ const PostLoaderItem: React.FC<PostLoaderItemProps> = ({ height }) => {
     <Box
       padding="10px 10px"
       boxShadow="lg"
-      bg="white"
+      bg={{ base: "white", _dark: "gray.800" }}
       borderRadius={10}
       shadow="md"
     >
@@ -26,7 +26,12 @@ const PostLoaderItem: React.FC<PostLoaderItemProps> = ({ height }) => {
         width="40%"
         rootProps={{ gap: 4 }}
       />
-      <SkeletonText borderRadius={10} mt="4" noOfLines={4} rootProps={{ gap: 4 }} />
+      <SkeletonText
+        borderRadius={10}
+        mt="4"
+        noOfLines={4}
+        rootProps={{ gap: 4 }}
+      />
       <Skeleton borderRadius={10} mt="4" height={height} />
     </Box>
   );

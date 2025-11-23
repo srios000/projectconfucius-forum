@@ -32,10 +32,10 @@ const Recommendations: React.FC = () => {
     <Flex
       direction="column"
       position="relative"
-      bg="white"
+      bg={{ base: "white", _dark: "gray.800" }}
       borderRadius="lg"
       border="1px solid"
-      borderColor="gray.300"
+      borderColor={{ base: "gray.300", _dark: "gray.700" }}
       shadow="md"
     >
       <SuggestionsHeader />

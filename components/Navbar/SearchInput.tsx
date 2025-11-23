@@ -76,19 +76,20 @@ const SearchBox: React.FC = () => {
       <Input
         placeholder="Search"
         fontSize="10pt"
-        _placeholder={{ color: "gray.500" }}
+        _placeholder={{ color: { base: "gray.500", _dark: "gray.400" } }}
         _hover={{
-          bg: "white",
+          bg: { base: "white", _dark: "gray.700" },
           border: "1px solid",
-          borderColor: "red.500",
+          borderColor: { base: "red.500", _dark: "red.400" },
         }}
         _focus={{
           outline: "none",
           border: "1px solid",
-          borderColor: "red.500",
+          borderColor: { base: "red.500", _dark: "red.400" },
         }}
         height="40px"
-        bg="gray.100"
+        bg={{ base: "gray.100", _dark: "gray.800" }}
+        borderColor={{ base: "gray.200", _dark: "gray.600" }}
         borderRadius={10}
       />
     </InputGroup>

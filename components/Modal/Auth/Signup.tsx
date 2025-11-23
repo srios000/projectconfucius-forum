@@ -116,7 +116,12 @@ const SignUp = () => {
 
       {/* If there is error than the error is shown */}
 
-      <Text textAlign="center" color="red" fontSize="10pt" fontWeight="800">
+      <Text
+        textAlign="center"
+        color={{ base: "red.500", _dark: "red.400" }}
+        fontSize="10pt"
+        fontWeight="800"
+      >
         {error ||
           FIREBASE_ERRORS[userError?.code as keyof typeof FIREBASE_ERRORS]}
       </Text>
@@ -138,7 +143,7 @@ const SignUp = () => {
       <Flex fontSize="9pt" justifyContent="center">
         <Text mr={1}>Already a Clown? </Text>
         <Text
-          color="red.500"
+          color={{ base: "red.500", _dark: "red.400" }}
           fontWeight={700}
           cursor="pointer"
           onClick={() =>

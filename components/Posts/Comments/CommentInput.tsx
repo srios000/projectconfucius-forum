@@ -56,14 +56,16 @@ const CommentInput: React.FC<CommentInputProps> = ({
             open={isProfileModalOpen}
           />
           <Stack direction="row" align="center" gap={1} mb={2}>
-            <Text color="gray.600">Comment as</Text>
+            <Text color={{ base: "gray.600", _dark: "gray.400" }}>
+              Comment as
+            </Text>
             <Text
-              color="gray.600"
+              color={{ base: "gray.600", _dark: "gray.400" }}
               fontSize="10pt"
               _hover={{
                 cursor: "pointer",
                 textDecoration: "underline",
-                color: "red.500",
+                color: { base: "red.500", _dark: "red.400" },
               }}
               onClick={() => setProfileModalOpen(true)}
             >
@@ -80,11 +82,14 @@ const CommentInput: React.FC<CommentInputProps> = ({
             minHeight="140px"
             padding={4}
             pb={10}
+            bg={{ base: "gray.50", _dark: "gray.800" }}
+            borderColor={{ base: "gray.200", _dark: "gray.600" }}
             _placeholder={{ color: "gray.500" }}
             _focus={{
               outline: "none",
-              bg: "white",
-              border: "1px solid red",
+              bg: { base: "white", _dark: "gray.800" },
+              border: "1px solid",
+              borderColor: { base: "red.500", _dark: "red.400" },
             }}
           />
 
@@ -94,7 +99,7 @@ const CommentInput: React.FC<CommentInputProps> = ({
             right={0.1}
             bottom="1px"
             justify="flex-end"
-            bg="gray.100"
+            bg={{ base: "gray.100", _dark: "gray.700" }}
             p="6px 8px"
             borderRadius="0px 0px 10px 10px"
             zIndex="1"
@@ -116,7 +121,7 @@ const CommentInput: React.FC<CommentInputProps> = ({
           justify="space-between"
           borderRadius={2}
           border="1px solid"
-          borderColor="gray.100"
+          borderColor={{ base: "gray.100", _dark: "gray.700" }}
           p={4}
         >
           <Text fontWeight={600}>Log in or sign up to comment</Text>

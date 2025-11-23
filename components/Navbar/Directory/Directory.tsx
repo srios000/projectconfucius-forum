@@ -46,7 +46,7 @@ const UserMenu: React.FC = () => {
           ml={{ base: 0, md: 2 }}
           _hover={{
             outline: "1px solid",
-            outlineColor: "gray.200",
+            outlineColor: { base: "gray.200", _dark: "gray.600" },
           }}
         >
           <Flex

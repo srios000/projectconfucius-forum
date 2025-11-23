@@ -43,7 +43,7 @@ const About: React.FC<AboutProps> = ({ communityData }) => {
       <Flex
         direction="column"
         p={3}
-        bg="white"
+        bg={{ base: "white", _dark: "gray.800" }}
         borderRadius="0px 0px 10px 10px"
       >
         <Stack>
@@ -81,7 +81,7 @@ const AboutHeaderBar: React.FC<AboutHeaderBarProps> = ({ communityName }) => (
   <Flex
     justify="space-between"
     align="center"
-    bg="red.500"
+    bg={{ base: "red.500", _dark: "red.600" }}
     color="white"
     p={3}
     borderRadius="10px 10px 0px 0px"

@@ -85,7 +85,12 @@ const Login: React.FC<LoginProps> = () => {
         onChange={onChange}
       />
 
-      <Text textAlign="center" color="red" fontSize="10pt" fontWeight="800">
+      <Text
+        textAlign="center"
+        color={{ base: "red.500", _dark: "red.400" }}
+        fontSize="10pt"
+        fontWeight="800"
+      >
         {FIREBASE_ERRORS[error?.code as keyof typeof FIREBASE_ERRORS]}
       </Text>
 
@@ -108,7 +113,7 @@ const Login: React.FC<LoginProps> = () => {
           Forgot your password?
         </Text>
         <Text
-          color="red.500"
+          color={{ base: "red.500", _dark: "red.400" }}
           fontWeight={700}
           cursor="pointer"
           onClick={() =>
@@ -125,7 +130,7 @@ const Login: React.FC<LoginProps> = () => {
       <Flex fontSize="9pt" justifyContent="center">
         <Text mr={1}>Want to join the circus? </Text>
         <Text
-          color="red.500"
+          color={{ base: "red.500", _dark: "red.400" }}
           fontWeight={700}
           cursor="pointer"
           onClick={() =>

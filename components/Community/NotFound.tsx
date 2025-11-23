@@ -14,7 +14,11 @@ const CommunityNotFound: React.FC = () => {
       alignItems="center"
       minHeight="60vh"
     >
-      <Text fontSize="2xl" fontWeight="bold" color="gray.600">
+      <Text
+        fontSize="2xl"
+        fontWeight="bold"
+        color={{ base: "gray.600", _dark: "gray.400" }}
+      >
         Sorry, this community does not exist!
       </Text>
       <Stack direction="row" gap={4} mt={4}>

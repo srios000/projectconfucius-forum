@@ -7,7 +7,7 @@ import React from "react";
  */
 const CommunityLoader: React.FC = () => (
   <Flex
-    bg="white"
+    bg={{ base: "white", _dark: "gray.800" }}
     justify="space-between"
     align="center"
     p={5}

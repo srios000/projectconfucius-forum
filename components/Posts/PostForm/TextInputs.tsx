@@ -45,17 +45,19 @@ const TextInputs: React.FC<TextInputsProps> = ({
         onChange={onChange}
         fontSize="10pt"
         borderRadius={10}
+        bg={{ base: "gray.50", _dark: "gray.800" }}
+        borderColor={{ base: "gray.200", _dark: "gray.600" }}
         _placeholder={{ color: "gray.500" }}
         _hover={{
-          bg: "white",
+          bg: { base: "white", _dark: "gray.700" },
           border: "1px solid",
-          borderColor: "red.500",
+          borderColor: { base: "red.500", _dark: "red.400" },
         }}
         _focus={{
           outline: "none",
-          bg: "white",
+          bg: { base: "white", _dark: "gray.700" },
           border: "1px solid",
-          borderColor: "red.500",
+          borderColor: { base: "red.500", _dark: "red.400" },
         }}
       />
       {/* Body of the post */}
@@ -67,17 +69,19 @@ const TextInputs: React.FC<TextInputsProps> = ({
         fontSize="10pt"
         height="120px"
         borderRadius={10}
+        bg={{ base: "gray.50", _dark: "gray.800" }}
+        borderColor={{ base: "gray.200", _dark: "gray.600" }}
         _placeholder={{ color: "gray.500" }}
         _hover={{
-          bg: "white",
+          bg: { base: "white", _dark: "gray.700" },
           border: "1px solid",
-          borderColor: "red.500",
+          borderColor: { base: "red.500", _dark: "red.400" },
         }}
         _focus={{
           outline: "none",
-          bg: "white",
+          bg: { base: "white", _dark: "gray.700" },
           border: "1px solid",
-          borderColor: "red.500",
+          borderColor: { base: "red.500", _dark: "red.400" },
         }}
       />
       <Flex justify="flex-end">

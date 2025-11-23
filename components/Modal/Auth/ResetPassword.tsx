@@ -60,19 +60,23 @@ const ResetPassword: React.FC = () => {
               fontSize="10pt"
               _placeholder={{ color: "gray.500" }}
               _hover={{
-                bg: "white",
+                bg: { base: "white", _dark: "gray.700" },
                 border: "1px solid",
                 borderColor: "blue.500",
               }}
               _focus={{
                 outline: "none",
-                bg: "white",
+                bg: { base: "white", _dark: "gray.700" },
                 border: "1px solid",
                 borderColor: "blue.500",
               }}
-              bg="gray.50"
+              bg={{ base: "gray.50", _dark: "gray.800" }}
             />
-            <Text textAlign="center" fontSize="10pt" color="red">
+            <Text
+              textAlign="center"
+              fontSize="10pt"
+              color={{ base: "red.500", _dark: "red.400" }}
+            >
               {error?.message}
             </Text>
             <Button
@@ -91,7 +95,7 @@ const ResetPassword: React.FC = () => {
       <Flex
         alignItems="center"
         fontSize="9pt"
-        color="red.500"
+        color={{ base: "red.500", _dark: "red.400" }}
         fontWeight={700}
         cursor="pointer"
       >

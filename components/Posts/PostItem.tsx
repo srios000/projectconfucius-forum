@@ -168,11 +168,13 @@ const PostItem: React.FC<PostItemProps> = ({
   return (
     <Flex
       border="1px solid"
-      bg="white"
-      borderColor="gray.300"
+      bg={{ base: "white", _dark: "gray.800" }}
+      borderColor={{ base: "gray.300", _dark: "gray.700" }}
       borderRadius={10}
       _hover={{
-        borderColor: singlePostPage ? "none" : "gray.400",
+        borderColor: singlePostPage
+          ? "none"
+          : { base: "gray.400", _dark: "gray.600" },
         boxShadow: singlePostPage ? undefined : "xl",
       }}
       cursor={singlePostPage ? "unset" : "pointer"}
@@ -183,7 +185,7 @@ const PostItem: React.FC<PostItemProps> = ({
       <Flex
         direction="column"
         align="center"
-        bg={singlePostPage ? "none" : "gray.100"}
+        bg={singlePostPage ? "none" : { base: "gray.100", _dark: "gray.700" }}
         p={2}
         width="40px"
         borderRadius={singlePostPage ? "0" : "10px 0px 0px 10px"}
@@ -268,7 +270,7 @@ const VoteSection: React.FC<VoteSectionProps> = ({
         onClick={(event) => onVote(event, post, 1, post.communityId)}
       />
       {/* number of likes  */}
-      <Text fontSize="12pt" color="gray.600">
+      <Text fontSize="12pt" color={{ base: "gray.600", _dark: "gray.400" }}>
         {post.voteStatus}
       </Text>
       {/* dislike button */}

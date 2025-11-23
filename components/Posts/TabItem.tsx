@@ -38,10 +38,21 @@ const TabItem: React.FC<TabItemProps> = ({
       width={0} // split icons evenly
       p="14px 0px"
       cursor="pointer"
-      _hover={{ bg: "gray.50", boxShadow: "lg" }}
-      color={selected ? "red.500" : "gray.500"}
+      _hover={{
+        bg: { base: "gray.50", _dark: "gray.700" },
+        boxShadow: "lg",
+      }}
+      color={
+        selected
+          ? { base: "red.500", _dark: "red.400" }
+          : { base: "gray.500", _dark: "gray.400" }
+      }
       borderWidth="1px"
-      borderColor={selected ? "red.500" : "gray.200"}
+      borderColor={
+        selected
+          ? { base: "red.500", _dark: "red.400" }
+          : { base: "gray.200", _dark: "gray.600" }
+      }
       borderRadius={10}
       onClick={() => setSelectedTab(item.title)}
       shadow="md"

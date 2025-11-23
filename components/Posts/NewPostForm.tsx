@@ -173,7 +173,13 @@ const NewPostForm: React.FC<NewPostFormProps> = ({
   };
 
   return (
-    <Flex direction="column" bg="white" borderRadius={10} mt={2} shadow="md">
+    <Flex
+      direction="column"
+      bg={{ base: "white", _dark: "gray.800" }}
+      borderRadius={10}
+      mt={2}
+      shadow="md"
+    >
       <TabList
         formTabs={formTabs}
         selectedTab={selectedTab}
