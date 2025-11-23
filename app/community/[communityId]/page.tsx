@@ -1,6 +1,4 @@
-import { firestore } from "@/firebase/clientApp";
-import { doc, getDoc } from "firebase/firestore";
-import safeJsonStringify from "safe-json-stringify";
+import { getCommunityData } from "@/lib/communities";
 import CommunityClientPage from "./CommunityClientPage";
 import { notFound } from "next/navigation";
 
@@ -14,16 +12,11 @@ export default async function Page({
   let communityData;
 
   try {
-    const communityDocRef = doc(firestore, "communities", communityId);
-    const communityDoc = await getDoc(communityDocRef);
+    communityData = await getCommunityData(communityId);
 
-    if (!communityDoc.exists()) {
+    if (!communityData) {
       notFound();
     }
-
-    communityData = JSON.parse(
-      safeJsonStringify({ id: communityDoc.id, ...communityDoc.data() })
-    );
   } catch (error) {
     console.log("Error: Page", error);
     return <div>Error loading community</div>;

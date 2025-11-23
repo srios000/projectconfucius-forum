@@ -1,5 +1,4 @@
-import { auth, firestore } from "@/firebase/clientApp";
-import useCustomToast from "@/hooks/useCustomToast";
+import { useCreateCommunity } from "@/hooks/useCreateCommunity";
 import {
   Box,
   Button,
@@ -22,10 +21,7 @@ import {
   Stack,
   Text,
 } from "@chakra-ui/react";
-import { doc, runTransaction, serverTimestamp } from "firebase/firestore";
-import { useRouter } from "next/navigation";
-import React, { ChangeEvent, FC, useState } from "react";
-import { useAuthState } from "react-firebase-hooks/auth";
+import React, { FC, useState } from "react";
 import { IconType } from "react-icons";
 import { BsFillEyeFill, BsFillPersonFill } from "react-icons/bs";
 import { HiLockClosed } from "react-icons/hi";
@@ -82,15 +78,11 @@ const CreateCommunityModal: React.FC<CreateCommunityModalProps> = ({
   open,
   handleClose,
 }) => {
-  const [user] = useAuthState(auth);
   const communityNameLengthLimit = 25; // community names are 25 characters long
   const [communityName, setCommunityName] = useState("");
   const [charRemaining, setCharRemaining] = useState(communityNameLengthLimit);
   const [communityType, setCommunityType] = useState("public");
-  const [error, setError] = useState("");
-  const [loading, setLoading] = useState(false);
-  const router = useRouter();
-  const showToast = useCustomToast();
+  const { createCommunity, loading, error, setError } = useCreateCommunity();
 
   /**
    * Handles changes in the input element which takes the name of the community to be created.
@@ -135,68 +127,9 @@ const CreateCommunityModal: React.FC<CreateCommunityModalProps> = ({
    * @returns {void}
    */
   const handleCreateCommunity = async () => {
-    if (error) setError("");
-    // prevents community from being created if it has special characters
-    const format: RegExp = /[ `!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?~]/;
-    if (format.test(communityName)) {
-      setError("Community name can only contain letters and numbers");
-      return;
-    }
-    // prevents community from being created if its too short
-    if (communityName.length < 3) {
-      setError("Community name must be at least 3 characters long");
-      return;
-    }
-
-    setLoading(true);
-
-    try {
-      // check if community exists by using document reference
-      // takes firestore object, name of collection in db, and the id (community names are unique)
-      const communityDocRef = doc(firestore, "communities", communityName);
-      /**
-       * if one transaction fails they all fail
-       */
-      await runTransaction(firestore, async (transaction) => {
-        const communityDoc = await transaction.get(communityDocRef);
-        if (communityDoc.exists()) {
-          // if community exists
-          throw new Error(
-            `The community ${communityName} is already taken. Try a different name! `
-          );
-        }
-
-        // create community
-        transaction.set(communityDocRef, {
-          creatorId: user?.uid,
-          createdAt: serverTimestamp(),
-          numberOfMembers: 1,
-          privacyType: communityType,
-        });
-
-        // create community snippet on user
-        transaction.set(
-          // path: collection/document/collection/...
-          doc(firestore, `users/${user?.uid}/communitySnippets`, communityName),
-          {
-            communityId: communityName,
-            isAdmin: true,
-          }
-        );
-      });
-
-      router.push(`/community/${communityName}`);
-      handleClose(); // closes the modal
-    } catch (error: any) {
-      console.log("Error: handleCreateCommunity", error);
-      setError(error.message);
-      showToast({
-        title: "Community not Created",
-        description: "There was an error creating your community",
-        status: "error",
-      });
-    } finally {
-      setLoading(false);
+    const success = await createCommunity(communityName, communityType);
+    if (success) {
+      handleClose();
     }
   };
 

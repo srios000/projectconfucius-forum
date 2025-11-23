@@ -6,14 +6,7 @@ import {
   communityStateAtom,
 } from "@/atoms/communitiesAtom";
 import { auth, firestore } from "@/firebase/clientApp";
-import {
-  collection,
-  doc,
-  getDoc,
-  getDocs,
-  increment,
-  writeBatch,
-} from "firebase/firestore";
+import { doc, getDoc, increment, writeBatch } from "firebase/firestore";
 import { useAtom, useSetAtom } from "jotai";
 import { useParams } from "next/navigation";
 import { useEffect, useState } from "react";
@@ -69,37 +62,6 @@ const useCommunityData = () => {
   };
 
   /**
-   * Fetches the user's subscribed communities.
-   * @async
-   * @throws {error} - failed to fetch required data
-   */
-  const getMySnippets = async () => {
-    setLoading(true);
-    try {
-      // fetch document storing the snippets representing subscriptions
-      const snippetDocs = await getDocs(
-        collection(firestore, `users/${user?.uid}/communitySnippets`)
-      );
-      const snippets = snippetDocs.docs.map((doc) => ({ ...doc.data() }));
-      setCommunityStateValue((prev) => ({
-        ...prev,
-        mySnippets: snippets as CommunitySnippet[],
-        snippetFetched: true,
-      }));
-    } catch (error: any) {
-      console.log("Error: getMySnippets", error);
-      showToast({
-        title: "Subscriptions not Found",
-        description: "There was an error fetching your subscriptions",
-        status: "error",
-      });
-      setError(error.message);
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  /**
    * Subscribes the currently authenticated user to the community.
    *
    * @param communityData (Community) - community to which the user is subscribed to
@@ -139,6 +101,13 @@ const useCommunityData = () => {
       setCommunityStateValue((prev) => ({
         ...prev,
         mySnippets: [...prev.mySnippets, newSnippet],
+        currentCommunity:
+          prev.currentCommunity?.id === communityData.id
+            ? {
+                ...prev.currentCommunity,
+                numberOfMembers: prev.currentCommunity.numberOfMembers + 1,
+              }
+            : prev.currentCommunity,
       }));
     } catch (error: any) {
       console.log("Error: joinCommunity", error);
@@ -150,35 +119,6 @@ const useCommunityData = () => {
       setError(error.message);
     }
     setLoading(false);
-  };
-
-  /**
-   * Fetches the community data from the database and updates the state by storing it in the Recoil atom.
-   * @param {string} communityId - community id of the community to be fetched
-   *
-   * @async
-   */
-  const getCommunityData = async (communityId: string) => {
-    try {
-      const communityDocRef = doc(firestore, "communities", communityId);
-      const communityDoc = await getDoc(communityDocRef);
-
-      // update state to update the UI by selecting the community
-      setCommunityStateValue((prev) => ({
-        ...prev,
-        currentCommunity: {
-          id: communityDoc.id,
-          ...communityDoc.data(),
-        } as Community,
-      }));
-    } catch (error) {
-      console.log("Error: getCommunityData", error);
-      showToast({
-        title: "Could not Fetch Communities",
-        description: "There was an error fetching your communities",
-        status: "error",
-      });
-    }
   };
 
   /**
@@ -211,6 +151,13 @@ const useCommunityData = () => {
         mySnippets: prev.mySnippets.filter(
           (item) => item.communityId !== communityId
         ),
+        currentCommunity:
+          prev.currentCommunity?.id === communityId
+            ? {
+                ...prev.currentCommunity,
+                numberOfMembers: prev.currentCommunity.numberOfMembers - 1,
+              }
+            : prev.currentCommunity,
       }));
     } catch (error: any) {
       console.log("Error: leaveCommunity", error.message);
@@ -223,39 +170,6 @@ const useCommunityData = () => {
     }
     setLoading(false);
   };
-
-  /**
-   * Every time the user changes, it will check again.
-   * Clears all the user data when the user logs out.
-   */
-  useEffect(() => {
-    if (!user) {
-      setCommunityStateValue((prev) => ({
-        ...prev,
-        mySnippets: [],
-        snippetFetched: false,
-      }));
-      return;
-    }
-    getMySnippets();
-  }, [user]);
-
-  /**
-   * Fetches the community data when the communityId changes.
-   * This is used to fetch the community data when the user navigates to a community page.
-   * The community data is stored in the communityState.
-   */
-  useEffect(() => {
-    const communityId = params?.communityId as string; // get the communityId from the URL
-    if (
-      communityId &&
-      (!communityStateValue.currentCommunity ||
-        communityStateValue.currentCommunity.id !== communityId)
-    ) {
-      // if the communityId exists and the community data is not already fetched
-      getCommunityData(communityId); // fetch the community data
-    }
-  }, [communityStateValue.currentCommunity, params?.communityId]);
 
   return {
     communityStateValue,

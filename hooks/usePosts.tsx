@@ -7,6 +7,7 @@ import {
   collection,
   deleteDoc,
   doc,
+  getDoc,
   query,
   updateDoc,
   where,
@@ -258,6 +259,59 @@ const usePosts = () => {
   };
 
   /**
+   * Fetches votes for a list of posts.
+   * @param postIds (string[]) - list of post ids
+   */
+  const getPostVotes = async (postIds: string[]) => {
+    if (!user || !postIds.length) return;
+    try {
+      const postVotesQuery = query(
+        collection(firestore, `users/${user.uid}/postVotes`),
+        where("postId", "in", postIds)
+      );
+      const postVoteDocs = await getDocs(postVotesQuery);
+      const postVotes = postVoteDocs.docs.map((doc) => ({
+        id: doc.id,
+        ...doc.data(),
+      }));
+      setPostStateValue((prev) => ({
+        ...prev,
+        postVotes: postVotes as PostVote[],
+      }));
+    } catch (error) {
+      console.log("Error: getPostVotes", error);
+      showToast({
+        title: "Could not Get Post Votes",
+        description: "There was an error while getting your post votes",
+        status: "error",
+      });
+    }
+  };
+
+  /**
+   * Fetches a single post.
+   * @param postId (string) - post id
+   */
+  const getPost = async (postId: string) => {
+    try {
+      const postDocRef = doc(firestore, "posts", postId);
+      const postDoc = await getDoc(postDocRef);
+      if (postDoc.exists()) {
+        const post = { id: postDoc.id, ...(postDoc.data() as Post) };
+        setPostStateValue((prev) => ({
+          ...prev,
+          selectedPost: post,
+        }));
+        return post;
+      }
+      return null;
+    } catch (error) {
+      console.log("Error: getPost", error);
+      return null;
+    }
+  };
+
+  /**
    * Every time page reloads, the community votes are fetched.
    * @requires getCommunityPostVotes()
    */
@@ -283,6 +337,8 @@ const usePosts = () => {
     onSelectPost,
     onVote,
     onDeletePost,
+    getPostVotes,
+    getPost,
   };
 };
 export default usePosts;

@@ -1,7 +1,7 @@
 "use client";
 
 /* eslint-disable react-hooks/exhaustive-deps */
-import { Post, PostVote } from "@/atoms/postsAtom";
+import { PostVote } from "@/atoms/postsAtom";
 import CreatePostLink from "@/components/Community/CreatePostLink";
 import PersonalHome from "@/components/Community/PersonalHome";
 import Recommendations from "@/components/Community/Recommendations";
@@ -11,26 +11,15 @@ import PostItem from "@/components/Posts/PostItem";
 import { auth, firestore } from "@/firebase/clientApp";
 import useCommunityData from "@/hooks/useCommunityData";
 import useCustomToast from "@/hooks/useCustomToast";
-import { useIntersectionObserver } from "@/hooks/useIntersectionObserver";
 import usePosts from "@/hooks/usePosts";
+import usePostsFeed from "@/hooks/usePostsFeed";
 import { Box, Spinner, Stack, Text } from "@chakra-ui/react";
-import {
-  collection,
-  DocumentData,
-  getDocs,
-  limit,
-  orderBy,
-  query,
-  QueryDocumentSnapshot,
-  startAfter,
-  where,
-} from "firebase/firestore";
-import { useEffect, useMemo, useState } from "react";
+import { collection, getDocs, query, where } from "firebase/firestore";
+import { useEffect, useMemo } from "react";
 import { useAuthState } from "react-firebase-hooks/auth";
 
 export default function Home() {
   const [user, loadingUser] = useAuthState(auth);
-  const [loading, setLoading] = useState(false);
   const { communityStateValue } = useCommunityData();
   const {
     setPostStateValue,
@@ -38,167 +27,29 @@ export default function Home() {
     onSelectPost,
     onVote,
     onDeletePost,
+    getPostVotes,
   } = usePosts();
   const showToast = useCustomToast();
-  const [lastVisible, setLastVisible] =
-    useState<QueryDocumentSnapshot<DocumentData> | null>(null);
-  const [noMorePosts, setNoMorePosts] = useState(false);
-  const observerOptions = useMemo(() => ({ threshold: 0.5 }), []);
-  const { ref, isIntersecting } = useIntersectionObserver(observerOptions);
 
-  /**
-   * Creates a home feed for a currently logged in user.
-   * If the user is a member of any communities, it will display posts from those communities.
-   * If the user is not a member of any communities, it will display generic posts.
-   */
-  const buildUserHomeFeed = async (initial = false) => {
-    try {
-      if (communityStateValue.mySnippets.length) {
-        if (loading) return;
-        setLoading(true);
-        const myCommunityIds = communityStateValue.mySnippets.map(
-          (snippet) => snippet.communityId
-        ); // get all community ids that the user is a member of
+  const communityIds = useMemo(
+    () => communityStateValue.mySnippets.map((snippet) => snippet.communityId),
+    [communityStateValue.mySnippets]
+  );
 
-        let postQuery;
-        if (initial) {
-          postQuery = query(
-            collection(firestore, "posts"),
-            where("communityId", "in", myCommunityIds),
-            orderBy("createTime", "desc"),
-            limit(10)
-          );
-        } else {
-          if (!lastVisible) return;
-          postQuery = query(
-            collection(firestore, "posts"),
-            where("communityId", "in", myCommunityIds),
-            orderBy("createTime", "desc"),
-            startAfter(lastVisible),
-            limit(10)
-          );
-        }
-
-        const postDocs = await getDocs(postQuery);
-        const posts = postDocs.docs.map((doc) => ({
-          id: doc.id,
-          ...doc.data(),
-        })); // get all posts in community
-
-        if (postDocs.docs.length < 10) setNoMorePosts(true);
-        if (postDocs.docs.length > 0)
-          setLastVisible(postDocs.docs[postDocs.docs.length - 1]);
-
-        setPostStateValue((prev) => ({
-          ...prev,
-          posts: initial
-            ? (posts as Post[])
-            : [...prev.posts, ...(posts as Post[])],
-        })); // set posts in state
-      } else {
-        buildGenericHomeFeed(initial);
-      }
-    } catch (error) {
-      showToast({
-        title: "Could not Build Home Feed",
-        description: "There was an error while building your home feed",
-        status: "error",
-      });
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  /**
-   * Creates a generic home feed for a user that is not logged in.
-   */
-  const buildGenericHomeFeed = async (initial = false) => {
-    if (loading) return;
-    setLoading(true);
-    try {
-      let postQuery;
-      if (initial) {
-        postQuery = query(
-          collection(firestore, "posts"),
-          orderBy("voteStatus", "desc"),
-          limit(10)
-        );
-      } else {
-        if (!lastVisible) return;
-        postQuery = query(
-          collection(firestore, "posts"),
-          orderBy("voteStatus", "desc"),
-          startAfter(lastVisible),
-          limit(10)
-        );
-      }
-
-      const postDocs = await getDocs(postQuery); // get all posts in community
-      const posts = postDocs.docs.map((doc) => ({ id: doc.id, ...doc.data() })); // get all posts in community
-
-      if (postDocs.docs.length < 10) setNoMorePosts(true);
-      if (postDocs.docs.length > 0)
-        setLastVisible(postDocs.docs[postDocs.docs.length - 1]);
-
-      setPostStateValue((prev) => ({
-        ...prev,
-        posts: initial
-          ? (posts as Post[])
-          : [...prev.posts, ...(posts as Post[])],
-      })); // set posts in state
-    } catch (error) {
-      console.log("Error: buildGenericHomeFeed", error);
-      showToast({
-        title: "Could not Build Home Feed",
-        description: "There was an error while building your home feed",
-        status: "error",
-      });
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  /**
-   * Gets the votes for the posts that are currently in the home feed.
-   */
-  const getUserPostVotes = async () => {
-    try {
-      const postIds = postStateValue.posts.map((post) => post.id); // get all post ids in home feed
-      const postVotesQuery = query(
-        collection(firestore, `users/${user?.uid}/postVotes`),
-        where("postId", "in", postIds)
-      ); // get all post votes for posts in home feed
-      const postVoteDocs = await getDocs(postVotesQuery);
-      const postVotes = postVoteDocs.docs.map((doc) => ({
-        id: doc.id,
-        ...doc.data(),
-      })); // get all post votes for posts in home feed
-
-      setPostStateValue((prev) => ({
-        ...prev,
-        postVotes: postVotes as PostVote[],
-      })); // set post votes in state
-    } catch (error) {
-      console.log("Error: getUserPostVotes", error);
-      showToast({
-        title: "Could not Get Post Votes",
-        description: "There was an error while getting your post votes",
-        status: "error",
-      });
-    }
-  };
+  const { loading, fetchPosts, ref, noMorePosts } = usePostsFeed({
+    communityIds: user && communityIds.length > 0 ? communityIds : undefined,
+    isGenericHome: !user || communityIds.length === 0,
+  });
 
   /**
    * Loads the home feed for authenticated users.
    * Runs when the community snippets have been fetched when the user
    */
   useEffect(() => {
-    if (communityStateValue.mySnippets) {
-      setNoMorePosts(false);
-      setLastVisible(null);
-      buildUserHomeFeed(true);
+    if (communityStateValue.snippetFetched) {
+      fetchPosts(true);
     }
-  }, [communityStateValue.snippetFetched]);
+  }, [communityStateValue.snippetFetched, user, communityIds.length]);
 
   /**
    * Loads the home feed for unauthenticated users.
@@ -207,35 +58,17 @@ export default function Home() {
    */
   useEffect(() => {
     if (!user && !loadingUser) {
-      setNoMorePosts(false);
-      setLastVisible(null);
-      buildGenericHomeFeed(true);
+      fetchPosts(true);
     }
   }, [user, loadingUser]);
-
-  useEffect(() => {
-    if (isIntersecting && !loading && !noMorePosts && lastVisible) {
-      if (user && communityStateValue.mySnippets.length) {
-        buildUserHomeFeed(false);
-      } else {
-        buildGenericHomeFeed(false);
-      }
-    }
-  }, [
-    isIntersecting,
-    loading,
-    noMorePosts,
-    lastVisible,
-    user,
-    communityStateValue.mySnippets,
-  ]);
 
   /**
    * Posts need to exist before trying to fetch votes for posts
    */
   useEffect(() => {
     if (user && postStateValue.posts.length) {
-      getUserPostVotes();
+      const postIds = postStateValue.posts.map((post) => post.id!);
+      getPostVotes(postIds);
 
       return () => {
         setPostStateValue((prev) => ({

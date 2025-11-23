@@ -1,5 +1,6 @@
 import React, { ReactNode } from "react";
 import Navbar from "../Navbar/Navbar";
+import GlobalHooks from "./GlobalHooks";
 
 /**
  * Children components that can exist that are rendered.
@@ -26,6 +27,7 @@ interface LayoutProps {
 const Layout: React.FC<LayoutProps> = ({ children }) => {
   return (
     <>
+      <GlobalHooks />
       <Navbar />
       <main>{children}</main>
     </>
