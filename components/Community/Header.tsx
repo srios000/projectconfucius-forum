@@ -6,9 +6,10 @@ import useCommunityData from "@/hooks/useCommunityData";
 import { useParams } from "next/navigation";
 import { useAuthState } from "react-firebase-hooks/auth";
 import { auth } from "@/firebase/clientApp";
-import { FiSettings } from "react-icons/fi";
+import { FiSettings, FiUsers } from "react-icons/fi";
 import IconItem from "../atoms/Icon";
 import CommunitySettingsModal from "../Modal/CommunitySettings/CommunitySettings";
+import CommunityMembersModal from "../Modal/CommunityMembers/CommunityMembersModal";
 
 /**
  * @param {communityData} - data required to be displayed
@@ -54,6 +55,10 @@ const Header: React.FC<HeaderProps> = ({ communityData }) => {
           <Flex padding="10px 16px" width="100%">
             <CommunityName id={communityData.id} />
             <Flex direction="row" flexGrow={1} align="end" justify="end">
+              <CommunityMembersButton
+                communityId={communityData.id}
+                isJoined={isJoined}
+              />
               <CommunitySettings communityData={communityData} />
               <JoinOrLeaveButton
                 isJoined={isJoined}
@@ -198,6 +203,39 @@ export const CommunitySettings: React.FC<CommunitySettingsProps> = ({
           />
         </>
       )}
+    </>
+  );
+};
+
+type CommunityMembersButtonProps = {
+  communityId: string;
+  isJoined: boolean;
+};
+
+const CommunityMembersButton: React.FC<CommunityMembersButtonProps> = ({
+  communityId,
+  isJoined,
+}) => {
+  const [isModalOpen, setModalOpen] = useState(false);
+
+  if (!isJoined) {
+    return null;
+  }
+
+  return (
+    <>
+      <CommunityMembersModal
+        isOpen={isModalOpen}
+        onClose={() => setModalOpen(false)}
+        communityId={communityId}
+      />
+      <IconItem
+        icon={FiUsers}
+        fontSize={20}
+        onClick={() => setModalOpen(true)}
+        iconColor="gray.500"
+        label="View Subscribers"
+      />
     </>
   );
 };
