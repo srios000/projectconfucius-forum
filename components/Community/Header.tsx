@@ -168,6 +168,8 @@ type CommunitySettingsProps = {
   communityData: Community;
 };
 
+import useCommunityPermissions from "@/hooks/useCommunityPermissions";
+
 export const CommunitySettings: React.FC<CommunitySettingsProps> = ({
   communityData,
 }) => {
@@ -176,10 +178,11 @@ export const CommunitySettings: React.FC<CommunitySettingsProps> = ({
   const [user] = useAuthState(auth);
   const [isCommunitySettingsModalOpen, setCommunitySettingsModalOpen] =
     useState(false);
+  const { isAdmin } = useCommunityPermissions(communityData);
 
   return (
     <>
-      {user?.uid === communityData.creatorId && (
+      {isAdmin && (
         <>
           <CommunitySettingsModal
             open={isCommunitySettingsModalOpen}

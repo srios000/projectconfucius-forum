@@ -114,7 +114,9 @@ const useCommunityData = () => {
         communityId: communityData.id, // community id from the current community page
         imageURL: communityData.imageURL || "", // community image from the current community page
         // if the creator of community re-subscribes to the community
-        isAdmin: user?.uid === communityData.creatorId, // if the user is the creator of the community
+        isAdmin:
+          user?.uid === communityData.creatorId ||
+          communityData.adminIds?.includes(user?.uid || ""),
       };
 
       // create a new community snippet into the user document (subscription)

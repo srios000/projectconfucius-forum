@@ -40,6 +40,7 @@ import { useAtom } from "jotai";
 import React, { useRef, useState } from "react";
 import { useAuthState } from "react-firebase-hooks/auth";
 import { BsFillPeopleFill } from "react-icons/bs";
+import AdminManager from "./AdminManager";
 
 /**
  * @param {boolean} open - boolean to determine if the modal is open or not
@@ -449,6 +450,13 @@ const CommunitySettingsModal: React.FC<CommunitySettingsModalProps> = ({
                     </NativeSelectRoot>
                   </Stack>
                 </Flex>
+
+                <Separator />
+                <AdminManager
+                  communityData={
+                    communityStateValue.currentCommunity || communityData
+                  }
+                />
               </Stack>
             </DialogBody>
           </Box>

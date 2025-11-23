@@ -133,6 +133,8 @@ type AdminSectionAboutProps = {
   communityData: Community;
 };
 
+import useCommunityPermissions from "@/hooks/useCommunityPermissions";
+
 /**
  * Displays some additional elements if the current user is an admin:
  *  - Button for opening the community settings modal
@@ -143,10 +145,11 @@ const AdminSectionAbout: React.FC<AdminSectionAboutProps> = ({
 }) => {
   const [isCommunitySettingsModalOpen, setCommunitySettingsModalOpen] =
     useState(false);
-  const [user] = useAuthState(auth);
+  const { isAdmin } = useCommunityPermissions(communityData);
+
   return (
     <>
-      {user?.uid === communityData?.creatorId && (
+      {isAdmin && (
         <>
           <CommunitySettingsModal
             open={isCommunitySettingsModalOpen}
