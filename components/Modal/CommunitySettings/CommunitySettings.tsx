@@ -1,5 +1,6 @@
 import { Community, communityStateAtom } from "@/atoms/communitiesAtom";
-import { auth, firestore, storage } from "@/firebase/clientApp";
+import { auth } from "@/firebase/clientApp";
+import { useCommunitySettings } from "@/hooks/useCommunitySettings";
 import useCustomToast from "@/hooks/useCustomToast";
 import useSelectFile from "@/hooks/useSelectFile";
 import {
@@ -23,19 +24,6 @@ import {
   Stack,
   Text,
 } from "@chakra-ui/react";
-import {
-  collection,
-  doc,
-  getDoc,
-  getDocs,
-  updateDoc,
-} from "firebase/firestore";
-import {
-  deleteObject,
-  getDownloadURL,
-  ref,
-  uploadString,
-} from "firebase/storage";
 import { useAtom } from "jotai";
 import React, { useRef, useState } from "react";
 import { useAuthState } from "react-firebase-hooks/auth";
@@ -76,162 +64,31 @@ const CommunitySettingsModal: React.FC<CommunitySettingsModalProps> = ({
   );
   const selectFileRef = useRef<HTMLInputElement>(null);
   // const setCommunityStateValue = useSetRecoilState(communityState);
-  const [communityStateValue, setCommunityStateValue] =
-    useAtom(communityStateAtom);
-  const [uploadingImage, setUploadingImage] = useState(false);
+  const [communityStateValue] = useAtom(communityStateAtom);
   const [deleteImage, setDeleteImage] = useState(false);
   const showToast = useCustomToast();
+
+  const {
+    updateImage,
+    deleteCommunityImage,
+    updatePrivacyType,
+    uploadingImage,
+  } = useCommunitySettings(communityData);
 
   /**
    * Allows admin to change the image of the community.
    */
   const onUpdateImage = async () => {
-    if (!selectedFile) {
-      // if no file is selected, do nothing
-      return;
-    }
-    setUploadingImage(true); // set uploading image to true
-
-    try {
-      // update image in the community collection
-      const imageRef = ref(storage, `communities/${communityData.id}/image`); // create reference to image in storage
-      await uploadString(imageRef, selectedFile, "data_url"); // upload image to storage
-      const downloadURL = await getDownloadURL(imageRef); // get download url of image
-      await updateDoc(doc(firestore, "communities", communityData.id), {
-        imageURL: downloadURL,
-      }); // update imageURL in firestore
-
-      // update imageURL in all users communitySnippets
-      const usersSnapshot = await getDocs(collection(firestore, "users")); // get all users
-      usersSnapshot.forEach(async (userDoc) => {
-        // loop through all users
-        const communitySnippetDoc = await getDoc(
-          doc(
-            firestore,
-            "users",
-            userDoc.id,
-            "communitySnippets",
-            communityData.id
-          ) // get communitySnippet of the community
-        );
-        if (communitySnippetDoc.exists()) {
-          // if the communitySnippet exists, update the imageURL
-          await updateDoc(
-            doc(
-              firestore,
-              "users",
-              userDoc.id,
-              "communitySnippets",
-              communityData.id
-            ),
-            {
-              imageURL: downloadURL,
-            }
-          );
-        }
-      });
-
-      // update imageURL in current community recoil state
-      setCommunityStateValue((prev) => ({
-        ...prev,
-        currentCommunity: {
-          ...prev.currentCommunity,
-          imageURL: downloadURL,
-        } as Community,
-      }));
-
-      // update mySnippet imageURL in recoil state
-      setCommunityStateValue((prev) => ({
-        ...prev,
-        mySnippets: prev.mySnippets.map((snippet) => {
-          if (snippet.communityId === communityData.id) {
-            return {
-              ...snippet,
-              imageURL: downloadURL,
-            };
-          }
-          return snippet;
-        }),
-      }));
-    } catch (error) {
-      console.log("Error: onUploadImage", error);
-      showToast({
-        title: "Image not Updated",
-        description: "There was an error updating the image",
-        status: "error",
-      });
-    } finally {
-      setUploadingImage(false); // set uploading image to false
-      setSelectedFile(""); // clear selected file
-    }
+    if (!selectedFile) return;
+    await updateImage(selectedFile);
+    setSelectedFile("");
   };
 
   /**
    * Deletes the image of the community.
-   * @param {string} communityId - id of the community
    */
-  const onDeleteImage = async (communityId: string) => {
-    try {
-      const imageRef = ref(storage, `communities/${communityId}/image`); // create reference to image in storage
-      await deleteObject(imageRef);
-      // await deleteDoc(doc(firestore, "communities", communityId)); // delete image from storage
-      await updateDoc(doc(firestore, "communities", communityId), {
-        imageURL: "",
-      }); // update imageURL in firestore
-
-      // delete imageURL in communitySnippets for all users
-      const usersSnapshot = await getDocs(collection(firestore, "users")); // get all users
-      usersSnapshot.forEach(async (userDoc) => {
-        const communitySnippetDoc = await getDoc(
-          doc(firestore, "users", userDoc.id, "communitySnippets", communityId)
-        ); // get communitySnippet of the community
-        if (communitySnippetDoc.exists()) {
-          // if the communitySnippet exists, update the imageURL
-          await updateDoc(
-            doc(
-              firestore,
-              "users",
-              userDoc.id,
-              "communitySnippets",
-              communityId
-            ),
-            {
-              imageURL: "",
-            }
-          ); // update imageURL in firestore
-        }
-      });
-
-      // update imageURL in current community recoil state
-      setCommunityStateValue((prev) => ({
-        ...prev,
-        currentCommunity: {
-          ...prev.currentCommunity,
-          imageURL: "",
-        } as Community,
-      })); // update imageURL in recoil state
-
-      // update mySnippet imageURL in recoil state
-      setCommunityStateValue((prev) => ({
-        ...prev,
-        mySnippets: prev.mySnippets.map((snippet) => {
-          if (snippet.communityId === communityId) {
-            return {
-              ...snippet,
-              imageURL: "",
-            };
-          }
-          return snippet;
-        }),
-      }));
-    } catch (error) {
-      console.log("Error: onDeleteImage", error);
-      showToast({
-        title: "Image not Deleted",
-        description: "There was an error deleting the image",
-        status: "error",
-      });
-    }
+  const onDeleteImage = async () => {
+    await deleteCommunityImage();
   };
 
   const [selectedPrivacyType, setSelectedPrivacyType] = useState("");
@@ -241,26 +98,7 @@ const CommunitySettingsModal: React.FC<CommunitySettingsModalProps> = ({
    * @param {string} privacyType - privacy type to be changed to
    */
   const onUpdateCommunityPrivacyType = async (privacyType: string) => {
-    try {
-      await updateDoc(doc(firestore, "communities", communityData.id), {
-        privacyType,
-      });
-      // update privacyType in current community recoil state
-      setCommunityStateValue((prev) => ({
-        ...prev,
-        currentCommunity: {
-          ...prev.currentCommunity,
-          privacyType: privacyType,
-        } as Community,
-      }));
-    } catch (error) {
-      console.log("Error: onUpdateCommunityPrivacyType", error);
-      showToast({
-        title: "Privacy Type not Updated",
-        description: "There was an error updating the community privacy type",
-        status: "error",
-      });
-    }
+    await updatePrivacyType(privacyType);
   };
 
   /**
@@ -289,7 +127,7 @@ const CommunitySettingsModal: React.FC<CommunitySettingsModalProps> = ({
       onUpdateImage();
     }
     if (deleteImage) {
-      onDeleteImage(communityData.id);
+      onDeleteImage();
     }
     showToast({
       title: "Settings Updated",

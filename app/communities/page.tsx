@@ -1,26 +1,14 @@
 "use client";
 
-import { Community } from "@/atoms/communitiesAtom";
 import CommunityItem from "@/components/Community/CommunityItem";
 import PersonalHome from "@/components/Community/PersonalHome";
 import PageContent from "@/components/Layout/PageContent";
 import CommunityLoader from "@/components/Loaders/CommunityLoader";
-import { firestore } from "@/firebase/clientApp";
+import useCommunitiesFeed from "@/hooks/useCommunitiesFeed";
 import useCommunityData from "@/hooks/useCommunityData";
-import useCustomToast from "@/hooks/useCustomToast";
 import { useIntersectionObserver } from "@/hooks/useIntersectionObserver";
-import { Box, Flex, Spinner, Stack, Text } from "@chakra-ui/react";
-import {
-  collection,
-  DocumentData,
-  getDocs,
-  limit,
-  orderBy,
-  query,
-  QueryDocumentSnapshot,
-  startAfter,
-} from "firebase/firestore";
-import React, { useEffect, useMemo, useState } from "react";
+import { Box, Spinner, Stack, Text } from "@chakra-ui/react";
+import React, { useEffect, useMemo } from "react";
 
 /**
  * Displays the communities page with the top 5 communities.
@@ -29,76 +17,16 @@ import React, { useEffect, useMemo, useState } from "react";
  */
 const Communities: React.FC = () => {
   const { communityStateValue, onJoinOrLeaveCommunity } = useCommunityData();
-  const [loading, setLoading] = useState(false);
-  const [communities, setCommunities] = useState<Community[]>([]);
-  const showToast = useCustomToast();
-  const [lastVisible, setLastVisible] =
-    useState<QueryDocumentSnapshot<DocumentData> | null>(null);
-  const [noMoreCommunities, setNoMoreCommunities] = useState(false);
+  const { communities, loading, fetchCommunities, noMoreCommunities } =
+    useCommunitiesFeed({ limitValue: 10, isPagination: true });
   const observerOptions = useMemo(() => ({ threshold: 0.5 }), []);
   const { ref, isIntersecting } = useIntersectionObserver(observerOptions);
 
-  /**
-   * Gets the top 5 communities with the most members.
-   * @param {number} numberOfExtraPosts - number of extra posts to display
-   */
-  const getCommunities = async (initial = false) => {
-    if (loading) return;
-    setLoading(true);
-    try {
-      let communityQuery;
-      if (initial) {
-        communityQuery = query(
-          collection(firestore, "communities"),
-          orderBy("numberOfMembers", "desc"),
-          limit(10)
-        );
-      } else {
-        if (!lastVisible) return;
-        communityQuery = query(
-          collection(firestore, "communities"),
-          orderBy("numberOfMembers", "desc"),
-          startAfter(lastVisible),
-          limit(10)
-        );
-      }
-
-      const communityDocs = await getDocs(communityQuery);
-      const communities = communityDocs.docs.map((doc) => ({
-        id: doc.id,
-        ...doc.data(),
-      }));
-
-      if (communityDocs.docs.length < 10) setNoMoreCommunities(true);
-      if (communityDocs.docs.length > 0)
-        setLastVisible(communityDocs.docs[communityDocs.docs.length - 1]);
-
-      setCommunities((prev) =>
-        initial
-          ? (communities as Community[])
-          : [...prev, ...(communities as Community[])]
-      );
-    } catch (error) {
-      console.log("Error: getCommunityRecommendations", error);
-      showToast({
-        title: "Could not Find Communities",
-        description: "There was an error getting communities",
-        status: "error",
-      });
-    } finally {
-      setLoading(false);
-    }
-  };
-
   useEffect(() => {
-    getCommunities(true);
-  }, []);
-
-  useEffect(() => {
-    if (isIntersecting && !loading && !noMoreCommunities && lastVisible) {
-      getCommunities(false);
+    if (isIntersecting && !loading && !noMoreCommunities) {
+      fetchCommunities(false);
     }
-  }, [isIntersecting, loading, noMoreCommunities, lastVisible]);
+  }, [isIntersecting, loading, noMoreCommunities, fetchCommunities]);
 
   return (
     <>

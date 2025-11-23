@@ -1,61 +1,26 @@
-"use client";
+import { getCommunityData } from "@/lib/communities";
+import SubmitPostClientPage from "./SubmitPostClientPage";
+import { notFound } from "next/navigation";
 
-import { authModalStateAtom } from "@/atoms/authModalAtom";
-import About from "@/components/Community/About";
-import PageContent from "@/components/Layout/PageContent";
-import AuthButtons from "@/components/Navbar/RightContent/AuthButtons";
-import NewPostForm from "@/components/Posts/NewPostForm";
-import { auth } from "@/firebase/clientApp";
-import useCommunityData from "@/hooks/useCommunityData";
-import { Box, Stack, Text } from "@chakra-ui/react";
-import { useSetAtom } from "jotai";
-import React from "react";
-import { useAuthState } from "react-firebase-hooks/auth";
+export default async function SubmitPostPage({
+  params,
+}: {
+  params: Promise<{ communityId: string }>;
+}) {
+  const { communityId } = await params;
 
-const SubmitPostPage: React.FC = () => {
-  const [user] = useAuthState(auth);
-  const { communityStateValue } = useCommunityData();
-  const setAuthModalState = useSetAtom(authModalStateAtom);
+  let communityData;
 
-  return (
-    <PageContent>
-      <>
-        <Box p="14px 0px">
-          <Text
-            fontSize="20pt"
-            fontWeight={700}
-            color={{ base: "black", _dark: "white" }}
-          >
-            Create Post
-          </Text>
-        </Box>
-        {user ? (
-          <NewPostForm
-            user={user}
-            communityImageURL={communityStateValue.currentCommunity?.imageURL}
-            currentCommunity={communityStateValue.currentCommunity}
-          />
-        ) : (
-          <Stack
-            justifyContent="center"
-            align="center"
-            bg={{ base: "white", _dark: "gray.800" }}
-            p={5}
-            borderRadius={10}
-          >
-            <Text fontWeight={600}>Log in or sign up to post</Text>
-            <Stack direction="row" gap={2} ml={4}>
-              <AuthButtons />
-            </Stack>
-          </Stack>
-        )}
-      </>
-      <>
-        {communityStateValue.currentCommunity && (
-          <About communityData={communityStateValue.currentCommunity} />
-        )}
-      </>
-    </PageContent>
-  );
-};
-export default SubmitPostPage;
+  try {
+    communityData = await getCommunityData(communityId);
+
+    if (!communityData) {
+      notFound();
+    }
+  } catch (error) {
+    console.log("Error: SubmitPostPage", error);
+    return <div>Error loading community</div>;
+  }
+
+  return <SubmitPostClientPage communityData={communityData} />;
+}

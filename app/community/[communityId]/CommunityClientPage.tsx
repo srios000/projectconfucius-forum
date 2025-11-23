@@ -6,7 +6,7 @@ import CreatePostLink from "@/components/Community/CreatePostLink";
 import Header from "@/components/Community/Header";
 import PageContent from "@/components/Layout/PageContent";
 import Posts from "@/components/Posts/Posts";
-import { useSetAtom } from "jotai";
+import { useAtom } from "jotai";
 import React, { useEffect } from "react";
 
 type CommunityPageProps = {
@@ -16,7 +16,8 @@ type CommunityPageProps = {
 const CommunityClientPage: React.FC<CommunityPageProps> = ({
   communityData,
 }) => {
-  const setCommunityStateValue = useSetAtom(communityStateAtom);
+  const [communityStateValue, setCommunityStateValue] =
+    useAtom(communityStateAtom);
 
   useEffect(() => {
     if (communityData) {
@@ -27,16 +28,19 @@ const CommunityClientPage: React.FC<CommunityPageProps> = ({
     }
   }, [communityData, setCommunityStateValue]);
 
+  const currentCommunity =
+    communityStateValue.currentCommunity || communityData;
+
   return (
     <>
-      <Header communityData={communityData} />
+      <Header communityData={currentCommunity} />
       <PageContent>
         <>
           <CreatePostLink />
-          <Posts communityData={communityData} />
+          <Posts communityData={currentCommunity} />
         </>
         <>
-          <About communityData={communityData} />
+          <About communityData={currentCommunity} />
         </>
       </PageContent>
     </>

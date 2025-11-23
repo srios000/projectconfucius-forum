@@ -1,3 +1,4 @@
+import { validateSignupForm } from "@/lib/validation";
 import { Button, Flex, Text } from "@chakra-ui/react";
 import { useSetAtom } from "jotai";
 import React, { useState } from "react";
@@ -47,25 +48,10 @@ const SignUp = () => {
   const onSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault(); // Prevent the page from refreshing
     if (error) setError(""); // If there is an error, clear it
-    if (signUpForm.password !== signUpForm.confirmPassword) {
-      // If the password and confirm password don't match
-      setError("Passwords don't match"); // Set error
-      return; // Return so that the function doesn't continue
-    }
-    if (signUpForm.password.length < 8) {
-      setError("Password must be at least 8 characters long");
-      return;
-    }
-    if (!/\d/.test(signUpForm.password)) {
-      setError("Password must contain at least 1 number");
-      return;
-    }
-    if (!/[!@#$%^&*(),.?":{}|<>]/.test(signUpForm.password)) {
-      setError("Password must contain at least 1 special character");
-      return;
-    }
-    if (!/[A-Z]/.test(signUpForm.password)) {
-      setError("Password must contain at least 1 capital letter");
+
+    const validationError = validateSignupForm(signUpForm);
+    if (validationError) {
+      setError(validationError);
       return;
     }
 

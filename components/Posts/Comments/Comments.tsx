@@ -1,7 +1,6 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import { Post, postStateAtom } from "@/atoms/postsAtom";
-import { firestore } from "@/firebase/clientApp";
-import useCustomToast from "@/hooks/useCustomToast";
+import { Post } from "@/atoms/postsAtom";
+import useComments from "@/hooks/useComments";
 import {
   Box,
   Flex,
@@ -11,22 +10,9 @@ import {
   Text,
 } from "@chakra-ui/react";
 import { User } from "firebase/auth";
-import {
-  collection,
-  doc,
-  getDocs,
-  increment,
-  orderBy,
-  query,
-  serverTimestamp,
-  Timestamp,
-  where,
-  writeBatch,
-} from "firebase/firestore";
-import { useSetAtom } from "jotai";
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import CommentInput from "./CommentInput";
-import CommentItem, { Comment } from "./CommentItem";
+import CommentItem from "./CommentItem";
 
 /**
  * Required props for Comments component
@@ -59,155 +45,19 @@ const Comments: React.FC<CommentsProps> = ({
   communityId,
 }) => {
   const [commentText, setCommentText] = useState("");
-  const [comments, setComments] = useState<Comment[]>([]);
-  const [fetchLoading, setFetchLoading] = useState(true);
-  const [createLoading, setCreateLoading] = useState(false);
-  const [loadingDelete, setLoadingDelete] = useState("");
-  const setPostState = useSetAtom(postStateAtom);
-  const showToast = useCustomToast();
+  const {
+    comments,
+    onCreateComment,
+    onDeleteComment,
+    commentFetchLoading,
+    createLoading,
+    deleteLoadingId,
+  } = useComments(selectedPost);
 
-  /**
-   * Creates a new comment for the selected post.
-   * Also updates the number of comments in the post document.
-   *
-   * @returns {Promise<void>} - void
-   *
-   * @async
-   */
-  const onCreateComment = async () => {
-    setCreateLoading(true);
-    try {
-      const batch = writeBatch(firestore);
-
-      const commentDocRef = doc(collection(firestore, "comments")); // create new comment document
-
-      const newComment: Comment = {
-        id: commentDocRef.id,
-        creatorId: user!.uid,
-        creatorDisplayText: user!.email!.split("@")[0],
-        communityId,
-        postId: selectedPost?.id!,
-        postTitle: selectedPost?.title!,
-        text: commentText,
-        createdAt: serverTimestamp() as Timestamp,
-      }; // create new comment object with data to be stored in firestore
-
-      batch.set(commentDocRef, newComment); // add new comment to batch
-
-      const postDocRef = doc(firestore, "posts", selectedPost?.id as string); // get post document
-      batch.update(postDocRef, {
-        numberOfComments: increment(1),
-      }); // update number of comments in post document
-      await batch.commit();
-
-      setCommentText(""); // once comment is submitted clear comment box
-      setComments((prev) => [newComment, ...prev]); // display new comment along with old comments after it
-      setPostState((prev) => ({
-        ...prev,
-        selectedPost: {
-          ...prev.selectedPost,
-          numberOfComments: prev.selectedPost?.numberOfComments! + 1,
-        } as Post,
-      })); // update number of comments in post state
-
-      showToast({
-        title: "Comment Created",
-        description: "Your comment has been created",
-        status: "success",
-      });
-    } catch (error) {
-      console.log("Error: OnCreateComment", error);
-      showToast({
-        title: "Comment not Created",
-        description: "There was an error creating your comment",
-        status: "error",
-      });
-    } finally {
-      setCreateLoading(false);
-    }
+  const handleCreateComment = async () => {
+    await onCreateComment(user!, commentText);
+    setCommentText("");
   };
-
-  /**
-   * Deletes a comment.
-   * Also updates the number of comments in the post document.
-   * @param {Comment} comment - Comment to be deleted
-   */
-  const onDeleteComment = async (comment: Comment) => {
-    setLoadingDelete(comment.id);
-    try {
-      const batch = writeBatch(firestore);
-
-      const commentDocRef = doc(firestore, "comments", comment.id); // get comment document
-      batch.delete(commentDocRef); // delete comment document
-
-      const postDocRef = doc(firestore, "posts", selectedPost?.id!); // get post document
-      batch.update(postDocRef, {
-        numberOfComments: increment(-1),
-      }); // update number of comments in post document
-
-      await batch.commit();
-
-      setPostState((prev) => ({
-        ...prev,
-        selectedPost: {
-          ...prev.selectedPost,
-          numberOfComments: prev.selectedPost?.numberOfComments! - 1,
-        } as Post,
-      })); // update number of comments in post state
-
-      setComments((prev) => prev.filter((item) => item.id !== comment.id)); // remove comment from comments state
-
-      showToast({
-        title: "Comment Deleted",
-        description: "Your comment has been deleted",
-        status: "success",
-      });
-    } catch (error) {
-      console.log("Error: onDeleteComment");
-      showToast({
-        title: "Comment not Deleted",
-        description: "There was an error creating your comment",
-        status: "error",
-      });
-    } finally {
-      setLoadingDelete("");
-    }
-  };
-  const getPostComments = async () => {
-    try {
-      const commentsQuery = query(
-        collection(firestore, "comments"),
-        where("postId", "==", selectedPost?.id),
-        orderBy("createdAt", "desc")
-      );
-      const commentsDocs = await getDocs(commentsQuery);
-      const comments = commentsDocs.docs.map((doc) => ({
-        id: doc.id,
-        ...doc.data(),
-      }));
-      setComments(comments as Comment[]);
-    } catch (error) {
-      console.log("Error: getPostComments", error);
-      showToast({
-        title: "Comments not Fetched",
-        description: "There was an error fetching comments",
-        status: "error",
-      });
-    } finally {
-      setFetchLoading(false);
-    }
-  };
-
-  /**
-   * Fetch comments for the selected post when selected post changes.
-   * If there is no selected post then do not fetch comments.
-   */
-  useEffect(() => {
-    if (!selectedPost) {
-      return;
-    }
-    getPostComments();
-  }, [selectedPost]);
 
   return (
     <Flex
@@ -232,11 +82,11 @@ const Comments: React.FC<CommentsProps> = ({
           setCommentText={setCommentText}
           user={user}
           createLoading={createLoading}
-          onCreateComment={onCreateComment}
+          onCreateComment={handleCreateComment}
         />
       </Flex>
       <Stack gap={4} m={4} ml={10}>
-        {fetchLoading ? (
+        {commentFetchLoading ? (
           <>
             {[0, 1, 2, 3].map((item) => (
               <Box
@@ -265,7 +115,7 @@ const Comments: React.FC<CommentsProps> = ({
                     key={comment.id}
                     comment={comment}
                     onDeleteComment={onDeleteComment}
-                    loadingDelete={loadingDelete === comment.id}
+                    loadingDelete={deleteLoadingId === comment.id}
                     userId={user?.uid}
                   />
                 ))}

@@ -1,7 +1,5 @@
 import { Community } from "@/atoms/communitiesAtom";
-import { Post } from "@/atoms/postsAtom";
-import { firestore, storage } from "@/firebase/clientApp";
-import useCustomToast from "@/hooks/useCustomToast";
+import useCreatePost from "@/hooks/useCreatePost";
 import useSelectFile from "@/hooks/useSelectFile";
 import {
   AlertContent,
@@ -14,14 +12,6 @@ import {
   Text,
 } from "@chakra-ui/react";
 import { User } from "firebase/auth";
-import {
-  addDoc,
-  collection,
-  serverTimestamp,
-  Timestamp,
-  updateDoc,
-} from "firebase/firestore";
-import { getDownloadURL, ref, uploadString } from "firebase/storage";
 import { useRouter, useParams } from "next/navigation";
 import React, { useState } from "react";
 import { IoDocumentText, IoImageOutline } from "react-icons/io5";
@@ -97,10 +87,7 @@ const NewPostForm: React.FC<NewPostFormProps> = ({
     3000,
     3000
   );
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState(false);
-  const showToast = useCustomToast();
-  const communityLink = `/community/${currentCommunity?.id}`;
+  const { handleCreatePost, loading, error } = useCreatePost();
 
   /**
    * Handles the creation of a new post.
@@ -108,52 +95,15 @@ const NewPostForm: React.FC<NewPostFormProps> = ({
    *
    * @async
    */
-  const handleCreatePost = async () => {
-    const communityId = params?.communityId;
-    // create a new post object
-    const newPost: Post = {
-      communityId: communityId as string,
-      communityImageURL: communityImageURL || "",
-      creatorId: user?.uid,
-      creatorUsername: user.email!.split("@")[0],
-      title: textInputs.title,
-      body: textInputs.body,
-      numberOfComments: 0,
-      voteStatus: 0,
-      createTime: serverTimestamp() as Timestamp,
-    }; // object representing the post
-
-    setLoading(true);
-
-    try {
-      const postDocRef = await addDoc(collection(firestore, "posts"), newPost); // add the post to Firestore
-      if (selectedFile) {
-        // check if user has uploaded a file
-        const imageRef = ref(storage, `posts/${postDocRef.id}/image`); // reference to where image is saved in Firebase storage
-        await uploadString(imageRef, selectedFile, "data_url"); // upload the actual image
-        const downloadURL = await getDownloadURL(imageRef); // get the link to the image
-        await updateDoc(postDocRef, {
-          // add image link to the posts in Firestore
-          imageURL: downloadURL,
-        });
-      }
-      router.push(communityLink); // redirect user back to communities page after post is created
-    } catch (error: any) {
-      console.log("Error: handleCreatePost", error.message);
-      showToast({
-        title: "Post not Created",
-        description: "There was an error creating your post",
-        status: "error",
-      });
-    } finally {
-      setLoading(false);
-    }
-    // store the post object in db
-
-    // check for the selectedFile in case user uploaded file
-    // if file is uploaded, store in firebase storage
-    // get the link to file and store it to firestore
-    // redirect user back to communities page
+  const onCreatePost = async () => {
+    const communityId = params?.communityId as string;
+    await handleCreatePost(
+      user,
+      communityId,
+      communityImageURL,
+      textInputs,
+      selectedFile
+    );
   };
 
   /**
@@ -188,7 +138,7 @@ const NewPostForm: React.FC<NewPostFormProps> = ({
       <BackToCommunityButton communityId={currentCommunity?.id} />
       <PostBody
         selectedTab={selectedTab}
-        handleCreatePost={handleCreatePost}
+        handleCreatePost={onCreatePost}
         onTextChange={onTextChange}
         loading={loading}
         textInputs={textInputs}
