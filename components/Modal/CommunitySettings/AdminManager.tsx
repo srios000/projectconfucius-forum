@@ -18,6 +18,7 @@ import {
   getDoc,
   getDocs,
   increment,
+  limit,
   query,
   runTransaction,
   where,
@@ -42,6 +43,8 @@ const AdminManager: React.FC<AdminManagerProps> = ({ communityData }) => {
   const [loading, setLoading] = useState(false);
   const [newAdminEmail, setNewAdminEmail] = useState("");
   const [addingAdmin, setAddingAdmin] = useState(false);
+  const [searchResults, setSearchResults] = useState<AdminUser[]>([]);
+  const [showResults, setShowResults] = useState(false);
   const showToast = useCustomToast();
   const setCommunityStateValue = useSetAtom(communityStateAtom);
   const [user] = useAuthState(auth);
@@ -248,26 +251,102 @@ const AdminManager: React.FC<AdminManagerProps> = ({ communityData }) => {
     }
   };
 
+  useEffect(() => {
+    const searchUsers = async () => {
+      if (newAdminEmail.length < 3) {
+        setSearchResults([]);
+        setShowResults(false);
+        return;
+      }
+      try {
+        const usersQuery = query(
+          collection(firestore, "users"),
+          where("email", ">=", newAdminEmail),
+          where("email", "<=", newAdminEmail + "\uf8ff"),
+          limit(5)
+        );
+        const snapshot = await getDocs(usersQuery);
+        const results = snapshot.docs.map(
+          (doc) => ({ uid: doc.id, ...doc.data() } as AdminUser)
+        );
+        // Filter out existing admins
+        const filtered = results.filter(
+          (u) => !admins.some((a) => a.uid === u.uid)
+        );
+        setSearchResults(filtered);
+        setShowResults(true);
+      } catch (error) {
+        console.error(error);
+      }
+    };
+
+    const timer = setTimeout(searchUsers, 300);
+    return () => clearTimeout(timer);
+  }, [newAdminEmail, admins]);
+
   return (
     <Stack gap={4}>
       <Text fontSize="lg" fontWeight={600}>
         Manage Admins
       </Text>
 
-      <Flex gap={2}>
-        <Input
-          placeholder="Enter email to add admin"
-          value={newAdminEmail}
-          onChange={(e) => setNewAdminEmail(e.target.value)}
-        />
-        <Button
-          onClick={handleAddAdmin}
-          loading={addingAdmin}
-          disabled={!newAdminEmail}
-        >
-          Add
-        </Button>
-      </Flex>
+      <Box position="relative">
+        <Flex gap={2}>
+          <Input
+            placeholder="Enter email to add admin"
+            value={newAdminEmail}
+            onChange={(e) => setNewAdminEmail(e.target.value)}
+            onFocus={() => newAdminEmail.length >= 3 && setShowResults(true)}
+            onBlur={() => setTimeout(() => setShowResults(false), 200)}
+          />
+          <Button
+            onClick={handleAddAdmin}
+            loading={addingAdmin}
+            disabled={!newAdminEmail}
+          >
+            Add
+          </Button>
+        </Flex>
+        {showResults && searchResults.length > 0 && (
+          <Box
+            position="absolute"
+            top="100%"
+            left={0}
+            right={0}
+            zIndex={1000}
+            bg="white"
+            _dark={{ bg: "gray.700", borderColor: "gray.600" }}
+            shadow="md"
+            borderRadius="md"
+            maxH="200px"
+            overflowY="auto"
+            border="1px solid"
+            borderColor="gray.200"
+          >
+            {searchResults.map((user) => (
+              <Box
+                key={user.uid}
+                p={2}
+                cursor="pointer"
+                _hover={{ bg: "gray.100", _dark: { bg: "gray.600" } }}
+                onClick={() => {
+                  setNewAdminEmail(user.email);
+                  setShowResults(false);
+                }}
+              >
+                <Text fontSize="sm" fontWeight="bold">
+                  {user.email}
+                </Text>
+                {user.displayName && (
+                  <Text fontSize="xs" color="gray.500">
+                    {user.displayName}
+                  </Text>
+                )}
+              </Box>
+            ))}
+          </Box>
+        )}
+      </Box>
 
       {loading ? (
         <Flex justify="center" p={4}>
