@@ -124,6 +124,10 @@ const PostPage: React.FC = () => {
                   userIsCreator={
                     user?.uid === postStateValue.selectedPost?.creatorId
                   }
+                  userIsAdmin={
+                    user?.uid ===
+                    communityStateValue.currentCommunity?.creatorId
+                  }
                   showCommunityImage={true}
                 />
               )}

@@ -38,6 +38,7 @@ import PostItemError from "../atoms/ErrorMessage";
 type PostItemProps = {
   post: Post;
   userIsCreator: boolean; // is the currently logged in user the creator of post
+  userIsAdmin?: boolean; // is the currently logged in user an admin of the community
   userVoteValue?: number; // value of the vote of the currently logged in user
   onVote: (
     event: React.MouseEvent<SVGElement, MouseEvent>,
@@ -58,11 +59,12 @@ type PostItemProps = {
  *  - Post community
  *  - Post vote count
  *  - Post vote buttons
- *  - Post delete button (if user is creator)
+ *  - Post delete button (if user is creator or admin)
  *  - Post select button (if post is not selected)
  *  - Post community image (if showCommunityImage is true)
  * @param {Post} post - post object
  * @param {boolean} userIsCreator - is the currently logged in user the creator of post
+ * @param {boolean} userIsAdmin - is the currently logged in user an admin of the community
  * @param {number} userVoteValue - whether the currently logged in user has voted on the post (1, -1, or 0)
  * @param {function} onVote - function to handle voting
  * @param {function} onDeletePost - function to handle deleting post
@@ -73,6 +75,7 @@ type PostItemProps = {
 const PostItem: React.FC<PostItemProps> = ({
   post,
   userIsCreator,
+  userIsAdmin = false,
   userVoteValue,
   onVote,
   onDeletePost,
@@ -212,6 +215,7 @@ const PostItem: React.FC<PostItemProps> = ({
           handleDelete={handleDelete}
           loadingDelete={loadingDelete}
           userIsCreator={userIsCreator}
+          userIsAdmin={userIsAdmin}
           handleShare={handleShare}
           handleSave={handleSave}
         />
@@ -444,6 +448,7 @@ interface PostActionsProps {
   ) => Promise<void>;
   loadingDelete: boolean;
   userIsCreator: boolean;
+  userIsAdmin: boolean;
   handleShare: (event: React.MouseEvent<HTMLButtonElement, MouseEvent>) => void;
   handleSave: (event: React.MouseEvent<HTMLButtonElement, MouseEvent>) => void;
 }
@@ -453,7 +458,7 @@ interface PostActionsProps {
  * Contains:
  * - Share button (not implemented)
  * - Save button (not implemented)
- * - Delete button (only for the author of the post)
+ * - Delete button (only for the author of the post or admin)
  * @param {function} handleDelete - function to handle the delete button
  * @param {boolean} loadingDelete - whether the post is being deleted
  * @returns {React.FC<PostActionsProps>} - component to display the actions of a post
@@ -462,6 +467,7 @@ const PostActions: React.FC<PostActionsProps> = ({
   handleDelete,
   loadingDelete,
   userIsCreator,
+  userIsAdmin,
   handleShare,
   handleSave,
 }) => (
@@ -483,7 +489,7 @@ const PostActions: React.FC<PostActionsProps> = ({
       <Text fontSize="9pt">Save</Text>
     </Button>
 
-    {userIsCreator && (
+    {(userIsCreator || userIsAdmin) && (
       <Button
         variant={"action" as any}
         height="32px"

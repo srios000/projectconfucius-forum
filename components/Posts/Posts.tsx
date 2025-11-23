@@ -90,6 +90,7 @@ const Posts: React.FC<PostsProps> = ({ communityData }) => {
               key={item.id}
               post={item}
               userIsCreator={user?.uid === item.creatorId}
+              userIsAdmin={user?.uid === communityData.creatorId}
               userVoteValue={
                 postStateValue.postVotes.find((vote) => vote.postId === item.id)
                   ?.voteValue

@@ -23,9 +23,47 @@ export function Providers({ children }: { children: React.ReactNode }) {
         <ChakraProvider value={theme}>
           <ColorModeProvider>
             <Layout>{children}</Layout>
-            {/* @ts-ignore */}
-            {mounted && <Toaster toaster={toaster} />}
           </ColorModeProvider>
+          {mounted && (
+            // @ts-ignore
+            <Toaster toaster={toaster}>
+              {(toast: any) => {
+                const type = toast.type || "info";
+                const colors: any = {
+                  success: "green",
+                  error: "red",
+                  warning: "orange",
+                  info: "blue",
+                };
+                const colorScheme = colors[type];
+
+                return (
+                  <div
+                    style={{
+                      background: `var(--chakra-colors-${colorScheme}-500)`,
+                      color: "white",
+                      padding: "12px 16px",
+                      borderRadius: "6px",
+                      boxShadow: "0 4px 6px rgba(0,0,0,0.1)",
+                      marginBottom: "8px",
+                      display: "flex",
+                      flexDirection: "column",
+                      minWidth: "300px",
+                    }}
+                  >
+                    <div style={{ fontWeight: "600", marginBottom: "4px" }}>
+                      {toast.title}
+                    </div>
+                    {toast.description && (
+                      <div style={{ fontSize: "0.9em" }}>
+                        {toast.description}
+                      </div>
+                    )}
+                  </div>
+                );
+              }}
+            </Toaster>
+          )}
         </ChakraProvider>
       </EmotionRegistry>
     </JotaiProvider>
