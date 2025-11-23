@@ -8,6 +8,8 @@ import React, { useState } from "react";
 import { useAuthState } from "react-firebase-hooks/auth";
 import { HiOutlineDotsHorizontal } from "react-icons/hi";
 import CommunitySettingsModal from "../Modal/CommunitySettings/CommunitySettings";
+import CommunityMembersModal from "../Modal/CommunityMembers/CommunityMembersModal";
+import useCommunityData from "@/hooks/useCommunityData";
 
 /**
  * @param {string} communityName - Name of the community
@@ -33,6 +35,11 @@ type AboutProps = {
  */
 const About: React.FC<AboutProps> = ({ communityData }) => {
   const router = useRouter();
+  const { communityStateValue } = useCommunityData();
+  const isJoined = !!communityStateValue.mySnippets.find(
+    (item) => item.communityId === communityData.id
+  );
+  const [isMembersModalOpen, setMembersModalOpen] = useState(false);
 
   return (
     // sticky position for the about section
@@ -46,6 +53,13 @@ const About: React.FC<AboutProps> = ({ communityData }) => {
         bg={{ base: "white", _dark: "gray.800" }}
         borderRadius="0px 0px 10px 10px"
       >
+        {isJoined && (
+          <CommunityMembersModal
+            isOpen={isMembersModalOpen}
+            onClose={() => setMembersModalOpen(false)}
+            communityId={communityData.id}
+          />
+        )}
         <Stack>
           <AboutCommunity communityData={communityData} />
           <Button
@@ -56,6 +70,15 @@ const About: React.FC<AboutProps> = ({ communityData }) => {
           >
             Create Post
           </Button>
+          {isJoined && (
+            <Button
+              width="100%"
+              variant="outline"
+              onClick={() => setMembersModalOpen(true)}
+            >
+              View Subscribers
+            </Button>
+          )}
           <AdminSectionAbout communityData={communityData} />
         </Stack>
       </Flex>
