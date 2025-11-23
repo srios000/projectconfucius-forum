@@ -37,18 +37,19 @@ const InputField: React.FC<InputFieldProps> = ({
       mb={2}
       onChange={onChange}
       fontSize="10pt"
-      bg="gray.50"
+      bg={{ base: "gray.50", _dark: "gray.800" }}
+      borderColor={{ base: "gray.200", _dark: "gray.600" }}
       _placeholder={{ color: "gray.500" }}
       _hover={{
-        bg: "white",
-        borderColor: "red.400",
+        bg: { base: "white", _dark: "gray.700" },
         border: "1px solid",
+        borderColor: { base: "red.500", _dark: "red.400" },
       }}
       _focus={{
         outline: "none",
-        bg: "white",
-        borderColor: "gray.500",
+        bg: { base: "white", _dark: "gray.700" },
         border: "1px solid",
+        borderColor: { base: "red.500", _dark: "red.400" },
       }}
     />
   );

@@ -32,8 +32,8 @@ const CustomMenuButton: React.FC<CustomMenuButtonProps> = ({
       borderRadius={10}
       alignContent="center"
       _hover={{
-        bg: "gray.300",
-        color: "black",
+        bg: { base: "gray.300", _dark: "gray.600" },
+        color: { base: "black", _dark: "white" },
       }}
     >
       <Flex align="center">

@@ -213,8 +213,8 @@ const Comments: React.FC<CommentsProps> = ({
     <Flex
       direction="column"
       border="1px solid"
-      borderColor="gray.300"
-      bg="white"
+      borderColor={{ base: "gray.300", _dark: "gray.700" }}
+      bg={{ base: "white", _dark: "gray.800" }}
       borderRadius={10}
       pt={4}
       shadow="md"
@@ -239,7 +239,11 @@ const Comments: React.FC<CommentsProps> = ({
         {fetchLoading ? (
           <>
             {[0, 1, 2, 3].map((item) => (
-              <Box key={item} padding="6" bg="white">
+              <Box
+                key={item}
+                padding="6"
+                bg={{ base: "white", _dark: "gray.800" }}
+              >
                 <SkeletonCircle size="10" />
                 <SkeletonText mt="4" noOfLines={3} rootProps={{ gap: 4 }} />
               </Box>

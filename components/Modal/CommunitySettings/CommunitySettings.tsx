@@ -358,7 +358,11 @@ const CommunitySettingsModal: React.FC<CommunitySettingsModalProps> = ({
                   )}
                 </Flex>
                 <Flex align="center" justify="center">
-                  <Text fontSize="14pt" fontWeight={600} color="gray.600">
+                  <Text
+                    fontSize="14pt"
+                    fontWeight={600}
+                    color={{ base: "gray.600", _dark: "gray.400" }}
+                  >
                     {communityData.id}
                   </Text>
                 </Flex>
@@ -399,10 +403,18 @@ const CommunitySettingsModal: React.FC<CommunitySettingsModalProps> = ({
                 {/* Change community privacy type */}
                 <Flex direction="column">
                   <Stack gap={2} direction="column" flexGrow={1}>
-                    <Text fontWeight={600} fontSize="12pt" color="gray.500">
+                    <Text
+                      fontWeight={600}
+                      fontSize="12pt"
+                      color={{ base: "gray.500", _dark: "gray.400" }}
+                    >
                       Community Type
                     </Text>
-                    <Text fontWeight={500} fontSize="10pt" color="gray.500">
+                    <Text
+                      fontWeight={500}
+                      fontSize="10pt"
+                      color={{ base: "gray.500", _dark: "gray.400" }}
+                    >
                       {`Currently ${communityStateValue.currentCommunity?.privacyType}`}
                     </Text>
 
@@ -416,6 +428,19 @@ const CommunitySettingsModal: React.FC<CommunitySettingsModalProps> = ({
                           communityStateValue.currentCommunity?.privacyType ||
                           ""
                         }
+                        bg={{ base: "gray.50", _dark: "gray.800" }}
+                        borderColor={{ base: "gray.200", _dark: "gray.600" }}
+                        _hover={{
+                          bg: { base: "white", _dark: "gray.700" },
+                          border: "1px solid",
+                          borderColor: { base: "red.500", _dark: "red.400" },
+                        }}
+                        _focus={{
+                          outline: "none",
+                          bg: { base: "white", _dark: "gray.700" },
+                          border: "1px solid",
+                          borderColor: { base: "red.500", _dark: "red.400" },
+                        }}
                       >
                         <option value="public">Public</option>
                         <option value="restricted">Restricted</option>
@@ -428,7 +453,10 @@ const CommunitySettingsModal: React.FC<CommunitySettingsModalProps> = ({
             </DialogBody>
           </Box>
 
-          <DialogFooter bg="gray.100" borderRadius="0px 0px 10px 10px">
+          <DialogFooter
+            bg={{ base: "gray.100", _dark: "gray.700" }}
+            borderRadius="0px 0px 10px 10px"
+          >
             <Stack direction="row" justifyContent="space-between" width="100%">
               <Button
                 width="100%"

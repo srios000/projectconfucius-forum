@@ -17,8 +17,8 @@ interface PostItemErrorProps {
 }
 
 /**
- * Displays an error message. 
- * @param {boolean} error - Error state 
+ * Displays an error message.
+ * @param {boolean} error - Error state
  * @param {string} message - Error message
  * @returns React.FC: post item error component
  */
@@ -30,7 +30,11 @@ const PostItemError: React.FC<PostItemErrorProps> = ({ error, message }) => {
           <AlertRoot status="error" borderRadius={10} m={2} width="95%">
             <AlertIndicator />
             <AlertContent>
-              <Text mr={2} fontWeight={600} color="red.500">
+              <Text
+                mr={2}
+                fontWeight={600}
+                color={{ base: "red.500", _dark: "red.400" }}
+              >
                 {message}
               </Text>
             </AlertContent>

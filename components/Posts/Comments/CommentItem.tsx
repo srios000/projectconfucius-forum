@@ -63,8 +63,8 @@ const CommentItem: React.FC<CommentItemProps> = ({
   return (
     <Flex
       border="1px solid"
-      bg="white"
-      borderColor="gray.300"
+      bg={{ base: "white", _dark: "gray.800" }}
+      borderColor={{ base: "gray.300", _dark: "gray.700" }}
       borderRadius={10}
       shadow="sm"
     >
@@ -83,16 +83,19 @@ const CommentItem: React.FC<CommentItemProps> = ({
             direction="row"
             align="center"
             cursor="pointer"
-            color="gray.500"
+            color={{ base: "gray.500", _dark: "gray.400" }}
           >
             {userId === comment.creatorId && (
               <>
-                <Text fontSize="10pt" _hover={{ color: "red.500" }}>
+                <Text
+                  fontSize="10pt"
+                  _hover={{ color: { base: "red.500", _dark: "red.400" } }}
+                >
                   Edit
                 </Text>
                 <Text
                   fontSize="10pt"
-                  _hover={{ color: "red.500" }}
+                  _hover={{ color: { base: "red.500", _dark: "red.400" } }}
                   onClick={() => onDeleteComment(comment)}
                 >
                   Delete

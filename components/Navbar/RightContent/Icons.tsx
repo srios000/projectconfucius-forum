@@ -1,43 +1,40 @@
 /* eslint-disable react-hooks/rules-of-hooks */
 import IconItem from "@/components/atoms/Icon";
+import { useColorMode } from "@/components/ui/color-mode";
 import useCallCreatePost from "@/hooks/useCallCreatePost";
-import { Flex, Icon } from "@chakra-ui/react";
-import { useRouter } from "next/navigation";
+import { Flex } from "@chakra-ui/react";
 import React from "react";
-import { IconType } from "react-icons";
 import { GrAdd } from "react-icons/gr";
-import { VscGithub } from "react-icons/vsc";
+import { LuMoon, LuSun } from "react-icons/lu";
 
 /**
  * Displays icons in the right side of the navbar:
- *  - Github icon for the source code (not visible on mobile screen sizes)
+ *  - Color mode toggle
  *  - Add icon for creating a new post (always visible)
  * @returns React.FC - icons in the right side of the navbar
  */
 const icons: React.FC = () => {
-  const router = useRouter();
   const { onClick } = useCallCreatePost();
+  const { colorMode, toggleColorMode } = useColorMode();
 
   return (
-    <Flex>
-      <Flex
-        // Not visible on mobile screen sizes
-        display={{ base: "none", md: "flex" }}
-        align="center"
-        borderRight="1px solid"
-        borderColor="gray.200"
-      >
+    <Flex align="center">
+      <Flex>
         <IconItem
-          icon={VscGithub}
+          icon={colorMode === "light" ? LuSun : LuMoon}
           fontSize={20}
-          onClick={() => {
-            router.push("https://github.com/mbeps/next_discussion_platform");
-          }}
+          onClick={toggleColorMode}
+          label="Toggle color mode"
         />
       </Flex>
       <>
         {/* Always visible */}
-        <IconItem icon={GrAdd} fontSize={20} onClick={onClick} />
+        <IconItem
+          icon={GrAdd}
+          fontSize={20}
+          onClick={onClick}
+          label="Create post"
+        />
       </>
     </Flex>
   );

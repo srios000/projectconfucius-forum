@@ -20,11 +20,11 @@ const PersonalHome: React.FC = () => {
       <CreateCommunityModal open={open} handleClose={() => setOpen(false)} />
       <Flex
         direction="column"
-        bg="white"
+        bg={{ base: "white", _dark: "gray.800" }}
         borderRadius={10}
         cursor="pointer"
         border="1px solid"
-        borderColor="gray.300"
+        borderColor={{ base: "gray.300", _dark: "gray.700" }}
         position="sticky"
         shadow="md"
       >

@@ -284,7 +284,10 @@ const ProfileModal: React.FC<ProfileModalProps> = ({ open, handleClose }) => {
                     as={MdAccountCircle}
                   />
                 )}
-                <Text fontSize="xl" color="gray.700">
+                <Text
+                  fontSize="xl"
+                  color={{ base: "gray.700", _dark: "gray.200" }}
+                >
                   {user?.displayName}
                 </Text>
               </Stack>
@@ -327,7 +330,7 @@ const ProfileModal: React.FC<ProfileModalProps> = ({ open, handleClose }) => {
                   <Flex direction="row">
                     <Text
                       fontSize="12pt"
-                      color="gray.600"
+                      color={{ base: "gray.600", _dark: "gray.400" }}
                       mr={1}
                       fontWeight={600}
                     >
@@ -338,7 +341,7 @@ const ProfileModal: React.FC<ProfileModalProps> = ({ open, handleClose }) => {
                   <Flex direction="row">
                     <Text
                       fontSize="12pt"
-                      color="gray.600"
+                      color={{ base: "gray.600", _dark: "gray.400" }}
                       mr={1}
                       fontWeight={600}
                     >
@@ -350,7 +353,11 @@ const ProfileModal: React.FC<ProfileModalProps> = ({ open, handleClose }) => {
               )}
               {isEditing && (
                 <Flex direction="column">
-                  <Text fontSize="sm" color="gray.500" mb={1}>
+                  <Text
+                    fontSize="sm"
+                    color={{ base: "gray.500", _dark: "gray.400" }}
+                    mb={1}
+                  >
                     User Name
                   </Text>
                   <Input
@@ -360,14 +367,14 @@ const ProfileModal: React.FC<ProfileModalProps> = ({ open, handleClose }) => {
                     type="text"
                     onChange={handleNameChange}
                     _hover={{
-                      bg: "white",
+                      bg: { base: "white", _dark: "gray.700" },
                       border: "1px solid",
-                      borderColor: "red.500",
+                      borderColor: { base: "red.500", _dark: "red.400" },
                     }}
                     _focus={{
-                      bg: "white",
+                      bg: { base: "white", _dark: "gray.700" },
                       border: "1px solid",
-                      borderColor: "red.500",
+                      borderColor: { base: "red.500", _dark: "red.400" },
                     }}
                     borderRadius={10}
                   />
@@ -376,7 +383,10 @@ const ProfileModal: React.FC<ProfileModalProps> = ({ open, handleClose }) => {
               {/*  */}
             </Stack>
           </DialogBody>
-          <DialogFooter bg="gray.100" borderRadius="0px 0px 10px 10px">
+          <DialogFooter
+            bg={{ base: "gray.100", _dark: "gray.700" }}
+            borderRadius="0px 0px 10px 10px"
+          >
             <Stack direction="row" width="100%" gap={2}>
               <Button
                 variant="outline"

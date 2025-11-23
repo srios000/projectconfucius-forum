@@ -47,8 +47,8 @@ const MenuListItem: React.FC<MenuListItemProps> = ({
       borderRadius={10}
       alignContent="center"
       _hover={{
-        bg: "gray.300",
-        color: "black",
+        bg: { base: "gray.300", _dark: "gray.700" },
+        color: { base: "black", _dark: "white" },
       }}
       onClick={() =>
         onSelectMenuItem({

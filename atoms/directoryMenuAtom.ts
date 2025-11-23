@@ -15,7 +15,7 @@ export type DirectoryMenuItem = {
   displayText: string;
   link: string;
   icon: IconType;
-  iconColor: string;
+  iconColor: string | { base: string; _dark: string };
   imageURL?: string;
 };
 
@@ -40,7 +40,7 @@ export const defaultMenuItem = {
   displayText: "Home",
   link: "/",
   icon: TiHome,
-  iconColor: "black",
+  iconColor: { base: "black", _dark: "white" },
 };
 
 /**

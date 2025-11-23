@@ -7,6 +7,7 @@ import { Provider as JotaiProvider } from "jotai";
 import { useEffect, useState } from "react";
 import { toaster } from "@/hooks/useCustomToast";
 import EmotionRegistry from "./emotion-registry";
+import { ColorModeProvider } from "@/components/ui/color-mode";
 
 export function Providers({ children }: { children: React.ReactNode }) {
   const [mounted, setMounted] = useState(false);
@@ -20,9 +21,11 @@ export function Providers({ children }: { children: React.ReactNode }) {
     <JotaiProvider>
       <EmotionRegistry>
         <ChakraProvider value={theme}>
-          <Layout>{children}</Layout>
-          {/* @ts-ignore */}
-          {mounted && <Toaster toaster={toaster} />}
+          <ColorModeProvider>
+            <Layout>{children}</Layout>
+            {/* @ts-ignore */}
+            {mounted && <Toaster toaster={toaster} />}
+          </ColorModeProvider>
         </ChakraProvider>
       </EmotionRegistry>
     </JotaiProvider>

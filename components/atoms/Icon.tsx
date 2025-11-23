@@ -13,6 +13,7 @@ type IconProps = {
   fontSize: number;
   onClick?: () => void;
   iconColor?: string;
+  label?: string;
 };
 
 /**
@@ -22,6 +23,7 @@ type IconProps = {
  * @param {number} fontSize - Font size of the icon
  * @param {() => void} onClick - Function to be executed when the button is clicked
  * @param {string} iconColor - Color of the icon (default: black)
+ * @param {string} label - Aria label for the icon
  *
  * @returns {React.FC<IconProps>} - Icon with a hover effect
  */
@@ -29,7 +31,8 @@ const IconItem: React.FC<IconProps> = ({
   icon,
   fontSize,
   onClick,
-  iconColor = "black",
+  iconColor,
+  label,
 }) => {
   return (
     <Flex
@@ -39,11 +42,18 @@ const IconItem: React.FC<IconProps> = ({
       cursor="pointer"
       borderRadius={4}
       _hover={{
-        bg: "gray.200",
+        bg: { base: "gray.200", _dark: "gray.700" },
       }}
       onClick={onClick}
+      role={onClick ? "button" : undefined}
+      tabIndex={onClick ? 0 : undefined}
+      aria-label={label}
     >
-      <Icon as={icon} fontSize={fontSize} color={iconColor} />
+      <Icon
+        as={icon}
+        fontSize={fontSize}
+        color={iconColor || { base: "black", _dark: "white" }}
+      />
     </Flex>
   );
 };

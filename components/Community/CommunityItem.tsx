@@ -38,13 +38,13 @@ const CommunityItem: React.FC<CommunityItemProps> = ({
     <Flex
       align="center"
       fontSize="10pt"
-      borderColor="white"
+      borderColor={{ base: "white", _dark: "gray.700" }}
       borderWidth="1px"
       p="14px 12px"
       borderRadius={10}
-      bg="white"
+      bg={{ base: "white", _dark: "gray.800" }}
       _hover={{
-        borderColor: "gray.400",
+        borderColor: { base: "gray.400", _dark: "gray.600" },
         boxShadow: "xl",
       }}
       cursor="pointer"
@@ -138,7 +138,7 @@ const CommunityItemButtonMembersSection = ({
     <Stack direction="row" align="center" justifyContent="space-between">
       <Flex
         fontSize={18}
-        color="gray.500"
+        color={{ base: "gray.500", _dark: "gray.400" }}
         justify="center"
         align="center"
         mr={2}

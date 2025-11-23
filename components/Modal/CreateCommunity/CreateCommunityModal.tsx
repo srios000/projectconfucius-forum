@@ -245,7 +245,10 @@ const CreateCommunityModal: React.FC<CreateCommunityModalProps> = ({
             </DialogBody>
           </Box>
 
-          <DialogFooter bg="gray.100" borderRadius="0px 0px 10px 10px">
+          <DialogFooter
+            bg={{ base: "gray.100", _dark: "gray.700" }}
+            borderRadius="0px 0px 10px 10px"
+          >
             <Stack direction="row" gap={3} width="100%">
               <Button
                 variant="outline"
@@ -326,11 +329,19 @@ const CommunityTypeOption: FC<CommunityTypeOptionProps> = ({
       </CheckboxControl>
       <CheckboxLabel flex="1">
         <Flex align="center">
-          <Icon as={icon} color="gray.500" mr={2} />
+          <Icon
+            as={icon}
+            color={{ base: "gray.500", _dark: "gray.400" }}
+            mr={2}
+          />
           <Text fontSize="10pt" mr={1}>
             {label}
           </Text>
-          <Text fontSize="8pt" color="gray.500" pt={1}>
+          <Text
+            fontSize="8pt"
+            color={{ base: "gray.500", _dark: "gray.400" }}
+            pt={1}
+          >
             {description}
           </Text>
         </Flex>
@@ -429,16 +440,19 @@ const CommunityNameSection: React.FC<CommunityNameSectionProps> = ({
         placeholder="Community Name"
         onChange={handleChange}
         fontSize="10pt"
+        bg={{ base: "gray.50", _dark: "gray.800" }}
+        borderColor={{ base: "gray.200", _dark: "gray.600" }}
         _placeholder={{ color: "gray.500" }}
         _hover={{
-          bg: "white",
+          bg: { base: "white", _dark: "gray.700" },
           border: "1px solid",
-          borderColor: "red.500",
+          borderColor: { base: "red.500", _dark: "red.400" },
         }}
         _focus={{
           outline: "none",
+          bg: { base: "white", _dark: "gray.700" },
           border: "1px solid",
-          borderColor: "red.500",
+          borderColor: { base: "red.500", _dark: "red.400" },
         }}
       />
       <Text

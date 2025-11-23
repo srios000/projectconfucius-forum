@@ -112,7 +112,7 @@ const UserMenuButton: React.FC<UserMenuButtonProps> = ({
     borderRadius={10}
     _hover={{
       outline: "1px solid",
-      outlineColor: "gray.200",
+      outlineColor: { base: "gray.200", _dark: "gray.600" },
     }}
     maxWidth="150px"
   >

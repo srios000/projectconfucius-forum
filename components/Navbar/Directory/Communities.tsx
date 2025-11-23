@@ -50,7 +50,13 @@ const Communities: React.FC<CommunitiesProps> = ({ handleCreateCommunity }) => {
       />
 
       <Box>
-        <Text pl={3} mb={1} fontSize="7pt" fontWeight={500} color="gray.500">
+        <Text
+          pl={3}
+          mb={1}
+          fontSize="7pt"
+          fontWeight={500}
+          color={{ base: "gray.500", _dark: "gray.400" }}
+        >
           PRIVILEGED
         </Text>
         {mySnippets
@@ -68,7 +74,13 @@ const Communities: React.FC<CommunitiesProps> = ({ handleCreateCommunity }) => {
       </Box>
 
       <Box>
-        <Text pl={3} mb={1} fontSize="7pt" fontWeight={500} color="gray.500">
+        <Text
+          pl={3}
+          mb={1}
+          fontSize="7pt"
+          fontWeight={500}
+          color={{ base: "gray.500", _dark: "gray.400" }}
+        >
           SUBSCRIBED COMMUNITIES
         </Text>
         {mySnippets.map((snippet) => (

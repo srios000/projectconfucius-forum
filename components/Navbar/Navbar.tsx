@@ -1,7 +1,7 @@
 import { defaultMenuItem } from "@/atoms/directoryMenuAtom";
 import { auth } from "@/firebase/clientApp";
 import useDirectory from "@/hooks/useDirectory";
-import { Flex, Image } from "@chakra-ui/react";
+import { Flex, Image, Text } from "@chakra-ui/react";
 import React from "react";
 import { useAuthState } from "react-firebase-hooks/auth";
 import Directory from "./Directory/Directory";
@@ -38,7 +38,7 @@ const Navbar: React.FC = () => {
 
   return (
     <Flex
-      bg="white"
+      bg={{ base: "white", _dark: "gray.900" }}
       height="50px"
       padding="6px 10px"
       justify={{ md: "space-between" }}
@@ -47,7 +47,7 @@ const Navbar: React.FC = () => {
       zIndex="999"
       // Rounded props
       border="1px solid"
-      borderColor="gray.300"
+      borderColor={{ base: "gray.300", _dark: "gray.700" }}
       borderRadius="lg"
       m={{ base: 1, md: 1.5 }}
       shadow="lg"
@@ -63,12 +63,14 @@ const Navbar: React.FC = () => {
         <Image src="/images/logo.svg" height="30px" alt="Website logo" ml={1} />
 
         {/* Logo name not visible on mobile */}
-        <Image
-          src="/images/logo_text.svg"
-          height="30px"
+        <Text
           display={{ base: "none", md: "unset" }}
-          alt="Website text logo"
-        />
+          fontSize="20pt"
+          fontWeight={800}
+          ml={2}
+        >
+          Circus
+        </Text>
       </Flex>
       {/* Community directory only visible when user is logged in */}
       {user && <Directory />}

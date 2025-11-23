@@ -1,9 +1,12 @@
 import { defaultConfig, defineRecipe } from "@chakra-ui/react";
 
-const baseRecipe = (defaultConfig.theme?.recipes?.button as Record<string, any>) ?? {};
+const baseRecipe =
+  (defaultConfig.theme?.recipes?.button as Record<string, any>) ?? {};
 const baseStyles = (baseRecipe.base as Record<string, any>) ?? {};
-const sizeVariants = (baseRecipe.variants?.size as Record<string, Record<string, any>>) ?? {};
-const variantVariants = (baseRecipe.variants?.variant as Record<string, Record<string, any>>) ?? {};
+const sizeVariants =
+  (baseRecipe.variants?.size as Record<string, Record<string, any>>) ?? {};
+const variantVariants =
+  (baseRecipe.variants?.variant as Record<string, Record<string, any>>) ?? {};
 const solidBase = variantVariants.solid ?? {};
 const outlineBase = variantVariants.outline ?? {};
 
@@ -44,38 +47,38 @@ export const buttonRecipe = defineRecipe({
       solid: {
         ...solidBase,
         color: "white",
-        bg: "red.500",
-        borderColor: "red.500",
+        bg: { base: "red.500", _dark: "red.600" },
+        borderColor: { base: "red.500", _dark: "red.600" },
         _hover: {
           ...(solidBase._hover ?? {}),
-          bg: "red.400",
+          bg: { base: "red.400", _dark: "red.500" },
         },
       },
       outline: {
         ...outlineBase,
-        color: "red.500",
+        color: { base: "red.500", _dark: "red.400" },
         borderWidth: "1px",
-        borderColor: "red.500",
+        borderColor: { base: "red.500", _dark: "red.400" },
         _hover: {
           ...(outlineBase._hover ?? {}),
-          bg: "red.50",
+          bg: { base: "red.50", _dark: "whiteAlpha.100" },
         },
       },
       oauth: {
         height: "34px",
         borderWidth: "1px",
-        borderColor: "gray.300",
+        borderColor: { base: "gray.300", _dark: "gray.600" },
         _hover: {
-          bg: "gray.50",
+          bg: { base: "gray.50", _dark: "gray.700" },
           borderColor: "red.400",
         },
       },
       action: {
         height: "34px",
         borderWidth: "1px",
-        borderColor: "white",
+        borderColor: { base: "white", _dark: "gray.800" },
         _hover: {
-          bg: "gray.50",
+          bg: { base: "gray.50", _dark: "gray.700" },
           borderColor: "red.400",
         },
       },
