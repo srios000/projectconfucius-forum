@@ -55,6 +55,7 @@ The system has several general features to make the site user-friendly and acces
 - Logged-in users can view posts from various communities they are subscribed to in the home feed
 - Logged-out users can view posts from all communities in order of likes
 - System UI is responsive, hence it can be used on smartphones, tablets, or computers
+- Global light/dark-mode toggle with preference persistence across sessions
 
 # **Stack**
 These are the main technologies that were used in this project:
@@ -63,7 +64,7 @@ These are the main technologies that were used in this project:
 - [**TypeScript**](https://www.typescriptlang.org/): TypeScript is a superset of JavaScript that adds optional static typing and other features to make the development of large-scale JavaScript applications easier and more efficient. TypeScript enables developers to catch errors earlier in the development process, write more maintainable code, and benefit from advanced editor support.
 - [**Next.js (App Router)**](https://nextjs.org/): The project runs on Next.js 16 with the App Router + React 19, enabling server components, streaming layouts, and route handlers all defined in the `app/` directory.
 - [**Jotai State Manager**](https://github.com/pmndrs/jotai/): Jotai is a state management library for React applications that provides a simple, flexible, and efficient way to manage shared state in your app. Jotai is designed to work seamlessly with React and is particularly well-suited for complex or large-scale applications.
-- [**Chakra UI**](https://chakra-ui.com/): Chakra UI is a popular React component library that provides a set of customizable, accessible, and responsive UI components for building web applications. Chakra UI is built with accessibility in mind and provides a range of pre-built components that can be easily customized to fit your app's design and branding.
+- [**Chakra UI**](https://chakra-ui.com/): Chakra UI is a popular React component library that provides a set of customizable, accessible, and responsive UI components for building web applications. Chakra UI is built with accessibility in mind, includes semantic color tokens, and (via our custom `ColorModeProvider`) offers a persistent dark-mode experience out of the box.
 
 
 ## **Back-End**
