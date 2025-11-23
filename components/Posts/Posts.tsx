@@ -3,6 +3,7 @@ import { Community } from "@/atoms/communitiesAtom";
 import { Post } from "@/atoms/postsAtom";
 import { auth, firestore } from "@/firebase/clientApp";
 import useCommunityData from "@/hooks/useCommunityData";
+import useCommunityPermissions from "@/hooks/useCommunityPermissions";
 import useCustomToast from "@/hooks/useCustomToast";
 import { useIntersectionObserver } from "@/hooks/useIntersectionObserver";
 import usePosts from "@/hooks/usePosts";
@@ -49,6 +50,7 @@ const Posts: React.FC<PostsProps> = ({ communityData }) => {
     onSelectPost,
   } = usePosts();
   const showToast = useCustomToast();
+  const { isAdmin } = useCommunityPermissions(communityData);
   const [lastVisible, setLastVisible] =
     useState<QueryDocumentSnapshot<DocumentData> | null>(null);
   const [noMorePosts, setNoMorePosts] = useState(false);
@@ -142,7 +144,7 @@ const Posts: React.FC<PostsProps> = ({ communityData }) => {
               key={item.id}
               post={item}
               userIsCreator={user?.uid === item.creatorId}
-              userIsAdmin={user?.uid === communityData.creatorId}
+              userIsAdmin={isAdmin}
               userVoteValue={
                 postStateValue.postVotes.find((vote) => vote.postId === item.id)
                   ?.voteValue

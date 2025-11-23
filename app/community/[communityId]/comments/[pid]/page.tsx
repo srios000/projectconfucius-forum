@@ -9,6 +9,7 @@ import Comments from "@/components/Posts/Comments/Comments";
 import PostItem from "@/components/Posts/PostItem";
 import { auth, firestore } from "@/firebase/clientApp";
 import useCommunityData from "@/hooks/useCommunityData";
+import useCommunityPermissions from "@/hooks/useCommunityPermissions";
 import useCustomToast from "@/hooks/useCustomToast";
 import usePosts from "@/hooks/usePosts";
 import { Stack } from "@chakra-ui/react";
@@ -31,6 +32,9 @@ const PostPage: React.FC = () => {
   const { postStateValue, setPostStateValue, onDeletePost, onVote } =
     usePosts();
   const { communityStateValue } = useCommunityData();
+  const { isAdmin } = useCommunityPermissions(
+    communityStateValue.currentCommunity
+  );
   const [user] = useAuthState(auth);
   const router = useRouter();
   const params = useParams();
@@ -124,10 +128,7 @@ const PostPage: React.FC = () => {
                   userIsCreator={
                     user?.uid === postStateValue.selectedPost?.creatorId
                   }
-                  userIsAdmin={
-                    user?.uid ===
-                    communityStateValue.currentCommunity?.creatorId
-                  }
+                  userIsAdmin={isAdmin}
                   showCommunityImage={true}
                 />
               )}
