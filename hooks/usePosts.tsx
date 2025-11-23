@@ -194,31 +194,44 @@ const usePosts = () => {
    * @returns
    */
   const onDeletePost = async (post: Post): Promise<boolean> => {
+    // Optimistically remove post from state
+    setPostStateValue((prev) => ({
+      ...prev,
+      posts: prev.posts.filter((item) => item.id !== post.id),
+    }));
+
     try {
+      // check if image exists
       if (post.imageURL) {
-        // delete the image if it exists
         const imageRef = ref(storage, `posts/${post.id}/image`);
         await deleteObject(imageRef);
       }
 
-      // delete post from firestore
+      // delete post document
       const postDocRef = doc(firestore, "posts", post.id!);
       await deleteDoc(postDocRef);
 
-      // update recoil state to remove the deleted post
+      // delete comments
+      const commentsQuery = query(
+        collection(firestore, "comments"),
+        where("postId", "==", post.id)
+      );
+      const commentDocs = await getDocs(commentsQuery);
+      const batch = writeBatch(firestore);
+      commentDocs.docs.forEach((doc) => {
+        batch.delete(doc.ref);
+      });
+      await batch.commit();
+
+      return true;
+    } catch (error) {
+      console.log("Error deleting post", error);
+      // Revert optimistic update
       setPostStateValue((prev) => ({
         ...prev,
-        posts: prev.posts.filter((item) => item.id !== post.id),
+        posts: [...prev.posts, post],
       }));
-
-      return true; // post was deleted
-    } catch (error) {
-      return false; // post was not deleted
-      showToast({
-        title: "Could not Delete Post",
-        description: "There was an error deleting your post",
-        status: "error",
-      });
+      return false;
     }
   };
 

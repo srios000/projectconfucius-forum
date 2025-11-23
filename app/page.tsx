@@ -198,6 +198,11 @@ export default function Home() {
                   )?.voteValue
                 }
                 userIsCreator={user?.uid === post.creatorId}
+                userIsAdmin={
+                  !!communityStateValue.mySnippets.find(
+                    (snippet) => snippet.communityId === post.communityId
+                  )?.isAdmin
+                }
                 showCommunityImage={true}
               />
             ))}

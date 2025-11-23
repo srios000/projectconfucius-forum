@@ -31,13 +31,17 @@ export const toaster = createToaster({
 const useCustomToast = () => {
   const showToast = useCallback(
     ({ title, description, status }: CustomToastOptions) => {
-      toaster.create({
-        title,
-        description,
-        type: status,
-        closable: true,
-        duration: 5000,
-      });
+      try {
+        toaster.create({
+          title,
+          description,
+          type: status,
+          closable: true,
+          duration: 5000,
+        });
+      } catch (error) {
+        console.error("Toast error:", error);
+      }
     },
     []
   );
