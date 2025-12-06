@@ -43,7 +43,7 @@ const About: React.FC<AboutProps> = ({ communityData }) => {
 
   return (
     // sticky position for the about section
-    <Box position="sticky" top="60px" borderRadius={10} shadow="md">
+    <Box position="sticky" top="80px" borderRadius={10} shadow="md">
       <AboutHeaderBar communityName={communityData.id} />
 
       {/* about section */}

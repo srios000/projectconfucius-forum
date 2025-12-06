@@ -40,7 +40,7 @@ const TabItem: React.FC<TabItemProps> = ({
       cursor="pointer"
       _hover={{
         bg: { base: "gray.50", _dark: "gray.700" },
-        boxShadow: "lg",
+        boxShadow: "sm",
       }}
       color={
         selected

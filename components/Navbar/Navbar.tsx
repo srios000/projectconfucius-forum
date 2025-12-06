@@ -39,8 +39,8 @@ const Navbar: React.FC = () => {
   return (
     <Flex
       bg={{ base: "white", _dark: "gray.900" }}
-      height="50px"
-      padding="6px 10px"
+      height="68px"
+      padding="10px 12px"
       justify={{ md: "space-between" }}
       position="sticky"
       top="4px"
@@ -48,7 +48,7 @@ const Navbar: React.FC = () => {
       // Rounded props
       border="1px solid"
       borderColor={{ base: "gray.300", _dark: "gray.700" }}
-      borderRadius="lg"
+      borderRadius="xl"
       m={{ base: 1, md: 1.5 }}
       shadow="lg"
     >

@@ -18,7 +18,7 @@ import {
 import { useAtom } from "jotai";
 import Link from "next/link";
 import React from "react";
-import { BsTrash } from "react-icons/bs";
+import { LuTrash } from "react-icons/lu";
 import { FaReddit } from "react-icons/fa";
 
 const SavedPostsModal: React.FC = () => {
@@ -39,12 +39,12 @@ const SavedPostsModal: React.FC = () => {
     >
       <DialogBackdrop />
       <DialogPositioner>
-        <DialogContent>
+        <DialogContent borderRadius={10}>
           <DialogHeader>
             <DialogTitle>Saved Posts</DialogTitle>
           </DialogHeader>
           <DialogCloseTrigger />
-          <DialogBody pb={6}>
+          <DialogBody pb={6} rounded={"xl"}>
             <Stack gap={4}>
               {savedPostState.savedPosts.length === 0 ? (
                 <Text color="gray.500" textAlign="center">
@@ -56,7 +56,7 @@ const SavedPostsModal: React.FC = () => {
                     key={item.id}
                     p={3}
                     borderWidth="1px"
-                    borderRadius="md"
+                    borderRadius="xl"
                     align="center"
                     justify="space-between"
                     _hover={{ borderColor: "gray.400" }}
@@ -100,9 +100,10 @@ const SavedPostsModal: React.FC = () => {
                       </Stack>
                     </Flex>
                     <Icon
-                      as={BsTrash}
+                      as={LuTrash}
                       cursor="pointer"
                       color="gray.500"
+                      mr={2}
                       fontSize={20}
                       _hover={{ color: "red.500" }}
                       onClick={() => onRemoveSavedPost(item.postId)}

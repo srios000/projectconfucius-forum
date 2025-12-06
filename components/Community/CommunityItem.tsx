@@ -45,7 +45,7 @@ const CommunityItem: React.FC<CommunityItemProps> = ({
       bg={{ base: "white", _dark: "gray.800" }}
       _hover={{
         borderColor: { base: "gray.400", _dark: "gray.600" },
-        boxShadow: "xl",
+        boxShadow: "sm",
       }}
       cursor="pointer"
       onClick={() => {

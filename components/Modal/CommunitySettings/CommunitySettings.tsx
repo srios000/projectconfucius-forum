@@ -18,8 +18,7 @@ import {
   Flex,
   Icon,
   Image,
-  NativeSelectField,
-  NativeSelectRoot,
+  Menu,
   Separator,
   Stack,
   Text,
@@ -27,7 +26,7 @@ import {
 import { useAtom } from "jotai";
 import React, { useRef, useState } from "react";
 import { useAuthState } from "react-firebase-hooks/auth";
-import { BsFillPeopleFill } from "react-icons/bs";
+import { BsChevronDown, BsFillPeopleFill } from "react-icons/bs";
 import AdminManager from "./AdminManager";
 
 /**
@@ -105,12 +104,10 @@ const CommunitySettingsModal: React.FC<CommunitySettingsModalProps> = ({
 
   /**
    * Handles changes to the privacy type select input.
-   * @param {React.ChangeEvent<HTMLInputElement>} event - event when user selects a file
+   * @param {string} value - selected value
    */
-  const handlePrivacyTypeChange = (
-    event: React.ChangeEvent<HTMLSelectElement>
-  ) => {
-    setSelectedPrivacyType(event.target.value); // set selected privacy type
+  const handlePrivacyTypeChange = (details: { value: string }) => {
+    setSelectedPrivacyType(details.value); // set selected privacy type
   };
 
   /**
@@ -259,35 +256,71 @@ const CommunitySettingsModal: React.FC<CommunitySettingsModalProps> = ({
                       {`Currently ${communityStateValue.currentCommunity?.privacyType}`}
                     </Text>
 
-                    <NativeSelectRoot>
-                      <NativeSelectField
-                        placeholder="Select option"
-                        mt={2}
-                        onChange={handlePrivacyTypeChange}
-                        value={
-                          selectedPrivacyType ||
-                          communityStateValue.currentCommunity?.privacyType ||
-                          ""
-                        }
-                        bg={{ base: "gray.50", _dark: "gray.800" }}
-                        borderColor={{ base: "gray.200", _dark: "gray.600" }}
-                        _hover={{
-                          bg: { base: "white", _dark: "gray.700" },
-                          border: "1px solid",
-                          borderColor: { base: "red.500", _dark: "red.400" },
-                        }}
-                        _focus={{
-                          outline: "none",
-                          bg: { base: "white", _dark: "gray.700" },
-                          border: "1px solid",
-                          borderColor: { base: "red.500", _dark: "red.400" },
-                        }}
-                      >
-                        <option value="public">Public</option>
-                        <option value="restricted">Restricted</option>
-                        <option value="private">Private</option>
-                      </NativeSelectField>
-                    </NativeSelectRoot>
+                    <Menu.Root positioning={{ sameWidth: true }}>
+                      <Menu.Trigger asChild>
+                        <Button
+                          variant="outline"
+                          width="100%"
+                          justifyContent="space-between"
+                          mt={2}
+                          bg={{ base: "gray.50", _dark: "gray.800" }}
+                          borderColor={{ base: "gray.200", _dark: "gray.600" }}
+                          color={{ base: "gray.900", _dark: "white" }}
+                          _hover={{
+                            bg: { base: "white", _dark: "gray.700" },
+                            border: "1px solid",
+                            borderColor: { base: "black", _dark: "white" },
+                          }}
+                          _focus={{
+                            outline: "none",
+                            bg: { base: "white", _dark: "gray.700" },
+                            border: "1px solid",
+                            borderColor: { base: "black", _dark: "white" },
+                          }}
+                        >
+                          {(
+                            selectedPrivacyType ||
+                            communityStateValue.currentCommunity?.privacyType ||
+                            "Select option"
+                          )
+                            .charAt(0)
+                            .toUpperCase() +
+                            (
+                              selectedPrivacyType ||
+                              communityStateValue.currentCommunity
+                                ?.privacyType ||
+                              "Select option"
+                            ).slice(1)}
+                          <BsChevronDown />
+                        </Button>
+                      </Menu.Trigger>
+                      <Menu.Positioner>
+                        <Menu.Content>
+                          <Menu.RadioItemGroup
+                            value={
+                              selectedPrivacyType ||
+                              communityStateValue.currentCommunity
+                                ?.privacyType ||
+                              ""
+                            }
+                            onValueChange={handlePrivacyTypeChange}
+                          >
+                            <Menu.RadioItem value="public">
+                              Public
+                              <Menu.ItemIndicator />
+                            </Menu.RadioItem>
+                            <Menu.RadioItem value="restricted">
+                              Restricted
+                              <Menu.ItemIndicator />
+                            </Menu.RadioItem>
+                            <Menu.RadioItem value="private">
+                              Private
+                              <Menu.ItemIndicator />
+                            </Menu.RadioItem>
+                          </Menu.RadioItemGroup>
+                        </Menu.Content>
+                      </Menu.Positioner>
+                    </Menu.Root>
                   </Stack>
                 </Flex>
 
@@ -298,6 +331,9 @@ const CommunitySettingsModal: React.FC<CommunitySettingsModalProps> = ({
                   }
                 />
                 <Separator />
+                <Text fontSize="lg" fontWeight={600} color="red.500">
+                  Danger Zone
+                </Text>
                 <Flex align="center" justify="space-between" p={1}>
                   <Text fontWeight={600} fontSize="10pt">
                     Delete Community

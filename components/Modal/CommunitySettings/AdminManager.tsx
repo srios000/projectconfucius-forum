@@ -298,6 +298,7 @@ const AdminManager: React.FC<AdminManagerProps> = ({ communityData }) => {
             onChange={(e) => setNewAdminEmail(e.target.value)}
             onFocus={() => newAdminEmail.length >= 3 && setShowResults(true)}
             onBlur={() => setTimeout(() => setShowResults(false), 200)}
+            borderRadius={"xl"}
           />
           <Button
             onClick={handleAddAdmin}
@@ -317,7 +318,8 @@ const AdminManager: React.FC<AdminManagerProps> = ({ communityData }) => {
             bg="white"
             _dark={{ bg: "gray.700", borderColor: "gray.600" }}
             shadow="md"
-            borderRadius="md"
+            borderRadius="xl"
+            mt={1}
             maxH="200px"
             overflowY="auto"
             border="1px solid"
@@ -327,6 +329,7 @@ const AdminManager: React.FC<AdminManagerProps> = ({ communityData }) => {
               <Box
                 key={user.uid}
                 p={2}
+                borderRadius="xl"
                 cursor="pointer"
                 _hover={{ bg: "gray.100", _dark: { bg: "gray.600" } }}
                 onClick={() => {
@@ -361,7 +364,7 @@ const AdminManager: React.FC<AdminManagerProps> = ({ communityData }) => {
               justify="space-between"
               p={2}
               borderWidth="1px"
-              borderRadius="md"
+              borderRadius="xl"
             >
               <Stack gap={0}>
                 <Text fontWeight={600}>{admin.displayName || "No Name"}</Text>

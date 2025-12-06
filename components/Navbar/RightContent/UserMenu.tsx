@@ -114,7 +114,7 @@ const UserMenuButton: React.FC<UserMenuButtonProps> = ({
       outline: "1px solid",
       outlineColor: { base: "gray.200", _dark: "gray.600" },
     }}
-    maxWidth="150px"
+    maxWidth="200px"
   >
     <Flex align="center">
       {user ? (
@@ -125,7 +125,7 @@ const UserMenuButton: React.FC<UserMenuButtonProps> = ({
               <Image
                 src={user.photoURL}
                 alt="User Profile Photo"
-                height="30px"
+                height="36px"
                 borderRadius="full"
                 mr={1}
               />
@@ -133,7 +133,7 @@ const UserMenuButton: React.FC<UserMenuButtonProps> = ({
           ) : (
             <>
               <Icon
-                fontSize={30}
+                fontSize={36}
                 mr={1}
                 color="gray.300"
                 as={MdAccountCircle}
@@ -144,11 +144,11 @@ const UserMenuButton: React.FC<UserMenuButtonProps> = ({
           <Flex
             direction="column"
             display={{ base: "none", lg: "flex" }}
-            fontSize="8pt"
+            fontSize="10pt"
             align="flex-start"
             mr={2}
           >
-            <Text fontWeight={700}>
+            <Text fontWeight={700} whiteSpace="normal" wordBreak="break-word">
               {user?.displayName || user.email?.split("@")[0]}
             </Text>
           </Flex>
@@ -201,9 +201,9 @@ const UserMenuList: React.FC<UserMenuListProps> = ({
   };
 
   return (
-    <MenuContent borderRadius={10} mt={2} shadow="lg">
+    <MenuContent borderRadius={10} mt={2} shadow="lg" minW="180px">
       <Flex justifyContent="center">
-        <Stack gap={1} width="95%">
+        <Stack gap={1} width="98%">
           {user ? (
             <>
               <CustomMenuButton

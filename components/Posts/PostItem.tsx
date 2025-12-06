@@ -1,9 +1,9 @@
 import { Post } from "@/atoms/postsAtom";
 import useCustomToast from "@/hooks/useCustomToast";
 import useSavedPosts from "@/hooks/useSavedPosts";
-import { useClipboard } from "@/hooks/useClipboard";
 import {
   Button,
+  Clipboard,
   Flex,
   Icon,
   Image,
@@ -24,7 +24,7 @@ import {
   IoArrowUpCircleSharp,
   IoPeopleCircleOutline,
 } from "react-icons/io5";
-import { MdOutlineDelete } from "react-icons/md";
+import { LuTrash } from "react-icons/lu";
 import PostItemError from "../atoms/ErrorMessage";
 
 /**
@@ -88,7 +88,6 @@ const PostItem: React.FC<PostItemProps> = ({
   const [loadingDelete, setLoadingDelete] = useState(false);
   const router = useRouter();
   const showToast = useCustomToast();
-  const { onCopy, value, setValue, hasCopied } = useClipboard("");
   const { onSavePost, isPostSaved } = useSavedPosts();
   const isSaved = isPostSaved(post.id!);
 
@@ -142,22 +141,10 @@ const PostItem: React.FC<PostItemProps> = ({
   /**
    * Added functionality to share a post by copying the link to the post to the clipboard.
    * Router will check base URL to copy the correct link depending on the name of the site.
-   * @param {React.MouseEvent<HTMLButtonElement, MouseEvent>} event - click event on share button to prevent from post being selected
    */
-  const handleShare = (
-    event: React.MouseEvent<HTMLButtonElement, MouseEvent>
-  ) => {
-    event.stopPropagation(); // stop event bubbling up to parent
+  const getPostLink = () => {
     const baseUrl = `${window.location.protocol}//${window.location.host}`;
-    const postLink = `${baseUrl}/community/${post.communityId}/comments/${post.id}`;
-    setValue(postLink);
-    onCopy(postLink); // copy link to clipboard
-
-    showToast({
-      title: "Link Copied",
-      description: "Link to the post has been saved to your clipboard",
-      status: "info",
-    });
+    return `${baseUrl}/community/${post.communityId}/comments/${post.id}`;
   };
 
   const handleSave = async (
@@ -172,12 +159,12 @@ const PostItem: React.FC<PostItemProps> = ({
       border="1px solid"
       bg={{ base: "white", _dark: "gray.800" }}
       borderColor={{ base: "gray.300", _dark: "gray.700" }}
-      borderRadius={10}
+      borderRadius={"xl"}
       _hover={{
         borderColor: singlePostPage
           ? "none"
           : { base: "gray.400", _dark: "gray.600" },
-        boxShadow: singlePostPage ? undefined : "xl",
+        boxShadow: singlePostPage ? undefined : "sm",
       }}
       cursor={singlePostPage ? "unset" : "pointer"}
       onClick={() => onSelectPost && onSelectPost(post)} // if a post is selected then open post
@@ -201,7 +188,7 @@ const PostItem: React.FC<PostItemProps> = ({
 
       {/* Right Section  */}
       <Flex direction="column" width="100%">
-        <Stack gap={1} p="10px">
+        <Stack gap={1} p="12px">
           <PostDetails showCommunityImage={true} post={post} />
           <PostTitle post={post} />
           <PostBody
@@ -215,9 +202,10 @@ const PostItem: React.FC<PostItemProps> = ({
           loadingDelete={loadingDelete}
           userIsCreator={userIsCreator}
           userIsAdmin={userIsAdmin}
-          handleShare={handleShare}
+          postLink={getPostLink()}
           handleSave={handleSave}
           isSaved={isSaved}
+          showToast={showToast}
         />
         <PostItemError
           error={error}
@@ -383,7 +371,7 @@ type PostTitleProps = {
  */
 const PostTitle = ({ post }: PostTitleProps) => {
   return (
-    <Text fontSize="12pt" fontWeight={600}>
+    <Text fontSize="14pt" fontWeight={600}>
       {post.title}
     </Text>
   );
@@ -449,16 +437,17 @@ interface PostActionsProps {
   loadingDelete: boolean;
   userIsCreator: boolean;
   userIsAdmin: boolean;
-  handleShare: (event: React.MouseEvent<HTMLButtonElement, MouseEvent>) => void;
+  postLink: string;
   handleSave: (event: React.MouseEvent<HTMLButtonElement, MouseEvent>) => void;
   isSaved: boolean;
+  showToast: (options: any) => void;
 }
 
 /**
  * Displays the actions the user can take on a post.
  * Contains:
- * - Share button (not implemented)
- * - Save button (not implemented)
+ * - Share button (uses Chakra Clipboard)
+ * - Save button
  * - Delete button (only for the author of the post or admin)
  * @param {function} handleDelete - function to handle the delete button
  * @param {boolean} loadingDelete - whether the post is being deleted
@@ -469,9 +458,10 @@ const PostActions: React.FC<PostActionsProps> = ({
   loadingDelete,
   userIsCreator,
   userIsAdmin,
-  handleShare,
+  postLink,
   handleSave,
   isSaved,
+  showToast,
 }) => (
   <Stack
     ml={1}
@@ -480,15 +470,42 @@ const PostActions: React.FC<PostActionsProps> = ({
     fontWeight={600}
     direction="row"
     gap={1}
+    pb={2}
   >
-    <Button variant={"action" as any} height="32px" onClick={handleShare}>
-      <Icon as={FiShare2} mr={2} />
-      <Text fontSize="9pt">Share</Text>
-    </Button>
+    <Clipboard.Root
+      value={postLink}
+      onStatusChange={(details: any) => {
+        if (details.copied) {
+          showToast({
+            title: "Link Copied",
+            description: "Link to the post has been saved to your clipboard",
+            status: "info",
+          });
+        }
+      }}
+    >
+      <Button
+        as={Clipboard.Trigger as any}
+        variant={"action" as any}
+        height="32px"
+        onClick={(event: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
+          event.stopPropagation();
+        }}
+      >
+        <Icon as={FiShare2} mr={2} />
+        <Text fontSize="9pt">Share</Text>
+      </Button>
+    </Clipboard.Root>
 
     <Button variant={"action" as any} height="32px" onClick={handleSave}>
-      <Icon as={isSaved ? BsBookmarkFill : BsBookmark} mr={2} color={isSaved ? "brand.100" : "gray.500"} />
-      <Text fontSize="9pt" color={isSaved ? "brand.100" : "gray.500"}>{isSaved ? "Saved" : "Save"}</Text>
+      <Icon
+        as={isSaved ? BsBookmarkFill : BsBookmark}
+        mr={2}
+        color={isSaved ? "brand.100" : "gray.500"}
+      />
+      <Text fontSize="9pt" color={isSaved ? "brand.100" : "gray.500"}>
+        {isSaved ? "Saved" : "Save"}
+      </Text>
     </Button>
 
     {(userIsCreator || userIsAdmin) && (
@@ -498,7 +515,7 @@ const PostActions: React.FC<PostActionsProps> = ({
         onClick={handleDelete}
         loading={loadingDelete}
       >
-        <Icon as={MdOutlineDelete} mr={2} />
+        <Icon as={LuTrash} mr={2} />
         <Text fontSize="9pt">Delete</Text>
       </Button>
     )}

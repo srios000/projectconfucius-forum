@@ -18,6 +18,7 @@ import {
   Flex,
   Icon,
   Input,
+  Separator,
   Stack,
   Text,
 } from "@chakra-ui/react";
@@ -164,6 +165,7 @@ const CreateCommunityModal: React.FC<CreateCommunityModalProps> = ({
                 charRemaining={charRemaining}
                 error={error}
               />
+              <Separator mt={3} />
               <Box mt={4} mb={4}>
                 <Text fontWeight={600} fontSize={15}>
                   Community Type
@@ -373,6 +375,7 @@ const CommunityNameSection: React.FC<CommunityNameSectionProps> = ({
         placeholder="Community Name"
         onChange={handleChange}
         fontSize="10pt"
+        borderRadius={"xl"}
         bg={{ base: "gray.50", _dark: "gray.800" }}
         borderColor={{ base: "gray.200", _dark: "gray.600" }}
         _placeholder={{ color: "gray.500" }}

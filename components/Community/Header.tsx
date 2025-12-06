@@ -1,5 +1,13 @@
 import { Community } from "@/atoms/communitiesAtom";
-import { Box, Button, Flex, Icon, Image, Text } from "@chakra-ui/react";
+import {
+  Box,
+  Button,
+  Flex,
+  Icon,
+  IconButton,
+  Image,
+  Text,
+} from "@chakra-ui/react";
 import React, { useState } from "react";
 import { HiArrowCircleUp } from "react-icons/hi";
 import useCommunityData from "@/hooks/useCommunityData";
@@ -54,7 +62,13 @@ const Header: React.FC<HeaderProps> = ({ communityData }) => {
 
           <Flex padding="10px 16px" width="100%">
             <CommunityName id={communityData.id} />
-            <Flex direction="row" flexGrow={1} align="end" justify="end">
+            <Flex
+              direction="row"
+              flexGrow={1}
+              align="center"
+              justify="end"
+              gap={2}
+            >
               <CommunityMembersButton
                 communityId={communityData.id}
                 isJoined={isJoined}
@@ -157,7 +171,7 @@ export const JoinOrLeaveButton: React.FC<JoinOrLeaveButtonProps> = ({
   return (
     <Button
       variant={isJoined ? "outline" : "solid"}
-      height="30px"
+      height="40px"
       pr={{ base: 2, md: 6 }}
       pl={{ base: 2, md: 6 }}
       onClick={onClick}
@@ -194,13 +208,14 @@ export const CommunitySettings: React.FC<CommunitySettingsProps> = ({
             handleClose={() => setCommunitySettingsModalOpen(false)}
             communityData={communityData}
           />
-          <IconItem
-            icon={FiSettings}
+          <IconButton
+            aria-label="Toggle color mode"
+            variant="ghost"
             fontSize={20}
             onClick={() => setCommunitySettingsModalOpen(true)}
-            iconColor="gray.500"
-            label="Community Settings"
-          />
+          >
+            <Icon as={FiSettings} />
+          </IconButton>
         </>
       )}
     </>
@@ -229,13 +244,14 @@ const CommunityMembersButton: React.FC<CommunityMembersButtonProps> = ({
         onClose={() => setModalOpen(false)}
         communityId={communityId}
       />
-      <IconItem
-        icon={FiUsers}
+      <IconButton
+        aria-label="Toggle color mode"
+        variant="ghost"
         fontSize={20}
         onClick={() => setModalOpen(true)}
-        iconColor="gray.500"
-        label="View Subscribers"
-      />
+      >
+        <Icon as={FiUsers} />
+      </IconButton>
     </>
   );
 };
