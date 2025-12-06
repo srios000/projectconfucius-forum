@@ -172,13 +172,13 @@ const PostItem: React.FC<PostItemProps> = ({
       border="1px solid"
       bg={{ base: "white", _dark: "gray.800" }}
       borderColor={{ base: "gray.300", _dark: "gray.700" }}
-      borderRadius={10}
+      borderRadius={"xl"}
       _hover={{
-      borderColor: singlePostPage
-        ? "none"
-        : { base: "gray.400", _dark: "gray.600" },
-      boxShadow: singlePostPage ? undefined : "sm",
-    }}
+        borderColor: singlePostPage
+          ? "none"
+          : { base: "gray.400", _dark: "gray.600" },
+        boxShadow: singlePostPage ? undefined : "sm",
+      }}
       cursor={singlePostPage ? "unset" : "pointer"}
       onClick={() => onSelectPost && onSelectPost(post)} // if a post is selected then open post
       shadow="md"
@@ -201,7 +201,7 @@ const PostItem: React.FC<PostItemProps> = ({
 
       {/* Right Section  */}
       <Flex direction="column" width="100%">
-        <Stack gap={1} p="10px">
+        <Stack gap={1} p="12px">
           <PostDetails showCommunityImage={true} post={post} />
           <PostTitle post={post} />
           <PostBody
@@ -383,7 +383,7 @@ type PostTitleProps = {
  */
 const PostTitle = ({ post }: PostTitleProps) => {
   return (
-    <Text fontSize="12pt" fontWeight={600}>
+    <Text fontSize="14pt" fontWeight={600}>
       {post.title}
     </Text>
   );
@@ -480,6 +480,7 @@ const PostActions: React.FC<PostActionsProps> = ({
     fontWeight={600}
     direction="row"
     gap={1}
+    pb={2}
   >
     <Button variant={"action" as any} height="32px" onClick={handleShare}>
       <Icon as={FiShare2} mr={2} />
@@ -487,8 +488,14 @@ const PostActions: React.FC<PostActionsProps> = ({
     </Button>
 
     <Button variant={"action" as any} height="32px" onClick={handleSave}>
-      <Icon as={isSaved ? BsBookmarkFill : BsBookmark} mr={2} color={isSaved ? "brand.100" : "gray.500"} />
-      <Text fontSize="9pt" color={isSaved ? "brand.100" : "gray.500"}>{isSaved ? "Saved" : "Save"}</Text>
+      <Icon
+        as={isSaved ? BsBookmarkFill : BsBookmark}
+        mr={2}
+        color={isSaved ? "brand.100" : "gray.500"}
+      />
+      <Text fontSize="9pt" color={isSaved ? "brand.100" : "gray.500"}>
+        {isSaved ? "Saved" : "Save"}
+      </Text>
     </Button>
 
     {(userIsCreator || userIsAdmin) && (
