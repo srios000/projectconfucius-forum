@@ -1,9 +1,8 @@
 /* eslint-disable react-hooks/rules-of-hooks */
 import { savedPostStateAtom } from "@/atoms/savedPostsAtom";
-import IconItem from "@/components/atoms/Icon";
 import { useColorMode } from "@/components/ui/color-mode";
 import useCallCreatePost from "@/hooks/useCallCreatePost";
-import { Flex } from "@chakra-ui/react";
+import { Flex, IconButton, Icon } from "@chakra-ui/react";
 import { useSetAtom } from "jotai";
 import React from "react";
 import { BsBookmark } from "react-icons/bs";
@@ -22,31 +21,43 @@ const icons: React.FC = () => {
   const setSavedPostState = useSetAtom(savedPostStateAtom);
 
   return (
-    <Flex align="center">
+    <Flex align="center" p={1}>
       <Flex>
-        <IconItem
-          icon={colorMode === "light" ? LuSun : LuMoon}
-          fontSize={20}
+        <IconButton
+          aria-label="Toggle color mode"
+          variant="ghost"
+          fontSize={22}
           onClick={toggleColorMode}
-          label="Toggle color mode"
-        />
+          mr={1.5}
+          ml={1.5}
+        >
+          <Icon as={colorMode === "light" ? LuSun : LuMoon} />
+        </IconButton>
       </Flex>
       <>
-        <IconItem
-          icon={BsBookmark}
-          fontSize={20}
+        <IconButton
+          aria-label="Saved Posts"
+          variant="ghost"
+          fontSize={22}
           onClick={() =>
             setSavedPostState((prev) => ({ ...prev, isOpen: true }))
           }
-          label="Saved Posts"
-        />
+          mr={1.5}
+          ml={1.5}
+        >
+          <Icon as={BsBookmark} />
+        </IconButton>
         {/* Always visible */}
-        <IconItem
-          icon={GrAdd}
-          fontSize={20}
+        <IconButton
+          aria-label="Create post"
+          variant="ghost"
+          fontSize={22}
           onClick={onClick}
-          label="Create post"
-        />
+          mr={1.5}
+          ml={1.5}
+        >
+          <Icon as={GrAdd} />
+        </IconButton>
       </>
     </Flex>
   );

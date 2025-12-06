@@ -41,7 +41,7 @@ const UserMenu: React.FC = () => {
         <MenuTrigger
           cursor="pointer"
           padding="0px 6px"
-          borderRadius={10}
+          borderRadius={"xl"}
           mr={2}
           ml={{ base: 0, md: 2 }}
           _hover={{
@@ -61,12 +61,12 @@ const UserMenu: React.FC = () => {
                   src={directoryState.selectedMenuItem.imageURL}
                   alt="Community logo"
                   borderRadius="full"
-                  boxSize="24px"
+                  boxSize="34px"
                   mr={2}
                 />
               ) : (
                 <Icon
-                  fontSize={24}
+                  fontSize={34}
                   mr={{ base: 1, md: 2 }}
                   as={directoryState.selectedMenuItem.icon}
                   color={directoryState.selectedMenuItem.iconColor}
@@ -82,7 +82,15 @@ const UserMenu: React.FC = () => {
           </Flex>
         </MenuTrigger>
         <MenuPositioner>
-          <MenuContent borderRadius={10} mt={2} shadow="lg">
+          <MenuContent
+            borderRadius={"xl"}
+            mt={2}
+            shadow="lg"
+            minW="260px"
+            maxH="70vh"
+            overflowY="auto"
+            pt={2}
+          >
             <Flex justifyContent="center">
               <Stack gap={1} width="95%">
                 {/* Communities menu to open the community creation modal */}
