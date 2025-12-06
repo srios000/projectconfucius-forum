@@ -1,4 +1,4 @@
-'use client';
+"use client";
 
 import React, { useEffect } from "react";
 import {
@@ -57,12 +57,12 @@ const CommunityMembersModal: React.FC<CommunityMembersModalProps> = ({
     }
 
     return (
-      <Stack gap={4}>
+      <Stack gap={2}>
         {members.map((member: CommunityMember) => (
           <Box
             key={member.uid}
             borderWidth="1px"
-            borderRadius="md"
+            borderRadius="xl"
             p={3}
             borderColor={{ base: "gray.200", _dark: "gray.700" }}
           >
@@ -89,7 +89,7 @@ const CommunityMembersModal: React.FC<CommunityMembersModalProps> = ({
       <DialogPositioner>
         <DialogContent borderRadius="xl" maxH="80vh">
           <DialogHeader>
-            <DialogTitle>Community Subscribers</DialogTitle>
+            <DialogTitle>{`${members.length} Subscribers`}</DialogTitle>
           </DialogHeader>
           <DialogCloseTrigger />
           <DialogBody pb={6} maxH="60vh" overflowY="auto">
