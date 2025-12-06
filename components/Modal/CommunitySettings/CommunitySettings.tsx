@@ -73,6 +73,8 @@ const CommunitySettingsModal: React.FC<CommunitySettingsModalProps> = ({
     deleteCommunityImage,
     updatePrivacyType,
     uploadingImage,
+    deleteCommunity,
+    loading,
   } = useCommunitySettings(communityData);
 
   /**
@@ -295,6 +297,21 @@ const CommunitySettingsModal: React.FC<CommunitySettingsModalProps> = ({
                     communityStateValue.currentCommunity || communityData
                   }
                 />
+                <Separator />
+                <Flex align="center" justify="space-between" p={1}>
+                  <Text fontWeight={600} fontSize="10pt">
+                    Delete Community
+                  </Text>
+                  <Button
+                    variant="solid"
+                    colorPalette="red"
+                    height="30px"
+                    onClick={deleteCommunity}
+                    loading={loading}
+                  >
+                    Delete
+                  </Button>
+                </Flex>
               </Stack>
             </DialogBody>
           </Box>
