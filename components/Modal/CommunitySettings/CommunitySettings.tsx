@@ -331,6 +331,9 @@ const CommunitySettingsModal: React.FC<CommunitySettingsModalProps> = ({
                   }
                 />
                 <Separator />
+                <Text fontSize="lg" fontWeight={600} color="red.500">
+                  Danger Zone
+                </Text>
                 <Flex align="center" justify="space-between" p={1}>
                   <Text fontWeight={600} fontSize="10pt">
                     Delete Community
