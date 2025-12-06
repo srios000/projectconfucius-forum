@@ -24,7 +24,7 @@ import {
   IoArrowUpCircleSharp,
   IoPeopleCircleOutline,
 } from "react-icons/io5";
-import { MdOutlineDelete } from "react-icons/md";
+import { LuTrash } from "react-icons/lu";
 import PostItemError from "../atoms/ErrorMessage";
 
 /**
@@ -498,7 +498,7 @@ const PostActions: React.FC<PostActionsProps> = ({
         onClick={handleDelete}
         loading={loadingDelete}
       >
-        <Icon as={MdOutlineDelete} mr={2} />
+        <Icon as={LuTrash} mr={2} />
         <Text fontSize="9pt">Delete</Text>
       </Button>
     )}
