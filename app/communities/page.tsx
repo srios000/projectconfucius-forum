@@ -7,8 +7,9 @@ import CommunityLoader from "@/components/Loaders/CommunityLoader";
 import useCommunitiesFeed from "@/hooks/useCommunitiesFeed";
 import useCommunityData from "@/hooks/useCommunityData";
 import { useIntersectionObserver } from "@/hooks/useIntersectionObserver";
-import { Box, Spinner, Stack, Text } from "@chakra-ui/react";
+import { Box, Heading, Spinner, Stack, Text } from "@chakra-ui/react";
 import React, { useEffect, useMemo } from "react";
+import { Community } from "@/atoms/communitiesAtom";
 
 /**
  * Displays the communities page with the top 5 communities.
@@ -28,6 +29,30 @@ const Communities: React.FC = () => {
     }
   }, [isIntersecting, loading, noMoreCommunities, fetchCommunities]);
 
+  const [adminCommunities, subscribedCommunities, notSubscribedCommunities] =
+    useMemo(() => {
+      const admin: Community[] = [];
+      const subscribed: Community[] = [];
+      const notSubscribed: Community[] = [];
+
+      communities.forEach((community) => {
+        const snippet = communityStateValue.mySnippets.find(
+          (s) => s.communityId === community.id
+        );
+        if (snippet) {
+          if (snippet.isAdmin) {
+            admin.push(community);
+          } else {
+            subscribed.push(community);
+          }
+        } else {
+          notSubscribed.push(community);
+        }
+      });
+
+      return [admin, subscribed, notSubscribed];
+    }, [communities, communityStateValue.mySnippets]);
+
   return (
     <>
       <PageContent>
@@ -42,21 +67,61 @@ const Communities: React.FC = () => {
                   ))}
               </Stack>
             ) : (
-              <>
-                {communities.map((community, index) => {
-                  const isJoined = !!communityStateValue.mySnippets.find(
-                    (snippet) => snippet.communityId === community.id
-                  );
-                  return (
-                    <CommunityItem
-                      key={index}
-                      community={community}
-                      isJoined={isJoined}
-                      onJoinOrLeaveCommunity={onJoinOrLeaveCommunity}
-                    />
-                  );
-                })}
-              </>
+              <Stack gap={5}>
+                {adminCommunities.length > 0 && (
+                  <Box>
+                    <Heading fontSize="md" mb={2} px={2}>
+                      Moderating
+                    </Heading>
+                    <Stack gap={2}>
+                      {adminCommunities.map((community) => (
+                        <CommunityItem
+                          key={community.id}
+                          community={community}
+                          isJoined={true}
+                          onJoinOrLeaveCommunity={onJoinOrLeaveCommunity}
+                        />
+                      ))}
+                    </Stack>
+                  </Box>
+                )}
+
+                {subscribedCommunities.length > 0 && (
+                  <Box>
+                    <Heading fontSize="md" mb={2} px={2}>
+                      My Communities
+                    </Heading>
+                    <Stack gap={2}>
+                      {subscribedCommunities.map((community) => (
+                        <CommunityItem
+                          key={community.id}
+                          community={community}
+                          isJoined={true}
+                          onJoinOrLeaveCommunity={onJoinOrLeaveCommunity}
+                        />
+                      ))}
+                    </Stack>
+                  </Box>
+                )}
+
+                {notSubscribedCommunities.length > 0 && (
+                  <Box>
+                    <Heading fontSize="md" mb={2} px={2}>
+                      Discover Communities
+                    </Heading>
+                    <Stack gap={2}>
+                      {notSubscribedCommunities.map((community) => (
+                        <CommunityItem
+                          key={community.id}
+                          community={community}
+                          isJoined={false}
+                          onJoinOrLeaveCommunity={onJoinOrLeaveCommunity}
+                        />
+                      ))}
+                    </Stack>
+                  </Box>
+                )}
+              </Stack>
             )}
             {!noMoreCommunities ? (
               <Box
