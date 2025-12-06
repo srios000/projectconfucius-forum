@@ -115,6 +115,18 @@ const usePostsFeed = ({
     // But we should reset pagination state
     setNoMorePosts(false);
     setLastVisible(null);
+    setPostStateValue((prev) => ({
+      ...prev,
+      posts: [],
+    }));
+
+    // Cleanup function to clear posts when component unmounts or community changes
+    return () => {
+      setPostStateValue((prev) => ({
+        ...prev,
+        posts: [],
+      }));
+    };
   }, [communityId, isGenericHome]);
 
   // For communityIds (user home feed), we might want to reset too, but be careful about infinite loops if array reference changes
