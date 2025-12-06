@@ -1,8 +1,17 @@
-import { Box, Flex, Icon, Spinner, Stack, Text } from "@chakra-ui/react";
+import { Comment } from "@/hooks/useComments";
+import {
+  Box,
+  Button,
+  Flex,
+  Icon,
+  Spinner,
+  Stack,
+  Text,
+} from "@chakra-ui/react";
+import { User } from "firebase/auth";
 import React, { useState } from "react";
 import { CgProfile } from "react-icons/cg";
-import { Comment } from "@/hooks/useComments";
-import { User } from "firebase/auth";
+import { LuPencil, LuReply, LuTrash } from "react-icons/lu";
 import CommentInput from "./CommentInput";
 
 /**
@@ -70,64 +79,98 @@ const CommentItem: React.FC<CommentItemProps> = ({
       bg={{ base: "white", _dark: "gray.800" }}
       borderColor={{ base: "gray.300", _dark: "gray.700" }}
       borderRadius={10}
-      shadow="sm"
       width="100%"
+      overflow="hidden"
     >
-      <Flex m={2}>
+      <Flex p={3} pb={2}>
         <Box>
           <Icon as={CgProfile} fontSize={30} color="gray.300" mr={2} />
         </Box>
         <Stack gap={1} width="100%">
           <Stack direction="row" align="center" fontSize="8pt">
-            <Text fontWeight={600}>{comment.creatorDisplayText}</Text>
-            {/* <Text>{createdAtString}</Text> */}
+            <Text fontWeight={700}>{comment.creatorDisplayText}</Text>
             {loadingDelete && <Spinner size="sm" />}
           </Stack>
-          <Text fontSize="10pt">{comment.text}</Text>
-          <Stack
-            direction="row"
-            align="center"
-            cursor="pointer"
+          <Text fontSize="11pt">{comment.text}</Text>
+        </Stack>
+      </Flex>
+
+      <Flex
+        bg={{ base: "gray.50", _dark: "gray.700" }}
+        p={2}
+        align="center"
+        borderTop="1px solid"
+        borderColor={{ base: "gray.100", _dark: "gray.600" }}
+      >
+        <Stack direction="row" align="center" gap={2}>
+          <Button
+            size="sm"
+            variant="ghost"
+            fontSize="10pt"
+            fontWeight={600}
             color={{ base: "gray.500", _dark: "gray.400" }}
+            _hover={{
+              color: { base: "blue.500", _dark: "blue.400" },
+              bg: "transparent",
+            }}
+            onClick={() => setIsReplying(!isReplying)}
           >
-            <Text
+            <Icon as={LuReply} mr={2} />
+            Reply
+          </Button>
+          {userId === comment.creatorId && (
+            <Button
+              size="sm"
+              variant="ghost"
               fontSize="10pt"
-              _hover={{ color: { base: "blue.500", _dark: "blue.400" } }}
-              onClick={() => setIsReplying(!isReplying)}
+              fontWeight={600}
+              color={{ base: "gray.500", _dark: "gray.400" }}
+              _hover={{
+                color: { base: "blue.500", _dark: "blue.400" },
+                bg: "transparent",
+              }}
             >
-              Reply
-            </Text>
-            {userId === comment.creatorId && (
-              <Text
-                fontSize="10pt"
-                _hover={{ color: { base: "red.500", _dark: "red.400" } }}
-              >
-                Edit
-              </Text>
-            )}
-            {(userId === comment.creatorId || isCommunityAdmin) && (
-              <Text
-                fontSize="10pt"
-                _hover={{ color: { base: "red.500", _dark: "red.400" } }}
-                onClick={() => onDeleteComment(comment)}
-              >
-                Delete
-              </Text>
-            )}
-          </Stack>
-          {isReplying && (
-            <Box mt={2}>
-              <CommentInput
-                commentText={replyText}
-                setCommentText={setReplyText}
-                user={user}
-                createLoading={replyLoading}
-                onCreateComment={handleReply}
-              />
-            </Box>
+              <Icon as={LuPencil} mr={2} />
+              Edit
+            </Button>
+          )}
+          {(userId === comment.creatorId || isCommunityAdmin) && (
+            <Button
+              size="sm"
+              variant="ghost"
+              fontSize="10pt"
+              fontWeight={600}
+              color={{ base: "gray.500", _dark: "gray.400" }}
+              _hover={{
+                color: { base: "red.500", _dark: "red.400" },
+                bg: "transparent",
+              }}
+              onClick={() => onDeleteComment(comment)}
+            >
+              <Icon as={LuTrash} mr={2} />
+              Delete
+            </Button>
           )}
         </Stack>
       </Flex>
+
+      {isReplying && (
+        <Box
+          p={2}
+          pl={12}
+          bg={{ base: "gray.50", _dark: "gray.700" }}
+          borderTop="1px solid"
+          borderColor={{ base: "gray.100", _dark: "gray.600" }}
+        >
+          <CommentInput
+            commentText={replyText}
+            setCommentText={setReplyText}
+            user={user}
+            createLoading={replyLoading}
+            onCreateComment={handleReply}
+          />
+        </Box>
+      )}
     </Flex>
   );
 };
