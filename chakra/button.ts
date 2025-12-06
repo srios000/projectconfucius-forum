@@ -26,7 +26,7 @@ export const buttonRecipe = defineRecipe({
     },
     _hover: {
       ...(baseStyles._hover ?? {}),
-      boxShadow: "lg",
+      boxShadow: "sm",
     },
   },
   variants: {
