@@ -88,6 +88,7 @@ const PostPage: React.FC<PostPageProps> = ({ communityData, postData }) => {
                 user={user as User}
                 selectedPost={postStateValue.selectedPost}
                 communityId={postStateValue.selectedPost?.communityId as string}
+                isCommunityAdmin={isAdmin}
               />
             </Stack>
           </>

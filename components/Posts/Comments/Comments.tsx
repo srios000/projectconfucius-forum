@@ -24,6 +24,7 @@ type CommentsProps = {
   user?: User;
   selectedPost: Post | null;
   communityId: string;
+  isCommunityAdmin?: boolean;
 };
 
 /**
@@ -43,6 +44,7 @@ const Comments: React.FC<CommentsProps> = ({
   user,
   selectedPost,
   communityId,
+  isCommunityAdmin,
 }) => {
   const [commentText, setCommentText] = useState("");
   const {
@@ -117,6 +119,7 @@ const Comments: React.FC<CommentsProps> = ({
                     onDeleteComment={onDeleteComment}
                     loadingDelete={deleteLoadingId === comment.id}
                     userId={user?.uid}
+                    isCommunityAdmin={isCommunityAdmin}
                   />
                 ))}
               </>
