@@ -1,5 +1,6 @@
 import { Post } from "@/atoms/postsAtom";
 import useCustomToast from "@/hooks/useCustomToast";
+import useSavedPosts from "@/hooks/useSavedPosts";
 import { useClipboard } from "@/hooks/useClipboard";
 import {
   Button,
@@ -14,7 +15,7 @@ import {
 import moment from "moment";
 import { useRouter } from "next/navigation";
 import React, { useState } from "react";
-import { BsBookmark } from "react-icons/bs";
+import { BsBookmark, BsBookmarkFill } from "react-icons/bs";
 import { FiShare2 } from "react-icons/fi";
 import {
   IoArrowDownCircleOutline,
@@ -88,6 +89,9 @@ const PostItem: React.FC<PostItemProps> = ({
   const router = useRouter();
   const showToast = useCustomToast();
   const { onCopy, value, setValue, hasCopied } = useClipboard("");
+  const { onSavePost, isPostSaved } = useSavedPosts();
+  const isSaved = isPostSaved(post.id!);
+
   /**
    * If there is no selected post then post is already selected
    */
@@ -156,16 +160,11 @@ const PostItem: React.FC<PostItemProps> = ({
     });
   };
 
-  const handleSave = (
+  const handleSave = async (
     event: React.MouseEvent<HTMLButtonElement, MouseEvent>
   ) => {
-    event.stopPropagation(); // stop event bubbling up to parent
-
-    showToast({
-      title: "Functionality Coming Soon",
-      description: "Currently, this functionality is not available",
-      status: "warning",
-    });
+    event.stopPropagation();
+    await onSavePost(post);
   };
 
   return (
@@ -218,6 +217,7 @@ const PostItem: React.FC<PostItemProps> = ({
           userIsAdmin={userIsAdmin}
           handleShare={handleShare}
           handleSave={handleSave}
+          isSaved={isSaved}
         />
         <PostItemError
           error={error}
@@ -451,6 +451,7 @@ interface PostActionsProps {
   userIsAdmin: boolean;
   handleShare: (event: React.MouseEvent<HTMLButtonElement, MouseEvent>) => void;
   handleSave: (event: React.MouseEvent<HTMLButtonElement, MouseEvent>) => void;
+  isSaved: boolean;
 }
 
 /**
@@ -470,6 +471,7 @@ const PostActions: React.FC<PostActionsProps> = ({
   userIsAdmin,
   handleShare,
   handleSave,
+  isSaved,
 }) => (
   <Stack
     ml={1}
@@ -485,8 +487,8 @@ const PostActions: React.FC<PostActionsProps> = ({
     </Button>
 
     <Button variant={"action" as any} height="32px" onClick={handleSave}>
-      <Icon as={BsBookmark} mr={2} />
-      <Text fontSize="9pt">Save</Text>
+      <Icon as={isSaved ? BsBookmarkFill : BsBookmark} mr={2} color={isSaved ? "brand.100" : "gray.500"} />
+      <Text fontSize="9pt" color={isSaved ? "brand.100" : "gray.500"}>{isSaved ? "Saved" : "Save"}</Text>
     </Button>
 
     {(userIsCreator || userIsAdmin) && (

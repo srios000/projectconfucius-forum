@@ -1,9 +1,12 @@
 /* eslint-disable react-hooks/rules-of-hooks */
+import { savedPostStateAtom } from "@/atoms/savedPostsAtom";
 import IconItem from "@/components/atoms/Icon";
 import { useColorMode } from "@/components/ui/color-mode";
 import useCallCreatePost from "@/hooks/useCallCreatePost";
 import { Flex } from "@chakra-ui/react";
+import { useSetAtom } from "jotai";
 import React from "react";
+import { BsBookmark } from "react-icons/bs";
 import { GrAdd } from "react-icons/gr";
 import { LuMoon, LuSun } from "react-icons/lu";
 
@@ -16,6 +19,7 @@ import { LuMoon, LuSun } from "react-icons/lu";
 const icons: React.FC = () => {
   const { onClick } = useCallCreatePost();
   const { colorMode, toggleColorMode } = useColorMode();
+  const setSavedPostState = useSetAtom(savedPostStateAtom);
 
   return (
     <Flex align="center">
@@ -28,6 +32,14 @@ const icons: React.FC = () => {
         />
       </Flex>
       <>
+        <IconItem
+          icon={BsBookmark}
+          fontSize={20}
+          onClick={() =>
+            setSavedPostState((prev) => ({ ...prev, isOpen: true }))
+          }
+          label="Saved Posts"
+        />
         {/* Always visible */}
         <IconItem
           icon={GrAdd}

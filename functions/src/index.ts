@@ -36,3 +36,23 @@ export const deleteUserDocument = functions.auth
   .onDelete(async (user) => {
     db.collection("users").doc(user.uid).delete();
   });
+
+/**
+ * Deletes the saved post document in Firestore when a post is deleted.
+ */
+export const deleteSavedPost = functions.firestore
+  .document("posts/{postId}")
+  .onDelete(async (snap, context) => {
+    const postId = context.params.postId;
+    const savedPostsSnapshot = await db
+      .collectionGroup("savedPosts")
+      .where("postId", "==", postId)
+      .get();
+
+    const batch = db.batch();
+    savedPostsSnapshot.docs.forEach((doc) => {
+      batch.delete(doc.ref);
+    });
+
+    await batch.commit();
+  });
