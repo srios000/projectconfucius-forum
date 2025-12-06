@@ -29,7 +29,9 @@ const CommunityClientPage: React.FC<CommunityPageProps> = ({
   }, [communityData, setCommunityStateValue]);
 
   const currentCommunity =
-    communityStateValue.currentCommunity || communityData;
+    communityStateValue.currentCommunity?.id === communityData.id
+      ? communityStateValue.currentCommunity
+      : communityData;
 
   return (
     <>

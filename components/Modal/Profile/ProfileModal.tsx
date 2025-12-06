@@ -34,6 +34,9 @@ import {
   ref,
   uploadString,
 } from "firebase/storage";
+import { useRouter } from "next/navigation";
+import { postStateAtom } from "@/atoms/postsAtom";
+import { useSetAtom } from "jotai";
 import React, { useRef, useState } from "react";
 import { useAuthState, useUpdateProfile } from "react-firebase-hooks/auth";
 import { MdAccountCircle } from "react-icons/md";
@@ -45,7 +48,9 @@ type ProfileModalProps = {
 
 const ProfileModal: React.FC<ProfileModalProps> = ({ open, handleClose }) => {
   const [user] = useAuthState(auth);
+  const setPostStateValue = useSetAtom(postStateAtom);
   const [updateProfile, updating, error] = useUpdateProfile(auth);
+  const router = useRouter();
   const { selectedFile, setSelectedFile, onSelectFile } = useSelectFile(
     300,
     300
@@ -88,6 +93,8 @@ const ProfileModal: React.FC<ProfileModalProps> = ({ open, handleClose }) => {
       if (!success) {
         throw new Error("Failed to update profile image");
       }
+      await user?.reload(); // reload user to update auth state
+      router.refresh(); // refresh server components
 
       showToast({
         title: "Profile updated",
@@ -123,6 +130,8 @@ const ProfileModal: React.FC<ProfileModalProps> = ({ open, handleClose }) => {
       if (!success) {
         throw new Error("Failed to delete profile image");
       }
+      await user?.reload(); // reload user to update auth state
+      router.refresh(); // refresh server components
 
       showToast({
         title: "Profile updated",
@@ -207,6 +216,19 @@ const ProfileModal: React.FC<ProfileModalProps> = ({ open, handleClose }) => {
       // Update the creatorDisplayText in comments and creatorUsername in posts
       await updateUserNameInComments(user!.uid, userName);
       await updateUserNameInPosts(user!.uid, userName);
+
+      // Update local state for posts
+      setPostStateValue((prev) => ({
+        ...prev,
+        posts: prev.posts.map((post) => {
+          if (post.creatorId === user!.uid) {
+            return { ...post, creatorUsername: userName };
+          }
+          return post;
+        }),
+      }));
+      await user?.reload(); // reload user to update auth state
+      router.refresh(); // refresh server components
     } catch (error) {
       console.error("Error: onUpdateUserName: ", error);
       showToast({

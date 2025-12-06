@@ -14,7 +14,7 @@ import {
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import React from "react";
-import { FaReddit } from "react-icons/fa";
+import { IoPeopleCircleOutline } from "react-icons/io5";
 
 /**
  * Displays the top 5 communities with the most members.
@@ -77,9 +77,9 @@ const Recommendations: React.FC = () => {
                         />
                       ) : (
                         <Icon
-                          as={FaReddit}
+                          as={IoPeopleCircleOutline}
                           fontSize={34}
-                          color="brand.100"
+                          color="red.500"
                           flexShrink={0}
                         />
                       )}

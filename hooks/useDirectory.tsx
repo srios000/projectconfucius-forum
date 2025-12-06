@@ -1,6 +1,7 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import { communityStateAtom } from "@/atoms/communitiesAtom";
 import {
+  defaultMenuItem,
   DirectoryMenuItem,
   directoryMenuAtom,
 } from "@/atoms/directoryMenuAtom";
@@ -86,6 +87,11 @@ const useDirectory = () => {
           icon: IoPeopleCircleOutline,
           iconColor: { base: "red.500", _dark: "red.400" },
         },
+      }));
+    } else if (pathname === "/") {
+      setDirectoryState((prev) => ({
+        ...prev,
+        selectedMenuItem: defaultMenuItem,
       }));
     }
   }, [communityStateValue.currentCommunity, pathname]);
