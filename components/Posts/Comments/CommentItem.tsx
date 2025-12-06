@@ -15,6 +15,7 @@ type CommentItemProps = {
   onDeleteComment: (comment: Comment) => void;
   loadingDelete: boolean;
   userId?: string;
+  isCommunityAdmin?: boolean;
 };
 
 /**
@@ -59,6 +60,7 @@ const CommentItem: React.FC<CommentItemProps> = ({
   onDeleteComment,
   loadingDelete,
   userId,
+  isCommunityAdmin,
 }) => {
   return (
     <Flex
@@ -86,21 +88,21 @@ const CommentItem: React.FC<CommentItemProps> = ({
             color={{ base: "gray.500", _dark: "gray.400" }}
           >
             {userId === comment.creatorId && (
-              <>
-                <Text
-                  fontSize="10pt"
-                  _hover={{ color: { base: "red.500", _dark: "red.400" } }}
-                >
-                  Edit
-                </Text>
-                <Text
-                  fontSize="10pt"
-                  _hover={{ color: { base: "red.500", _dark: "red.400" } }}
-                  onClick={() => onDeleteComment(comment)}
-                >
-                  Delete
-                </Text>
-              </>
+              <Text
+                fontSize="10pt"
+                _hover={{ color: { base: "red.500", _dark: "red.400" } }}
+              >
+                Edit
+              </Text>
+            )}
+            {(userId === comment.creatorId || isCommunityAdmin) && (
+              <Text
+                fontSize="10pt"
+                _hover={{ color: { base: "red.500", _dark: "red.400" } }}
+                onClick={() => onDeleteComment(comment)}
+              >
+                Delete
+              </Text>
             )}
           </Stack>
         </Stack>
