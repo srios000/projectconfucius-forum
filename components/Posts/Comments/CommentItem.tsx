@@ -1,7 +1,9 @@
 import { Box, Flex, Icon, Spinner, Stack, Text } from "@chakra-ui/react";
-import { Timestamp } from "firebase/firestore";
-import React from "react";
+import React, { useState } from "react";
 import { CgProfile } from "react-icons/cg";
+import { Comment } from "@/hooks/useComments";
+import { User } from "firebase/auth";
+import CommentInput from "./CommentInput";
 
 /**
  * Required props for CommentItem component
@@ -16,28 +18,12 @@ type CommentItemProps = {
   loadingDelete: boolean;
   userId?: string;
   isCommunityAdmin?: boolean;
-};
-
-/**
- * Represents a comment object.
- * @property {string} id - id of the comment
- * @property {string} creatorId - id of the user who created the comment
- * @property {string} creatorDisplayText - display text of the user who created the comment
- * @property {string} communityId - id of the community the comment belongs to
- * @property {string} postId - id of the post the comment belongs to
- * @property {string} postTitle - title of the post the comment belongs to
- * @property {string} text - text of the comment
- * @property {Timestamp} createdAt - time the comment was created
- */
-export type Comment = {
-  id: string;
-  creatorId: string;
-  creatorDisplayText: string;
-  communityId: string;
-  postId: string;
-  postTitle: string;
-  text: string;
-  createdAt: Timestamp;
+  onCreateComment: (
+    user: User,
+    text: string,
+    parentId: string
+  ) => Promise<void>;
+  user?: User;
 };
 
 /**
@@ -61,20 +47,37 @@ const CommentItem: React.FC<CommentItemProps> = ({
   loadingDelete,
   userId,
   isCommunityAdmin,
+  onCreateComment,
+  user,
 }) => {
+  const [isReplying, setIsReplying] = useState(false);
+  const [replyText, setReplyText] = useState("");
+  const [replyLoading, setReplyLoading] = useState(false);
+
+  const handleReply = async () => {
+    if (!user) return;
+    setReplyLoading(true);
+    await onCreateComment(user, replyText, comment.id);
+    setReplyLoading(false);
+    setReplyText("");
+    setIsReplying(false);
+  };
+
   return (
     <Flex
+      direction="column"
       border="1px solid"
       bg={{ base: "white", _dark: "gray.800" }}
       borderColor={{ base: "gray.300", _dark: "gray.700" }}
       borderRadius={10}
       shadow="sm"
+      width="100%"
     >
       <Flex m={2}>
         <Box>
           <Icon as={CgProfile} fontSize={30} color="gray.300" mr={2} />
         </Box>
-        <Stack gap={1}>
+        <Stack gap={1} width="100%">
           <Stack direction="row" align="center" fontSize="8pt">
             <Text fontWeight={600}>{comment.creatorDisplayText}</Text>
             {/* <Text>{createdAtString}</Text> */}
@@ -87,6 +90,13 @@ const CommentItem: React.FC<CommentItemProps> = ({
             cursor="pointer"
             color={{ base: "gray.500", _dark: "gray.400" }}
           >
+            <Text
+              fontSize="10pt"
+              _hover={{ color: { base: "blue.500", _dark: "blue.400" } }}
+              onClick={() => setIsReplying(!isReplying)}
+            >
+              Reply
+            </Text>
             {userId === comment.creatorId && (
               <Text
                 fontSize="10pt"
@@ -105,6 +115,17 @@ const CommentItem: React.FC<CommentItemProps> = ({
               </Text>
             )}
           </Stack>
+          {isReplying && (
+            <Box mt={2}>
+              <CommentInput
+                commentText={replyText}
+                setCommentText={setReplyText}
+                user={user}
+                createLoading={replyLoading}
+                onCreateComment={handleReply}
+              />
+            </Box>
+          )}
         </Stack>
       </Flex>
     </Flex>

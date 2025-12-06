@@ -26,6 +26,7 @@ export type Comment = {
   postTitle: string;
   text: string;
   createdAt: Timestamp;
+  parentId?: string;
 };
 
 const useComments = (selectedPost: Post | null) => {
@@ -36,7 +37,11 @@ const useComments = (selectedPost: Post | null) => {
   const [createLoading, setCreateLoading] = useState(false);
   const [deleteLoadingId, setDeleteLoadingId] = useState("");
 
-  const onCreateComment = async (user: User, commentText: string) => {
+  const onCreateComment = async (
+    user: User,
+    commentText: string,
+    parentId?: string
+  ) => {
     if (!selectedPost) return;
     setCreateLoading(true);
     try {
@@ -53,7 +58,12 @@ const useComments = (selectedPost: Post | null) => {
         postTitle: selectedPost.title,
         text: commentText,
         createdAt: serverTimestamp() as Timestamp,
+        parentId: parentId || undefined,
       };
+
+      // Remove parentId if it is null/undefined to avoid saving null in db if preferred,
+      // but explicit null is fine too. Let's keep it simple.
+      if (!parentId) delete newComment.parentId;
 
       batch.set(commentDocRef, newComment);
 
@@ -91,25 +101,43 @@ const useComments = (selectedPost: Post | null) => {
     try {
       const batch = writeBatch(firestore);
 
-      // Delete comment document
-      const commentDocRef = doc(firestore, "comments", comment.id);
-      batch.delete(commentDocRef);
+      // Find all descendant comments
+      const getDescendantIds = (parentId: string): string[] => {
+        const children = comments.filter((c) => c.parentId === parentId);
+        let ids = children.map((c) => c.id);
+        children.forEach((child) => {
+          ids = [...ids, ...getDescendantIds(child.id)];
+        });
+        return ids;
+      };
 
-      // Update post numberOfComments -1
+      const descendantIds = getDescendantIds(comment.id);
+      const allIdsToDelete = [comment.id, ...descendantIds];
+
+      // Delete comment document and descendants
+      allIdsToDelete.forEach((id) => {
+        const commentDocRef = doc(firestore, "comments", id);
+        batch.delete(commentDocRef);
+      });
+
+      // Update post numberOfComments
       const postDocRef = doc(firestore, "posts", comment.postId);
       batch.update(postDocRef, {
-        numberOfComments: increment(-1),
+        numberOfComments: increment(-allIdsToDelete.length),
       });
 
       await batch.commit();
 
       // Update client state
-      setComments((prev) => prev.filter((item) => item.id !== comment.id));
+      setComments((prev) =>
+        prev.filter((item) => !allIdsToDelete.includes(item.id))
+      );
       setPostState((prev) => ({
         ...prev,
         selectedPost: {
           ...prev.selectedPost!,
-          numberOfComments: prev.selectedPost!.numberOfComments - 1,
+          numberOfComments:
+            prev.selectedPost!.numberOfComments - allIdsToDelete.length,
         },
       }));
     } catch (error: any) {
