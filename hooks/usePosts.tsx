@@ -2,6 +2,7 @@
 import { authModalStateAtom } from "@/atoms/authModalAtom";
 import { communityStateAtom } from "@/atoms/communitiesAtom";
 import { Post, postStateAtom, PostVote } from "@/atoms/postsAtom";
+import { savedPostStateAtom } from "@/atoms/savedPostsAtom";
 import { auth, firestore, storage } from "@/firebase/clientApp";
 import {
   collection,
@@ -36,6 +37,7 @@ import useCustomToast from "./useCustomToast";
 const usePosts = () => {
   const [user] = useAuthState(auth);
   const [postStateValue, setPostStateValue] = useAtom(postStateAtom);
+  const setSavedPostState = useSetAtom(savedPostStateAtom);
   const currentCommunity = useAtomValue(communityStateAtom).currentCommunity;
   const setAuthModalState = useSetAtom(authModalStateAtom);
   const router = useRouter();
@@ -199,6 +201,12 @@ const usePosts = () => {
     setPostStateValue((prev) => ({
       ...prev,
       posts: prev.posts.filter((item) => item.id !== post.id),
+    }));
+
+    // Optimistically remove from saved posts
+    setSavedPostState((prev) => ({
+      ...prev,
+      savedPosts: prev.savedPosts.filter((item) => item.postId !== post.id),
     }));
 
     try {

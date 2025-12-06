@@ -1,4 +1,5 @@
 import AuthModal from "@/components/Modal/Auth/AuthModal";
+import SavedPostsModal from "@/components/Modal/SavedPosts/SavedPostsModal";
 import { Flex } from "@chakra-ui/react";
 import { User } from "firebase/auth";
 import React from "react";
@@ -30,6 +31,7 @@ const RightContent: React.FC<RightContentProps> = ({ user }) => {
   return (
     <>
       <AuthModal />
+      <SavedPostsModal />
       <Flex justify="center" align="center">
         {/* If user is logged in, icons are shown
         If user is not logged in, authentication buttons are shown */}
