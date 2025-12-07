@@ -1,9 +1,9 @@
 import { Community } from "@/atoms/communitiesAtom";
-import { Button, Flex, Icon, Image, Stack, Text } from "@chakra-ui/react";
+import { Flex, Stack } from "@chakra-ui/react";
 import { useRouter } from "next/navigation";
 import React from "react";
-import { BsFillPeopleFill } from "react-icons/bs";
-import { IoPeopleCircleOutline } from "react-icons/io5";
+import CommunityItemNameIconSection from "./CommunityItemNameIconSection";
+import CommunityItemButtonMembersSection from "./CommunityItemButtonMembersSection";
 
 /**
  * @param {Community} community - community object
@@ -83,33 +83,7 @@ type CommunityItemNameIconSectionProps = {
  * @param {Community} community - community object
  * @returns {React.FC} - the community item name and icon section component
  */
-const CommunityItemNameIconSection = ({
-  community,
-}: CommunityItemNameIconSectionProps) => {
-  return (
-    <Flex align="center" width="100%">
-      <Flex align="center" direction="row">
-        {community.imageURL ? (
-          <Image
-            src={community.imageURL}
-            borderRadius="full"
-            boxSize="35px"
-            mr={4}
-            alt="Community Icon"
-          />
-        ) : (
-          <Icon
-            as={IoPeopleCircleOutline}
-            fontSize={38}
-            color="red.500"
-            mr={4}
-          />
-        )}
-        <Text fontSize={16}>{community.id}</Text>
-      </Flex>
-    </Flex>
-  );
-};
+// CommunityItemNameIconSection moved to ./community-item/CommunityItemNameIconSection.tsx
 
 /**
  * @param {Community} community - community object
@@ -129,36 +103,4 @@ type CommunityItemButtonMembersSectionProps = {
  * @param {(community: Community, isJoined: boolean) => void} onJoinOrLeaveCommunity - function to join or leave a community
  * @returns {React.FC} - the community item button and members section component
  */
-const CommunityItemButtonMembersSection = ({
-  community,
-  onJoinOrLeaveCommunity,
-  isJoined,
-}: CommunityItemButtonMembersSectionProps) => {
-  return (
-    <Stack direction="row" align="center" justifyContent="space-between">
-      <Flex
-        fontSize={18}
-        color={{ base: "gray.500", _dark: "gray.400" }}
-        justify="center"
-        align="center"
-        mr={2}
-      >
-        <Icon as={BsFillPeopleFill} mr={1} />
-        {community.numberOfMembers}
-      </Flex>
-      <Button
-        height="30px"
-        width="130px"
-        fontSize="10pt"
-        variant={isJoined ? "outline" : "solid"}
-        onClick={(event) => {
-          event.preventDefault();
-          event.stopPropagation(); // stop the event from bubbling up
-          onJoinOrLeaveCommunity(community, isJoined);
-        }}
-      >
-        {isJoined ? "Unsubscribe" : "Subscribe"}
-      </Button>
-    </Stack>
-  );
-};
+// CommunityItemButtonMembersSection moved to ./community-item/CommunityItemButtonMembersSection.tsx
