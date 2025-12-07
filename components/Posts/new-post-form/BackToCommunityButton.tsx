@@ -1,0 +1,32 @@
+import React from "react";
+import { Button, Icon } from "@chakra-ui/react";
+import { useRouter } from "next/navigation";
+import { MdOutlineArrowBackIos } from "react-icons/md";
+
+interface BackToCommunityButtonProps {
+  communityId?: string;
+}
+
+const BackToCommunityButton: React.FC<BackToCommunityButtonProps> = ({
+  communityId,
+}) => {
+  const router = useRouter();
+  const communityLink = `/community/${communityId}`;
+
+  return (
+    <Button
+      variant="outline"
+      mt={4}
+      ml={4}
+      mr={4}
+      justifyContent="left"
+      width="fit-content"
+      onClick={() => router.push(communityLink)}
+    >
+      <Icon as={MdOutlineArrowBackIos} mr={2} />
+      {`Back to ${communityId}`}
+    </Button>
+  );
+};
+
+export default BackToCommunityButton;
