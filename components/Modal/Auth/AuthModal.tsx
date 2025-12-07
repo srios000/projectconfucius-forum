@@ -1,3 +1,5 @@
+"use client";
+
 /* eslint-disable react-hooks/exhaustive-deps */
 import { authModalStateAtom } from "@/atoms/authModalAtom";
 import { auth } from "@/firebase/clientApp";
@@ -12,14 +14,13 @@ import {
   DialogTitle,
   Flex,
   Separator,
-  Text,
 } from "@chakra-ui/react";
 import { useAtom } from "jotai";
 import React, { useEffect } from "react";
 import { useAuthState } from "react-firebase-hooks/auth";
 import AuthInputs from "./AuthInputs";
-import OAuthButtons from "./OAuthButtons";
 import ResetPassword from "./ResetPassword";
+import OAuthButtons from "./oauth-buttons/OAuthButtons";
 
 /**
  * Displays an authentication modal while `open` is `true`.
