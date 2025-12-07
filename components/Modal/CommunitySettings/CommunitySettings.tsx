@@ -1,5 +1,7 @@
 import { Community, communityStateAtom } from "@/atoms/communitiesAtom";
-import { useCommunitySettings } from "@/hooks/useCommunitySettings";
+import useCommunityImage from "@/hooks/community/useCommunityImage";
+import useCommunityPrivacy from "@/hooks/community/useCommunityPrivacy";
+import useDeleteCommunity from "@/hooks/community/useDeleteCommunity";
 import useCustomToast from "@/hooks/useCustomToast";
 import useSelectFile from "@/hooks/useSelectFile";
 import {
@@ -49,13 +51,10 @@ const CommunitySettingsModal: React.FC<CommunitySettingsModalProps> = ({
   const [selectedPrivacyType, setSelectedPrivacyType] = useState("");
   const showToast = useCustomToast();
 
-  const {
-    updateImage,
-    deleteCommunityImage,
-    updatePrivacyType,
-    deleteCommunity,
-    loading,
-  } = useCommunitySettings(communityData);
+  const { updateImage, deleteCommunityImage } =
+    useCommunityImage(communityData);
+  const { updatePrivacyType } = useCommunityPrivacy(communityData);
+  const { deleteCommunity, loading } = useDeleteCommunity(communityData);
 
   const handlePrivacyTypeChange = (details: { value: string }) => {
     setSelectedPrivacyType(details.value);
