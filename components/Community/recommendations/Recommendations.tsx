@@ -1,4 +1,4 @@
-import useCommunitiesFeed from "@/hooks/useCommunitiesFeed";
+import useCommunitiesFeed from "@/hooks/community/useCommunitiesFeed";
 import useCommunityState from "@/hooks/community/useCommunityState";
 import useCommunityMembershipActions from "@/hooks/community/useCommunityMembershipActions";
 import {

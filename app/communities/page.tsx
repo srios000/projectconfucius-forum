@@ -4,7 +4,7 @@ import CommunityItem from "@/components/Community/community-item/CommunityItem";
 import PersonalHome from "@/components/Community/PersonalHome";
 import PageContent from "@/components/Layout/PageContent";
 import CommunityLoader from "@/components/Loaders/CommunityLoader";
-import useCommunitiesFeed from "@/hooks/useCommunitiesFeed";
+import useCommunitiesFeed from "@/hooks/community/useCommunitiesFeed";
 import useCommunityState from "@/hooks/community/useCommunityState";
 import useCommunityMembershipActions from "@/hooks/community/useCommunityMembershipActions";
 import { useIntersectionObserver } from "@/hooks/useIntersectionObserver";

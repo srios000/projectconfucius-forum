@@ -4,7 +4,7 @@ import { collection, getDocs } from "firebase/firestore";
 import { useSetAtom } from "jotai";
 import { useEffect, useState } from "react";
 import { useAuthState } from "react-firebase-hooks/auth";
-import useCustomToast from "./useCustomToast";
+import useCustomToast from "../useCustomToast";
 
 export const useCommunitySnippets = () => {
   const [user] = useAuthState(auth);

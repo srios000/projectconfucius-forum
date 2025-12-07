@@ -9,7 +9,7 @@ import PostLoader from "@/components/Loaders/post-loader/PostLoader";
 import Comments from "@/components/Posts/Comments/Comments";
 import PostItem from "@/components/Posts/post-item/PostItem";
 import { auth } from "@/firebase/clientApp";
-import useCommunityPermissions from "@/hooks/useCommunityPermissions";
+import useCommunityPermissions from "@/hooks/community/useCommunityPermissions";
 import usePosts from "@/hooks/usePosts";
 import { Stack } from "@chakra-ui/react";
 import { User } from "firebase/auth";

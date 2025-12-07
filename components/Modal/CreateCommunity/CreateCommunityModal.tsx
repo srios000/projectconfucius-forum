@@ -1,4 +1,4 @@
-import { useCreateCommunity } from "@/hooks/useCreateCommunity";
+import { useCreateCommunity } from "@/hooks/community/useCreateCommunity";
 import {
   Box,
   Button,
