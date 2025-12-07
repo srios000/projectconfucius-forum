@@ -6,7 +6,7 @@ import CreatePostLink from "@/components/Community/CreatePostLink";
 import PersonalHome from "@/components/Community/PersonalHome";
 import Recommendations from "@/components/Community/recommendations/Recommendations";
 import PageContent from "@/components/Layout/PageContent";
-import PostLoader from "@/components/Loaders/PostLoader";
+import PostLoader from "@/components/Loaders/post-loader/PostLoader";
 import PostItem from "@/components/Posts/PostItem";
 import { auth, firestore } from "@/firebase/clientApp";
 import useCommunityData from "@/hooks/useCommunityData";

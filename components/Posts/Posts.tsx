@@ -7,7 +7,7 @@ import usePostsFeed from "@/hooks/usePostsFeed";
 import { Box, Spinner, Stack, Text } from "@chakra-ui/react";
 import React, { useEffect } from "react";
 import { useAuthState } from "react-firebase-hooks/auth";
-import PostLoader from "../Loaders/PostLoader";
+import PostLoader from "../Loaders/post-loader/PostLoader";
 import PostItem from "./PostItem";
 
 /**

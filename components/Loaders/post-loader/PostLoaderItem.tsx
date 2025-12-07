@@ -1,5 +1,5 @@
+import { Box, Skeleton, SkeletonText } from "@chakra-ui/react";
 import React from "react";
-import { Stack, Box, SkeletonText, Skeleton } from "@chakra-ui/react";
 
 type PostLoaderItemProps = {
   height: string;
@@ -37,19 +37,4 @@ const PostLoaderItem: React.FC<PostLoaderItemProps> = ({ height }) => {
   );
 };
 
-/**
- * Component to display a post loader while the post is being loaded.
- * @returns {React.FC} - loading component while the post is being loaded
- *
- * @requires PostLoaderItem - actual post loader item of the given height
- */
-const PostLoader: React.FC = () => {
-  return (
-    <Stack gap={6}>
-      <PostLoaderItem height="200px" />
-      <PostLoaderItem height="50px" />
-    </Stack>
-  );
-};
-
-export default PostLoader;
+export default PostLoaderItem;

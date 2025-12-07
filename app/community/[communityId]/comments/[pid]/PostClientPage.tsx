@@ -5,7 +5,7 @@ import { Community, communityStateAtom } from "@/atoms/communitiesAtom";
 import { Post } from "@/atoms/postsAtom";
 import About from "@/components/Community/about/About";
 import PageContent from "@/components/Layout/PageContent";
-import PostLoader from "@/components/Loaders/PostLoader";
+import PostLoader from "@/components/Loaders/post-loader/PostLoader";
 import Comments from "@/components/Posts/Comments/Comments";
 import PostItem from "@/components/Posts/PostItem";
 import { auth } from "@/firebase/clientApp";
