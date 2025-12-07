@@ -1,0 +1,37 @@
+import { Community, communityStateAtom } from "@/atoms/communitiesAtom";
+import { AdminUser, removeCommunityAdmin } from "@/lib/communityAdmins";
+import { useSetAtom } from "jotai";
+import { Dispatch, SetStateAction, useCallback } from "react";
+
+const useRemoveAdmin = () => {
+  const setCommunityStateValue = useSetAtom(communityStateAtom);
+
+  const handleRemoveAdmin = useCallback(
+    async (
+      communityId: string,
+      userId: string,
+      updateAdmins?: Dispatch<SetStateAction<AdminUser[]>>
+    ) => {
+      await removeCommunityAdmin(communityId, userId);
+
+      if (updateAdmins) {
+        updateAdmins((prev) => prev.filter((admin) => admin.uid !== userId));
+      }
+
+      setCommunityStateValue((prev) => ({
+        ...prev,
+        currentCommunity: {
+          ...prev.currentCommunity!,
+          adminIds: (prev.currentCommunity?.adminIds || []).filter(
+            (id) => id !== userId
+          ),
+        } as Community,
+      }));
+    },
+    [setCommunityStateValue]
+  );
+
+  return { handleRemoveAdmin };
+};
+
+export default useRemoveAdmin;

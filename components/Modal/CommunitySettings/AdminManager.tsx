@@ -1,7 +1,10 @@
 import { Community } from "@/atoms/communitiesAtom";
 import { auth } from "@/firebase/clientApp";
 import useCustomToast from "@/hooks/useCustomToast";
-import useAdmins from "@/hooks/useAdmins";
+import useAddAdmin from "@/hooks/admin/useAddAdmin";
+import useAdminList from "@/hooks/admin/useAdminList";
+import useAdminSearch from "@/hooks/admin/useAdminSearch";
+import useRemoveAdmin from "@/hooks/admin/useRemoveAdmin";
 import {
   Box,
   Button,
@@ -20,15 +23,10 @@ type AdminManagerProps = {
 };
 
 const AdminManager: React.FC<AdminManagerProps> = ({ communityData }) => {
-  const {
-    admins,
-    loading,
-    loadAdmins,
-    searchUsers,
-    findUser,
-    handleAddAdmin,
-    handleRemoveAdmin,
-  } = useAdmins();
+  const { admins, setAdmins, loading, loadAdmins } = useAdminList();
+  const { searchUsers, findUser } = useAdminSearch();
+  const { handleAddAdmin } = useAddAdmin();
+  const { handleRemoveAdmin } = useRemoveAdmin();
   const [newAdminEmail, setNewAdminEmail] = useState("");
   const [addingAdmin, setAddingAdmin] = useState(false);
   const [searchResults, setSearchResults] = useState<AdminUser[]>([]);
@@ -77,7 +75,12 @@ const AdminManager: React.FC<AdminManagerProps> = ({ communityData }) => {
       }
 
       // 3. Add admin (updates Firestore + local + global state)
-      await handleAddAdmin(communityData.id, newUser, communityData.imageURL);
+      await handleAddAdmin(
+        communityData.id,
+        newUser,
+        communityData.imageURL,
+        setAdmins
+      );
 
       setNewAdminEmail("");
 
@@ -101,7 +104,7 @@ const AdminManager: React.FC<AdminManagerProps> = ({ communityData }) => {
   const onRemoveAdmin = async (uid: string) => {
     try {
       // Remove admin (updates Firestore + local + global state)
-      await handleRemoveAdmin(communityData.id, uid);
+      await handleRemoveAdmin(communityData.id, uid, setAdmins);
 
       showToast({
         title: "Admin removed",
