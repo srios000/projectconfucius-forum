@@ -1,7 +1,8 @@
 import { Community } from "@/atoms/communitiesAtom";
 import { Box, Flex } from "@chakra-ui/react";
 import React from "react";
-import useCommunityData from "@/hooks/useCommunityData";
+import useCommunityState from "@/hooks/community/useCommunityState";
+import useCommunityMembershipActions from "@/hooks/community/useCommunityMembershipActions";
 import CommunityIcon from "./CommunityIcon";
 import CommunityName from "./CommunityName";
 import JoinOrLeaveButton from "./JoinOrLeaveButton";
@@ -30,8 +31,8 @@ type HeaderProps = {
  * @requires JoinOrLeaveButton - Displays the subscribe and unsubscribe button.
  */
 const CommunityHeader: React.FC<HeaderProps> = ({ communityData }) => {
-  const { communityStateValue, onJoinOrLeaveCommunity, loading } =
-    useCommunityData();
+  const { communityStateValue } = useCommunityState();
+  const { onJoinOrLeaveCommunity, loading } = useCommunityMembershipActions();
   const isJoined = !!communityStateValue.mySnippets.find(
     (item) => item.communityId === communityData.id
   );

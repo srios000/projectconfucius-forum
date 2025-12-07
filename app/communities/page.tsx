@@ -5,7 +5,8 @@ import PersonalHome from "@/components/Community/PersonalHome";
 import PageContent from "@/components/Layout/PageContent";
 import CommunityLoader from "@/components/Loaders/CommunityLoader";
 import useCommunitiesFeed from "@/hooks/useCommunitiesFeed";
-import useCommunityData from "@/hooks/useCommunityData";
+import useCommunityState from "@/hooks/community/useCommunityState";
+import useCommunityMembershipActions from "@/hooks/community/useCommunityMembershipActions";
 import { useIntersectionObserver } from "@/hooks/useIntersectionObserver";
 import { Box, Heading, Spinner, Stack, Text } from "@chakra-ui/react";
 import React, { useEffect, useMemo } from "react";
@@ -17,7 +18,8 @@ import { Community } from "@/atoms/communitiesAtom";
  * @returns {React.FC} - the communities page with the top 5 communities.
  */
 const Communities: React.FC = () => {
-  const { communityStateValue, onJoinOrLeaveCommunity } = useCommunityData();
+  const { communityStateValue } = useCommunityState();
+  const { onJoinOrLeaveCommunity } = useCommunityMembershipActions();
   const { communities, loading, fetchCommunities, noMoreCommunities } =
     useCommunitiesFeed({ limitValue: 10, isPagination: true });
   const observerOptions = useMemo(() => ({ threshold: 0.5 }), []);

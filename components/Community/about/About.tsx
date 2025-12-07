@@ -1,5 +1,5 @@
 import { Community } from "@/atoms/communitiesAtom";
-import useCommunityData from "@/hooks/useCommunityData";
+import useCommunityState from "@/hooks/community/useCommunityState";
 import { Box, Button, Flex, Stack } from "@chakra-ui/react";
 import { useRouter } from "next/navigation";
 import React, { useState } from "react";
@@ -32,7 +32,7 @@ type AboutProps = {
  */
 const About: React.FC<AboutProps> = ({ communityData }) => {
   const router = useRouter();
-  const { communityStateValue } = useCommunityData();
+  const { communityStateValue } = useCommunityState();
   const isJoined = !!communityStateValue.mySnippets.find(
     (item) => item.communityId === communityData.id
   );

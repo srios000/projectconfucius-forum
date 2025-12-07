@@ -1,5 +1,6 @@
 import useCommunitiesFeed from "@/hooks/useCommunitiesFeed";
-import useCommunityData from "@/hooks/useCommunityData";
+import useCommunityState from "@/hooks/community/useCommunityState";
+import useCommunityMembershipActions from "@/hooks/community/useCommunityMembershipActions";
 import {
   Box,
   Button,
@@ -18,7 +19,8 @@ import SuggestionsHeader from "./SuggestionsHeader";
  * @returns {React.FC} - the recommendations component.
  */
 const Recommendations: React.FC = () => {
-  const { communityStateValue, onJoinOrLeaveCommunity } = useCommunityData();
+  const { communityStateValue } = useCommunityState();
+  const { onJoinOrLeaveCommunity } = useCommunityMembershipActions();
   const { communities, loading } = useCommunitiesFeed({ limitValue: 5 });
   const router = useRouter();
 

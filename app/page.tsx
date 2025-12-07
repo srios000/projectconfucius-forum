@@ -9,7 +9,7 @@ import PageContent from "@/components/Layout/PageContent";
 import PostLoader from "@/components/Loaders/post-loader/PostLoader";
 import PostItem from "@/components/Posts/post-item/PostItem";
 import { auth, firestore } from "@/firebase/clientApp";
-import useCommunityData from "@/hooks/useCommunityData";
+import useCommunityState from "@/hooks/community/useCommunityState";
 import useCustomToast from "@/hooks/useCustomToast";
 import usePosts from "@/hooks/usePosts";
 import usePostsFeed from "@/hooks/usePostsFeed";
@@ -20,7 +20,7 @@ import { useAuthState } from "react-firebase-hooks/auth";
 
 export default function Home() {
   const [user, loadingUser] = useAuthState(auth);
-  const { communityStateValue } = useCommunityData();
+  const { communityStateValue } = useCommunityState();
   const {
     setPostStateValue,
     postStateValue,
