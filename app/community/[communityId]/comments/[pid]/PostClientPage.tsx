@@ -3,7 +3,7 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import { Community, communityStateAtom } from "@/atoms/communitiesAtom";
 import { Post } from "@/atoms/postsAtom";
-import About from "@/components/Community/About";
+import About from "@/components/Community/about/About";
 import PageContent from "@/components/Layout/PageContent";
 import PostLoader from "@/components/Loaders/PostLoader";
 import Comments from "@/components/Posts/Comments/Comments";

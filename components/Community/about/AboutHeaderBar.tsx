@@ -1,0 +1,25 @@
+import React from "react";
+import { Flex, Text, Icon } from "@chakra-ui/react";
+import { HiOutlineDotsHorizontal } from "react-icons/hi";
+
+interface AboutHeaderBarProps {
+  communityName: string;
+}
+
+const AboutHeaderBar: React.FC<AboutHeaderBarProps> = ({ communityName }) => (
+  <Flex
+    justify="space-between"
+    align="center"
+    bg={{ base: "red.500", _dark: "red.600" }}
+    color="white"
+    p={3}
+    borderRadius="10px 10px 0px 0px"
+  >
+    <Text fontSize="10pt" fontWeight={700}>
+      About {communityName}
+    </Text>
+    <Icon as={HiOutlineDotsHorizontal} />
+  </Flex>
+);
+
+export default AboutHeaderBar;

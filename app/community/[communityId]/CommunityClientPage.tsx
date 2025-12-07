@@ -1,7 +1,7 @@
 "use client";
 
 import { Community, communityStateAtom } from "@/atoms/communitiesAtom";
-import About from "@/components/Community/About";
+import About from "@/components/Community/about/About";
 import CreatePostLink from "@/components/Community/CreatePostLink";
 import Header from "@/components/Community/Header";
 import PageContent from "@/components/Layout/PageContent";
