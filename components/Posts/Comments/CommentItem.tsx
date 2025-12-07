@@ -1,13 +1,5 @@
 import { Comment } from "@/hooks/useComments";
-import {
-  Box,
-  Button,
-  Flex,
-  Icon,
-  Spinner,
-  Stack,
-  Text,
-} from "@chakra-ui/react";
+import { Box, Button, Flex, Icon, Spinner, Stack, Text } from "@chakra-ui/react";
 import { User } from "firebase/auth";
 import React, { useState } from "react";
 import { CgProfile } from "react-icons/cg";

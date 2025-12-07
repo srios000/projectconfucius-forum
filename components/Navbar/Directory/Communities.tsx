@@ -1,5 +1,5 @@
 import { communityStateAtom } from "@/atoms/communitiesAtom";
-import CustomMenuButton from "@/components/atoms/CustomMenuButton";
+import CustomMenuButton from "@/components/ui/CustomMenuButton";
 import useDirectory from "@/hooks/useDirectory";
 import { Box, Text } from "@chakra-ui/react";
 import { useAtomValue } from "jotai";

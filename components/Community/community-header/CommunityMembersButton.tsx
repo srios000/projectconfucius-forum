@@ -1,0 +1,41 @@
+import React, { useState } from "react";
+import { IconButton, Icon } from "@chakra-ui/react";
+import CommunityMembersModal from "../../Modal/CommunityMembers/CommunityMembersModal";
+import { FiUsers } from "react-icons/fi";
+import { Community } from "@/atoms/communitiesAtom";
+
+type CommunityMembersButtonProps = {
+  communityId: string;
+  isJoined: boolean;
+};
+
+const CommunityMembersButton: React.FC<CommunityMembersButtonProps> = ({
+  communityId,
+  isJoined,
+}) => {
+  const [isModalOpen, setModalOpen] = useState(false);
+
+  if (!isJoined) {
+    return null;
+  }
+
+  return (
+    <>
+      <CommunityMembersModal
+        isOpen={isModalOpen}
+        onClose={() => setModalOpen(false)}
+        communityId={communityId}
+      />
+      <IconButton
+        aria-label="Toggle color mode"
+        variant="ghost"
+        fontSize={20}
+        onClick={() => setModalOpen(true)}
+      >
+        <Icon as={FiUsers} />
+      </IconButton>
+    </>
+  );
+};
+
+export default CommunityMembersButton;

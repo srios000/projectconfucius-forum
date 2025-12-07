@@ -1,6 +1,6 @@
 "use client";
 
-import CommunityItem from "@/components/Community/CommunityItem";
+import CommunityItem from "@/components/Community/community-item/CommunityItem";
 import PersonalHome from "@/components/Community/PersonalHome";
 import PageContent from "@/components/Layout/PageContent";
 import CommunityLoader from "@/components/Loaders/CommunityLoader";

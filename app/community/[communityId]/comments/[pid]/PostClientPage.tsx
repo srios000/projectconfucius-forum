@@ -3,11 +3,11 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import { Community, communityStateAtom } from "@/atoms/communitiesAtom";
 import { Post } from "@/atoms/postsAtom";
-import About from "@/components/Community/About";
+import About from "@/components/Community/about/About";
 import PageContent from "@/components/Layout/PageContent";
-import PostLoader from "@/components/Loaders/PostLoader";
+import PostLoader from "@/components/Loaders/post-loader/PostLoader";
 import Comments from "@/components/Posts/Comments/Comments";
-import PostItem from "@/components/Posts/PostItem";
+import PostItem from "@/components/Posts/post-item/PostItem";
 import { auth } from "@/firebase/clientApp";
 import useCommunityPermissions from "@/hooks/useCommunityPermissions";
 import usePosts from "@/hooks/usePosts";
