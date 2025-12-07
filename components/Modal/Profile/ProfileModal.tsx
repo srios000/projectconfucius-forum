@@ -1,8 +1,7 @@
-import { auth, firestore, storage } from "@/firebase/clientApp";
-import useCustomToast from "@/hooks/useCustomToast";
+import { auth } from "@/firebase/clientApp";
 import useSelectFile from "@/hooks/useSelectFile";
+import useUserProfile from "@/hooks/useUserProfile";
 import {
-  Box,
   Button,
   DialogBackdrop,
   DialogBody,
@@ -20,25 +19,8 @@ import {
   Stack,
   Text,
 } from "@chakra-ui/react";
-import {
-  query,
-  collection,
-  where,
-  getDocs,
-  writeBatch,
-  doc,
-} from "firebase/firestore";
-import {
-  deleteObject,
-  getDownloadURL,
-  ref,
-  uploadString,
-} from "firebase/storage";
-import { useRouter } from "next/navigation";
-import { postStateAtom } from "@/atoms/postsAtom";
-import { useSetAtom } from "jotai";
 import React, { useRef, useState } from "react";
-import { useAuthState, useUpdateProfile } from "react-firebase-hooks/auth";
+import { useAuthState } from "react-firebase-hooks/auth";
 import { MdAccountCircle } from "react-icons/md";
 
 type ProfileModalProps = {
@@ -48,17 +30,13 @@ type ProfileModalProps = {
 
 const ProfileModal: React.FC<ProfileModalProps> = ({ open, handleClose }) => {
   const [user] = useAuthState(auth);
-  const setPostStateValue = useSetAtom(postStateAtom);
-  const [updateProfile, updating, error] = useUpdateProfile(auth);
-  const router = useRouter();
+  const { updateImage, removeImage, updateName, loading } = useUserProfile();
   const { selectedFile, setSelectedFile, onSelectFile } = useSelectFile(
     300,
     300
   );
   const selectFileRef = useRef<HTMLInputElement>(null);
-  const [uploadingImage, setUploadingImage] = useState(false);
   const [deleteImage, setDeleteImage] = useState(false);
-  const showToast = useCustomToast();
   const [userName, setUserName] = useState(user?.displayName || "");
   const [isEditing, setIsEditing] = useState(false);
 
@@ -77,39 +55,8 @@ const ProfileModal: React.FC<ProfileModalProps> = ({ open, handleClose }) => {
    * Exists if the user is not logged in or no image is selected.
    */
   const onUpdateImage = async () => {
-    if (!(user && selectedFile)) {
-      return;
-    }
-    try {
-      setUploadingImage(true);
-
-      const imageRef = ref(storage, `users/${user?.uid}/profileImage`); // path to store image
-      await uploadString(imageRef, selectedFile, "data_url"); // upload image
-      const downloadURL = await getDownloadURL(imageRef); // get image url
-
-      const success = await updateProfile({
-        photoURL: downloadURL,
-      }); // update profile image url in firestore
-      if (!success) {
-        throw new Error("Failed to update profile image");
-      }
-      await user?.reload(); // reload user to update auth state
-      router.refresh(); // refresh server components
-
-      showToast({
-        title: "Profile updated",
-        description: "Your profile has been updated",
-        status: "success",
-      });
-    } catch (error) {
-      console.error("Error: onUpdateImage: ", error);
-      showToast({
-        title: "Image not Updated",
-        description: "Failed to update profile image",
-        status: "error",
-      });
-    } finally {
-      setUploadingImage(false);
+    if (selectedFile) {
+      await updateImage(selectedFile);
     }
   };
 
@@ -118,82 +65,7 @@ const ProfileModal: React.FC<ProfileModalProps> = ({ open, handleClose }) => {
    * Exists if the user is not logged in.
    */
   const onDeleteImage = async () => {
-    try {
-      if (!user) {
-        return;
-      }
-      const imageRef = ref(storage, `users/${user?.uid}/profileImage`); // path to store image
-      await deleteObject(imageRef); // delete image
-      const success = await updateProfile({
-        photoURL: "",
-      }); // update profile image url in firestore
-      if (!success) {
-        throw new Error("Failed to delete profile image");
-      }
-      await user?.reload(); // reload user to update auth state
-      router.refresh(); // refresh server components
-
-      showToast({
-        title: "Profile updated",
-        description: "Your profile has been updated",
-        status: "success",
-      });
-    } catch (error) {
-      console.error("Error: onDeleteImage: ", error);
-      showToast({
-        title: "Image not Deleted",
-        description: "Failed to delete profile image",
-        status: "error",
-      });
-    }
-  };
-
-  /**
-   * Updates the name of the creator of the comments.
-   * Finds all the comments a user has created and updates the creator name.
-   * @param {string} userId - ID of the user whose comments are to be updated
-   * @param {string} newUserName - New name of the user
-   */
-  const updateUserNameInComments = async (
-    userId: string,
-    newUserName: string
-  ) => {
-    const commentsQuery = query(
-      collection(firestore, "comments"),
-      where("creatorId", "==", userId)
-    ); // query to get all comments by the user
-    const commentsSnapshot = await getDocs(commentsQuery); // get all comments by the user
-
-    const batch = writeBatch(firestore); // create batch to update multiple documents
-
-    commentsSnapshot.forEach((commentDoc) => {
-      const commentRef = doc(firestore, "comments", commentDoc.id);
-      batch.update(commentRef, { creatorDisplayText: newUserName });
-    }); // update all comments
-
-    await batch.commit(); // commit batch
-  };
-
-  // Function to update creatorUsername in posts
-  /**
-   * Updates the name of the creator of the posts.
-   * Finds all the posts a user has created and updates the creator name.
-   */
-  const updateUserNameInPosts = async (userId: string, newUserName: string) => {
-    const postsQuery = query(
-      collection(firestore, "posts"),
-      where("creatorId", "==", userId)
-    ); // query to get all posts by the user
-    const postsSnapshot = await getDocs(postsQuery);
-
-    const batch = writeBatch(firestore); // create batch to update multiple documents
-
-    postsSnapshot.forEach((postDoc) => {
-      const postRef = doc(firestore, "posts", postDoc.id);
-      batch.update(postRef, { creatorUsername: newUserName });
-    }); // update all posts
-
-    await batch.commit();
+    await removeImage();
   };
 
   /**
@@ -205,37 +77,8 @@ const ProfileModal: React.FC<ProfileModalProps> = ({ open, handleClose }) => {
    * Updates values in multiple places as they are repeated in different collections.
    */
   const onUpdateUserName = async () => {
-    try {
-      const success = await updateProfile({
-        displayName: userName,
-      });
-
-      if (!success) {
-        throw new Error("Failed to update profile name");
-      }
-      // Update the creatorDisplayText in comments and creatorUsername in posts
-      await updateUserNameInComments(user!.uid, userName);
-      await updateUserNameInPosts(user!.uid, userName);
-
-      // Update local state for posts
-      setPostStateValue((prev) => ({
-        ...prev,
-        posts: prev.posts.map((post) => {
-          if (post.creatorId === user!.uid) {
-            return { ...post, creatorUsername: userName };
-          }
-          return post;
-        }),
-      }));
-      await user?.reload(); // reload user to update auth state
-      router.refresh(); // refresh server components
-    } catch (error) {
-      console.error("Error: onUpdateUserName: ", error);
-      showToast({
-        title: "Name not Updated",
-        description: "Failed to update profile name",
-        status: "error",
-      });
+    if (userName) {
+      await updateName(userName);
     }
   };
 
