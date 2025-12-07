@@ -6,7 +6,7 @@ import React from "react";
 import AuthButtons from "./AuthButtons";
 import Icons from "./Icons";
 import LogOutButton from "./LogOutButton";
-import UserMenu from "./UserMenu";
+import UserMenu from "./user-menu/UserMenu";
 
 type RightContentProps = {
   user?: User | null;
