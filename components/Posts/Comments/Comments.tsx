@@ -1,6 +1,9 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import { Post } from "@/atoms/postsAtom";
-import useComments, { Comment } from "@/hooks/useComments";
+import { Comment } from "@/hooks/comments/types";
+import useCommentList from "@/hooks/comments/useCommentList";
+import useCreateComment from "@/hooks/comments/useCreateComment";
+import useDeleteComment from "@/hooks/comments/useDeleteComment";
 import {
   Box,
   Flex,
@@ -50,17 +53,19 @@ const Comments: React.FC<CommentsProps> = ({
   isCommunityAdmin,
 }) => {
   const [commentText, setCommentText] = useState("");
-  const {
+  const { comments, setComments, commentFetchLoading } =
+    useCommentList(selectedPost);
+  const { createComment, createLoading } = useCreateComment(
+    selectedPost,
+    setComments
+  );
+  const { deleteComment, deleteLoadingId } = useDeleteComment(
     comments,
-    onCreateComment,
-    onDeleteComment,
-    commentFetchLoading,
-    createLoading,
-    deleteLoadingId,
-  } = useComments(selectedPost);
+    setComments
+  );
 
   const handleCreateComment = async (text: string) => {
-    await onCreateComment(user!, text);
+    await createComment(user!, text);
     setCommentText("");
   };
 
@@ -177,11 +182,11 @@ const Comments: React.FC<CommentsProps> = ({
                             <Box flex={1}>
                               <CommentItem
                                 comment={comment}
-                                onDeleteComment={onDeleteComment}
+                                onDeleteComment={deleteComment}
                                 loadingDelete={deleteLoadingId === comment.id}
                                 userId={user?.uid}
                                 isCommunityAdmin={isCommunityAdmin}
-                                onCreateComment={onCreateComment}
+                                onCreateComment={createComment}
                                 user={user}
                               />
                             </Box>
@@ -196,13 +201,13 @@ const Comments: React.FC<CommentsProps> = ({
                           cursor="default"
                         >
                           <Box pl={6} width="100%">
-                            <CommentItem
+                              <CommentItem
                               comment={comment}
-                              onDeleteComment={onDeleteComment}
+                              onDeleteComment={deleteComment}
                               loadingDelete={deleteLoadingId === comment.id}
                               userId={user?.uid}
                               isCommunityAdmin={isCommunityAdmin}
-                              onCreateComment={onCreateComment}
+                              onCreateComment={createComment}
                               user={user}
                             />
                           </Box>
