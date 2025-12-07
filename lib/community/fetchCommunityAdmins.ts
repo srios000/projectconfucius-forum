@@ -1,7 +1,7 @@
 import { firestore } from "@/firebase/clientApp";
 import { doc, getDoc } from "firebase/firestore";
 
-import { AdminUser } from "./adminTypes";
+import { AdminUser } from "../../types/adminUserType";
 
 /**
  * Fetches all admins for a community.

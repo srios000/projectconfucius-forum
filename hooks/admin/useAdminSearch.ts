@@ -1,5 +1,5 @@
 import { useCallback } from "react";
-import { AdminUser } from "@/lib/community/adminTypes";
+import { AdminUser } from "@/types/adminUserType";
 import { findUserByEmail } from "@/lib/community/findUserByEmail";
 import { searchUsersByEmail } from "@/lib/community/searchUsersByEmail";
 
