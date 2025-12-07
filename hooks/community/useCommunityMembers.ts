@@ -1,10 +1,10 @@
-'use client';
+"use client";
 
 import { useCallback, useState } from "react";
 import {
   CommunityMember,
   fetchCommunityMembers,
-} from "@/lib/communityMembers";
+} from "@/lib/community/fetchCommunityMembers";
 
 const useCommunityMembers = () => {
   const [members, setMembers] = useState<CommunityMember[]>([]);

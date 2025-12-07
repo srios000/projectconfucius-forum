@@ -1,11 +1,9 @@
 import { postStateAtom } from "@/atoms/postsAtom";
 import { auth } from "@/firebase/clientApp";
-import {
-  deleteProfileImage,
-  updateUserCommentsName,
-  updateUserPostsName,
-  uploadProfileImage,
-} from "@/lib/userProfile";
+import { deleteProfileImage } from "@/lib/user-profile/deleteProfileImage";
+import { updateUserCommentsName } from "@/lib/user-profile/updateUserCommentsName";
+import { updateUserPostsName } from "@/lib/user-profile/updateUserPostsName";
+import { uploadProfileImage } from "@/lib/user-profile/uploadProfileImage";
 import { useSetAtom } from "jotai";
 import { useRouter } from "next/navigation";
 import { useState } from "react";

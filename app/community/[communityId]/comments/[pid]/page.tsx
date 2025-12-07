@@ -1,7 +1,7 @@
-import { getCommunityData } from "@/lib/communities";
-import { getPost } from "@/lib/posts";
+import { getCommunityData } from "@/lib/community/getCommunityData";
 import PostClientPage from "./PostClientPage";
 import { notFound } from "next/navigation";
+import { getPost } from "@/lib/post/getPost";
 
 export default async function PostPage({
   params,

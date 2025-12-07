@@ -16,7 +16,7 @@ import {
   Stack,
   Text,
 } from "@chakra-ui/react";
-import { CommunityMember } from "@/lib/communityMembers";
+import { CommunityMember } from "@/lib/community/fetchCommunityMembers";
 import useCommunityMembers from "@/hooks/community/useCommunityMembers";
 
 type CommunityMembersModalProps = {
