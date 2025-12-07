@@ -3,7 +3,7 @@ import { Community } from "@/atoms/communitiesAtom";
 import { auth } from "@/firebase/clientApp";
 import useCommunityPermissions from "@/hooks/community/useCommunityPermissions";
 import usePosts from "@/hooks/posts/usePosts";
-import usePostsFeed from "@/hooks/usePostsFeed";
+import usePostsFeed from "@/hooks/posts/usePostsFeed";
 import { Box, Spinner, Stack, Text } from "@chakra-ui/react";
 import React, { useEffect } from "react";
 import { useAuthState } from "react-firebase-hooks/auth";

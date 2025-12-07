@@ -1,4 +1,4 @@
-import useCallCreatePost from "@/hooks/useCallCreatePost";
+import useCallCreatePost from "@/hooks/posts/useCallCreatePost";
 import { Flex, Icon, Input } from "@chakra-ui/react";
 import React from "react";
 import { BsLink45Deg } from "react-icons/bs";

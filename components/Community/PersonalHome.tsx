@@ -1,5 +1,5 @@
 import { communityStateAtom } from "@/atoms/communitiesAtom";
-import useCallCreatePost from "@/hooks/useCallCreatePost";
+import useCallCreatePost from "@/hooks/posts/useCallCreatePost";
 import { Button, Flex, Image, Stack, Text } from "@chakra-ui/react";
 import { useAtomValue } from "jotai";
 import React, { useState } from "react";

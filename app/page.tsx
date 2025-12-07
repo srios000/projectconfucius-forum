@@ -12,7 +12,7 @@ import { auth, firestore } from "@/firebase/clientApp";
 import useCommunityState from "@/hooks/community/useCommunityState";
 import useCustomToast from "@/hooks/useCustomToast";
 import usePosts from "@/hooks/posts/usePosts";
-import usePostsFeed from "@/hooks/usePostsFeed";
+import usePostsFeed from "@/hooks/posts/usePostsFeed";
 import { Box, Spinner, Stack, Text } from "@chakra-ui/react";
 import { collection, getDocs, query, where } from "firebase/firestore";
 import { useEffect, useMemo } from "react";

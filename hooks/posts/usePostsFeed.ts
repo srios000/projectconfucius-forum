@@ -14,8 +14,8 @@ import {
 } from "firebase/firestore";
 import { useSetAtom } from "jotai";
 import { useEffect, useMemo, useState } from "react";
-import useCustomToast from "./useCustomToast";
-import { useIntersectionObserver } from "./useIntersectionObserver";
+import useCustomToast from "../useCustomToast";
+import { useIntersectionObserver } from "../useIntersectionObserver";
 
 type UsePostsFeedProps = {
   communityId?: string;
@@ -62,9 +62,7 @@ const usePostsFeed = ({
 
   const fetchPosts = async (initial = false) => {
     if (loading) return;
-    // If not initial and no more posts, don't fetch
     if (!initial && noMorePosts) return;
-    // If not initial and no lastVisible, don't fetch (unless it's the very first fetch which is initial=true)
     if (!initial && !lastVisible) return;
 
     setLoading(true);
@@ -80,7 +78,6 @@ const usePostsFeed = ({
       if (postDocs.docs.length > 0)
         setLastVisible(postDocs.docs[postDocs.docs.length - 1]);
       else if (initial) {
-        // If initial fetch returns no posts, set noMorePosts to true
         setNoMorePosts(true);
       }
 
@@ -109,10 +106,7 @@ const usePostsFeed = ({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isIntersecting, loading, noMorePosts, lastVisible]);
 
-  // Reset state when props change significantly (e.g. switching communities)
   useEffect(() => {
-    // We don't automatically fetch here because the parent component might want to control when to start fetching
-    // But we should reset pagination state
     setNoMorePosts(false);
     setLastVisible(null);
     setPostStateValue((prev) => ({
@@ -120,22 +114,18 @@ const usePostsFeed = ({
       posts: [],
     }));
 
-    // Cleanup function to clear posts when component unmounts or community changes
     return () => {
       setPostStateValue((prev) => ({
         ...prev,
         posts: [],
       }));
     };
-  }, [communityId, isGenericHome]);
-
-  // For communityIds (user home feed), we might want to reset too, but be careful about infinite loops if array reference changes
-  // We'll assume the parent handles the "when to fetch" logic via useEffect calling fetchPosts(true)
+  }, [communityId, isGenericHome, setPostStateValue]);
 
   return {
     loading,
     fetchPosts,
-    ref, // for the intersection observer target
+    ref,
     noMorePosts,
   };
 };

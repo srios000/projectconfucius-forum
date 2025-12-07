@@ -1,7 +1,7 @@
 "use client";
 import { auth } from "@/firebase/clientApp";
 import { useCommunitySnippets } from "@/hooks/community/useCommunitySnippets";
-import useSavedPosts from "@/hooks/useSavedPosts";
+import useSavedPosts from "@/hooks/posts/useSavedPosts";
 import React, { useEffect } from "react";
 import { useAuthState } from "react-firebase-hooks/auth";
 

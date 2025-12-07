@@ -1,5 +1,5 @@
 import { Community } from "@/atoms/communitiesAtom";
-import useCreatePost from "@/hooks/useCreatePost";
+import useCreatePost from "@/hooks/posts/useCreatePost";
 import useSelectFile from "@/hooks/useSelectFile";
 import { Flex, Icon } from "@chakra-ui/react";
 import { User } from "firebase/auth";
