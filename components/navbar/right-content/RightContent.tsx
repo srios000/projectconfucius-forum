@@ -1,5 +1,5 @@
-import AuthModal from "@/components/Modal/Auth/AuthModal";
-import SavedPostsModal from "@/components/Modal/SavedPosts/SavedPostsModal";
+import AuthModal from "@/components/modal/auth/AuthModal";
+import SavedPostsModal from "@/components/modal/saved-posts/SavedPostsModal";
 import { Flex } from "@chakra-ui/react";
 import { User } from "firebase/auth";
 import React from "react";

@@ -2,10 +2,10 @@
 
 import { authModalStateAtom } from "@/atoms/authModalAtom";
 import { communityStateAtom } from "@/atoms/communitiesAtom";
-import About from "@/components/Community/about/About";
-import PageContent from "@/components/Layout/PageContent";
-import AuthButtons from "@/components/Navbar/RightContent/AuthButtons";
-import NewPostForm from "@/components/Posts/new-post-form/NewPostForm";
+import About from "@/components/community/about/About";
+import PageContent from "@/components/layout/PageContent";
+import AuthButtons from "@/components/navbar/right-content/AuthButtons";
+import NewPostForm from "@/components/posts/new-post-form/NewPostForm";
 import { auth } from "@/firebase/clientApp";
 import { Box, Stack, Text } from "@chakra-ui/react";
 import { useAtom, useSetAtom } from "jotai";

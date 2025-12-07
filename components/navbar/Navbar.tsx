@@ -4,8 +4,8 @@ import useDirectory from "@/hooks/useDirectory";
 import { Flex, Image, Text } from "@chakra-ui/react";
 import React from "react";
 import { useAuthState } from "react-firebase-hooks/auth";
-import Directory from "./Directory/Directory";
-import RightContent from "./RightContent/RightContent";
+import Directory from "./directory/Directory";
+import RightContent from "./right-content/RightContent";
 import SearchInput from "./SearchInput";
 
 /**
@@ -28,9 +28,9 @@ import SearchInput from "./SearchInput";
  *  - User menu with different options
  * @returns {React.FC} - Navbar component
  *
- * @requires ./RightContent - content displaying authentication buttons or actions
+ * @requires ./right-content - content displaying authentication buttons or actions
  * @requires ./SearchInput - Search field
- * @requires ./Directory - showing community menu button
+ * @requires ./directory - showing community menu button
  */
 const Navbar: React.FC = () => {
   const [user, loading, error] = useAuthState(auth); // will be passed to child components

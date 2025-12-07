@@ -5,7 +5,7 @@ import { useParams } from "next/navigation";
 import { useAuthState } from "react-firebase-hooks/auth";
 import { auth } from "@/firebase/clientApp";
 import { FiSettings } from "react-icons/fi";
-import CommunitySettingsModal from "../../Modal/CommunitySettings/CommunitySettings";
+import CommunitySettingsModal from "../../modal/community-settings/CommunitySettings";
 import { Community } from "@/types/community";
 
 type CommunitySettingsProps = {

@@ -3,7 +3,7 @@ import useCommunityState from "@/hooks/community/useCommunityState";
 import { Box, Button, Flex, Stack } from "@chakra-ui/react";
 import { useRouter } from "next/navigation";
 import React, { useState } from "react";
-import CommunityMembersModal from "../../Modal/CommunityMembers/CommunityMembersModal";
+import CommunityMembersModal from "../../modal/community-members/CommunityMembersModal";
 import AboutCommunity from "./AboutCommunity";
 import AboutHeaderBar from "./AboutHeaderBar";
 import AdminSectionAbout from "./AdminSectionAbout";
