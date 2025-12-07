@@ -1,9 +1,13 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import { Community } from "@/atoms/communitiesAtom";
 import { auth } from "@/firebase/clientApp";
-import useCommunityPermissions from "@/hooks/useCommunityPermissions";
-import usePosts from "@/hooks/usePosts";
-import usePostsFeed from "@/hooks/usePostsFeed";
+import useCommunityPermissions from "@/hooks/community/useCommunityPermissions";
+import usePostState from "@/hooks/posts/usePostState";
+import usePostSelection from "@/hooks/posts/usePostSelection";
+import usePostVote from "@/hooks/posts/usePostVote";
+import usePostDeletion from "@/hooks/posts/usePostDeletion";
+import usePostVoteSync from "@/hooks/posts/usePostVoteSync";
+import usePostsFeed from "@/hooks/posts/usePostsFeed";
 import { Box, Spinner, Stack, Text } from "@chakra-ui/react";
 import React, { useEffect } from "react";
 import { useAuthState } from "react-firebase-hooks/auth";
@@ -27,7 +31,11 @@ type PostsProps = {
  */
 const Posts: React.FC<PostsProps> = ({ communityData }) => {
   const [user] = useAuthState(auth);
-  const { postStateValue, onVote, onDeletePost, onSelectPost } = usePosts();
+  const { postStateValue, setPostStateValue } = usePostState();
+  const { onSelectPost } = usePostSelection(setPostStateValue);
+  const { onVote } = usePostVote(postStateValue, setPostStateValue);
+  const { onDeletePost } = usePostDeletion(setPostStateValue);
+  usePostVoteSync(setPostStateValue);
   const { isAdmin } = useCommunityPermissions(communityData);
 
   const { loading, fetchPosts, ref, noMorePosts } = usePostsFeed({

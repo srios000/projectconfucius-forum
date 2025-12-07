@@ -1,6 +1,6 @@
 import { Post } from "@/atoms/postsAtom";
 import useCustomToast from "@/hooks/useCustomToast";
-import useSavedPosts from "@/hooks/useSavedPosts";
+import useSavedPosts from "@/hooks/posts/useSavedPosts";
 import { Flex, Stack } from "@chakra-ui/react";
 import { useRouter } from "next/navigation";
 import React, { useState } from "react";

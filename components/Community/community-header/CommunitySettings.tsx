@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { IconButton, Icon } from "@chakra-ui/react";
-import useCommunityPermissions from "@/hooks/useCommunityPermissions";
+import useCommunityPermissions from "@/hooks/community/useCommunityPermissions";
 import { useParams } from "next/navigation";
 import { useAuthState } from "react-firebase-hooks/auth";
 import { auth } from "@/firebase/clientApp";

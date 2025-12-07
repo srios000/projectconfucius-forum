@@ -12,7 +12,7 @@ import {
 import { useAtom, useSetAtom } from "jotai";
 import { useEffect, useState } from "react";
 import { useAuthState } from "react-firebase-hooks/auth";
-import useCustomToast from "./useCustomToast";
+import useCustomToast from "../useCustomToast";
 
 const useSavedPosts = () => {
   const [user] = useAuthState(auth);
@@ -61,13 +61,11 @@ const useSavedPosts = () => {
         post.id!
       );
 
-      // Check if already saved
       const isSaved = savedPostState.savedPosts.find(
         (item) => item.postId === post.id
       );
 
       if (isSaved) {
-        // Unsave
         await deleteDoc(savedPostRef);
         setSavedPostState((prev) => ({
           ...prev,
@@ -78,7 +76,6 @@ const useSavedPosts = () => {
           status: "success",
         });
       } else {
-        // Save
         const newSavedPost: SavedPost = {
           id: post.id!,
           postId: post.id!,

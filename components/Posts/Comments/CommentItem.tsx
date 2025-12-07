@@ -1,4 +1,4 @@
-import { Comment } from "@/hooks/useComments";
+import { Comment } from "@/hooks/comments/types";
 import { Box, Button, Flex, Icon, Spinner, Stack, Text } from "@chakra-ui/react";
 import { User } from "firebase/auth";
 import React, { useState } from "react";

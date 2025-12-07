@@ -17,7 +17,7 @@ import {
   Text,
 } from "@chakra-ui/react";
 import { CommunityMember } from "@/lib/communityMembers";
-import useCommunityMembers from "@/hooks/useCommunityMembers";
+import useCommunityMembers from "@/hooks/community/useCommunityMembers";
 
 type CommunityMembersModalProps = {
   isOpen: boolean;

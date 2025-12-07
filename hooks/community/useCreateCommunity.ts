@@ -3,7 +3,7 @@ import { doc, runTransaction, serverTimestamp } from "firebase/firestore";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { useAuthState } from "react-firebase-hooks/auth";
-import useCustomToast from "./useCustomToast";
+import useCustomToast from "../useCustomToast";
 
 export const useCreateCommunity = () => {
   const [user] = useAuthState(auth);

@@ -1,7 +1,7 @@
 /* eslint-disable react-hooks/rules-of-hooks */
 import { savedPostStateAtom } from "@/atoms/savedPostsAtom";
 import { useColorMode } from "@/components/ui/color-mode";
-import useCallCreatePost from "@/hooks/useCallCreatePost";
+import useCallCreatePost from "@/hooks/posts/useCallCreatePost";
 import { Flex, IconButton, Icon } from "@chakra-ui/react";
 import { useSetAtom } from "jotai";
 import React from "react";

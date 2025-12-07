@@ -1,5 +1,5 @@
 import { savedPostStateAtom } from "@/atoms/savedPostsAtom";
-import useSavedPosts from "@/hooks/useSavedPosts";
+import useSavedPosts from "@/hooks/posts/useSavedPosts";
 import {
   DialogBackdrop,
   DialogBody,

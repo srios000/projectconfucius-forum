@@ -12,7 +12,7 @@ import {
 import { getDownloadURL, ref, uploadString } from "firebase/storage";
 import { firestore, storage } from "@/firebase/clientApp";
 import { Post } from "@/atoms/postsAtom";
-import useCustomToast from "@/hooks/useCustomToast";
+import useCustomToast from "../useCustomToast";
 
 const useCreatePost = () => {
   const router = useRouter();
@@ -30,7 +30,6 @@ const useCreatePost = () => {
     if (!user) return;
     setLoading(true);
     try {
-      // 1. Create post object
       const newPost: Post = {
         communityId,
         communityImageURL: communityImageURL || "",
@@ -43,23 +42,18 @@ const useCreatePost = () => {
         createTime: serverTimestamp() as Timestamp,
       };
 
-      // 2. Store post in firestore
       const postDocRef = await addDoc(collection(firestore, "posts"), newPost);
 
-      // 3. Check for selectedFile
       if (selectedFile) {
-        // 4. Store in storage => getURL (return imageURL)
         const imageRef = ref(storage, `posts/${postDocRef.id}/image`);
         await uploadString(imageRef, selectedFile, "data_url");
         const downloadURL = await getDownloadURL(imageRef);
 
-        // 5. Update post doc by adding imageURL
         await updateDoc(doc(firestore, "posts", postDocRef.id), {
           imageURL: downloadURL,
         });
       }
 
-      // 6. Redirect to community page
       router.back();
       showToast({
         title: "Post Created",

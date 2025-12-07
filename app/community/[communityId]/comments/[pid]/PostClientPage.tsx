@@ -9,8 +9,11 @@ import PostLoader from "@/components/Loaders/post-loader/PostLoader";
 import Comments from "@/components/Posts/Comments/Comments";
 import PostItem from "@/components/Posts/post-item/PostItem";
 import { auth } from "@/firebase/clientApp";
-import useCommunityPermissions from "@/hooks/useCommunityPermissions";
-import usePosts from "@/hooks/usePosts";
+import useCommunityPermissions from "@/hooks/community/useCommunityPermissions";
+import usePostState from "@/hooks/posts/usePostState";
+import usePostVote from "@/hooks/posts/usePostVote";
+import usePostDeletion from "@/hooks/posts/usePostDeletion";
+import usePostVoteSync from "@/hooks/posts/usePostVoteSync";
 import { Stack } from "@chakra-ui/react";
 import { User } from "firebase/auth";
 import { useAtom } from "jotai";
@@ -32,8 +35,11 @@ type PostPageProps = {
  * @returns {React.FC} - Single post page with all components
  */
 const PostPage: React.FC<PostPageProps> = ({ communityData, postData }) => {
-  const { postStateValue, setPostStateValue, onDeletePost, onVote } =
-    usePosts();
+  const { postStateValue, setPostStateValue } = usePostState();
+  const { onVote } = usePostVote(postStateValue, setPostStateValue);
+  const { onDeletePost } = usePostDeletion(setPostStateValue);
+  usePostVoteSync(setPostStateValue);
+
   const [communityStateValue, setCommunityStateValue] =
     useAtom(communityStateAtom);
   const currentCommunity =
