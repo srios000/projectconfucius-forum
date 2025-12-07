@@ -11,7 +11,11 @@ import PostItem from "@/components/Posts/post-item/PostItem";
 import { auth, firestore } from "@/firebase/clientApp";
 import useCommunityState from "@/hooks/community/useCommunityState";
 import useCustomToast from "@/hooks/useCustomToast";
-import usePosts from "@/hooks/posts/usePosts";
+import usePostState from "@/hooks/posts/usePostState";
+import usePostSelection from "@/hooks/posts/usePostSelection";
+import usePostVote from "@/hooks/posts/usePostVote";
+import usePostDeletion from "@/hooks/posts/usePostDeletion";
+import usePostVoteSync from "@/hooks/posts/usePostVoteSync";
 import usePostsFeed from "@/hooks/posts/usePostsFeed";
 import { Box, Spinner, Stack, Text } from "@chakra-ui/react";
 import { collection, getDocs, query, where } from "firebase/firestore";
@@ -21,14 +25,14 @@ import { useAuthState } from "react-firebase-hooks/auth";
 export default function Home() {
   const [user, loadingUser] = useAuthState(auth);
   const { communityStateValue } = useCommunityState();
-  const {
-    setPostStateValue,
+  const { postStateValue, setPostStateValue } = usePostState();
+  const { onSelectPost } = usePostSelection(setPostStateValue);
+  const { onVote, getPostVotes } = usePostVote(
     postStateValue,
-    onSelectPost,
-    onVote,
-    onDeletePost,
-    getPostVotes,
-  } = usePosts();
+    setPostStateValue
+  );
+  const { onDeletePost } = usePostDeletion(setPostStateValue);
+  usePostVoteSync(setPostStateValue);
   const showToast = useCustomToast();
 
   const communityIds = useMemo(
