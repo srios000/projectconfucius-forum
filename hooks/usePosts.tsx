@@ -273,15 +273,29 @@ const usePosts = () => {
   const getPostVotes = async (postIds: string[]) => {
     if (!user || !postIds.length) return;
     try {
-      const postVotesQuery = query(
-        collection(firestore, `users/${user.uid}/postVotes`),
-        where("postId", "in", postIds)
+      const chunks = [];
+      const chunkSize = 10;
+      for (let i = 0; i < postIds.length; i += chunkSize) {
+        chunks.push(postIds.slice(i, i + chunkSize));
+      }
+
+      const promises = chunks.map((chunk) => {
+        const postVotesQuery = query(
+          collection(firestore, `users/${user.uid}/postVotes`),
+          where("postId", "in", chunk)
+        );
+        return getDocs(postVotesQuery);
+      });
+
+      const querySnapshots = await Promise.all(promises);
+
+      const postVotes = querySnapshots.flatMap((snapshot) =>
+        snapshot.docs.map((doc) => ({
+          id: doc.id,
+          ...doc.data(),
+        }))
       );
-      const postVoteDocs = await getDocs(postVotesQuery);
-      const postVotes = postVoteDocs.docs.map((doc) => ({
-        id: doc.id,
-        ...doc.data(),
-      }));
+
       setPostStateValue((prev) => ({
         ...prev,
         postVotes: postVotes as PostVote[],
