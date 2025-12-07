@@ -9,10 +9,11 @@ import {
   writeBatch,
 } from "firebase/firestore";
 import { firestore } from "@/firebase/clientApp";
-import { Post, postStateAtom } from "@/atoms/postsAtom";
+import { postStateAtom } from "@/atoms/postsAtom";
+import { Post } from "@/types/post";
 import { useSetAtom } from "jotai";
 import useCustomToast from "@/hooks/useCustomToast";
-import { Comment } from "./types";
+import { Comment } from "../../types/comment";
 
 const useCreateComment = (
   selectedPost: Post | null,

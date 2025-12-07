@@ -11,7 +11,7 @@ import {
   startAfter,
 } from "firebase/firestore";
 import { useEffect, useState } from "react";
-import { Community } from "@/atoms/communitiesAtom";
+import { Community } from "@/types/community";
 
 type UseCommunitiesFeedProps = {
   limitValue?: number;

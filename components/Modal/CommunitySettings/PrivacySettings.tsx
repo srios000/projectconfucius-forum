@@ -1,4 +1,4 @@
-import { Community } from "@/atoms/communitiesAtom";
+import { Community } from "@/types/community";
 import { Box, Flex, Stack, Text } from "@chakra-ui/react";
 import React from "react";
 import { FiCheck } from "react-icons/fi";

@@ -1,7 +1,7 @@
 import { firestore } from "@/firebase/clientApp";
 import { doc, getDoc } from "firebase/firestore";
 import safeJsonStringify from "safe-json-stringify";
-import { Post } from "@/atoms/postsAtom";
+import { Post } from "@/types/post";
 
 export async function getPost(postId: string) {
   try {

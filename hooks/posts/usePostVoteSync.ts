@@ -1,11 +1,11 @@
 import { communityStateAtom } from "@/atoms/communitiesAtom";
-import { Post, PostVote } from "@/atoms/postsAtom";
 import { firestore } from "@/firebase/clientApp";
 import { collection, getDocs, query, where } from "firebase/firestore";
 import { useAtomValue } from "jotai";
 import React, { useEffect } from "react";
 import { useAuthState } from "react-firebase-hooks/auth";
 import { auth } from "@/firebase/clientApp";
+import { Post, PostVote } from "@/types/post";
 
 type SetPostState = React.Dispatch<
   React.SetStateAction<{

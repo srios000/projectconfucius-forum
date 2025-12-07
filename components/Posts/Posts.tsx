@@ -1,5 +1,5 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import { Community } from "@/atoms/communitiesAtom";
+import { Community } from "@/types/community";
 import { auth } from "@/firebase/clientApp";
 import useCommunityPermissions from "@/hooks/community/useCommunityPermissions";
 import usePostState from "@/hooks/posts/usePostState";

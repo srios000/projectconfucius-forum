@@ -1,10 +1,7 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import { communityStateAtom } from "@/atoms/communitiesAtom";
-import {
-  defaultMenuItem,
-  DirectoryMenuItem,
-  directoryMenuAtom,
-} from "@/atoms/directoryMenuAtom";
+import { defaultMenuItem, directoryMenuAtom } from "@/atoms/directoryMenuAtom";
+import { DirectoryMenuItem } from "@/types/directoryMenu";
 import { useAtom, useAtomValue } from "jotai";
 import { useRouter, usePathname } from "next/navigation";
 import { useEffect } from "react";

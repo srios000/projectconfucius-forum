@@ -1,10 +1,10 @@
 import { authModalStateAtom } from "@/atoms/authModalAtom";
-import { Community } from "@/atoms/communitiesAtom";
 import { useSetAtom } from "jotai";
 import { useAuthState } from "react-firebase-hooks/auth";
 import { auth } from "@/firebase/clientApp";
 import useJoinCommunity from "./useJoinCommunity";
 import useLeaveCommunity from "./useLeaveCommunity";
+import { Community } from "@/types/community";
 
 const useCommunityMembershipActions = () => {
   const [user] = useAuthState(auth);

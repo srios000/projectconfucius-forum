@@ -1,4 +1,4 @@
-import { Post } from "@/atoms/postsAtom";
+import { Post, PostVote } from "@/types/post";
 import { useRouter } from "next/navigation";
 
 const usePostSelection = (
@@ -6,7 +6,7 @@ const usePostSelection = (
     React.SetStateAction<{
       selectedPost: Post | null;
       posts: Post[];
-      postVotes: import("@/atoms/postsAtom").PostVote[];
+      postVotes: PostVote[];
     }>
   >
 ) => {

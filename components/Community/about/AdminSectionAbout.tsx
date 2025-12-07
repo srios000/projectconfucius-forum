@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Community } from "@/atoms/communitiesAtom";
+import { Community } from "@/types/community";
 import { Button } from "@chakra-ui/react";
 import useCommunityPermissions from "@/hooks/community/useCommunityPermissions";
 import CommunitySettingsModal from "@/components/Modal/CommunitySettings/CommunitySettings";

@@ -1,4 +1,4 @@
-import { Community } from "@/atoms/communitiesAtom";
+import { Community } from "@/types/community";
 import useCreatePost from "@/hooks/posts/useCreatePost";
 import useSelectFile from "@/hooks/useSelectFile";
 import { Flex, Icon } from "@chakra-ui/react";

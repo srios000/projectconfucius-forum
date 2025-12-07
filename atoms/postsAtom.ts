@@ -1,50 +1,5 @@
-import { Timestamp } from "firebase/firestore";
 import { atom } from "jotai";
-
-/**
- * Interface representing a post.
- * Posts are created by users and are stored in the `posts` collection in Firebase.
- * @property {string} id - ID of the post
- * @property {string} communityId - ID of the community the post belongs to
- * @property {string} creatorId - ID of the user who created the post
- * @property {string} creatorUsername - username of the user who created the post
- * @property {string} title - title of the post
- * @property {string} body - body of the post
- * @property {number} numberOfComments - number of comments on the post
- * @property {number} voteStatus - whether the post was liked or disliked by the current user
- * @property {string} imageURL - URL of the image attached to the post
- * @property {string} communityImageURL - URL of the image attached to the community
- * @property {Timestamp} createTime - time when the post was created
- */
-export type Post = {
-  id?: string; // optional because firebase will automatically add the id for the post
-  communityId: string;
-  creatorId: string;
-  creatorUsername: string;
-  title: string;
-  body: string;
-  numberOfComments: number;
-  voteStatus: number;
-  imageURL?: string;
-  communityImageURL?: string;
-  createTime: Timestamp;
-};
-
-/**
- * Snippet representing user voting on a post.
- * This snippet is stored in the `users` collection in Firebase.
- * Stores the ID of the post, ID of the community of that post, and whether it was liked or disliked (+-1)
- * @property {string} id - ID of the snippet
- * @property {string} postId - ID of the post
- * @property {string} communityId - ID of the community the post belongs to
- * @property {number} voteValue - whether the post was liked or disliked by the current user (1 or -1)
- */
-export type PostVote = {
-  id: string;
-  postId: string;
-  communityId: string;
-  voteValue: number;
-};
+import { Post, PostVote } from "@/types/post";
 
 /**
  * Represents the base state for the atom.

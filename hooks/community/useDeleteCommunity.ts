@@ -1,4 +1,4 @@
-import { Community } from "@/atoms/communitiesAtom";
+import { Community } from "@/types/community";
 import { firestore, storage } from "@/firebase/clientApp";
 import {
   collection,

@@ -11,7 +11,7 @@ import {
 } from "firebase/firestore";
 import { getDownloadURL, ref, uploadString } from "firebase/storage";
 import { firestore, storage } from "@/firebase/clientApp";
-import { Post } from "@/atoms/postsAtom";
+import { Post } from "@/types/post";
 import useCustomToast from "../useCustomToast";
 
 const useCreatePost = () => {

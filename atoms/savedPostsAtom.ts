@@ -1,12 +1,5 @@
 import { atom } from "jotai";
-
-export type SavedPost = {
-  id: string;
-  postId: string;
-  communityId: string;
-  postTitle: string;
-  communityImageURL?: string;
-};
+import { SavedPost } from "@/types/savedPost";
 
 interface SavedPostState {
   savedPosts: SavedPost[];

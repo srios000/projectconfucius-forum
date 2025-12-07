@@ -2,7 +2,7 @@ import React from "react";
 import { Stack, Image, Icon, Link, Text } from "@chakra-ui/react";
 import { IoPeopleCircleOutline } from "react-icons/io5";
 import moment from "moment";
-import { Post } from "@/atoms/postsAtom";
+import { Post } from "@/types/post";
 
 type PostDetailsProps = {
   showCommunityImage?: boolean;

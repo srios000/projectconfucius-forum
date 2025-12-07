@@ -18,7 +18,7 @@ import React, { useRef, useState } from "react";
 import { AiOutlineSearch } from "react-icons/ai";
 import useSearch from "@/hooks/useSearch";
 import { useRouter } from "next/navigation";
-import { Post } from "@/atoms/postsAtom";
+import { Post } from "@/types/post";
 import moment from "moment";
 
 type SearchModalProps = {

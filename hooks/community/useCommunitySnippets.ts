@@ -1,4 +1,5 @@
-import { CommunitySnippet, communityStateAtom } from "@/atoms/communitiesAtom";
+import { communityStateAtom } from "@/atoms/communitiesAtom";
+import { CommunitySnippet } from "@/types/community";
 import { auth, firestore } from "@/firebase/clientApp";
 import { collection, getDocs } from "firebase/firestore";
 import { useSetAtom } from "jotai";

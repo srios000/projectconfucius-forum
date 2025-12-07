@@ -2,7 +2,6 @@ import React, { useState } from "react";
 import { IconButton, Icon } from "@chakra-ui/react";
 import CommunityMembersModal from "../../Modal/CommunityMembers/CommunityMembersModal";
 import { FiUsers } from "react-icons/fi";
-import { Community } from "@/atoms/communitiesAtom";
 
 type CommunityMembersButtonProps = {
   communityId: string;

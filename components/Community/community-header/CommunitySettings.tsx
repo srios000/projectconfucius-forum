@@ -6,7 +6,7 @@ import { useAuthState } from "react-firebase-hooks/auth";
 import { auth } from "@/firebase/clientApp";
 import { FiSettings } from "react-icons/fi";
 import CommunitySettingsModal from "../../Modal/CommunitySettings/CommunitySettings";
-import { Community } from "@/atoms/communitiesAtom";
+import { Community } from "@/types/community";
 
 type CommunitySettingsProps = {
   communityData: Community;

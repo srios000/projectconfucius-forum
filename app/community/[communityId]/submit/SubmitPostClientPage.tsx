@@ -1,7 +1,7 @@
 "use client";
 
 import { authModalStateAtom } from "@/atoms/authModalAtom";
-import { Community, communityStateAtom } from "@/atoms/communitiesAtom";
+import { communityStateAtom } from "@/atoms/communitiesAtom";
 import About from "@/components/Community/about/About";
 import PageContent from "@/components/Layout/PageContent";
 import AuthButtons from "@/components/Navbar/RightContent/AuthButtons";
@@ -11,6 +11,7 @@ import { Box, Stack, Text } from "@chakra-ui/react";
 import { useAtom, useSetAtom } from "jotai";
 import React, { useEffect } from "react";
 import { useAuthState } from "react-firebase-hooks/auth";
+import { Community } from "@/types/community";
 
 type SubmitPostPageProps = {
   communityData: Community;

@@ -10,7 +10,7 @@ import useCommunityMembershipActions from "@/hooks/community/useCommunityMembers
 import { useIntersectionObserver } from "@/hooks/useIntersectionObserver";
 import { Box, Heading, Spinner, Stack, Text } from "@chakra-ui/react";
 import React, { useEffect, useMemo } from "react";
-import { Community } from "@/atoms/communitiesAtom";
+import { Community } from "@/types/community";
 
 /**
  * Displays the communities page with the top 5 communities.

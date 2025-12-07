@@ -1,8 +1,7 @@
 "use client";
 
 /* eslint-disable react-hooks/exhaustive-deps */
-import { Community, communityStateAtom } from "@/atoms/communitiesAtom";
-import { Post } from "@/atoms/postsAtom";
+import { communityStateAtom } from "@/atoms/communitiesAtom";
 import About from "@/components/Community/about/About";
 import PageContent from "@/components/Layout/PageContent";
 import PostLoader from "@/components/Loaders/post-loader/PostLoader";
@@ -19,6 +18,8 @@ import { User } from "firebase/auth";
 import { useAtom } from "jotai";
 import React, { useEffect } from "react";
 import { useAuthState } from "react-firebase-hooks/auth";
+import { Community } from "@/types/community";
+import { Post } from "@/types/post";
 
 type PostPageProps = {
   communityData: Community;

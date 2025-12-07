@@ -1,5 +1,5 @@
 import React from "react";
-import { Community } from "@/atoms/communitiesAtom";
+import { Community } from "@/types/community";
 import { Flex, Icon, Image, Text, Button } from "@chakra-ui/react";
 import Link from "next/link";
 import { IoPeopleCircleOutline } from "react-icons/io5";

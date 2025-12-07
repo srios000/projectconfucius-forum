@@ -1,4 +1,4 @@
-import { Community } from "@/atoms/communitiesAtom";
+import { Community } from "@/types/community";
 import { auth } from "@/firebase/clientApp";
 import useCustomToast from "@/hooks/useCustomToast";
 import useAddAdmin from "@/hooks/admin/useAddAdmin";
@@ -16,7 +16,7 @@ import {
 } from "@chakra-ui/react";
 import React, { useEffect, useState } from "react";
 import { useAuthState } from "react-firebase-hooks/auth";
-import { AdminUser } from "@/lib/community/adminTypes";
+import { AdminUser } from "@/types/adminUser";
 
 type AdminManagerProps = {
   communityData: Community;

@@ -8,8 +8,8 @@ import {
   orderBy,
 } from "firebase/firestore";
 import { firestore } from "@/firebase/clientApp";
-import { Community } from "@/atoms/communitiesAtom";
-import { Post } from "@/atoms/postsAtom";
+import { Community } from "@/types/community";
+import { Post } from "@/types/post";
 
 const useSearch = (searchTerm: string) => {
   const [results, setResults] = useState<{

@@ -1,7 +1,6 @@
 "use client";
 
 /* eslint-disable react-hooks/exhaustive-deps */
-import { PostVote } from "@/atoms/postsAtom";
 import CreatePostLink from "@/components/Community/CreatePostLink";
 import PersonalHome from "@/components/Community/PersonalHome";
 import Recommendations from "@/components/Community/recommendations/Recommendations";

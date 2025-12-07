@@ -1,6 +1,6 @@
 "use client";
 
-import { Community, communityStateAtom } from "@/atoms/communitiesAtom";
+import { communityStateAtom } from "@/atoms/communitiesAtom";
 import About from "@/components/Community/about/About";
 import CreatePostLink from "@/components/Community/CreatePostLink";
 import CommunityHeader from "@/components/Community/community-header/CommunityHeader";
@@ -8,6 +8,7 @@ import PageContent from "@/components/Layout/PageContent";
 import Posts from "@/components/Posts/Posts";
 import { useAtom } from "jotai";
 import React, { useEffect } from "react";
+import { Community } from "@/types/community";
 
 type CommunityPageProps = {
   communityData: Community;

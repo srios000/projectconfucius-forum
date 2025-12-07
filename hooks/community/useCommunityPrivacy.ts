@@ -1,4 +1,5 @@
-import { Community, communityStateAtom } from "@/atoms/communitiesAtom";
+import { communityStateAtom } from "@/atoms/communitiesAtom";
+import { Community } from "@/types/community";
 import { firestore } from "@/firebase/clientApp";
 import { doc, updateDoc } from "firebase/firestore";
 import { useSetAtom } from "jotai";
