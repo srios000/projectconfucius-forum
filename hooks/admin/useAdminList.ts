@@ -1,8 +1,6 @@
 import { useCallback, useState } from "react";
-import {
-  AdminUser,
-  fetchCommunityAdmins,
-} from "@/lib/communityAdmins";
+import { AdminUser } from "@/lib/community/adminTypes";
+import { fetchCommunityAdmins } from "@/lib/community/fetchCommunityAdmins";
 
 const useAdminList = () => {
   const [admins, setAdmins] = useState<AdminUser[]>([]);

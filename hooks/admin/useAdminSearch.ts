@@ -1,9 +1,7 @@
 import { useCallback } from "react";
-import {
-  AdminUser,
-  findUserByEmail,
-  searchUsersByEmail,
-} from "@/lib/communityAdmins";
+import { AdminUser } from "@/lib/community/adminTypes";
+import { findUserByEmail } from "@/lib/community/findUserByEmail";
+import { searchUsersByEmail } from "@/lib/community/searchUsersByEmail";
 
 const useAdminSearch = () => {
   const searchUsers = useCallback(async (emailQuery: string) => {

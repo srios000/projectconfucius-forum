@@ -16,7 +16,7 @@ import {
 } from "@chakra-ui/react";
 import React, { useEffect, useState } from "react";
 import { useAuthState } from "react-firebase-hooks/auth";
-import { AdminUser } from "@/lib/communityAdmins";
+import { AdminUser } from "@/lib/community/adminTypes";
 
 type AdminManagerProps = {
   communityData: Community;

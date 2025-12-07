@@ -1,5 +1,6 @@
 import { Community, communityStateAtom } from "@/atoms/communitiesAtom";
-import { AdminUser, addCommunityAdmin } from "@/lib/communityAdmins";
+import { AdminUser } from "@/lib/community/adminTypes";
+import { addCommunityAdmin } from "@/lib/community/addCommunityAdmin";
 import { useSetAtom } from "jotai";
 import { Dispatch, SetStateAction, useCallback } from "react";
 
