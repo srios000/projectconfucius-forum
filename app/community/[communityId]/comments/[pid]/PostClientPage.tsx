@@ -10,7 +10,7 @@ import Comments from "@/components/Posts/Comments/Comments";
 import PostItem from "@/components/Posts/post-item/PostItem";
 import { auth } from "@/firebase/clientApp";
 import useCommunityPermissions from "@/hooks/community/useCommunityPermissions";
-import usePosts from "@/hooks/usePosts";
+import usePosts from "@/hooks/posts/usePosts";
 import { Stack } from "@chakra-ui/react";
 import { User } from "firebase/auth";
 import { useAtom } from "jotai";

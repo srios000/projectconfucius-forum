@@ -11,7 +11,7 @@ import PostItem from "@/components/Posts/post-item/PostItem";
 import { auth, firestore } from "@/firebase/clientApp";
 import useCommunityState from "@/hooks/community/useCommunityState";
 import useCustomToast from "@/hooks/useCustomToast";
-import usePosts from "@/hooks/usePosts";
+import usePosts from "@/hooks/posts/usePosts";
 import usePostsFeed from "@/hooks/usePostsFeed";
 import { Box, Spinner, Stack, Text } from "@chakra-ui/react";
 import { collection, getDocs, query, where } from "firebase/firestore";
