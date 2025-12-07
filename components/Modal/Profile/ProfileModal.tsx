@@ -12,16 +12,12 @@ import {
   DialogPositioner,
   DialogRoot,
   DialogTitle,
-  Flex,
-  Icon,
-  Image,
-  Input,
   Stack,
-  Text,
 } from "@chakra-ui/react";
 import React, { useRef, useState } from "react";
 import { useAuthState } from "react-firebase-hooks/auth";
-import { MdAccountCircle } from "react-icons/md";
+import UserImageSection from "./UserImageSection";
+import UserInfoSection from "./UserInfoSection";
 
 type ProfileModalProps = {
   open: boolean;
@@ -131,121 +127,21 @@ const ProfileModal: React.FC<ProfileModalProps> = ({ open, handleClose }) => {
           <DialogCloseTrigger position="absolute" top={2} right={2} />
           <DialogBody display="flex" flexDirection="column" padding="10px 0px">
             <Stack p={5} gap={5}>
-              {/* image */}
-              <Stack direction="column" align="center" justify="center" p={2}>
-                {user?.photoURL || selectedFile ? (
-                  <Image
-                    src={selectedFile || (user?.photoURL as string)}
-                    alt="User Photo"
-                    height="120px"
-                    borderRadius="full"
-                    shadow="md"
-                  />
-                ) : (
-                  <Icon
-                    fontSize={120}
-                    mr={1}
-                    color="gray.300"
-                    as={MdAccountCircle}
-                  />
-                )}
-                <Text
-                  fontSize="xl"
-                  color={{ base: "gray.700", _dark: "gray.200" }}
-                >
-                  {user?.displayName}
-                </Text>
-              </Stack>
-
-              {isEditing && (
-                <Stack gap={1} direction="row" flexGrow={1}>
-                  <Button
-                    flex={1}
-                    height={34}
-                    onClick={() => selectFileRef.current?.click()}
-                  >
-                    {user?.photoURL ? "Change Image" : "Add Image"}
-                  </Button>
-                  <input
-                    id="file-upload"
-                    type="file"
-                    accept="image/png,image/gif,image/jpeg"
-                    hidden
-                    ref={selectFileRef}
-                    onChange={onSelectFile}
-                  />
-                  {user?.photoURL && (
-                    <Button
-                      flex={1}
-                      height={34}
-                      variant="outline"
-                      onClick={() => setDeleteImage(true)}
-                      disabled={deleteImage}
-                    >
-                      Delete Image
-                    </Button>
-                  )}
-                </Stack>
-              )}
-              {/*  */}
-
-              {/* name */}
-              {!isEditing && (
-                <Flex direction="column">
-                  <Flex direction="row">
-                    <Text
-                      fontSize="12pt"
-                      color={{ base: "gray.600", _dark: "gray.400" }}
-                      mr={1}
-                      fontWeight={600}
-                    >
-                      Email:
-                    </Text>
-                    <Text fontSize="12pt">{user?.email}</Text>
-                  </Flex>
-                  <Flex direction="row">
-                    <Text
-                      fontSize="12pt"
-                      color={{ base: "gray.600", _dark: "gray.400" }}
-                      mr={1}
-                      fontWeight={600}
-                    >
-                      User Name:
-                    </Text>
-                    <Text fontSize="12pt">{user?.displayName || ""}</Text>
-                  </Flex>
-                </Flex>
-              )}
-              {isEditing && (
-                <Flex direction="column">
-                  <Text
-                    fontSize="sm"
-                    color={{ base: "gray.500", _dark: "gray.400" }}
-                    mb={1}
-                  >
-                    User Name
-                  </Text>
-                  <Input
-                    name="displayName"
-                    placeholder="User Name"
-                    value={userName}
-                    type="text"
-                    onChange={handleNameChange}
-                    _hover={{
-                      bg: { base: "white", _dark: "gray.700" },
-                      border: "1px solid",
-                      borderColor: { base: "red.500", _dark: "red.400" },
-                    }}
-                    _focus={{
-                      bg: { base: "white", _dark: "gray.700" },
-                      border: "1px solid",
-                      borderColor: { base: "red.500", _dark: "red.400" },
-                    }}
-                    borderRadius={10}
-                  />
-                </Flex>
-              )}
-              {/*  */}
+              <UserImageSection
+                user={user}
+                selectedFile={selectedFile}
+                isEditing={isEditing}
+                selectFileRef={selectFileRef}
+                onSelectFile={onSelectFile}
+                setDeleteImage={setDeleteImage}
+                deleteImage={deleteImage}
+              />
+              <UserInfoSection
+                user={user}
+                isEditing={isEditing}
+                userName={userName}
+                handleNameChange={handleNameChange}
+              />
             </Stack>
           </DialogBody>
           <DialogFooter
