@@ -1,4 +1,4 @@
-import { getCommunityData } from "@/lib/communities";
+import { getCommunityData } from "@/lib/community/getCommunityData";
 import { getPost } from "@/lib/posts";
 import PostClientPage from "./PostClientPage";
 import { notFound } from "next/navigation";
