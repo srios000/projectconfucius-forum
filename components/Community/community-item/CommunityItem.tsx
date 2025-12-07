@@ -70,37 +70,3 @@ const CommunityItem: React.FC<CommunityItemProps> = ({
 };
 
 export default CommunityItem;
-
-/**
- * @param {Community} community - community object
- */
-type CommunityItemNameIconSectionProps = {
-  community: Community;
-};
-
-/**
- * Displays the community name and icon on top of the community item card.
- * @param {Community} community - community object
- * @returns {React.FC} - the community item name and icon section component
- */
-// CommunityItemNameIconSection moved to ./community-item/CommunityItemNameIconSection.tsx
-
-/**
- * @param {Community} community - community object
- * @param {boolean} isJoined - whether the user is joined to the community
- * @param {(community: Community, isJoined: boolean) => void} onJoinOrLeaveCommunity - function to join or leave a community
- */
-type CommunityItemButtonMembersSectionProps = {
-  community: Community;
-  onJoinOrLeaveCommunity: (community: Community, isJoined: boolean) => void;
-  isJoined: boolean;
-};
-
-/**
- * Displays the subscribe button and the number of members on the bottom of the community item card.
- * @param {Community} community - community object
- * @param {boolean} isJoined - whether the user is joined to the community
- * @param {(community: Community, isJoined: boolean) => void} onJoinOrLeaveCommunity - function to join or leave a community
- * @returns {React.FC} - the community item button and members section component
- */
-// CommunityItemButtonMembersSection moved to ./community-item/CommunityItemButtonMembersSection.tsx
