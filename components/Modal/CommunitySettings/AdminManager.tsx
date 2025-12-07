@@ -1,6 +1,7 @@
 import { Community, communityStateAtom } from "@/atoms/communitiesAtom";
 import { auth, firestore } from "@/firebase/clientApp";
 import useCustomToast from "@/hooks/useCustomToast";
+import useAdmins from "@/hooks/useAdmins";
 import {
   Box,
   Button,
@@ -27,20 +28,14 @@ import {
 import { useSetAtom } from "jotai";
 import React, { useEffect, useState } from "react";
 import { useAuthState } from "react-firebase-hooks/auth";
+import { AdminUser } from "@/lib/communityAdmins";
 
 type AdminManagerProps = {
   communityData: Community;
 };
 
-type AdminUser = {
-  uid: string;
-  email: string;
-  displayName?: string;
-};
-
 const AdminManager: React.FC<AdminManagerProps> = ({ communityData }) => {
-  const [admins, setAdmins] = useState<AdminUser[]>([]);
-  const [loading, setLoading] = useState(false);
+  const { admins, setAdmins, loading, loadAdmins } = useAdmins();
   const [newAdminEmail, setNewAdminEmail] = useState("");
   const [addingAdmin, setAddingAdmin] = useState(false);
   const [searchResults, setSearchResults] = useState<AdminUser[]>([]);
@@ -49,50 +44,17 @@ const AdminManager: React.FC<AdminManagerProps> = ({ communityData }) => {
   const setCommunityStateValue = useSetAtom(communityStateAtom);
   const [user] = useAuthState(auth);
 
-  const fetchAdmins = async () => {
-    setLoading(true);
-    try {
-      const adminIds = [
-        communityData.creatorId,
-        ...(communityData.adminIds || []),
-      ];
-      // Remove duplicates just in case
-      const uniqueAdminIds = Array.from(new Set(adminIds));
-
-      const adminPromises = uniqueAdminIds.map((uid) =>
-        getDoc(doc(firestore, "users", uid))
-      );
-      const adminDocs = await Promise.all(adminPromises);
-      const adminUsers = adminDocs
-        .map((doc) => {
-          if (doc.exists()) {
-            const data = doc.data();
-            return {
-              uid: doc.id,
-              email: data.email,
-              displayName: data.displayName,
-            } as AdminUser;
-          }
-          return null;
-        })
-        .filter((user): user is AdminUser => user !== null);
-
-      setAdmins(adminUsers);
-    } catch (error: any) {
-      console.error("Error fetching admins", error);
-      showToast({
-        title: "Error",
-        description: "Could not fetch admins",
-        status: "error",
-      });
-    } finally {
-      setLoading(false);
-    }
-  };
-
   useEffect(() => {
-    fetchAdmins();
-  }, [communityData]);
+    loadAdmins(communityData.creatorId, communityData.adminIds).catch(
+      (error) => {
+        showToast({
+          title: "Error",
+          description: "Could not fetch admins",
+          status: "error",
+        });
+      }
+    );
+  }, [communityData, loadAdmins, showToast]);
 
   const handleAddAdmin = async () => {
     if (!newAdminEmail) return;
