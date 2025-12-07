@@ -7,7 +7,7 @@ import PersonalHome from "@/components/Community/PersonalHome";
 import Recommendations from "@/components/Community/recommendations/Recommendations";
 import PageContent from "@/components/Layout/PageContent";
 import PostLoader from "@/components/Loaders/post-loader/PostLoader";
-import PostItem from "@/components/Posts/PostItem";
+import PostItem from "@/components/Posts/post-item/PostItem";
 import { auth, firestore } from "@/firebase/clientApp";
 import useCommunityData from "@/hooks/useCommunityData";
 import useCustomToast from "@/hooks/useCustomToast";

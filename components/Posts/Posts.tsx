@@ -8,7 +8,7 @@ import { Box, Spinner, Stack, Text } from "@chakra-ui/react";
 import React, { useEffect } from "react";
 import { useAuthState } from "react-firebase-hooks/auth";
 import PostLoader from "../Loaders/post-loader/PostLoader";
-import PostItem from "./PostItem";
+import PostItem from "./post-item/PostItem";
 
 /**
  * @param {Community} communityData - Community object from firebase
