@@ -25,7 +25,7 @@ import {
   IoPeopleCircleOutline,
 } from "react-icons/io5";
 import { LuTrash } from "react-icons/lu";
-import PostItemError from "../atoms/ErrorMessage";
+import PostItemError from "../ui/ErrorMessage";
 
 /**
  * @param {Post} post - post object

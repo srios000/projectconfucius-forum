@@ -1,15 +1,12 @@
 import { Community } from "@/atoms/communitiesAtom";
-import { auth } from "@/firebase/clientApp";
+import useCommunityData from "@/hooks/useCommunityData";
 import { Box, Button, Flex, Icon, Stack, Text } from "@chakra-ui/react";
-import { User } from "firebase/auth";
 import moment from "moment";
 import { useRouter } from "next/navigation";
 import React, { useState } from "react";
-import { useAuthState } from "react-firebase-hooks/auth";
 import { HiOutlineDotsHorizontal } from "react-icons/hi";
-import CommunitySettingsModal from "../Modal/CommunitySettings/CommunitySettings";
 import CommunityMembersModal from "../Modal/CommunityMembers/CommunityMembersModal";
-import useCommunityData from "@/hooks/useCommunityData";
+import CommunitySettingsModal from "../Modal/CommunitySettings/CommunitySettings";
 
 /**
  * @param {string} communityName - Name of the community

@@ -1,5 +1,5 @@
 import { authModalStateAtom } from "@/atoms/authModalAtom";
-import CustomMenuButton from "@/components/atoms/CustomMenuButton";
+import CustomMenuButton from "@/components/ui/CustomMenuButton";
 import ProfileModal from "@/components/Modal/Profile/ProfileModal";
 import { auth } from "@/firebase/clientApp";
 import {

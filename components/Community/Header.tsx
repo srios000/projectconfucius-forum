@@ -15,7 +15,7 @@ import { useParams } from "next/navigation";
 import { useAuthState } from "react-firebase-hooks/auth";
 import { auth } from "@/firebase/clientApp";
 import { FiSettings, FiUsers } from "react-icons/fi";
-import IconItem from "../atoms/Icon";
+import IconItem from "../ui/Icon";
 import CommunitySettingsModal from "../Modal/CommunitySettings/CommunitySettings";
 import CommunityMembersModal from "../Modal/CommunityMembers/CommunityMembersModal";
 
