@@ -1,5 +1,5 @@
 import { useCallback, useState } from "react";
-import { AdminUser } from "@/types/adminUserType";
+import { AdminUser } from "@/types/adminUser";
 import { fetchCommunityAdmins } from "@/lib/community/fetchCommunityAdmins";
 
 const useAdminList = () => {

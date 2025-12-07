@@ -1,7 +1,7 @@
 import { firestore } from "@/firebase/clientApp";
 import { collection, getDocs, limit, query, where } from "firebase/firestore";
 
-import { AdminUser } from "../../types/adminUserType";
+import { AdminUser } from "../../types/adminUser";
 
 /**
  * Searches for users by email.
