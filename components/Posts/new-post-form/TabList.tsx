@@ -1,6 +1,6 @@
 import React from "react";
 import { Stack } from "@chakra-ui/react";
-import TabItem from "../TabItem";
+import TabItem from "./TabItem";
 
 type FormTabShape = { title: string; icon: any };
 
