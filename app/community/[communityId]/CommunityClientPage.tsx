@@ -3,7 +3,7 @@
 import { Community, communityStateAtom } from "@/atoms/communitiesAtom";
 import About from "@/components/Community/about/About";
 import CreatePostLink from "@/components/Community/CreatePostLink";
-import Header from "@/components/Community/Header";
+import CommunityHeader from "@/components/Community/community-header/CommunityHeader";
 import PageContent from "@/components/Layout/PageContent";
 import Posts from "@/components/Posts/Posts";
 import { useAtom } from "jotai";
@@ -35,7 +35,7 @@ const CommunityClientPage: React.FC<CommunityPageProps> = ({
 
   return (
     <>
-      <Header communityData={currentCommunity} />
+      <CommunityHeader communityData={currentCommunity} />
       <PageContent>
         <>
           <CreatePostLink />
