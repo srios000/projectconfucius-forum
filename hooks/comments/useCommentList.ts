@@ -3,7 +3,7 @@ import { collection, getDocs, orderBy, query, where } from "firebase/firestore";
 import { firestore } from "@/firebase/clientApp";
 import { Post } from "@/atoms/postsAtom";
 import useCustomToast from "@/hooks/useCustomToast";
-import { Comment } from "./types";
+import { Comment } from "../../types/comment";
 
 const useCommentList = (selectedPost: Post | null) => {
   const showToast = useCustomToast();

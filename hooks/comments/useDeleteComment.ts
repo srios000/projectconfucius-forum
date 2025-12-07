@@ -4,7 +4,7 @@ import { firestore } from "@/firebase/clientApp";
 import { postStateAtom } from "@/atoms/postsAtom";
 import { useSetAtom } from "jotai";
 import useCustomToast from "@/hooks/useCustomToast";
-import { Comment } from "./types";
+import { Comment } from "../../types/comment";
 
 const useDeleteComment = (
   comments: Comment[],

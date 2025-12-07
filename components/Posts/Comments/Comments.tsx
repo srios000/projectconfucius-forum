@@ -1,6 +1,6 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import { Post } from "@/atoms/postsAtom";
-import { Comment } from "@/hooks/comments/types";
+import { Comment } from "@/types/comment";
 import useCommentList from "@/hooks/comments/useCommentList";
 import useCreateComment from "@/hooks/comments/useCreateComment";
 import useDeleteComment from "@/hooks/comments/useDeleteComment";
@@ -201,7 +201,7 @@ const Comments: React.FC<CommentsProps> = ({
                           cursor="default"
                         >
                           <Box pl={6} width="100%">
-                              <CommentItem
+                            <CommentItem
                               comment={comment}
                               onDeleteComment={deleteComment}
                               loadingDelete={deleteLoadingId === comment.id}
