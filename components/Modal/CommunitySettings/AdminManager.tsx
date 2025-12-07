@@ -1,5 +1,5 @@
-import { Community, communityStateAtom } from "@/atoms/communitiesAtom";
-import { auth, firestore } from "@/firebase/clientApp";
+import { Community } from "@/atoms/communitiesAtom";
+import { auth } from "@/firebase/clientApp";
 import useCustomToast from "@/hooks/useCustomToast";
 import useAdmins from "@/hooks/useAdmins";
 import {
@@ -11,21 +11,6 @@ import {
   Stack,
   Text,
 } from "@chakra-ui/react";
-import {
-  arrayRemove,
-  arrayUnion,
-  collection,
-  doc,
-  getDoc,
-  getDocs,
-  increment,
-  limit,
-  query,
-  runTransaction,
-  where,
-  writeBatch,
-} from "firebase/firestore";
-import { useSetAtom } from "jotai";
 import React, { useEffect, useState } from "react";
 import { useAuthState } from "react-firebase-hooks/auth";
 import { AdminUser } from "@/lib/communityAdmins";
@@ -35,13 +20,20 @@ type AdminManagerProps = {
 };
 
 const AdminManager: React.FC<AdminManagerProps> = ({ communityData }) => {
-  const { admins, setAdmins, loading, loadAdmins } = useAdmins();
+  const {
+    admins,
+    loading,
+    loadAdmins,
+    searchUsers,
+    findUser,
+    handleAddAdmin,
+    handleRemoveAdmin,
+  } = useAdmins();
   const [newAdminEmail, setNewAdminEmail] = useState("");
   const [addingAdmin, setAddingAdmin] = useState(false);
   const [searchResults, setSearchResults] = useState<AdminUser[]>([]);
   const [showResults, setShowResults] = useState(false);
   const showToast = useCustomToast();
-  const setCommunityStateValue = useSetAtom(communityStateAtom);
   const [user] = useAuthState(auth);
 
   useEffect(() => {
@@ -56,18 +48,14 @@ const AdminManager: React.FC<AdminManagerProps> = ({ communityData }) => {
     );
   }, [communityData, loadAdmins, showToast]);
 
-  const handleAddAdmin = async () => {
+  const onAddAdmin = async () => {
     if (!newAdminEmail) return;
     setAddingAdmin(true);
     try {
       // 1. Find user by email
-      const usersQuery = query(
-        collection(firestore, "users"),
-        where("email", "==", newAdminEmail)
-      );
-      const userDocs = await getDocs(usersQuery);
+      const newUser = await findUser(newAdminEmail);
 
-      if (userDocs.empty) {
+      if (!newUser) {
         showToast({
           title: "User not found",
           description: "No user found with that email",
@@ -76,9 +64,6 @@ const AdminManager: React.FC<AdminManagerProps> = ({ communityData }) => {
         setAddingAdmin(false);
         return;
       }
-
-      const newUserDoc = userDocs.docs[0];
-      const newUser = { uid: newUserDoc.id, ...newUserDoc.data() } as AdminUser;
 
       // 2. Check if already admin
       if (admins.some((admin) => admin.uid === newUser.uid)) {
@@ -91,57 +76,10 @@ const AdminManager: React.FC<AdminManagerProps> = ({ communityData }) => {
         return;
       }
 
-      // 3. Update community doc and user snippet
-      await runTransaction(firestore, async (transaction) => {
-        const communityRef = doc(firestore, "communities", communityData.id);
-        const snippetRef = doc(
-          firestore,
-          `users/${newUser.uid}/communitySnippets/${communityData.id}`
-        );
+      // 3. Add admin (updates Firestore + local + global state)
+      await handleAddAdmin(communityData.id, newUser, communityData.imageURL);
 
-        // Check if snippet exists (user might not be a member)
-        // If not a member, we can still make them admin?
-        // Usually admins should be members.
-        // For simplicity, let's assume they become a member if they aren't,
-        // or we just create the snippet with isAdmin: true.
-
-        const snippetDoc = await transaction.get(snippetRef);
-
-        transaction.update(communityRef, {
-          adminIds: arrayUnion(newUser.uid),
-        });
-
-        if (snippetDoc.exists()) {
-          transaction.update(snippetRef, {
-            isAdmin: true,
-          });
-        } else {
-          // If they are not a member, we create a snippet for them
-          transaction.set(snippetRef, {
-            communityId: communityData.id,
-            imageURL: communityData.imageURL || "",
-            isAdmin: true,
-          });
-
-          // Increment member count since we added a new member
-          transaction.update(communityRef, {
-            numberOfMembers: increment(1),
-          });
-        }
-      });
-
-      // Update local state
-      setAdmins((prev) => [...prev, newUser]);
       setNewAdminEmail("");
-
-      // Update global state
-      setCommunityStateValue((prev) => ({
-        ...prev,
-        currentCommunity: {
-          ...prev.currentCommunity!,
-          adminIds: [...(prev.currentCommunity?.adminIds || []), newUser.uid],
-        } as Community,
-      }));
 
       showToast({
         title: "Admin added",
@@ -160,43 +98,10 @@ const AdminManager: React.FC<AdminManagerProps> = ({ communityData }) => {
     }
   };
 
-  const handleRemoveAdmin = async (uid: string) => {
+  const onRemoveAdmin = async (uid: string) => {
     try {
-      const snippetRef = doc(
-        firestore,
-        `users/${uid}/communitySnippets/${communityData.id}`
-      );
-      const snippetDoc = await getDoc(snippetRef);
-
-      // 1. Update community doc and user snippet
-      const batch = writeBatch(firestore);
-      const communityRef = doc(firestore, "communities", communityData.id);
-
-      batch.update(communityRef, {
-        adminIds: arrayRemove(uid),
-      });
-
-      if (snippetDoc.exists()) {
-        batch.update(snippetRef, {
-          isAdmin: false,
-        });
-      }
-
-      await batch.commit();
-
-      // Update local state
-      setAdmins((prev) => prev.filter((admin) => admin.uid !== uid));
-
-      // Update global state
-      setCommunityStateValue((prev) => ({
-        ...prev,
-        currentCommunity: {
-          ...prev.currentCommunity!,
-          adminIds: (prev.currentCommunity?.adminIds || []).filter(
-            (id) => id !== uid
-          ),
-        } as Community,
-      }));
+      // Remove admin (updates Firestore + local + global state)
+      await handleRemoveAdmin(communityData.id, uid);
 
       showToast({
         title: "Admin removed",
@@ -214,23 +119,14 @@ const AdminManager: React.FC<AdminManagerProps> = ({ communityData }) => {
   };
 
   useEffect(() => {
-    const searchUsers = async () => {
+    const searchUsersAsync = async () => {
       if (newAdminEmail.length < 3) {
         setSearchResults([]);
         setShowResults(false);
         return;
       }
       try {
-        const usersQuery = query(
-          collection(firestore, "users"),
-          where("email", ">=", newAdminEmail),
-          where("email", "<=", newAdminEmail + "\uf8ff"),
-          limit(5)
-        );
-        const snapshot = await getDocs(usersQuery);
-        const results = snapshot.docs.map(
-          (doc) => ({ uid: doc.id, ...doc.data() } as AdminUser)
-        );
+        const results = await searchUsers(newAdminEmail);
         // Filter out existing admins
         const filtered = results.filter(
           (u) => !admins.some((a) => a.uid === u.uid)
@@ -242,9 +138,9 @@ const AdminManager: React.FC<AdminManagerProps> = ({ communityData }) => {
       }
     };
 
-    const timer = setTimeout(searchUsers, 300);
+    const timer = setTimeout(searchUsersAsync, 300);
     return () => clearTimeout(timer);
-  }, [newAdminEmail, admins]);
+  }, [newAdminEmail, admins, searchUsers]);
 
   return (
     <Stack gap={4}>
@@ -263,7 +159,7 @@ const AdminManager: React.FC<AdminManagerProps> = ({ communityData }) => {
             borderRadius={"xl"}
           />
           <Button
-            onClick={handleAddAdmin}
+            onClick={onAddAdmin}
             loading={addingAdmin}
             disabled={!newAdminEmail}
           >
@@ -340,7 +236,7 @@ const AdminManager: React.FC<AdminManagerProps> = ({ communityData }) => {
                     size="sm"
                     variant="outline"
                     colorPalette="red"
-                    onClick={() => handleRemoveAdmin(admin.uid)}
+                    onClick={() => onRemoveAdmin(admin.uid)}
                   >
                     Remove
                   </Button>
