@@ -1,4 +1,4 @@
-import { Post } from "@/atoms/postsAtom";
+import { Post } from "@/types/post";
 import useCustomToast from "@/hooks/useCustomToast";
 import useSavedPosts from "@/hooks/posts/useSavedPosts";
 import { Flex, Stack } from "@chakra-ui/react";

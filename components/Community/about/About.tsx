@@ -1,4 +1,4 @@
-import { Community } from "@/atoms/communitiesAtom";
+import { Community } from "@/types/community";
 import useCommunityState from "@/hooks/community/useCommunityState";
 import { Box, Button, Flex, Stack } from "@chakra-ui/react";
 import { useRouter } from "next/navigation";

@@ -1,6 +1,7 @@
-import { Post, postStateAtom } from "@/atoms/postsAtom";
+import { postStateAtom } from "@/atoms/postsAtom";
 import { savedPostStateAtom } from "@/atoms/savedPostsAtom";
 import { firestore, storage } from "@/firebase/clientApp";
+import { Post, PostVote } from "@/types/post";
 import {
   collection,
   deleteDoc,
@@ -19,7 +20,7 @@ const usePostDeletion = (
     React.SetStateAction<{
       selectedPost: Post | null;
       posts: Post[];
-      postVotes: import("@/atoms/postsAtom").PostVote[];
+      postVotes: PostVote[];
     }>
   >
 ) => {

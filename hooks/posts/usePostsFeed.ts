@@ -1,4 +1,4 @@
-import { Post, postStateAtom } from "@/atoms/postsAtom";
+import { postStateAtom } from "@/atoms/postsAtom";
 import { firestore } from "@/firebase/clientApp";
 import {
   collection,
@@ -16,6 +16,7 @@ import { useSetAtom } from "jotai";
 import { useEffect, useMemo, useState } from "react";
 import useCustomToast from "../useCustomToast";
 import { useIntersectionObserver } from "../useIntersectionObserver";
+import { Post } from "@/types/post";
 
 type UsePostsFeedProps = {
   communityId?: string;

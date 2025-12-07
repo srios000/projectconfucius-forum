@@ -6,7 +6,7 @@ import {
   IoArrowUpCircleOutline,
   IoArrowUpCircleSharp,
 } from "react-icons/io5";
-import { Post } from "@/atoms/postsAtom";
+import { Post } from "@/types/post";
 
 type VoteSectionProps = {
   userVoteValue?: number;

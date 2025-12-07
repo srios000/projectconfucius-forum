@@ -1,17 +1,5 @@
 import { atom } from "jotai";
-
-/**
- * Interface which describes the state of the authentication modal.
- * The modal has 2 properties:
- * @property {boolean} open - whether the modal is open or not
- * @property {"login" | "signup" | "resetPassword"} view - which specific view of the modal should be displayed
- *
- * @see https://jotai.org/docs/core/atom
- */
-export interface AuthModalState {
-  open: boolean;
-  view: "login" | "signup" | "resetPassword";
-}
+import { AuthModalState } from "@/types/authModal";
 
 /**
  * Describes the default state of the authentication modal.

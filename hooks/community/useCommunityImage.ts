@@ -1,10 +1,11 @@
-import { Community, communityStateAtom } from "@/atoms/communitiesAtom";
+import { communityStateAtom } from "@/atoms/communitiesAtom";
 import { firestore, storage } from "@/firebase/clientApp";
 import { collection, doc, getDoc, getDocs, updateDoc } from "firebase/firestore";
 import { deleteObject, getDownloadURL, ref, uploadString } from "firebase/storage";
 import { useSetAtom } from "jotai";
 import { useState } from "react";
 import useCustomToast from "../useCustomToast";
+import { Community } from "@/types/community";
 
 const useCommunityImage = (communityData: Community) => {
   const setCommunityStateValue = useSetAtom(communityStateAtom);

@@ -1,5 +1,5 @@
 import React from "react";
-import { Community } from "@/atoms/communitiesAtom";
+import { Community } from "@/types/community";
 import { Stack, Flex, Icon, Button } from "@chakra-ui/react";
 import { BsFillPeopleFill } from "react-icons/bs";
 

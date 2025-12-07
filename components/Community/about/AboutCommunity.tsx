@@ -1,5 +1,5 @@
 import React from "react";
-import { Community } from "@/atoms/communitiesAtom";
+import { Community } from "@/types/community";
 import { Flex, Text } from "@chakra-ui/react";
 import moment from "moment";
 

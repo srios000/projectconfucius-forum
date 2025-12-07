@@ -1,5 +1,5 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import { Post } from "@/atoms/postsAtom";
+import { Post } from "@/types/post";
 import { Comment } from "@/types/comment";
 import useCommentList from "@/hooks/comments/useCommentList";
 import useCreateComment from "@/hooks/comments/useCreateComment";

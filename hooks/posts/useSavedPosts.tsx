@@ -1,7 +1,8 @@
 import { authModalStateAtom } from "@/atoms/authModalAtom";
-import { Post } from "@/atoms/postsAtom";
-import { SavedPost, savedPostStateAtom } from "@/atoms/savedPostsAtom";
+import { savedPostStateAtom } from "@/atoms/savedPostsAtom";
 import { auth, firestore } from "@/firebase/clientApp";
+import { Post } from "@/types/post";
+import { SavedPost } from "@/types/savedPost";
 import {
   collection,
   deleteDoc,

@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useState } from "react";
 import { collection, getDocs, orderBy, query, where } from "firebase/firestore";
 import { firestore } from "@/firebase/clientApp";
-import { Post } from "@/atoms/postsAtom";
+import { Post } from "@/types/post";
 import useCustomToast from "@/hooks/useCustomToast";
 import { Comment } from "../../types/comment";
 

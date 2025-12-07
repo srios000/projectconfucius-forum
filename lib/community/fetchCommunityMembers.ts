@@ -1,11 +1,6 @@
 import { firestore } from "@/firebase/clientApp";
 import { collection, doc, getDoc, getDocs } from "firebase/firestore";
-
-export type CommunityMember = {
-  uid: string;
-  email: string;
-  displayName: string | null;
-};
+import { CommunityMember } from "@/types/communityMember";
 
 /**
  * Fetches all users that belong to a community by checking the

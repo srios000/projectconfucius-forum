@@ -1,4 +1,4 @@
-import { Community } from "@/atoms/communitiesAtom";
+import { Community } from "@/types/community";
 import { auth } from "@/firebase/clientApp";
 import useCustomToast from "@/hooks/useCustomToast";
 import useAddAdmin from "@/hooks/admin/useAddAdmin";

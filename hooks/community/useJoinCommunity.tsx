@@ -1,9 +1,6 @@
 import { useState } from "react";
-import {
-  Community,
-  CommunitySnippet,
-  communityStateAtom,
-} from "@/atoms/communitiesAtom";
+import { communityStateAtom } from "@/atoms/communitiesAtom";
+import { Community, CommunitySnippet } from "@/types/community";
 import { auth, firestore } from "@/firebase/clientApp";
 import { doc, increment, writeBatch } from "firebase/firestore";
 import { useSetAtom } from "jotai";

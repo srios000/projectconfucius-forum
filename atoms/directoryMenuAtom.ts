@@ -1,23 +1,6 @@
 import { atom } from "jotai";
-import { IconType } from "react-icons";
 import { TiHome } from "react-icons/ti";
-
-/**
- * Interface which describes the state of the directory menu item.
- * Captures community information for the directory menu item.
- * @property {string} displayText - text to be displayed on the menu item
- * @property {string} link - link to be navigated to when the menu item is clicked
- * @property {IconType} icon - icon to be displayed on the menu item
- * @property {string} iconColor - color of the icon
- * @property {string} imageURL - URL of the image to be displayed on the menu item
- */
-export type DirectoryMenuItem = {
-  displayText: string;
-  link: string;
-  icon: IconType;
-  iconColor: string | { base: string; _dark: string };
-  imageURL?: string;
-};
+import { DirectoryMenuItem } from "@/types/directoryMenu";
 
 /**
  * Interface which describes the state of the directory menu.

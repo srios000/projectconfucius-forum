@@ -1,0 +1,17 @@
+import { Timestamp } from "firebase/firestore";
+
+export interface Community {
+  id: string;
+  creatorId: string;
+  numberOfMembers: number;
+  privacyType: "public" | "restricted" | "private";
+  createdAt?: Timestamp;
+  imageURL?: string;
+  adminIds?: string[];
+}
+
+export interface CommunitySnippet {
+  communityId: string;
+  isAdmin?: boolean;
+  imageURL?: string;
+}

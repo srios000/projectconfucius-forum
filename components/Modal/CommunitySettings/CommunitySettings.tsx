@@ -1,4 +1,4 @@
-import { Community, communityStateAtom } from "@/atoms/communitiesAtom";
+import { communityStateAtom } from "@/atoms/communitiesAtom";
 import useCommunityImage from "@/hooks/community/useCommunityImage";
 import useCommunityPrivacy from "@/hooks/community/useCommunityPrivacy";
 import useDeleteCommunity from "@/hooks/community/useDeleteCommunity";
@@ -26,6 +26,7 @@ import {
   ModalFooter,
   PrivacySettings,
 } from ".";
+import { Community } from "@/types/community";
 
 type CommunitySettingsModalProps = {
   open: boolean;

@@ -1,6 +1,5 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import { authModalStateAtom } from "@/atoms/authModalAtom";
-import { Post, PostVote } from "@/atoms/postsAtom";
 import { auth, firestore } from "@/firebase/clientApp";
 import {
   collection,
@@ -16,6 +15,7 @@ import { useSetAtom } from "jotai";
 import { useAuthState } from "react-firebase-hooks/auth";
 import useCustomToast from "../useCustomToast";
 import React from "react";
+import { Post, PostVote } from "@/types/post";
 
 type SetPostState = React.Dispatch<
   React.SetStateAction<{
