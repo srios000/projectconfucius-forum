@@ -1,11 +1,11 @@
 "use client";
 
 import { communityStateAtom } from "@/atoms/communitiesAtom";
-import About from "@/components/Community/about/About";
-import CreatePostLink from "@/components/Community/CreatePostLink";
-import CommunityHeader from "@/components/Community/community-header/CommunityHeader";
-import PageContent from "@/components/Layout/PageContent";
-import Posts from "@/components/Posts/Posts";
+import About from "@/components/community/about/About";
+import CreatePostLink from "@/components/community/CreatePostLink";
+import CommunityHeader from "@/components/community/community-header/CommunityHeader";
+import PageContent from "@/components/layout/PageContent";
+import Posts from "@/components/posts/Posts";
 import { useAtom } from "jotai";
 import React, { useEffect } from "react";
 import { Community } from "@/types/community";

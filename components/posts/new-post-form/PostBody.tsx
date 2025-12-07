@@ -1,7 +1,7 @@
 import React from "react";
 import { Flex } from "@chakra-ui/react";
-import TextInputs from "../PostForm/TextInputs";
-import ImageUpload from "../PostForm/ImageUpload";
+import TextInputs from "../post-form/TextInputs";
+import ImageUpload from "../post-form/ImageUpload";
 
 type PostBodyProps = {
   selectedTab: string;

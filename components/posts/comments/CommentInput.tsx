@@ -1,5 +1,5 @@
-import ProfileModal from "@/components/Modal/Profile/ProfileModal";
-import AuthButtons from "@/components/Navbar/RightContent/AuthButtons";
+import ProfileModal from "@/components/modal/profile/ProfileModal";
+import AuthButtons from "@/components/navbar/right-content/AuthButtons";
 import { Flex, Textarea, Button, Text, Stack } from "@chakra-ui/react";
 import { User } from "firebase/auth";
 import React, { useState } from "react";

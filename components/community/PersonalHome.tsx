@@ -3,7 +3,7 @@ import useCallCreatePost from "@/hooks/posts/useCallCreatePost";
 import { Button, Flex, Image, Stack, Text } from "@chakra-ui/react";
 import { useAtomValue } from "jotai";
 import React, { useState } from "react";
-import CreateCommunityModal from "../Modal/CreateCommunity/CreateCommunityModal";
+import CreateCommunityModal from "../modal/create-community/CreateCommunityModal";
 
 /**
  * Component for displaying card for creating a new community or post.

@@ -1,12 +1,12 @@
 "use client";
 
 /* eslint-disable react-hooks/exhaustive-deps */
-import CreatePostLink from "@/components/Community/CreatePostLink";
-import PersonalHome from "@/components/Community/PersonalHome";
-import Recommendations from "@/components/Community/recommendations/Recommendations";
-import PageContent from "@/components/Layout/PageContent";
-import PostLoader from "@/components/Loaders/post-loader/PostLoader";
-import PostItem from "@/components/Posts/post-item/PostItem";
+import CreatePostLink from "@/components/community/CreatePostLink";
+import PersonalHome from "@/components/community/PersonalHome";
+import Recommendations from "@/components/community/recommendations/Recommendations";
+import PageContent from "@/components/layout/PageContent";
+import PostLoader from "@/components/loaders/post-loader/PostLoader";
+import PostItem from "@/components/posts/post-item/PostItem";
 import { auth, firestore } from "@/firebase/clientApp";
 import useCommunityState from "@/hooks/community/useCommunityState";
 import useCustomToast from "@/hooks/useCustomToast";

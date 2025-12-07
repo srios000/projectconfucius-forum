@@ -2,7 +2,7 @@
 
 import { ChakraProvider, Toaster } from "@chakra-ui/react";
 import { theme } from "@/chakra/theme";
-import Layout from "@/components/Layout/Layout";
+import Layout from "@/components/layout/Layout";
 import { Provider as JotaiProvider } from "jotai";
 import { useEffect, useState } from "react";
 import { toaster } from "@/hooks/useCustomToast";

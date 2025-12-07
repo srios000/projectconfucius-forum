@@ -2,11 +2,11 @@
 
 /* eslint-disable react-hooks/exhaustive-deps */
 import { communityStateAtom } from "@/atoms/communitiesAtom";
-import About from "@/components/Community/about/About";
-import PageContent from "@/components/Layout/PageContent";
-import PostLoader from "@/components/Loaders/post-loader/PostLoader";
-import Comments from "@/components/Posts/Comments/Comments";
-import PostItem from "@/components/Posts/post-item/PostItem";
+import About from "@/components/community/about/About";
+import PageContent from "@/components/layout/PageContent";
+import PostLoader from "@/components/loaders/post-loader/PostLoader";
+import Comments from "@/components/posts/comments/Comments";
+import PostItem from "@/components/posts/post-item/PostItem";
 import { auth } from "@/firebase/clientApp";
 import useCommunityPermissions from "@/hooks/community/useCommunityPermissions";
 import usePostState from "@/hooks/posts/usePostState";

@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { Community } from "@/types/community";
 import { Button } from "@chakra-ui/react";
 import useCommunityPermissions from "@/hooks/community/useCommunityPermissions";
-import CommunitySettingsModal from "@/components/Modal/CommunitySettings/CommunitySettings";
+import CommunitySettingsModal from "@/components/modal/community-settings/CommunitySettings";
 
 type AdminSectionAboutProps = {
   communityData: Community;
