@@ -5,7 +5,7 @@ import React from "react";
 type ImageSettingsProps = {
   selectedFile: string;
   onSelectFile: (event: React.ChangeEvent<HTMLInputElement>) => void;
-  selectFileRef: React.RefObject<HTMLInputElement | null>;
+  selectFileRef: React.RefObject<HTMLInputElement>;
   currentCommunity: Community | null;
   deleteImage: boolean;
   setDeleteImage: (value: boolean) => void;
