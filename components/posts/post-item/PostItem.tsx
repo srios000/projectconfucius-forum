@@ -11,15 +11,6 @@ import PostTitle from "./PostTitle";
 import PostBody from "./PostBody";
 import PostActions from "./PostActions";
 
-/**
- * @param {Post} post - post object
- * @param {boolean} userIsCreator - is the currently logged in user the creator of post
- * @param {number} userVoteValue - whether the currently logged in user has voted on the post (1, -1, or 0)
- * @param {function} onVote - function to handle voting
- * @param {function} onDeletePost - function to handle deleting post
- * @param {function} onSelectPost - function to handle selecting post
- * @param {boolean} showCommunityImage - whether to show the community image
- */
 type PostItemProps = {
   post: Post;
   userIsCreator: boolean; // is the currently logged in user the creator of post
@@ -37,25 +28,16 @@ type PostItemProps = {
 };
 
 /**
- * Component to display a post:
- *  - Post title
- *  - Post text
- *  - Post creator
- *  - Post community
- *  - Post vote count
- *  - Post vote buttons
- *  - Post delete button (if user is creator or admin)
- *  - Post select button (if post is not selected)
- *  - Post community image (if showCommunityImage is true)
- * @param {Post} post - post object
- * @param {boolean} userIsCreator - is the currently logged in user the creator of post
- * @param {boolean} userIsAdmin - is the currently logged in user an admin of the community
- * @param {number} userVoteValue - whether the currently logged in user has voted on the post (1, -1, or 0)
- * @param {function} onVote - function to handle voting
- * @param {function} onDeletePost - function to handle deleting post
- * @param {function} onSelectPost - function to handle selecting post
- * @param {boolean} showCommunityImage - whether to show the community image
- * @returns {React.FC<PostItemProps>} - card displaying post
+ * Card that displays post metadata, content preview, votes, and action buttons.
+ * @param post - Post data to render.
+ * @param userIsCreator - Whether the viewer authored the post.
+ * @param userIsAdmin - Whether the viewer can moderate the post.
+ * @param userVoteValue - Current user's vote value for this post.
+ * @param onVote - Handler invoked when a vote button is clicked.
+ * @param onDeletePost - Handler to delete the post.
+ * @param onSelectPost - Optional handler to open the post details view.
+ * @param showCommunityImage - Whether to show the community avatar.
+ * @returns Interactive post card component.
  */
 const PostItem: React.FC<PostItemProps> = ({
   post,
@@ -75,18 +57,8 @@ const PostItem: React.FC<PostItemProps> = ({
   const { onSavePost, isPostSaved } = useSavedPosts();
   const isSaved = isPostSaved(post.id!);
 
-  /**
-   * If there is no selected post then post is already selected
-   */
   const singlePostPage = !onSelectPost;
 
-  /**
-   * Will call the `handleDelete` from prop (usePosts hook).
-   * This function provides the error handling for the delete functionality.
-   * Each component may choose to the error handling differently.
-   * Core functionality is shared.
-   * @param {React.MouseEvent<HTMLButtonElement, MouseEvent>} event - click event on delete button to prevent from post being selected
-   */
   const handleDelete = async (
     event: React.MouseEvent<HTMLButtonElement, MouseEvent>
   ) => {
@@ -122,10 +94,6 @@ const PostItem: React.FC<PostItemProps> = ({
     }
   };
 
-  /**
-   * Added functionality to share a post by copying the link to the post to the clipboard.
-   * Router will check base URL to copy the correct link depending on the name of the site.
-   */
   const getPostLink = () => {
     const baseUrl = `${window.location.protocol}//${window.location.host}`;
     return `${baseUrl}/community/${post.communityId}/comments/${post.id}`;

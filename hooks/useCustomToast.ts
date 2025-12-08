@@ -1,12 +1,6 @@
 import { createToaster } from "@chakra-ui/react";
 import { useCallback } from "react";
 
-/**
- * Interface for the options of the toast.
- * @property {string} title - title of the toast
- * @property {string} description - description of the toast
- * @property {"success" | "error" | "warning" | "info"} status - status of the toast
- */
 interface CustomToastOptions {
   title: string;
   description?: string;
@@ -19,14 +13,11 @@ export const toaster = createToaster({
 });
 
 /**
- * Displays a toast with the given options.
- * Depending on the status, the toast will have a different color.
- * There are 4 types of status: success, error, warning, info.
- * @param {string} title - title of the toast
- * @param {string} description - description of the toast
- * @param {"success" | "error" | "warning" | "info"} status - status of the toast
- *
- * @returns {function} - function which shows a toast
+ * Returns a memoized helper to show consistent Chakra toasts.
+ * @param title - Heading shown in the toast.
+ * @param description - Optional supporting text.
+ * @param status - One of success, error, warning, or info to pick styling.
+ * @returns Function that triggers a toast with standard options.
  */
 const useCustomToast = () => {
   const showToast = useCallback(

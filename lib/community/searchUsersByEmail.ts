@@ -6,8 +6,8 @@ import { AdminUser } from "../../types/adminUser";
 /**
  * Searches for users by email.
  * Returns up to 5 matching users.
- * @param emailQuery - The email search term
- * @returns Promise<AdminUser[]> - Array of matching users
+ * @param emailQuery - Email search term typed by the admin.
+ * @returns Array of matching users with id and profile info.
  */
 export const searchUsersByEmail = async (
   emailQuery: string

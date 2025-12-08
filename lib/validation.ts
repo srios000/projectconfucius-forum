@@ -1,3 +1,9 @@
+/**
+ * Validates password strength and match for the signup form.
+ * @param form.password - Raw password input.
+ * @param form.confirmPassword - Confirmation field to compare.
+ * @returns Error message when invalid, otherwise null.
+ */
 export const validateSignupForm = (form: {
   password: string;
   confirmPassword: string;

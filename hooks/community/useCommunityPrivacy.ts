@@ -5,6 +5,11 @@ import { doc, updateDoc } from "firebase/firestore";
 import { useSetAtom } from "jotai";
 import useCustomToast from "../useCustomToast";
 
+/**
+ * Updates a community's privacy type and mirrors the change in local state.
+ * @param communityData - Community whose privacy setting is being changed.
+ * @returns Handler that writes the new privacy type to Firestore.
+ */
 const useCommunityPrivacy = (communityData: Community) => {
   const setCommunityStateValue = useSetAtom(communityStateAtom);
   const showToast = useCustomToast();

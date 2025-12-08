@@ -24,6 +24,13 @@ type UsePostsFeedProps = {
   isGenericHome?: boolean;
 };
 
+/**
+ * Fetches paginated posts for a community or the generic home feed with infinite scroll support.
+ * @param communityId - Single community id to scope the feed.
+ * @param communityIds - List of community ids to aggregate into the feed.
+ * @param isGenericHome - Whether to sort by vote status for the default home view.
+ * @returns Loading flag, sentinel ref, no-more-posts flag, and a fetch function.
+ */
 const usePostsFeed = ({
   communityId,
   communityIds,

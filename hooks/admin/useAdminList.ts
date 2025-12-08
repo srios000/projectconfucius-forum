@@ -2,6 +2,12 @@ import { useCallback, useState } from "react";
 import { AdminUser } from "@/types/adminUser";
 import { fetchCommunityAdmins } from "@/lib/community/fetchCommunityAdmins";
 
+/**
+ * Loads and stores the list of admins for a community, including the creator.
+ * @param creatorId - Creator uid to always include.
+ * @param adminIds - Optional admin id array from the community document.
+ * @returns Admin list, setter, loading flag, and loader function.
+ */
 const useAdminList = () => {
   const [admins, setAdmins] = useState<AdminUser[]>([]);
   const [loading, setLoading] = useState(false);

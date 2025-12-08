@@ -7,6 +7,11 @@ import { useSetAtom } from "jotai";
 import { useAuthState } from "react-firebase-hooks/auth";
 import useCustomToast from "../useCustomToast";
 
+/**
+ * Adds the current user to a community and updates member counts and snippets.
+ * @param communityData - Community the user wants to join.
+ * @returns Join handler plus loading and error state.
+ */
 const useJoinCommunity = () => {
   const [user] = useAuthState(auth);
   const setCommunityStateValue = useSetAtom(communityStateAtom);

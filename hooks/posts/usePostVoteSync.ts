@@ -15,6 +15,11 @@ type SetPostState = React.Dispatch<
   }>
 >;
 
+/**
+ * Keeps the local post vote cache in sync with the signed-in user's community votes.
+ * @param setPostStateValue - Setter for the post atom to store fetched votes.
+ * @returns Subscribes to auth and community changes to refresh vote data.
+ */
 const usePostVoteSync = (setPostStateValue: SetPostState) => {
   const [user] = useAuthState(auth);
   const currentCommunity = useAtomValue(communityStateAtom).currentCommunity;

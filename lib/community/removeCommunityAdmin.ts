@@ -4,9 +4,9 @@ import { arrayRemove, doc, getDoc, writeBatch } from "firebase/firestore";
 /**
  * Removes a user as an admin from a community.
  * Keeps them as a member but removes admin privileges.
- * @param communityId - The community ID
- * @param userId - The user ID to remove as admin
- * @returns Promise<void>
+ * @param communityId - Community identifier.
+ * @param userId - User to demote.
+ * @returns Resolves when admin role has been removed.
  */
 export const removeCommunityAdmin = async (
   communityId: string,

@@ -15,6 +15,13 @@ import { useSetAtom } from "jotai";
 import useCustomToast from "@/hooks/useCustomToast";
 import { Comment } from "../../types/comment";
 
+/**
+ * Creates a new comment or reply on the selected post and updates counts.
+ * @param user - Authenticated user authoring the comment.
+ * @param commentText - Text body of the comment.
+ * @param parentId - Optional parent comment id for threaded replies.
+ * @returns Comment creation handler and loading flag.
+ */
 const useCreateComment = (
   selectedPost: Post | null,
   setComments: Dispatch<SetStateAction<Comment[]>>

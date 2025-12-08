@@ -20,12 +20,6 @@ import CommentInput from "./CommentInput";
 import CommentItem from "./CommentItem";
 import { LuChevronRight } from "react-icons/lu";
 
-/**
- * Required props for Comments component
- * @param {User} user - User object from firebase
- * @param {Post} selectedPost - Post object from firebase
- * @param {string} communityId - id of the community
- */
 type CommentsProps = {
   user?: User;
   selectedPost: Post | null;
@@ -34,17 +28,12 @@ type CommentsProps = {
 };
 
 /**
- * Displays all the comments for a post.
- * Allows user to create, edit and delete comments.
- *
- * If there are no comments, displays a message.
- * Show loading skeleton while fetching comments.
- * If everything is loaded, show the comments.
- * @param {User} user - User object from firebase
- * @param {Post} selectedPost - Post object from firebase
- * @param {string} communityId - id of the community
- *
- * @returns {React.FC<CommentsProps>} - Comments component
+ * Shows a post's comments with threaded replies and CRUD controls.
+ * @param user - Authenticated user creating or deleting comments.
+ * @param selectedPost - Post whose comments are displayed.
+ * @param communityId - Community id used for permissions.
+ * @param isCommunityAdmin - Whether the viewer can moderate comments.
+ * @returns Comment tree with input and loading states.
  */
 const Comments: React.FC<CommentsProps> = ({
   user,

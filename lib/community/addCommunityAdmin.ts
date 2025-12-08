@@ -4,10 +4,10 @@ import { arrayUnion, doc, increment, runTransaction } from "firebase/firestore";
 /**
  * Adds a user as an admin to a community.
  * Creates a community snippet for the user if they aren't a member yet.
- * @param communityId - The community ID
- * @param userId - The user ID to make admin
- * @param communityImageURL - The community image URL (for snippet creation)
- * @returns Promise<void>
+ * @param communityId - Community to update.
+ * @param userId - User to promote.
+ * @param communityImageURL - Image URL stored on the snippet if needed.
+ * @returns Resolves when the transaction completes.
  */
 export const addCommunityAdmin = async (
   communityId: string,

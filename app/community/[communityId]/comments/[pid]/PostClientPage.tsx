@@ -1,6 +1,5 @@
 "use client";
 
-/* eslint-disable react-hooks/exhaustive-deps */
 import { communityStateAtom } from "@/atoms/communitiesAtom";
 import About from "@/components/community/about/About";
 import PageContent from "@/components/layout/PageContent";
@@ -9,17 +8,17 @@ import Comments from "@/components/posts/comments/Comments";
 import PostItem from "@/components/posts/post-item/PostItem";
 import { auth } from "@/firebase/clientApp";
 import useCommunityPermissions from "@/hooks/community/useCommunityPermissions";
+import usePostDeletion from "@/hooks/posts/usePostDeletion";
 import usePostState from "@/hooks/posts/usePostState";
 import usePostVote from "@/hooks/posts/usePostVote";
-import usePostDeletion from "@/hooks/posts/usePostDeletion";
 import usePostVoteSync from "@/hooks/posts/usePostVoteSync";
+import { Community } from "@/types/community";
+import { Post } from "@/types/post";
 import { Stack } from "@chakra-ui/react";
 import { User } from "firebase/auth";
 import { useAtom } from "jotai";
 import React, { useEffect } from "react";
 import { useAuthState } from "react-firebase-hooks/auth";
-import { Community } from "@/types/community";
-import { Post } from "@/types/post";
 
 type PostPageProps = {
   communityData: Community;
@@ -27,13 +26,10 @@ type PostPageProps = {
 };
 
 /**
- * Displays a single post.
- * Contains:
- *  - PostItem component
- *  - About component
- *  - Comments component
- *
- * @returns {React.FC} - Single post page with all components
+ * Client page for a single post with voting, deletion, and threaded comments.
+ * @param communityData - Community context for the post.
+ * @param postData - Post fetched on the server; may be null if not found.
+ * @returns Layout with post content on the left and community about panel on the right.
  */
 const PostPage: React.FC<PostPageProps> = ({ communityData, postData }) => {
   const { postStateValue, setPostStateValue } = usePostState();

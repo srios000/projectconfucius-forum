@@ -4,6 +4,11 @@ import { useCallback, useState } from "react";
 import { fetchCommunityMembers } from "@/lib/community/fetchCommunityMembers";
 import { CommunityMember } from "@/types/communityMember";
 
+/**
+ * Fetches and caches the members of a community for modal displays.
+ * @param communityId - Target community to query.
+ * @returns Member list, loading and error flags, plus a loader function.
+ */
 const useCommunityMembers = () => {
   const [members, setMembers] = useState<CommunityMember[]>([]);
   const [loading, setLoading] = useState(false);

@@ -11,6 +11,11 @@ import { firestore } from "@/firebase/clientApp";
 import { Community } from "@/types/community";
 import { Post } from "@/types/post";
 
+/**
+ * Client-side search hook that preloads public communities and recent posts.
+ * @param searchTerm - Text input from the search field.
+ * @returns Filtered communities and posts along with a loading flag.
+ */
 const useSearch = (searchTerm: string) => {
   const [results, setResults] = useState<{
     communities: Community[];

@@ -6,6 +6,11 @@ import { useSetAtom } from "jotai";
 import useCustomToast from "@/hooks/useCustomToast";
 import { Comment } from "../../types/comment";
 
+/**
+ * Deletes a comment and its replies while syncing counts on the parent post.
+ * @param comment - Comment to remove along with its descendants.
+ * @returns Delete handler and the id of the comment currently being deleted.
+ */
 const useDeleteComment = (
   comments: Comment[],
   setComments: Dispatch<SetStateAction<Comment[]>>

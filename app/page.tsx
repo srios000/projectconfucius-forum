@@ -1,26 +1,28 @@
 "use client";
 
-/* eslint-disable react-hooks/exhaustive-deps */
 import CreatePostLink from "@/components/community/CreatePostLink";
 import PersonalHome from "@/components/community/PersonalHome";
 import Recommendations from "@/components/community/recommendations/Recommendations";
 import PageContent from "@/components/layout/PageContent";
 import PostLoader from "@/components/loaders/post-loader/PostLoader";
 import PostItem from "@/components/posts/post-item/PostItem";
-import { auth, firestore } from "@/firebase/clientApp";
+import { auth } from "@/firebase/clientApp";
 import useCommunityState from "@/hooks/community/useCommunityState";
-import useCustomToast from "@/hooks/useCustomToast";
-import usePostState from "@/hooks/posts/usePostState";
-import usePostSelection from "@/hooks/posts/usePostSelection";
-import usePostVote from "@/hooks/posts/usePostVote";
 import usePostDeletion from "@/hooks/posts/usePostDeletion";
+import usePostSelection from "@/hooks/posts/usePostSelection";
+import usePostState from "@/hooks/posts/usePostState";
+import usePostVote from "@/hooks/posts/usePostVote";
 import usePostVoteSync from "@/hooks/posts/usePostVoteSync";
 import usePostsFeed from "@/hooks/posts/usePostsFeed";
+import useCustomToast from "@/hooks/useCustomToast";
 import { Box, Spinner, Stack, Text } from "@chakra-ui/react";
-import { collection, getDocs, query, where } from "firebase/firestore";
 import { useEffect, useMemo } from "react";
 import { useAuthState } from "react-firebase-hooks/auth";
 
+/**
+ * Renders the home feed with infinite scrolling posts and a sidebar of recommendations.
+ * @returns Main content paired with community suggestions and personal shortcuts.
+ */
 export default function Home() {
   const [user, loadingUser] = useAuthState(auth);
   const { communityStateValue } = useCommunityState();

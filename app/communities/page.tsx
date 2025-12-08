@@ -13,9 +13,8 @@ import React, { useEffect, useMemo } from "react";
 import { Community } from "@/types/community";
 
 /**
- * Displays the communities page with the top 5 communities.
- * Pressing the "See More" button will display the next 5 communities.
- * @returns {React.FC} - the communities page with the top 5 communities.
+ * Lists communities with infinite scroll, grouped by membership state.
+ * @returns Communities page with moderation, joined, and discovery sections.
  */
 const Communities: React.FC = () => {
   const { communityStateValue } = useCommunityState();

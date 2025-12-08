@@ -25,6 +25,12 @@ type SetPostState = React.Dispatch<
   }>
 >;
 
+/**
+ * Manages voting interactions on posts and keeps local vote state aligned with Firestore.
+ * @param postStateValue - Current post state containing posts and cached votes.
+ * @param setPostStateValue - Setter used to update posts, votes, and selected post.
+ * @returns Handlers to vote on a post, load votes for a set of posts, or fetch a single post.
+ */
 const usePostVote = (
   postStateValue: {
     selectedPost: Post | null;

@@ -2,6 +2,11 @@ import { firestore } from "@/firebase/clientApp";
 import { doc, getDoc } from "firebase/firestore";
 import safeJsonStringify from "safe-json-stringify";
 
+/**
+ * Retrieves community data by id with JSON-safe serialization.
+ * @param communityId - Id of the community to fetch.
+ * @returns Community object or null if it does not exist.
+ */
 export async function getCommunityData(communityId: string) {
   try {
     const communityDocRef = doc(firestore, "communities", communityId);

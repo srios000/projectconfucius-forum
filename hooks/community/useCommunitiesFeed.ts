@@ -18,6 +18,12 @@ type UseCommunitiesFeedProps = {
   isPagination?: boolean;
 };
 
+/**
+ * Loads communities ordered by member count, with optional pagination support.
+ * @param limitValue - Number of communities to fetch per page.
+ * @param isPagination - Whether to enable fetching more on demand.
+ * @returns Community list, loading flag, pagination status, and fetch function.
+ */
 const useCommunitiesFeed = ({
   limitValue = 10,
   isPagination = false,

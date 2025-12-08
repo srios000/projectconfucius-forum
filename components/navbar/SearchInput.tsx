@@ -12,12 +12,8 @@ import { AiOutlineSearch } from "react-icons/ai";
 import SearchModal from "./SearchModal";
 
 /**
- * Search bar which would allow the user to carry out searches on the site.
- * Search bar dynamically resizes depending on the screen size.
- * It will use all the available space of the parent component (navbar).
- * On mobile screen sizes, the search bar will be displayed as a button which will open the search modal.
- * On desktop screen sizes, the search bar will be displayed as a normal input which opens the search modal on click.
- * @returns {React.FC} - Search bar
+ * Navbar search trigger that adapts between a button and input based on screen size.
+ * @returns Search control and modal opener.
  */
 const SearchInput: React.FC = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -45,8 +41,9 @@ const SearchInput: React.FC = () => {
 export default SearchInput;
 
 /**
- * Displays an input field for the search bar.
- * @returns {React.FC} - Search bar
+ * Read-only search input that opens the modal on click.
+ * @param onClick - Handler to open the search modal.
+ * @returns Input group styled for the navbar.
  */
 const SearchBox: React.FC<{ onClick: () => void }> = ({ onClick }) => {
   return (

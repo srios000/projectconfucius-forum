@@ -5,6 +5,13 @@ import { useSetAtom } from "jotai";
 import { Dispatch, SetStateAction, useCallback } from "react";
 import { Community } from "@/types/community";
 
+/**
+ * Removes an admin from a community and updates local community state.
+ * @param communityId - Community to update.
+ * @param userId - User id to remove from admin list.
+ * @param updateAdmins - Optional setter to sync local admin arrays.
+ * @returns Callback that performs the removal.
+ */
 const useRemoveAdmin = () => {
   const setCommunityStateValue = useSetAtom(communityStateAtom);
 

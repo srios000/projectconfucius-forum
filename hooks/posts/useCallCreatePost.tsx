@@ -5,6 +5,10 @@ import { useRouter, useParams } from "next/navigation";
 import { useAuthState } from "react-firebase-hooks/auth";
 import useDirectory from "../useDirectory";
 
+/**
+ * Handles clicks on "Create Post" by gating on auth and routing to the right submit page.
+ * @returns Click handler that opens auth modal, navigates, or toggles the directory menu.
+ */
 const useCallCreatePost = () => {
   const router = useRouter();
   const params = useParams();

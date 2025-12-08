@@ -5,6 +5,11 @@ import { Post } from "@/types/post";
 import useCustomToast from "@/hooks/useCustomToast";
 import { Comment } from "../../types/comment";
 
+/**
+ * Loads comments for the selected post and keeps them in local state.
+ * @param selectedPost - Post whose comments should be fetched.
+ * @returns Comment list, setter, loading flag, and a reload function.
+ */
 const useCommentList = (selectedPost: Post | null) => {
   const showToast = useCustomToast();
   const [comments, setComments] = useState<Comment[]>([]);
