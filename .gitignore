@@ -39,3 +39,7 @@ next-env.d.ts
 .vscode/*
 .firebase/logs/vsce-debug.log
 AGENTS.md
+
+# github
+.github/agents/**
+.github/copilot-instructions.md
