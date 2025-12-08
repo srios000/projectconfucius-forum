@@ -19,7 +19,7 @@ const Navbar: React.FC = () => {
   return (
     <Flex
       bg={{ base: "white", _dark: "gray.900" }}
-      height="68px"
+      height="62px"
       padding="10px 12px"
       justify={{ md: "space-between" }}
       position="sticky"
