@@ -7,7 +7,7 @@ type UserImageSectionProps = {
   user: User | null | undefined;
   selectedFile: string | undefined;
   isEditing: boolean;
-  selectFileRef: RefObject<HTMLInputElement | null>;
+  selectFileRef: RefObject<HTMLInputElement>;
   onSelectFile: (event: React.ChangeEvent<HTMLInputElement>) => void;
   setDeleteImage: (value: boolean) => void;
   deleteImage: boolean;
