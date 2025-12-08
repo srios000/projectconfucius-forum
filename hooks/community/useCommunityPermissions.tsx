@@ -2,6 +2,11 @@ import { Community } from "@/types/community";
 import { auth } from "@/firebase/clientApp";
 import { useAuthState } from "react-firebase-hooks/auth";
 
+/**
+ * Calculates permission flags for the current user within a community.
+ * @param communityData - Community to check against.
+ * @returns Boolean flags for creator, admin, and admin-management rights.
+ */
 const useCommunityPermissions = (communityData?: Community) => {
   const [user] = useAuthState(auth);
 

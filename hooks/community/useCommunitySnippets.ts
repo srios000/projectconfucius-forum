@@ -7,6 +7,10 @@ import { useEffect, useState } from "react";
 import { useAuthState } from "react-firebase-hooks/auth";
 import useCustomToast from "../useCustomToast";
 
+/**
+ * Loads and caches the current user's community snippets to drive menus and permissions.
+ * @returns Loading and error flags; side effects populate the community atom.
+ */
 export const useCommunitySnippets = () => {
   const [user] = useAuthState(auth);
   const setCommunityStateValue = useSetAtom(communityStateAtom);

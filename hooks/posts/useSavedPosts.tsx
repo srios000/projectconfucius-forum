@@ -15,6 +15,12 @@ import { useEffect, useState } from "react";
 import { useAuthState } from "react-firebase-hooks/auth";
 import useCustomToast from "../useCustomToast";
 
+/**
+ * Manages a user's saved posts collection and related UI state.
+ * @param post - Post to save or unsave.
+ * @param postId - Identifier of the saved post entry to remove or check.
+ * @returns Saved post state, loading flag, and handlers to fetch, toggle, or check saves.
+ */
 const useSavedPosts = () => {
   const [user] = useAuthState(auth);
   const [savedPostState, setSavedPostState] = useAtom(savedPostStateAtom);

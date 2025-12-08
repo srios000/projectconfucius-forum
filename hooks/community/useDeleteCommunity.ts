@@ -15,6 +15,11 @@ import { useRouter } from "next/navigation";
 import { useState } from "react";
 import useCustomToast from "../useCustomToast";
 
+/**
+ * Deletes a community and all related posts, comments, votes, and snippets.
+ * @param communityData - Community to remove.
+ * @returns Handler that performs the cascade delete and a loading flag.
+ */
 const useDeleteCommunity = (communityData: Community) => {
   const router = useRouter();
   const showToast = useCustomToast();

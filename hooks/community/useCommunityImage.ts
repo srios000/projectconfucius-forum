@@ -7,6 +7,11 @@ import { useState } from "react";
 import useCustomToast from "../useCustomToast";
 import { Community } from "@/types/community";
 
+/**
+ * Uploads or removes a community image while syncing snippets and local state.
+ * @param communityData - Community whose image is being managed.
+ * @returns Handlers to update or delete the image along with an uploading flag.
+ */
 const useCommunityImage = (communityData: Community) => {
   const setCommunityStateValue = useSetAtom(communityStateAtom);
   const showToast = useCustomToast();

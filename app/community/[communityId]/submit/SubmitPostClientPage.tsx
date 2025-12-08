@@ -7,16 +7,21 @@ import PageContent from "@/components/layout/PageContent";
 import AuthButtons from "@/components/navbar/right-content/AuthButtons";
 import NewPostForm from "@/components/posts/new-post-form/NewPostForm";
 import { auth } from "@/firebase/clientApp";
+import { Community } from "@/types/community";
 import { Box, Stack, Text } from "@chakra-ui/react";
 import { useAtom, useSetAtom } from "jotai";
 import React, { useEffect } from "react";
 import { useAuthState } from "react-firebase-hooks/auth";
-import { Community } from "@/types/community";
 
 type SubmitPostPageProps = {
   communityData: Community;
 };
 
+/**
+ * Client page for creating a new post inside a community.
+ * @param communityData - Community where the post will be published.
+ * @returns Post creation form with sidebar about section.
+ */
 const SubmitPostPage: React.FC<SubmitPostPageProps> = ({ communityData }) => {
   const [user] = useAuthState(auth);
   const [communityStateValue, setCommunityStateValue] =

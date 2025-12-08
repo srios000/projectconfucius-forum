@@ -1,8 +1,13 @@
 import { getCommunityData } from "@/lib/community/getCommunityData";
-import PostClientPage from "./PostClientPage";
-import { notFound } from "next/navigation";
 import { getPost } from "@/lib/post/getPost";
+import { notFound } from "next/navigation";
+import PostClientPage from "./PostClientPage";
 
+/**
+ * Server component that fetches community and post data for the comments route.
+ * @param params - Route params containing community and post ids.
+ * @returns Client comment page or an error/not-found fallback.
+ */
 export default async function PostPage({
   params,
 }: {

@@ -2,27 +2,15 @@ import React, { useState } from "react";
 import useCustomToast from "./useCustomToast";
 
 /**
- * Hook provides functionality to select a file.
- * The file size limit is 10MB and only allows image file types.
- * The file being uploaded must be an image.
- * The file must be within the specified dimensions.
- * @param {number} maxHeight - maximum height of the image
- * @param {number} maxWidth - maximum width of the image
- *
- * @returns {string} selectedFile - the selected file after upload
- * @returns {() => void} setSelectedFile - function to set the selected file
- * @returns {() => void} onSelectFile - function to select a file from user's system
+ * Validates and converts a chosen image into a base64 string under size and dimension limits.
+ * @param maxHeight - Maximum allowed image height.
+ * @param maxWidth - Maximum allowed image width.
+ * @returns Selected image data plus helpers to update or handle file input changes.
  */
 const useSelectFile = (maxHeight: number, maxWidth: number) => {
   const [selectedFile, setSelectedFile] = useState<string>();
   const showToast = useCustomToast();
 
-  /**
-   * Allows user to select a file.
-   * The file size limit is 10MB and only allows image file types.
-   * The file being uploaded must be an image.
-   * @param {React.ChangeEvent<HTMLInputElement>} event - event object
-   */
   const onSelectFile = (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0]; // get the first file
     const maxImageSize = 10; // 10MB

@@ -14,20 +14,14 @@ import { useAuthState } from "react-firebase-hooks/auth";
 import PostLoader from "../loaders/post-loader/PostLoader";
 import PostItem from "./post-item/PostItem";
 
-/**
- * @param {Community} communityData - Community object from firebase
- */
 type PostsProps = {
   communityData: Community;
 };
 
 /**
- * Displays all the posts in a community.
- * Displays a list of `PostItem` components.
- * While the posts are being fetched, displays a loading skeleton.
- * @param {Community} communityData - Community object from firebase
- *
- * @returns {React.FC<PostsProps>} - Posts component
+ * Renders a community's posts with voting, deletion, and infinite scroll.
+ * @param communityData - Community context used to scope posts and permissions.
+ * @returns Stack of post cards with a sentinel for pagination.
  */
 const Posts: React.FC<PostsProps> = ({ communityData }) => {
   const [user] = useAuthState(auth);
@@ -42,9 +36,6 @@ const Posts: React.FC<PostsProps> = ({ communityData }) => {
     communityId: communityData.id,
   });
 
-  /**
-   * Gets all votes in the community when component mounts (page loads).
-   */
   useEffect(() => {
     fetchPosts(true);
   }, [communityData]);

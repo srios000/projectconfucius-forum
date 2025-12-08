@@ -8,11 +8,8 @@ import { useEffect } from "react";
 import { IoPeopleCircleOutline } from "react-icons/io5";
 
 /**
- * Hook for managing the directory menu from various components.
- * Functionality includes:
- * - Selecting a community from the directory menu
- * - Toggling the directory menu open or closed
- * @returns {DirectoryMenuState} directoryState - object containing the current directory state
+ * Manages the navbar directory menu, syncing it with routing and community context.
+ * @returns Current directory state plus helpers to toggle the menu and pick items.
  */
 const useDirectory = () => {
   const [directoryState, setDirectoryState] = useAtom(directoryMenuAtom);
@@ -21,19 +18,17 @@ const useDirectory = () => {
   const communityStateValue = useAtomValue(communityStateAtom);
 
   /**
-   * Allows the user to select a menu item from the directory menu.
-   * If the user is already on the page that the menu item links to, then the menu will close.
-   * If the user is not on the page that the menu item links to, then the user will be redirected to the page.
-   * @param {DirectoryMenuItem} menuItem - object representing the menu item that was selected
+   * Updates the selected menu item and routes to the chosen page.
+   * @param menuItem - Item the user clicked in the directory list.
+   * @returns Closes the menu if it was open and navigates to the link.
    */
   const onSelectMenuItem = (menuItem: DirectoryMenuItem) => {
-    // updates the selected menu item on state
     setDirectoryState((prev) => ({
       ...prev,
       selectedMenuItem: menuItem,
-    })); // set the selected menu item on state
+    }));
 
-    router.push(menuItem.link); // redirect the user to the page
+    router.push(menuItem.link);
     if (directoryState.isOpen) {
       setDirectoryOpen(false);
     }
@@ -41,7 +36,7 @@ const useDirectory = () => {
 
   /**
    * Toggles the directory menu open or closed.
-   * If the menu is open, then the menu will close.
+   * @param isOpen - Whether the menu should be open.
    */
   const setDirectoryOpen = (isOpen: boolean) => {
     setDirectoryState((prev) => ({

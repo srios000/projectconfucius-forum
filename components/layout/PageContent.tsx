@@ -1,25 +1,14 @@
 import { Flex } from "@chakra-ui/react";
 import React, { ReactNode } from "react";
 
-/**
- * Children components that can exist that are rendered.
- * These can include React components, pages, etc.
- * @param {ReactNode} children - children components in every page
- */
 type PageContentProps = {
   children: ReactNode;
 };
 
 /**
- * Creates a layout for for main contents page.
- * The page is separated into 2 sections (array of 2):
- *  - Left: main content such as the list of posts
- *  - Right: extra content such as community descriptions, etc
- *
- * The layout is responsive which means that in mobile screen sizes,
- * the right layout will be removed.
- * @param {children} children - children components in every page
- * @returns page layout
+ * Two-column responsive layout that expects main content and an optional sidebar.
+ * @param children - Array-like children where index 0 is main content and index 1 is sidebar.
+ * @returns Flex container that hides the sidebar on small screens.
  */
 const PageContent: React.FC<PageContentProps> = ({ children }) => {
   return (

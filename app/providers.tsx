@@ -1,14 +1,19 @@
 "use client";
 
-import { ChakraProvider, Toaster } from "@chakra-ui/react";
 import { theme } from "@/chakra/theme";
 import Layout from "@/components/layout/Layout";
+import { ColorModeProvider } from "@/components/ui/color-mode";
+import { toaster } from "@/hooks/useCustomToast";
+import { ChakraProvider, Toaster } from "@chakra-ui/react";
 import { Provider as JotaiProvider } from "jotai";
 import { useEffect, useState } from "react";
-import { toaster } from "@/hooks/useCustomToast";
 import EmotionRegistry from "./emotion-registry";
-import { ColorModeProvider } from "@/components/ui/color-mode";
 
+/**
+ * Wraps the app with global providers for state, styling, theming, and layout shell.
+ * @param children - Next.js page content to render inside the provider tree.
+ * @returns Provider hierarchy with a mounted flag to avoid hydration issues for the toaster.
+ */
 export function Providers({ children }: { children: React.ReactNode }) {
   const [mounted, setMounted] = useState(false);
 

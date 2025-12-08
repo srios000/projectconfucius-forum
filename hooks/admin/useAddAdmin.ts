@@ -5,6 +5,14 @@ import { useSetAtom } from "jotai";
 import { Dispatch, SetStateAction, useCallback } from "react";
 import { Community } from "@/types/community";
 
+/**
+ * Adds a community admin and syncs the local community state.
+ * @param communityId - Community to update.
+ * @param newUser - User being promoted.
+ * @param communityImageURL - Optional image URL stored with the snippet.
+ * @param updateAdmins - Optional setter to update local admin lists.
+ * @returns Callback that performs the add operation.
+ */
 const useAddAdmin = () => {
   const setCommunityStateValue = useSetAtom(communityStateAtom);
 

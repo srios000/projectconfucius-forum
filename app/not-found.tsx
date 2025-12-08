@@ -2,6 +2,10 @@ import { Button, Flex, Stack, Text } from "@chakra-ui/react";
 import Link from "next/link";
 import React from "react";
 
+/**
+ * Fallback page for unknown routes with quick links back to core pages.
+ * @returns Centered message and navigation buttons.
+ */
 const PageNotFound: React.FC = () => {
   return (
     <Flex

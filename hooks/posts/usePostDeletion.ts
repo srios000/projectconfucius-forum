@@ -15,6 +15,11 @@ import { deleteObject, ref } from "firebase/storage";
 import { useAtom, useSetAtom } from "jotai";
 import React from "react";
 
+/**
+ * Deletes posts along with their assets and related saved entries while keeping state in sync.
+ * @param setPostStateValue - Setter for updating post state after deletion attempts.
+ * @returns Handler to delete a post and the current post state snapshot.
+ */
 const usePostDeletion = (
   setPostStateValue: React.Dispatch<
     React.SetStateAction<{

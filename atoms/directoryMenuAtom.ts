@@ -4,21 +4,14 @@ import { DirectoryMenuItem } from "@/types/directoryMenu";
 
 /**
  * Interface which describes the state of the directory menu.
- * @property {boolean} isOpen - whether the directory menu is open or not
- * @property {DirectoryMenuItem} selectedMenuItem - the menu item that is currently selected
+ * @property isOpen - whether the directory menu is open or not
+ * @property selectedMenuItem - the menu item that is currently selected
  */
 interface DirectoryMenuState {
   isOpen: boolean;
   selectedMenuItem: DirectoryMenuItem;
 }
 
-/**
- * Default menu item when no community is selected (home page).
- * @property {string} displayText - "Home"
- * @property {string} link - "/" (home page)
- * @property {IconType} icon - TiHome (home icon)
- * @property {string} iconColor - "black"
- */
 export const defaultMenuItem = {
   displayText: "Home",
   link: "/",
@@ -26,18 +19,13 @@ export const defaultMenuItem = {
   iconColor: { base: "black", _dark: "white" },
 };
 
-/**
- * Default state of the directory menu.
- * The directory menu is closed by default.
- * @property {boolean} isOpen - false by default
- * @property {DirectoryMenuItem} selectedMenuItem - default menu item (home page)
- */
 export const defaultMenuState: DirectoryMenuState = {
   isOpen: false,
   selectedMenuItem: defaultMenuItem,
 };
 
 /**
- * Atom which stores the state of the directory menu.
+ * Controls the navbar directory dropdown and the currently highlighted item.
+ * @returns Jotai atom containing open state and selected menu item.
  */
 export const directoryMenuAtom = atom<DirectoryMenuState>(defaultMenuState);

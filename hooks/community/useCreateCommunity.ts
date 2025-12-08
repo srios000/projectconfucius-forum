@@ -5,6 +5,12 @@ import { useState } from "react";
 import { useAuthState } from "react-firebase-hooks/auth";
 import useCustomToast from "../useCustomToast";
 
+/**
+ * Creates a new community with validation and a creator snippet transaction.
+ * @param communityName - Desired community id.
+ * @param communityType - Privacy type for the community.
+ * @returns Handler to run creation plus loading and error state.
+ */
 export const useCreateCommunity = () => {
   const [user] = useAuthState(auth);
   const [loading, setLoading] = useState(false);

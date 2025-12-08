@@ -5,8 +5,8 @@ import { AdminUser } from "../../types/adminUser";
 
 /**
  * Finds a user by their exact email address.
- * @param email - The exact email to search for
- * @returns Promise<AdminUser | null> - The user if found, null otherwise
+ * @param email - Exact email to search for.
+ * @returns Matching user when found, otherwise null.
  */
 export const findUserByEmail = async (
   email: string

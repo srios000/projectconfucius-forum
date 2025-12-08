@@ -3,8 +3,9 @@ import { collection, doc, getDoc, getDocs } from "firebase/firestore";
 import { CommunityMember } from "@/types/communityMember";
 
 /**
- * Fetches all users that belong to a community by checking the
- * community snippets stored under each user.
+ * Fetches users that hold a snippet for the target community.
+ * @param communityId - Community id to match in each user's snippets.
+ * @returns Sorted list of members with email and display name.
  */
 export const fetchCommunityMembers = async (
   communityId: string

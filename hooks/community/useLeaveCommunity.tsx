@@ -6,6 +6,11 @@ import { useSetAtom } from "jotai";
 import { useAuthState } from "react-firebase-hooks/auth";
 import useCustomToast from "../useCustomToast";
 
+/**
+ * Removes the current user from a community and decrements its member count.
+ * @param communityId - Community id to leave.
+ * @returns Leave handler plus loading and error state.
+ */
 const useLeaveCommunity = () => {
   const [user] = useAuthState(auth);
   const setCommunityStateValue = useSetAtom(communityStateAtom);
