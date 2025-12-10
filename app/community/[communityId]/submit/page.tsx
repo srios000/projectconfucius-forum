@@ -18,13 +18,13 @@ export default async function SubmitPostPage({
 
   try {
     communityData = await getCommunityData(communityId);
-
-    if (!communityData) {
-      notFound();
-    }
   } catch (error) {
     console.log("Error: SubmitPostPage", error);
     return <div>Error loading community</div>;
+  }
+
+  if (!communityData) {
+    notFound();
   }
 
   return <SubmitPostClientPage communityData={communityData} />;

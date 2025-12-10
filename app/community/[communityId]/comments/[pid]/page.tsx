@@ -21,13 +21,13 @@ export default async function PostPage({
   try {
     communityData = await getCommunityData(communityId);
     postData = await getPost(pid);
-
-    if (!communityData) {
-      notFound();
-    }
   } catch (error) {
     console.log("Error: PostPage", error);
     return <div>Error loading page</div>;
+  }
+
+  if (!communityData || !postData) {
+    notFound();
   }
 
   return <PostClientPage communityData={communityData} postData={postData} />;
