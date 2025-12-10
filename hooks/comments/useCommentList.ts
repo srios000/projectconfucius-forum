@@ -1,9 +1,8 @@
 import { useCallback, useEffect, useState } from "react";
-import { collection, getDocs, orderBy, query, where } from "firebase/firestore";
-import { firestore } from "@/firebase/clientApp";
 import { Post } from "@/types/post";
 import useCustomToast from "@/hooks/useCustomToast";
 import { Comment } from "../../types/comment";
+import { getComments as getCommentsLib } from "@/lib/comments/getComments";
 
 /**
  * Loads comments for the selected post and keeps them in local state.
@@ -19,17 +18,8 @@ const useCommentList = (selectedPost: Post | null) => {
     if (!selectedPost) return;
     setCommentFetchLoading(true);
     try {
-      const commentsQuery = query(
-        collection(firestore, "comments"),
-        where("postId", "==", selectedPost.id),
-        orderBy("createdAt", "desc")
-      );
-      const commentDocs = await getDocs(commentsQuery);
-      const mappedComments = commentDocs.docs.map((doc) => ({
-        id: doc.id,
-        ...doc.data(),
-      }));
-      setComments(mappedComments as Comment[]);
+      const comments = await getCommentsLib(selectedPost.id!);
+      setComments(comments);
     } catch (error: any) {
       console.log("getPostComments error", error);
       showToast({

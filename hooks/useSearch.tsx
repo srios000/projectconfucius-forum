@@ -1,15 +1,7 @@
 import { useState, useEffect } from "react";
-import {
-  collection,
-  getDocs,
-  query,
-  where,
-  limit,
-  orderBy,
-} from "firebase/firestore";
-import { firestore } from "@/firebase/clientApp";
 import { Community } from "@/types/community";
 import { Post } from "@/types/post";
+import { getSearchData } from "@/lib/search/getSearchData";
 
 /**
  * Client-side search hook that preloads public communities and recent posts.
@@ -34,25 +26,7 @@ const useSearch = (searchTerm: string) => {
     const fetchData = async () => {
       setLoading(true);
       try {
-        const communitiesQuery = query(
-          collection(firestore, "communities"),
-          where("privacyType", "==", "public")
-        );
-        const communitiesSnap = await getDocs(communitiesQuery);
-        const communities = communitiesSnap.docs.map(
-          (doc) => ({ id: doc.id, ...doc.data() } as Community)
-        );
-
-        const postsQuery = query(
-          collection(firestore, "posts"),
-          orderBy("createTime", "desc"),
-          limit(100)
-        );
-        const postsSnap = await getDocs(postsQuery);
-        const posts = postsSnap.docs.map(
-          (doc) => ({ id: doc.id, ...doc.data() } as Post)
-        );
-
+        const { communities, posts } = await getSearchData();
         setAllData({ communities, posts });
       } catch (error) {
         console.error("Error fetching search data", error);

@@ -1,9 +1,8 @@
 import { communityStateAtom } from "@/atoms/communitiesAtom";
 import { Community } from "@/types/community";
-import { firestore } from "@/firebase/clientApp";
-import { doc, updateDoc } from "firebase/firestore";
 import { useSetAtom } from "jotai";
 import useCustomToast from "../useCustomToast";
+import { updateCommunityPrivacy } from "@/lib/community/updateCommunityPrivacy";
 
 /**
  * Updates a community's privacy type and mirrors the change in local state.
@@ -16,9 +15,7 @@ const useCommunityPrivacy = (communityData: Community) => {
 
   const updatePrivacyType = async (privacyType: string) => {
     try {
-      await updateDoc(doc(firestore, "communities", communityData.id), {
-        privacyType,
-      });
+      await updateCommunityPrivacy(communityData.id, privacyType);
       setCommunityStateValue((prev) => ({
         ...prev,
         currentCommunity: {

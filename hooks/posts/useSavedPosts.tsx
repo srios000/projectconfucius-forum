@@ -1,19 +1,14 @@
 import { authModalStateAtom } from "@/atoms/authModalAtom";
 import { savedPostStateAtom } from "@/atoms/savedPostsAtom";
-import { auth, firestore } from "@/firebase/clientApp";
+import { auth } from "@/firebase/clientApp";
 import { Post } from "@/types/post";
-import { SavedPost } from "@/types/savedPost";
-import {
-  collection,
-  deleteDoc,
-  doc,
-  getDocs,
-  setDoc,
-} from "firebase/firestore";
 import { useAtom, useSetAtom } from "jotai";
 import { useEffect, useState } from "react";
 import { useAuthState } from "react-firebase-hooks/auth";
 import useCustomToast from "../useCustomToast";
+import { getSavedPosts as getSavedPostsLib } from "@/lib/posts/getSavedPosts";
+import { savePost } from "@/lib/posts/savePost";
+import { unsavePost } from "@/lib/posts/unsavePost";
 
 /**
  * Manages a user's saved posts collection and related UI state.
@@ -32,13 +27,7 @@ const useSavedPosts = () => {
     if (!user) return;
     setLoading(true);
     try {
-      const querySnapshot = await getDocs(
-        collection(firestore, `users/${user.uid}/savedPosts`)
-      );
-      const savedPosts = querySnapshot.docs.map((doc) => ({
-        id: doc.id,
-        ...doc.data(),
-      })) as SavedPost[];
+      const savedPosts = await getSavedPostsLib(user.uid);
 
       setSavedPostState((prev) => ({
         ...prev,
@@ -62,18 +51,12 @@ const useSavedPosts = () => {
     }
 
     try {
-      const savedPostRef = doc(
-        firestore,
-        `users/${user.uid}/savedPosts`,
-        post.id!
-      );
-
       const isSaved = savedPostState.savedPosts.find(
         (item) => item.postId === post.id
       );
 
       if (isSaved) {
-        await deleteDoc(savedPostRef);
+        await unsavePost(user.uid, post.id!);
         setSavedPostState((prev) => ({
           ...prev,
           savedPosts: prev.savedPosts.filter((item) => item.postId !== post.id),
@@ -83,14 +66,7 @@ const useSavedPosts = () => {
           status: "success",
         });
       } else {
-        const newSavedPost: SavedPost = {
-          id: post.id!,
-          postId: post.id!,
-          communityId: post.communityId,
-          postTitle: post.title,
-          communityImageURL: post.communityImageURL || "",
-        };
-        await setDoc(savedPostRef, newSavedPost);
+        const newSavedPost = await savePost(user.uid, post);
         setSavedPostState((prev) => ({
           ...prev,
           savedPosts: [...prev.savedPosts, newSavedPost],
@@ -113,7 +89,7 @@ const useSavedPosts = () => {
   const onRemoveSavedPost = async (postId: string) => {
     if (!user) return;
     try {
-      await deleteDoc(doc(firestore, `users/${user.uid}/savedPosts`, postId));
+      await unsavePost(user.uid, postId);
       setSavedPostState((prev) => ({
         ...prev,
         savedPosts: prev.savedPosts.filter((item) => item.postId !== postId),

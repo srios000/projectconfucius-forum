@@ -1,11 +1,10 @@
 import { communityStateAtom } from "@/atoms/communitiesAtom";
-import { firestore } from "@/firebase/clientApp";
-import { collection, getDocs, query, where } from "firebase/firestore";
 import { useAtomValue } from "jotai";
 import React, { useEffect } from "react";
 import { useAuthState } from "react-firebase-hooks/auth";
 import { auth } from "@/firebase/clientApp";
 import { Post, PostVote } from "@/types/post";
+import { getCommunityPostVotes as getCommunityPostVotesLib } from "@/lib/posts/getCommunityPostVotes";
 
 type SetPostState = React.Dispatch<
   React.SetStateAction<{
@@ -25,16 +24,8 @@ const usePostVoteSync = (setPostStateValue: SetPostState) => {
   const currentCommunity = useAtomValue(communityStateAtom).currentCommunity;
 
   const getCommunityPostVotes = async (communityId: string) => {
-    const postVotesQuery = query(
-      collection(firestore, "users", `${user?.uid}/postVotes`),
-      where("communityId", "==", communityId)
-    );
-
-    const postVoteDocs = await getDocs(postVotesQuery);
-    const postVotes = postVoteDocs.docs.map((doc) => ({
-      id: doc.id,
-      ...doc.data(),
-    }));
+    if (!user) return;
+    const postVotes = await getCommunityPostVotesLib(user.uid, communityId);
     setPostStateValue((prev) => ({
       ...prev,
       postVotes: postVotes as PostVote[],

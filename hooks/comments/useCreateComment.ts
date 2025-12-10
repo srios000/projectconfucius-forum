@@ -1,19 +1,11 @@
 import { Dispatch, SetStateAction, useState } from "react";
 import { User } from "firebase/auth";
-import {
-  collection,
-  doc,
-  increment,
-  serverTimestamp,
-  Timestamp,
-  writeBatch,
-} from "firebase/firestore";
-import { firestore } from "@/firebase/clientApp";
 import { postStateAtom } from "@/atoms/postsAtom";
 import { Post } from "@/types/post";
 import { useSetAtom } from "jotai";
 import useCustomToast from "@/hooks/useCustomToast";
 import { Comment } from "../../types/comment";
+import { createComment } from "@/lib/comments/createComment";
 
 /**
  * Creates a new comment or reply on the selected post and updates counts.
@@ -30,7 +22,7 @@ const useCreateComment = (
   const showToast = useCustomToast();
   const [createLoading, setCreateLoading] = useState(false);
 
-  const createComment = async (
+  const onCreateComment = async (
     user: User,
     commentText: string,
     parentId?: string
@@ -38,31 +30,14 @@ const useCreateComment = (
     if (!selectedPost) return;
     setCreateLoading(true);
     try {
-      const batch = writeBatch(firestore);
-
-      const commentDocRef = doc(collection(firestore, "comments"));
-      const newComment: Comment = {
-        id: commentDocRef.id,
-        creatorId: user.uid,
-        creatorDisplayText: user.email!.split("@")[0],
-        communityId: selectedPost.communityId,
-        postId: selectedPost.id!,
-        postTitle: selectedPost.title,
-        text: commentText,
-        createdAt: serverTimestamp() as Timestamp,
-        parentId: parentId || undefined,
-      };
-
-      if (!parentId) delete newComment.parentId;
-
-      batch.set(commentDocRef, newComment);
-
-      const postDocRef = doc(firestore, "posts", selectedPost.id!);
-      batch.update(postDocRef, {
-        numberOfComments: increment(1),
-      });
-
-      await batch.commit();
+      const newComment = await createComment(
+        user,
+        selectedPost.communityId,
+        selectedPost.id!,
+        selectedPost.title,
+        commentText,
+        parentId
+      );
 
       setComments((prev) => [newComment, ...prev]);
       setPostState((prev) => ({
@@ -85,7 +60,7 @@ const useCreateComment = (
   };
 
   return {
-    createComment,
+    createComment: onCreateComment,
     createLoading,
   };
 };

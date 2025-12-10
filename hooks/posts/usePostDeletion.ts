@@ -1,19 +1,9 @@
 import { postStateAtom } from "@/atoms/postsAtom";
 import { savedPostStateAtom } from "@/atoms/savedPostsAtom";
-import { firestore, storage } from "@/firebase/clientApp";
 import { Post, PostVote } from "@/types/post";
-import {
-  collection,
-  deleteDoc,
-  doc,
-  getDocs,
-  query,
-  where,
-  writeBatch,
-} from "firebase/firestore";
-import { deleteObject, ref } from "firebase/storage";
 import { useAtom, useSetAtom } from "jotai";
 import React from "react";
+import { deletePost } from "@/lib/posts/deletePost";
 
 /**
  * Deletes posts along with their assets and related saved entries while keeping state in sync.
@@ -44,25 +34,7 @@ const usePostDeletion = (
     }));
 
     try {
-      if (post.imageURL) {
-        const imageRef = ref(storage, `posts/${post.id}/image`);
-        await deleteObject(imageRef);
-      }
-
-      const postDocRef = doc(firestore, "posts", post.id!);
-      await deleteDoc(postDocRef);
-
-      const commentsQuery = query(
-        collection(firestore, "comments"),
-        where("postId", "==", post.id)
-      );
-      const commentDocs = await getDocs(commentsQuery);
-      const batch = writeBatch(firestore);
-      commentDocs.docs.forEach((d) => {
-        batch.delete(d.ref);
-      });
-      await batch.commit();
-
+      await deletePost(post);
       return true;
     } catch (error) {
       console.log("Error deleting post", error);

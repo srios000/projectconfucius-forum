@@ -1,10 +1,9 @@
 import { Dispatch, SetStateAction, useState } from "react";
-import { doc, increment, writeBatch } from "firebase/firestore";
-import { firestore } from "@/firebase/clientApp";
 import { postStateAtom } from "@/atoms/postsAtom";
 import { useSetAtom } from "jotai";
 import useCustomToast from "@/hooks/useCustomToast";
 import { Comment } from "../../types/comment";
+import { deleteComment } from "@/lib/comments/deleteComment";
 
 /**
  * Deletes a comment and its replies while syncing counts on the parent post.
@@ -19,11 +18,9 @@ const useDeleteComment = (
   const showToast = useCustomToast();
   const [deleteLoadingId, setDeleteLoadingId] = useState("");
 
-  const deleteComment = async (comment: Comment) => {
+  const onDeleteComment = async (comment: Comment) => {
     setDeleteLoadingId(comment.id);
     try {
-      const batch = writeBatch(firestore);
-
       const getDescendantIds = (parentId: string): string[] => {
         const children = comments.filter((c) => c.parentId === parentId);
         let ids = children.map((c) => c.id);
@@ -36,17 +33,7 @@ const useDeleteComment = (
       const descendantIds = getDescendantIds(comment.id);
       const allIdsToDelete = [comment.id, ...descendantIds];
 
-      allIdsToDelete.forEach((id) => {
-        const commentDocRef = doc(firestore, "comments", id);
-        batch.delete(commentDocRef);
-      });
-
-      const postDocRef = doc(firestore, "posts", comment.postId);
-      batch.update(postDocRef, {
-        numberOfComments: increment(-allIdsToDelete.length),
-      });
-
-      await batch.commit();
+      await deleteComment(comment.id, comment.postId, descendantIds);
 
       setComments((prev) =>
         prev.filter((item) => !allIdsToDelete.includes(item.id))
@@ -72,7 +59,7 @@ const useDeleteComment = (
   };
 
   return {
-    deleteComment,
+    deleteComment: onDeleteComment,
     deleteLoadingId,
   };
 };

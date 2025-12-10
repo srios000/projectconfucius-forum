@@ -1,9 +1,9 @@
-import { auth, firestore } from "@/firebase/clientApp";
-import { doc, runTransaction, serverTimestamp } from "firebase/firestore";
-import { useRouter } from "next/navigation";
 import { useState } from "react";
+import { useRouter } from "next/navigation";
+import { auth } from "@/firebase/clientApp";
 import { useAuthState } from "react-firebase-hooks/auth";
 import useCustomToast from "../useCustomToast";
+import { createCommunity } from "@/lib/community/createCommunity";
 
 /**
  * Creates a new community with validation and a creator snippet transaction.
@@ -18,7 +18,7 @@ export const useCreateCommunity = () => {
   const router = useRouter();
   const showToast = useCustomToast();
 
-  const createCommunity = async (
+  const onCreateCommunity = async (
     communityName: string,
     communityType: string
   ) => {
@@ -38,39 +38,7 @@ export const useCreateCommunity = () => {
     setLoading(true);
 
     try {
-      // check if community exists by using document reference
-      // takes firestore object, name of collection in db, and the id (community names are unique)
-      const communityDocRef = doc(firestore, "communities", communityName);
-      /**
-       * if one transaction fails they all fail
-       */
-      await runTransaction(firestore, async (transaction) => {
-        const communityDoc = await transaction.get(communityDocRef);
-        if (communityDoc.exists()) {
-          // if community exists
-          throw new Error(
-            `The community ${communityName} is already taken. Try a different name! `
-          );
-        }
-
-        // create community
-        transaction.set(communityDocRef, {
-          creatorId: user?.uid,
-          createdAt: serverTimestamp(),
-          numberOfMembers: 1,
-          privacyType: communityType,
-        });
-
-        // create community snippet on user
-        transaction.set(
-          // path: collection/document/collection/...
-          doc(firestore, `users/${user?.uid}/communitySnippets`, communityName),
-          {
-            communityId: communityName,
-            isAdmin: true,
-          }
-        );
-      });
+      await createCommunity(communityName, communityType, user?.uid!);
 
       router.push(`/community/${communityName}`);
       return true;
@@ -88,5 +56,5 @@ export const useCreateCommunity = () => {
     }
   };
 
-  return { createCommunity, loading, error, setError };
+  return { createCommunity: onCreateCommunity, loading, error, setError };
 };

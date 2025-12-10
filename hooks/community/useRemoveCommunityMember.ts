@@ -1,6 +1,6 @@
 import { useState } from "react";
 import useCustomToast from "../useCustomToast";
-import { removeCommunityMember as removeMemberLib } from "@/lib/community/removeCommunityMember";
+import { removeCommunityMember } from "@/lib/community/removeCommunityMember";
 
 /**
  * Hook to remove a member from a community.
@@ -13,7 +13,7 @@ const useRemoveCommunityMember = () => {
   const removeMember = async (communityId: string, memberId: string) => {
     setLoading(true);
     try {
-      await removeMemberLib(communityId, memberId);
+      await removeCommunityMember(communityId, memberId);
       showToast({
         title: "User removed",
         description: "The user has been removed from the community.",

@@ -1,10 +1,10 @@
 import { useState } from "react";
 import { communityStateAtom } from "@/atoms/communitiesAtom";
-import { auth, firestore } from "@/firebase/clientApp";
-import { doc, increment, writeBatch } from "firebase/firestore";
+import { auth } from "@/firebase/clientApp";
 import { useSetAtom } from "jotai";
 import { useAuthState } from "react-firebase-hooks/auth";
 import useCustomToast from "../useCustomToast";
+import { leaveCommunity } from "@/lib/community/leaveCommunity";
 
 /**
  * Removes the current user from a community and decrements its member count.
@@ -18,21 +18,11 @@ const useLeaveCommunity = () => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
 
-  const leaveCommunity = async (communityId: string) => {
+  const onLeaveCommunity = async (communityId: string) => {
     if (!user) return;
     setLoading(true);
     try {
-      const batch = writeBatch(firestore);
-
-      batch.delete(
-        doc(firestore, `users/${user?.uid}/communitySnippets`, communityId)
-      );
-
-      batch.update(doc(firestore, "communities", communityId), {
-        numberOfMembers: increment(-1),
-      });
-
-      await batch.commit();
+      await leaveCommunity(user.uid, communityId);
 
       setCommunityStateValue((prev) => ({
         ...prev,
@@ -61,7 +51,7 @@ const useLeaveCommunity = () => {
   };
 
   return {
-    leaveCommunity,
+    leaveCommunity: onLeaveCommunity,
     leaveLoading: loading,
     leaveError: error,
   };
