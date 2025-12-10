@@ -14,6 +14,7 @@ import {
   DialogPositioner,
   DialogRoot,
   DialogTitle,
+  Portal,
   Separator,
   Stack,
 } from "@chakra-ui/react";
@@ -94,60 +95,62 @@ const CommunitySettingsModal: React.FC<CommunitySettingsModalProps> = ({
         if (!open) handleClose();
       }}
     >
-      <DialogBackdrop bg="rgba(0, 0, 0, 0.4)" backdropFilter="blur(6px)" />
-      <DialogPositioner>
-        <DialogContent borderRadius={10}>
-          <DialogHeader
-            display="flex"
-            flexDirection="column"
-            padding={3}
-            textAlign="center"
-          >
-            <DialogTitle>Community Settings</DialogTitle>
-          </DialogHeader>
-          <Box>
-            <DialogCloseTrigger position="absolute" top={2} right={2} />
-            <DialogBody
+      <Portal>
+        <DialogBackdrop bg="rgba(0, 0, 0, 0.4)" backdropFilter="blur(6px)" />
+        <DialogPositioner>
+          <DialogContent borderRadius={10}>
+            <DialogHeader
               display="flex"
               flexDirection="column"
-              padding="10px 0px"
+              padding={3}
+              textAlign="center"
             >
-              <Stack fontSize="10pt" gap={2} p={5}>
-                <ImageSettings
-                  selectedFile={selectedFile || ""}
-                  onSelectFile={onSelectFile}
-                  selectFileRef={selectFileRef}
-                  currentCommunity={
-                    communityStateValue.currentCommunity || null
-                  }
-                  deleteImage={deleteImage}
-                  setDeleteImage={setDeleteImage}
-                />
-                <Separator />
-                <PrivacySettings
-                  currentCommunity={
-                    communityStateValue.currentCommunity || null
-                  }
-                  selectedPrivacyType={selectedPrivacyType}
-                  handlePrivacyTypeChange={handlePrivacyTypeChange}
-                />
-                <Separator />
-                <AdminManager
-                  communityData={
-                    communityStateValue.currentCommunity || communityData
-                  }
-                />
-                <Separator />
-                <DangerZone
-                  deleteCommunity={deleteCommunity}
-                  loading={loading}
-                />
-              </Stack>
-            </DialogBody>
-          </Box>
-          <ModalFooter onCancel={closeModal} onSave={handleSaveButtonClick} />
-        </DialogContent>
-      </DialogPositioner>
+              <DialogTitle>Community Settings</DialogTitle>
+            </DialogHeader>
+            <Box>
+              <DialogCloseTrigger position="absolute" top={2} right={2} />
+              <DialogBody
+                display="flex"
+                flexDirection="column"
+                padding="10px 0px"
+              >
+                <Stack fontSize="10pt" gap={2} p={5}>
+                  <ImageSettings
+                    selectedFile={selectedFile || ""}
+                    onSelectFile={onSelectFile}
+                    selectFileRef={selectFileRef}
+                    currentCommunity={
+                      communityStateValue.currentCommunity || null
+                    }
+                    deleteImage={deleteImage}
+                    setDeleteImage={setDeleteImage}
+                  />
+                  <Separator />
+                  <PrivacySettings
+                    currentCommunity={
+                      communityStateValue.currentCommunity || null
+                    }
+                    selectedPrivacyType={selectedPrivacyType}
+                    handlePrivacyTypeChange={handlePrivacyTypeChange}
+                  />
+                  <Separator />
+                  <AdminManager
+                    communityData={
+                      communityStateValue.currentCommunity || communityData
+                    }
+                  />
+                  <Separator />
+                  <DangerZone
+                    deleteCommunity={deleteCommunity}
+                    loading={loading}
+                  />
+                </Stack>
+              </DialogBody>
+            </Box>
+            <ModalFooter onCancel={closeModal} onSave={handleSaveButtonClick} />
+          </DialogContent>
+        </DialogPositioner>
+      </Portal>
     </DialogRoot>
   );
 };

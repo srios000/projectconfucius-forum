@@ -12,6 +12,7 @@ import {
   DialogRoot,
   DialogTitle,
   Flex,
+  Portal,
   Spinner,
   Stack,
   Text,
@@ -85,18 +86,20 @@ const CommunityMembersModal: React.FC<CommunityMembersModalProps> = ({
         if (!open) onClose();
       }}
     >
-      <DialogBackdrop bg="rgba(0, 0, 0, 0.4)" backdropFilter="blur(6px)" />
-      <DialogPositioner>
-        <DialogContent borderRadius="xl" maxH="80vh">
-          <DialogHeader>
-            <DialogTitle>{`${members.length} Subscribers`}</DialogTitle>
-          </DialogHeader>
-          <DialogCloseTrigger />
-          <DialogBody pb={6} maxH="60vh" overflowY="auto">
-            {renderContent()}
-          </DialogBody>
-        </DialogContent>
-      </DialogPositioner>
+      <Portal>
+        <DialogBackdrop bg="rgba(0, 0, 0, 0.4)" backdropFilter="blur(6px)" />
+        <DialogPositioner>
+          <DialogContent borderRadius="xl" maxH="80vh">
+            <DialogHeader>
+              <DialogTitle>{`${members.length} Subscribers`}</DialogTitle>
+            </DialogHeader>
+            <DialogCloseTrigger />
+            <DialogBody pb={6} maxH="60vh" overflowY="auto">
+              {renderContent()}
+            </DialogBody>
+          </DialogContent>
+        </DialogPositioner>
+      </Portal>
     </DialogRoot>
   );
 };
