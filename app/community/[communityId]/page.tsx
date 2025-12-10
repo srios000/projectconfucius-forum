@@ -18,13 +18,13 @@ export default async function Page({
 
   try {
     communityData = await getCommunityData(communityId);
-
-    if (!communityData) {
-      notFound();
-    }
   } catch (error) {
     console.log("Error: Page", error);
     return <div>Error loading community</div>;
+  }
+
+  if (!communityData) {
+    notFound();
   }
 
   return <CommunityClientPage communityData={communityData} />;
