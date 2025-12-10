@@ -1,6 +1,6 @@
 import { getCommunityData } from "@/lib/community/getCommunityData";
 import { notFound } from "next/navigation";
-import CommunityClientPage from "./CommunityClientPage";
+import CommunityClientPage from "./comments/CommunityClientPage";
 
 /**
  * Server component that loads community data and renders the client view.

@@ -6,9 +6,12 @@ import About from "@/components/community/about/About";
 import CommunityHeader from "@/components/community/community-header/CommunityHeader";
 import PageContent from "@/components/layout/PageContent";
 import Posts from "@/components/posts/Posts";
+import useCommunityPermissions from "@/hooks/community/useCommunityPermissions";
 import { Community } from "@/types/community";
+import { Flex, Text, Icon, Stack } from "@chakra-ui/react";
 import { useAtom } from "jotai";
 import React, { useEffect } from "react";
+import { FaLock } from "react-icons/fa";
 
 type CommunityPageProps = {
   communityData: Community;
@@ -39,17 +42,40 @@ const CommunityClientPage: React.FC<CommunityPageProps> = ({
       ? communityStateValue.currentCommunity
       : communityData;
 
+  const { canView } = useCommunityPermissions(currentCommunity);
+
   return (
     <>
       <CommunityHeader communityData={currentCommunity} />
       <PageContent>
         <>
-          <CreatePostLink />
-          <Posts communityData={currentCommunity} />
+          {canView ? (
+            <>
+              <CreatePostLink />
+              <Posts communityData={currentCommunity} />
+            </>
+          ) : (
+            <Flex
+              direction="column"
+              justify="center"
+              align="center"
+              border="1px solid"
+              borderColor={{ base: "gray.300", _dark: "gray.600" }}
+              borderRadius={"xl"}
+              p={10}
+              bg={{ base: "white", _dark: "gray.800" }}
+            >
+              <Icon as={FaLock} fontSize={50} color="gray.400" mb={4} />
+              <Text fontWeight={600} fontSize="lg">
+                This community is private
+              </Text>
+              <Text color="gray.500">
+                Posts are only available to subscribers.
+              </Text>
+            </Flex>
+          )}
         </>
-        <>
-          <About communityData={currentCommunity} />
-        </>
+        <>{canView && <About communityData={currentCommunity} />}</>
       </PageContent>
     </>
   );

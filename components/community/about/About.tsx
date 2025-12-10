@@ -7,6 +7,7 @@ import CommunityMembersModal from "../../modal/community-members/CommunityMember
 import AboutCommunity from "./AboutCommunity";
 import AboutHeaderBar from "./AboutHeaderBar";
 import AdminSectionAbout from "./AdminSectionAbout";
+import useCommunityPermissions from "@/hooks/community/useCommunityPermissions";
 
 /**
  * @param {string} communityName - Name of the community
@@ -37,6 +38,11 @@ const About: React.FC<AboutProps> = ({ communityData }) => {
     (item) => item.communityId === communityData.id
   );
   const [isMembersModalOpen, setMembersModalOpen] = useState(false);
+  const { canView } = useCommunityPermissions(communityData);
+
+  if (!canView) {
+    return null;
+  }
 
   return (
     // sticky position for the about section

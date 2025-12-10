@@ -14,11 +14,12 @@ import usePostVote from "@/hooks/posts/usePostVote";
 import usePostVoteSync from "@/hooks/posts/usePostVoteSync";
 import { Community } from "@/types/community";
 import { Post } from "@/types/post";
-import { Stack } from "@chakra-ui/react";
+import { Stack, Flex, Icon, Text } from "@chakra-ui/react";
 import { User } from "firebase/auth";
 import { useAtom } from "jotai";
 import React, { useEffect } from "react";
 import { useAuthState } from "react-firebase-hooks/auth";
+import { FaLock } from "react-icons/fa";
 
 type PostPageProps = {
   communityData: Community;
@@ -41,7 +42,7 @@ const PostPage: React.FC<PostPageProps> = ({ communityData, postData }) => {
     useAtom(communityStateAtom);
   const currentCommunity =
     communityStateValue.currentCommunity || communityData;
-  const { isAdmin } = useCommunityPermissions(currentCommunity);
+  const { isAdmin, canView } = useCommunityPermissions(currentCommunity);
   const [user] = useAuthState(auth);
 
   useEffect(() => {
@@ -60,47 +61,59 @@ const PostPage: React.FC<PostPageProps> = ({ communityData, postData }) => {
     }
   }, [postData, setPostStateValue]);
 
+  if (!canView) {
+    return (
+      <PageContent>
+        <Flex
+          direction="column"
+          justify="center"
+          align="center"
+          border="1px solid"
+          borderColor={{ base: "gray.300", _dark: "gray.600" }}
+          borderRadius={"xl"}
+          p={10}
+          bg={{ base: "white", _dark: "gray.800" }}
+        >
+          <Icon as={FaLock} fontSize={50} color="gray.400" mb={4} />
+          <Text fontWeight={600} fontSize="lg">
+            This community is private
+          </Text>
+          <Text color="gray.500">Posts are only shown to subscribers.</Text>
+        </Flex>
+        <></>
+      </PageContent>
+    );
+  }
+
   return (
     <PageContent>
-      {/* Left */}
       <>
-        {!postData && !postStateValue.selectedPost ? (
-          <PostLoader />
-        ) : (
-          <>
-            <Stack gap={3} direction="column">
-              {postStateValue.selectedPost && (
-                <PostItem
-                  post={postStateValue.selectedPost}
-                  onVote={onVote}
-                  onDeletePost={onDeletePost}
-                  userVoteValue={
-                    postStateValue.postVotes.find(
-                      (item) => item.postId === postStateValue.selectedPost?.id
-                    )?.voteValue
-                  }
-                  userIsCreator={
-                    user?.uid === postStateValue.selectedPost?.creatorId
-                  }
-                  userIsAdmin={isAdmin}
-                  showCommunityImage={true}
-                />
-              )}
-
-              <Comments
-                user={user as User}
-                selectedPost={postStateValue.selectedPost}
-                communityId={postStateValue.selectedPost?.communityId as string}
-                isCommunityAdmin={isAdmin}
-              />
-            </Stack>
-          </>
+        {postStateValue.selectedPost && (
+          <PostItem
+            post={postStateValue.selectedPost}
+            onVote={onVote}
+            onDeletePost={onDeletePost}
+            userVoteValue={
+              postStateValue.postVotes.find(
+                (item) => item.postId === postStateValue.selectedPost!.id
+              )?.voteValue
+            }
+            userIsCreator={user?.uid === postStateValue.selectedPost.creatorId}
+            userIsAdmin={isAdmin}
+          />
         )}
+        <Comments
+          user={user as User}
+          selectedPost={postStateValue.selectedPost}
+          communityId={postStateValue.selectedPost?.communityId as string}
+          isCommunityAdmin={isAdmin}
+        />
       </>
-      {currentCommunity && <About communityData={currentCommunity} />}
-      {/* Right */}
-      <></>
+      <>
+        <About communityData={communityData} />
+      </>
     </PageContent>
   );
 };
+
 export default PostPage;
