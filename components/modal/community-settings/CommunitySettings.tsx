@@ -15,8 +15,7 @@ import {
   DialogRoot,
   DialogTitle,
   Portal,
-  Separator,
-  Stack,
+  Tabs,
 } from "@chakra-ui/react";
 import { useAtom } from "jotai";
 import React, { useRef, useState } from "react";
@@ -114,37 +113,48 @@ const CommunitySettingsModal: React.FC<CommunitySettingsModalProps> = ({
                 flexDirection="column"
                 padding="10px 0px"
               >
-                <Stack fontSize="10pt" gap={2} p={5}>
-                  <ImageSettings
-                    selectedFile={selectedFile || ""}
-                    onSelectFile={onSelectFile}
-                    selectFileRef={selectFileRef}
-                    currentCommunity={
-                      communityStateValue.currentCommunity || null
-                    }
-                    deleteImage={deleteImage}
-                    setDeleteImage={setDeleteImage}
-                  />
-                  <Separator />
-                  <PrivacySettings
-                    currentCommunity={
-                      communityStateValue.currentCommunity || null
-                    }
-                    selectedPrivacyType={selectedPrivacyType}
-                    handlePrivacyTypeChange={handlePrivacyTypeChange}
-                  />
-                  <Separator />
-                  <AdminManager
-                    communityData={
-                      communityStateValue.currentCommunity || communityData
-                    }
-                  />
-                  <Separator />
-                  <DangerZone
-                    deleteCommunity={deleteCommunity}
-                    loading={loading}
-                  />
-                </Stack>
+                <Tabs.Root defaultValue="profile" variant="line" fitted>
+                  <Tabs.List mb={4}>
+                    <Tabs.Trigger value="profile">Profile</Tabs.Trigger>
+                    <Tabs.Trigger value="privacy">Privacy</Tabs.Trigger>
+                    <Tabs.Trigger value="admins">Admins</Tabs.Trigger>
+                    <Tabs.Trigger value="danger">Danger Zone</Tabs.Trigger>
+                  </Tabs.List>
+                  <Tabs.Content value="profile" p={5}>
+                    <ImageSettings
+                      selectedFile={selectedFile || ""}
+                      onSelectFile={onSelectFile}
+                      selectFileRef={selectFileRef}
+                      currentCommunity={
+                        communityStateValue.currentCommunity || null
+                      }
+                      deleteImage={deleteImage}
+                      setDeleteImage={setDeleteImage}
+                    />
+                  </Tabs.Content>
+                  <Tabs.Content value="privacy" p={5}>
+                    <PrivacySettings
+                      currentCommunity={
+                        communityStateValue.currentCommunity || null
+                      }
+                      selectedPrivacyType={selectedPrivacyType}
+                      handlePrivacyTypeChange={handlePrivacyTypeChange}
+                    />
+                  </Tabs.Content>
+                  <Tabs.Content value="admins" p={5}>
+                    <AdminManager
+                      communityData={
+                        communityStateValue.currentCommunity || communityData
+                      }
+                    />
+                  </Tabs.Content>
+                  <Tabs.Content value="danger" p={5}>
+                    <DangerZone
+                      deleteCommunity={deleteCommunity}
+                      loading={loading}
+                    />
+                  </Tabs.Content>
+                </Tabs.Root>
               </DialogBody>
             </Box>
             <ModalFooter onCancel={closeModal} onSave={handleSaveButtonClick} />
