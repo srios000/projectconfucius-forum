@@ -1,22 +1,11 @@
 import { postStateAtom } from "@/atoms/postsAtom";
-import { firestore } from "@/firebase/clientApp";
-import {
-  collection,
-  DocumentData,
-  getDocs,
-  limit,
-  orderBy,
-  query,
-  QueryConstraint,
-  QueryDocumentSnapshot,
-  startAfter,
-  where,
-} from "firebase/firestore";
+import { DocumentData, QueryDocumentSnapshot } from "firebase/firestore";
 import { useSetAtom } from "jotai";
 import { useEffect, useMemo, useState } from "react";
 import useCustomToast from "../useCustomToast";
 import { useIntersectionObserver } from "../useIntersectionObserver";
 import { Post } from "@/types/post";
+import { getPosts as getPostsLib } from "@/lib/posts/getPosts";
 
 type UsePostsFeedProps = {
   communityId?: string;
@@ -46,28 +35,6 @@ const usePostsFeed = ({
   const observerOptions = useMemo(() => ({ threshold: 0.5 }), []);
   const { ref, isIntersecting } = useIntersectionObserver(observerOptions);
 
-  const buildQuery = (initial: boolean) => {
-    const constraints: QueryConstraint[] = [];
-
-    if (communityId) {
-      constraints.push(where("communityId", "==", communityId));
-      constraints.push(orderBy("createTime", "desc"));
-    } else if (communityIds && communityIds.length > 0) {
-      constraints.push(where("communityId", "in", communityIds));
-      constraints.push(orderBy("createTime", "desc"));
-    } else if (isGenericHome) {
-      constraints.push(orderBy("voteStatus", "desc"));
-    }
-
-    if (!initial && lastVisible) {
-      constraints.push(startAfter(lastVisible));
-    }
-
-    constraints.push(limit(10));
-
-    return query(collection(firestore, "posts"), ...constraints);
-  };
-
   const fetchPosts = async (initial = false) => {
     if (loading) return;
     if (!initial && noMorePosts) return;
@@ -75,16 +42,15 @@ const usePostsFeed = ({
 
     setLoading(true);
     try {
-      const postQuery = buildQuery(initial);
-      const postDocs = await getDocs(postQuery);
-      const posts = postDocs.docs.map((doc) => ({
-        id: doc.id,
-        ...doc.data(),
-      }));
+      const { posts, newLastVisible } = await getPostsLib(
+        communityId,
+        communityIds,
+        isGenericHome,
+        initial ? null : lastVisible
+      );
 
-      if (postDocs.docs.length < 10) setNoMorePosts(true);
-      if (postDocs.docs.length > 0)
-        setLastVisible(postDocs.docs[postDocs.docs.length - 1]);
+      if (posts.length < 10) setNoMorePosts(true);
+      if (newLastVisible) setLastVisible(newLastVisible);
       else if (initial) {
         setNoMorePosts(true);
       }
@@ -98,8 +64,8 @@ const usePostsFeed = ({
     } catch (error: any) {
       console.log("Error: fetchPosts", error);
       showToast({
-        title: "Could not fetch posts",
-        description: error.message || "There was an error fetching posts",
+        title: "Could not Fetch Posts",
+        description: "There was an error fetching posts",
         status: "error",
       });
     } finally {

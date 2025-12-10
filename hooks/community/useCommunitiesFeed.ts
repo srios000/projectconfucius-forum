@@ -1,17 +1,8 @@
-import { firestore } from "@/firebase/clientApp";
 import useCustomToast from "@/hooks/useCustomToast";
-import {
-  collection,
-  DocumentData,
-  getDocs,
-  limit,
-  orderBy,
-  query,
-  QueryDocumentSnapshot,
-  startAfter,
-} from "firebase/firestore";
+import { DocumentData, QueryDocumentSnapshot } from "firebase/firestore";
 import { useEffect, useState } from "react";
 import { Community } from "@/types/community";
+import { getCommunities as getCommunitiesLib } from "@/lib/community/getCommunities";
 
 type UseCommunitiesFeedProps = {
   limitValue?: number;
@@ -39,32 +30,16 @@ const useCommunitiesFeed = ({
     if (loading) return;
     setLoading(true);
     try {
-      let communityQuery;
-      if (initial) {
-        communityQuery = query(
-          collection(firestore, "communities"),
-          orderBy("numberOfMembers", "desc"),
-          limit(limitValue)
-        );
-      } else {
-        if (!lastVisible || !isPagination) return;
-        communityQuery = query(
-          collection(firestore, "communities"),
-          orderBy("numberOfMembers", "desc"),
-          startAfter(lastVisible),
-          limit(limitValue)
-        );
+      if (!initial && (!lastVisible || !isPagination)) {
+        setLoading(false);
+        return;
       }
 
-      const communityDocs = await getDocs(communityQuery);
-      const fetchedCommunities = communityDocs.docs.map((doc) => ({
-        id: doc.id,
-        ...doc.data(),
-      }));
+      const { communities: fetchedCommunities, newLastVisible } =
+        await getCommunitiesLib(limitValue, initial ? null : lastVisible);
 
-      if (communityDocs.docs.length < limitValue) setNoMoreCommunities(true);
-      if (communityDocs.docs.length > 0)
-        setLastVisible(communityDocs.docs[communityDocs.docs.length - 1]);
+      if (fetchedCommunities.length < limitValue) setNoMoreCommunities(true);
+      if (newLastVisible) setLastVisible(newLastVisible);
 
       setCommunities((prev) =>
         initial

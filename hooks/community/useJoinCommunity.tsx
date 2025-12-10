@@ -1,11 +1,11 @@
 import { useState } from "react";
 import { communityStateAtom } from "@/atoms/communitiesAtom";
-import { Community, CommunitySnippet } from "@/types/community";
-import { auth, firestore } from "@/firebase/clientApp";
-import { doc, increment, writeBatch } from "firebase/firestore";
+import { Community } from "@/types/community";
+import { auth } from "@/firebase/clientApp";
 import { useSetAtom } from "jotai";
 import { useAuthState } from "react-firebase-hooks/auth";
 import useCustomToast from "../useCustomToast";
+import { joinCommunity } from "@/lib/community/joinCommunity";
 
 /**
  * Adds the current user to a community and updates member counts and snippets.
@@ -19,34 +19,17 @@ const useJoinCommunity = () => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
 
-  const joinCommunity = async (communityData: Community) => {
+  const onJoinCommunity = async (communityData: Community) => {
     if (!user) return;
     setLoading(true);
     try {
-      const batch = writeBatch(firestore);
-
-      const newSnippet: CommunitySnippet = {
-        communityId: communityData.id,
-        imageURL: communityData.imageURL || "",
-        isAdmin:
-          user?.uid === communityData.creatorId ||
-          communityData.adminIds?.includes(user?.uid || ""),
-      };
-
-      batch.set(
-        doc(
-          firestore,
-          `users/${user?.uid}/communitySnippets`,
-          communityData.id
-        ),
-        newSnippet
+      const newSnippet = await joinCommunity(
+        user.uid,
+        communityData.id,
+        communityData.imageURL || "",
+        user.uid === communityData.creatorId ||
+          (communityData.adminIds?.includes(user.uid || "") ?? false)
       );
-
-      batch.update(doc(firestore, "communities", communityData.id), {
-        numberOfMembers: increment(1),
-      });
-
-      await batch.commit();
 
       setCommunityStateValue((prev) => ({
         ...prev,
@@ -73,7 +56,7 @@ const useJoinCommunity = () => {
   };
 
   return {
-    joinCommunity,
+    joinCommunity: onJoinCommunity,
     joinLoading: loading,
     joinError: error,
   };
