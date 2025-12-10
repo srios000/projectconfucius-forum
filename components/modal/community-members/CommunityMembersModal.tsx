@@ -12,6 +12,7 @@ import {
   DialogRoot,
   DialogTitle,
   Flex,
+  IconButton,
   Portal,
   Spinner,
   Stack,
@@ -19,6 +20,11 @@ import {
 } from "@chakra-ui/react";
 import { CommunityMember } from "@/types/communityMember";
 import useCommunityMembers from "@/hooks/community/useCommunityMembers";
+import { LuTrash } from "react-icons/lu";
+import { useAtomValue } from "jotai";
+import { communityStateAtom } from "@/atoms/communitiesAtom";
+import useCommunityPermissions from "@/hooks/community/useCommunityPermissions";
+import useRemoveCommunityMember from "@/hooks/community/useRemoveCommunityMember";
 
 type CommunityMembersModalProps = {
   isOpen: boolean;
@@ -32,11 +38,23 @@ const CommunityMembersModal: React.FC<CommunityMembersModalProps> = ({
   communityId,
 }) => {
   const { members, loading, error, loadMembers } = useCommunityMembers();
+  const communityStateValue = useAtomValue(communityStateAtom);
+  const { isAdmin } = useCommunityPermissions(
+    communityStateValue.currentCommunity
+  );
+  const { removeMember, loading: removeLoading } = useRemoveCommunityMember();
 
   useEffect(() => {
     if (!isOpen) return;
     loadMembers(communityId);
   }, [isOpen, communityId, loadMembers]);
+
+  const handleRemoveMember = async (memberId: string) => {
+    const success = await removeMember(communityId, memberId);
+    if (success) {
+      loadMembers(communityId);
+    }
+  };
 
   const renderContent = () => {
     if (loading) {
@@ -60,20 +78,37 @@ const CommunityMembersModal: React.FC<CommunityMembersModalProps> = ({
     return (
       <Stack gap={2}>
         {members.map((member: CommunityMember) => (
-          <Box
+          <Flex
             key={member.uid}
             borderWidth="1px"
             borderRadius="xl"
             p={3}
             borderColor={{ base: "gray.200", _dark: "gray.700" }}
+            align="center"
+            justify="space-between"
           >
-            <Text fontWeight="semibold">
-              {member.displayName?.trim() ? member.displayName : "No Name"}
-            </Text>
-            <Text fontSize="sm" color="gray.500">
-              {member.email}
-            </Text>
-          </Box>
+            <Box>
+              <Text fontWeight="semibold">
+                {member.displayName?.trim() ? member.displayName : "No Name"}
+              </Text>
+              <Text fontSize="sm" color="gray.500">
+                {member.email}
+              </Text>
+            </Box>
+            {isAdmin && (
+              <IconButton
+                variant="ghost"
+                color="red.500"
+                _hover={{ color: "red.600", bg: "transparent" }}
+                onClick={() => handleRemoveMember(member.uid)}
+                disabled={removeLoading}
+                aria-label="Remove member"
+                size="sm"
+              >
+                <LuTrash />
+              </IconButton>
+            )}
+          </Flex>
         ))}
       </Stack>
     );
