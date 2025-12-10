@@ -1,4 +1,5 @@
 import React from "react";
+import { VStack } from "@chakra-ui/react";
 import CommunityTypeOption from "./CommunityTypeOption";
 
 interface CommunityTypeOptionsProps {
@@ -18,7 +19,8 @@ const CommunityTypeOptions: React.FC<CommunityTypeOptionsProps> = ({
   onCommunityTypeChange,
 }) => {
   return (
-    <div>
+    // add top margin to increase gap between the title and options
+    <VStack mt={6} gap={3} align="stretch">
       {options.map((option) => (
         <CommunityTypeOption
           key={option.name}
@@ -30,7 +32,7 @@ const CommunityTypeOptions: React.FC<CommunityTypeOptionsProps> = ({
           onChange={onCommunityTypeChange}
         />
       ))}
-    </div>
+    </VStack>
   );
 };
 

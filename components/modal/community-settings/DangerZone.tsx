@@ -1,5 +1,6 @@
 import { Button, Stack, Text } from "@chakra-ui/react";
-import React from "react";
+import React, { useState } from "react";
+import ConfirmationDialog from "@/components/modal/ConfirmationDialog";
 
 type DangerZoneProps = {
   deleteCommunity: () => Promise<void>;
@@ -13,6 +14,8 @@ const DangerZone: React.FC<DangerZoneProps> = ({
   deleteCommunity,
   loading,
 }) => {
+  const [deleteConfirmationOpen, setDeleteConfirmationOpen] = useState(false);
+
   return (
     <Stack>
       <Text fontWeight={600} fontSize="12pt" color="red.500">
@@ -23,13 +26,25 @@ const DangerZone: React.FC<DangerZoneProps> = ({
       </Text>
       <Button
         variant="outline"
-        colorScheme="red"
+        colorPalette="red"
         height="30px"
-        onClick={deleteCommunity}
+        onClick={() => setDeleteConfirmationOpen(true)}
         loading={loading}
       >
         Delete Community
       </Button>
+      <ConfirmationDialog
+        open={deleteConfirmationOpen}
+        onClose={() => setDeleteConfirmationOpen(false)}
+        onConfirm={() => {
+          deleteCommunity();
+          setDeleteConfirmationOpen(false);
+        }}
+        title="Delete Community"
+        body="Are you sure you want to delete this community? This action cannot be undone and will delete all posts and comments."
+        confirmButtonText="Delete Community"
+        isLoading={loading}
+      />
     </Stack>
   );
 };

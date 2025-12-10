@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import {
   Box,
   DialogBackdrop,
@@ -25,6 +25,7 @@ import { useAtomValue } from "jotai";
 import { communityStateAtom } from "@/atoms/communitiesAtom";
 import useCommunityPermissions from "@/hooks/community/useCommunityPermissions";
 import useRemoveCommunityMember from "@/hooks/community/useRemoveCommunityMember";
+import ConfirmationDialog from "@/components/modal/ConfirmationDialog";
 
 type CommunityMembersModalProps = {
   isOpen: boolean;
@@ -43,6 +44,7 @@ const CommunityMembersModal: React.FC<CommunityMembersModalProps> = ({
     communityStateValue.currentCommunity
   );
   const { removeMember, loading: removeLoading } = useRemoveCommunityMember();
+  const [memberToRemove, setMemberToRemove] = useState<string | null>(null);
 
   useEffect(() => {
     if (!isOpen) return;
@@ -54,6 +56,12 @@ const CommunityMembersModal: React.FC<CommunityMembersModalProps> = ({
     if (success) {
       loadMembers(communityId);
     }
+  };
+
+  const confirmRemoveMember = async () => {
+    if (!memberToRemove) return;
+    await handleRemoveMember(memberToRemove);
+    setMemberToRemove(null);
   };
 
   const renderContent = () => {
@@ -98,12 +106,10 @@ const CommunityMembersModal: React.FC<CommunityMembersModalProps> = ({
             {isAdmin && (
               <IconButton
                 variant="ghost"
-                color="red.500"
-                _hover={{ color: "red.600", bg: "transparent" }}
-                onClick={() => handleRemoveMember(member.uid)}
-                disabled={removeLoading}
-                aria-label="Remove member"
+                colorPalette="red"
                 size="sm"
+                aria-label="Remove member"
+                onClick={() => setMemberToRemove(member.uid)}
               >
                 <LuTrash />
               </IconButton>
@@ -117,24 +123,28 @@ const CommunityMembersModal: React.FC<CommunityMembersModalProps> = ({
   return (
     <DialogRoot
       open={isOpen}
-      onOpenChange={({ open }: { open: boolean }) => {
-        if (!open) onClose();
-      }}
+      onOpenChange={(details: { open: boolean }) => !details.open && onClose()}
+      placement="center"
     >
-      <Portal>
-        <DialogBackdrop bg="rgba(0, 0, 0, 0.4)" backdropFilter="blur(6px)" />
-        <DialogPositioner>
-          <DialogContent borderRadius="xl" maxH="80vh">
-            <DialogHeader>
-              <DialogTitle>{`${members.length} Subscribers`}</DialogTitle>
-            </DialogHeader>
-            <DialogCloseTrigger />
-            <DialogBody pb={6} maxH="60vh" overflowY="auto">
-              {renderContent()}
-            </DialogBody>
-          </DialogContent>
-        </DialogPositioner>
-      </Portal>
+      <DialogBackdrop />
+      <DialogPositioner>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Community Members</DialogTitle>
+          </DialogHeader>
+          <DialogCloseTrigger />
+          <DialogBody pb={6}>{renderContent()}</DialogBody>
+        </DialogContent>
+      </DialogPositioner>
+      <ConfirmationDialog
+        open={!!memberToRemove}
+        onClose={() => setMemberToRemove(null)}
+        onConfirm={confirmRemoveMember}
+        title="Remove Member"
+        body="Are you sure you want to remove this member from the community?"
+        confirmButtonText="Remove"
+        isLoading={removeLoading}
+      />
     </DialogRoot>
   );
 };

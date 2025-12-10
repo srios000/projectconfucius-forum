@@ -25,7 +25,8 @@ const useCreateComment = (
   const onCreateComment = async (
     user: User,
     commentText: string,
-    parentId?: string
+    parentId?: string,
+    depth: number = 0
   ) => {
     if (!selectedPost) return;
     setCreateLoading(true);
@@ -36,6 +37,7 @@ const useCreateComment = (
         selectedPost.id!,
         selectedPost.title,
         commentText,
+        depth,
         parentId
       );
 
@@ -51,7 +53,8 @@ const useCreateComment = (
       console.log("onCreateComment error", error);
       showToast({
         title: "Comment failed",
-        description: "There was an error creating your comment",
+        description:
+          error.message || "There was an error creating your comment",
         status: "error",
       });
     } finally {

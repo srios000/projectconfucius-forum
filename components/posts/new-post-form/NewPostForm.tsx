@@ -1,15 +1,15 @@
 import { Community } from "@/types/community";
 import useCreatePost from "@/hooks/posts/useCreatePost";
 import useSelectFile from "@/hooks/useSelectFile";
-import { Flex, Icon } from "@chakra-ui/react";
+import { Flex, Icon, Tabs, Text } from "@chakra-ui/react";
 import { User } from "firebase/auth";
 import { useParams, useRouter } from "next/navigation";
 import React, { useState } from "react";
 import { IoDocumentText, IoImageOutline } from "react-icons/io5";
 import BackToCommunityButton from "./BackToCommunityButton";
-import PostBody from "./PostBody";
 import PostCreateError from "./PostCreateError";
-import TabList from "./TabList";
+import TextInputs from "../post-form/TextInputs";
+import ImageUpload from "../post-form/ImageUpload";
 
 /**
  * Props for NewPostForm component.
@@ -121,23 +121,66 @@ const NewPostForm: React.FC<NewPostFormProps> = ({
       mt={2}
       shadow="md"
     >
-      <TabList
-        formTabs={formTabs}
-        selectedTab={selectedTab}
-        setSelectedTab={setSelectedTab}
-      />
-      <BackToCommunityButton communityId={currentCommunity?.id} />
-      <PostBody
-        selectedTab={selectedTab}
-        handleCreatePost={onCreatePost}
-        onTextChange={onTextChange}
-        loading={loading}
-        textInputs={textInputs}
-        selectedFile={selectedFile}
-        onSelectFile={onSelectFile}
-        setSelectedTab={setSelectedTab}
-        setSelectedFile={setSelectedFile}
-      />
+      <Tabs.Root
+        value={selectedTab}
+        onValueChange={(e: { value: string }) => setSelectedTab(e.value)}
+        width="100%"
+        variant="plain"
+      >
+        <Tabs.List width="100%" gap={2} p={2}>
+          {formTabs.map((item) => (
+            <Tabs.Trigger
+              key={item.title}
+              value={item.title}
+              flexGrow={1}
+              width={0}
+              p="14px 0px"
+              height="52px"
+              cursor="pointer"
+              fontWeight={800}
+              fontSize="16pt"
+              borderWidth="1px"
+              borderRadius={10}
+              shadow="md"
+              display="flex"
+              justifyContent="center"
+              alignItems="center"
+              _hover={{
+                bg: { base: "gray.50", _dark: "gray.700" },
+                boxShadow: "sm",
+              }}
+              color={{ base: "gray.500", _dark: "gray.400" }}
+              borderColor={{ base: "gray.200", _dark: "gray.600" }}
+              _selected={{
+                color: { base: "red.500", _dark: "red.400" },
+                borderColor: { base: "red.500", _dark: "red.400" },
+              }}
+            >
+              <Flex align="center" height="20px" mr={2}>
+                <Icon as={item.icon} />
+              </Flex>
+              <Text fontSize="10pt">{item.title}</Text>
+            </Tabs.Trigger>
+          ))}
+        </Tabs.List>
+        <BackToCommunityButton communityId={currentCommunity?.id} />
+        <Tabs.Content value="Post" p={4}>
+          <TextInputs
+            textInputs={textInputs}
+            handleCreatePost={onCreatePost}
+            onChange={onTextChange}
+            loading={loading}
+          />
+        </Tabs.Content>
+        <Tabs.Content value="Images" p={4}>
+          <ImageUpload
+            selectedFile={selectedFile}
+            onSelectImage={onSelectFile}
+            setSelectedTab={setSelectedTab}
+            setSelectedFile={setSelectedFile}
+          />
+        </Tabs.Content>
+      </Tabs.Root>
       <PostCreateError error={error} />
     </Flex>
   );

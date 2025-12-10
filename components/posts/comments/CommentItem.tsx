@@ -13,6 +13,7 @@ import React, { useState } from "react";
 import { CgProfile } from "react-icons/cg";
 import { LuPencil, LuReply, LuTrash } from "react-icons/lu";
 import CommentInput from "./CommentInput";
+import ConfirmationDialog from "@/components/modal/ConfirmationDialog";
 
 /**
  * Required props for CommentItem component
@@ -30,7 +31,8 @@ type CommentItemProps = {
   onCreateComment: (
     user: User,
     text: string,
-    parentId: string
+    parentId: string,
+    depth: number
   ) => Promise<void>;
   user?: User;
 };
@@ -62,11 +64,17 @@ const CommentItem: React.FC<CommentItemProps> = ({
   const [isReplying, setIsReplying] = useState(false);
   const [replyText, setReplyText] = useState("");
   const [replyLoading, setReplyLoading] = useState(false);
+  const [deleteConfirmationOpen, setDeleteConfirmationOpen] = useState(false);
 
   const handleReply = async () => {
     if (!user) return;
     setReplyLoading(true);
-    await onCreateComment(user, replyText, comment.id);
+    await onCreateComment(
+      user,
+      replyText,
+      comment.id,
+      (comment.depth || 0) + 1
+    );
     setReplyLoading(false);
     setReplyText("");
     setIsReplying(false);
@@ -103,21 +111,23 @@ const CommentItem: React.FC<CommentItemProps> = ({
         borderColor={{ base: "gray.100", _dark: "gray.600" }}
       >
         <Stack direction="row" align="center" gap={2}>
-          <Button
-            size="sm"
-            variant="ghost"
-            fontSize="10pt"
-            fontWeight={600}
-            color={{ base: "gray.500", _dark: "gray.400" }}
-            _hover={{
-              color: { base: "blue.500", _dark: "blue.400" },
-              bg: "transparent",
-            }}
-            onClick={() => setIsReplying(!isReplying)}
-          >
-            <Icon as={LuReply} mr={2} />
-            Reply
-          </Button>
+          {(comment.depth || 0) < 2 && (
+            <Button
+              size="sm"
+              variant="ghost"
+              fontSize="10pt"
+              fontWeight={600}
+              color={{ base: "gray.500", _dark: "gray.400" }}
+              _hover={{
+                color: { base: "blue.500", _dark: "blue.400" },
+                bg: "transparent",
+              }}
+              onClick={() => setIsReplying(!isReplying)}
+            >
+              <Icon as={LuReply} mr={2} />
+              Reply
+            </Button>
+          )}
           {userId === comment.creatorId && (
             <Button
               size="sm"
@@ -145,7 +155,7 @@ const CommentItem: React.FC<CommentItemProps> = ({
                 color: { base: "red.500", _dark: "red.400" },
                 bg: "transparent",
               }}
-              onClick={() => onDeleteComment(comment)}
+              onClick={() => setDeleteConfirmationOpen(true)}
             >
               <Icon as={LuTrash} mr={2} />
               Delete
@@ -171,6 +181,18 @@ const CommentItem: React.FC<CommentItemProps> = ({
           />
         </Box>
       )}
+      <ConfirmationDialog
+        open={deleteConfirmationOpen}
+        onClose={() => setDeleteConfirmationOpen(false)}
+        onConfirm={() => {
+          onDeleteComment(comment);
+          setDeleteConfirmationOpen(false);
+        }}
+        title="Delete Comment"
+        body="Are you sure you want to delete this comment? This action cannot be undone."
+        confirmButtonText="Delete"
+        isLoading={loadingDelete}
+      />
     </Flex>
   );
 };

@@ -1,11 +1,5 @@
 import React, { FC } from "react";
-import { Icon, Text, Flex } from "@chakra-ui/react";
-import {
-  CheckboxControl,
-  CheckboxIndicator,
-  CheckboxLabel,
-  CheckboxRoot,
-} from "@chakra-ui/react";
+import { CheckboxCard, Icon, Flex, VStack } from "@chakra-ui/react";
 import type { IconType } from "react-icons";
 
 type CommunityTypeOptionProps = {
@@ -26,40 +20,34 @@ const CommunityTypeOption: FC<CommunityTypeOptionProps> = ({
   onChange,
 }) => {
   return (
-    <CheckboxRoot
+    <CheckboxCard.Root
       value={name}
       checked={isChecked}
       onCheckedChange={() => onChange(name)}
       colorPalette="red"
-      display="flex"
-      alignItems="center"
-      gap={2}
+      borderRadius="xl"
       cursor="pointer"
-      py={1}
     >
-      <CheckboxControl>
-        <CheckboxIndicator />
-      </CheckboxControl>
-      <CheckboxLabel flex="1">
-        <Flex align="center">
-          <Icon
-            as={icon}
-            color={{ base: "gray.500", _dark: "gray.400" }}
-            mr={2}
-          />
-          <Text fontSize="10pt" mr={1}>
-            {label}
-          </Text>
-          <Text
-            fontSize="8pt"
-            color={{ base: "gray.500", _dark: "gray.400" }}
-            pt={1}
-          >
-            {description}
-          </Text>
-        </Flex>
-      </CheckboxLabel>
-    </CheckboxRoot>
+      <CheckboxCard.HiddenInput />
+      <CheckboxCard.Control>
+        <CheckboxCard.Content>
+          <Flex align="center" gap={3}>
+            <Icon
+              as={icon}
+              fontSize="24px"
+              color={{ base: "gray.500", _dark: "gray.400" }}
+            />
+            <VStack align="start" gap={0}>
+              <CheckboxCard.Label fontSize="10pt">{label}</CheckboxCard.Label>
+              <CheckboxCard.Description fontSize="8pt">
+                {description}
+              </CheckboxCard.Description>
+            </VStack>
+          </Flex>
+        </CheckboxCard.Content>
+        <CheckboxCard.Indicator />
+      </CheckboxCard.Control>
+    </CheckboxCard.Root>
   );
 };
 

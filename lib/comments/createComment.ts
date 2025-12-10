@@ -16,8 +16,15 @@ export const createComment = async (
   postId: string,
   postTitle: string,
   commentText: string,
+  depth: number,
   parentId?: string
 ) => {
+  if (depth > 2) {
+    throw new Error(
+      "Maximum comment depth reached. You cannot reply to this comment."
+    );
+  }
+
   const batch = writeBatch(firestore);
   const commentDocRef = doc(collection(firestore, "comments"));
   const newComment: Comment = {
@@ -30,6 +37,7 @@ export const createComment = async (
     text: commentText,
     createdAt: serverTimestamp() as Timestamp,
     parentId: parentId || undefined,
+    depth: depth,
   };
 
   if (!parentId) delete newComment.parentId;

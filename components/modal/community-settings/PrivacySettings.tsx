@@ -52,7 +52,7 @@ const PrivacySettings: React.FC<PrivacySettingsProps> = ({
               p={3}
               border="1px solid"
               borderColor={isSelected ? "red.500" : "gray.200"}
-              borderRadius="md"
+              borderRadius="xl"
               cursor="pointer"
               onClick={() => handlePrivacyTypeChange({ value: type.value })}
               bg={

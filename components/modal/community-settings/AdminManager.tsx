@@ -17,6 +17,7 @@ import {
 import React, { useEffect, useState } from "react";
 import { useAuthState } from "react-firebase-hooks/auth";
 import { AdminUser } from "@/types/adminUser";
+import ConfirmationDialog from "@/components/modal/ConfirmationDialog";
 
 type AdminManagerProps = {
   communityData: Community;
@@ -33,6 +34,8 @@ const AdminManager: React.FC<AdminManagerProps> = ({ communityData }) => {
   const [showResults, setShowResults] = useState(false);
   const showToast = useCustomToast();
   const [user] = useAuthState(auth);
+  const [adminToRemove, setAdminToRemove] = useState<string | null>(null);
+  const [removingAdmin, setRemovingAdmin] = useState(false);
 
   useEffect(() => {
     loadAdmins(communityData.creatorId, communityData.adminIds).catch(
@@ -101,10 +104,12 @@ const AdminManager: React.FC<AdminManagerProps> = ({ communityData }) => {
     }
   };
 
-  const onRemoveAdmin = async (uid: string) => {
+  const confirmRemoveAdmin = async () => {
+    if (!adminToRemove) return;
+    setRemovingAdmin(true);
     try {
       // Remove admin (updates Firestore + local + global state)
-      await handleRemoveAdmin(communityData.id, uid, setAdmins);
+      await handleRemoveAdmin(communityData.id, adminToRemove, setAdmins);
 
       showToast({
         title: "Admin removed",
@@ -118,6 +123,9 @@ const AdminManager: React.FC<AdminManagerProps> = ({ communityData }) => {
         description: "Could not remove admin",
         status: "error",
       });
+    } finally {
+      setRemovingAdmin(false);
+      setAdminToRemove(null);
     }
   };
 
@@ -239,7 +247,7 @@ const AdminManager: React.FC<AdminManagerProps> = ({ communityData }) => {
                     size="sm"
                     variant="outline"
                     colorPalette="red"
-                    onClick={() => onRemoveAdmin(admin.uid)}
+                    onClick={() => setAdminToRemove(admin.uid)}
                   >
                     Remove
                   </Button>
@@ -253,6 +261,15 @@ const AdminManager: React.FC<AdminManagerProps> = ({ communityData }) => {
           ))}
         </Stack>
       )}
+      <ConfirmationDialog
+        open={!!adminToRemove}
+        onClose={() => setAdminToRemove(null)}
+        onConfirm={confirmRemoveAdmin}
+        title="Remove Admin"
+        body="Are you sure you want to remove this user from admins?"
+        confirmButtonText="Remove"
+        isLoading={removingAdmin}
+      />
     </Stack>
   );
 };
