@@ -7,6 +7,7 @@ import { authModalStateAtom } from "../../../atoms/authModalAtom";
 import { auth } from "../../../firebase/clientApp";
 import { FIREBASE_ERRORS } from "../../../firebase/errors";
 import InputField from "./InputField";
+import { PasswordInput } from "@/components/ui/password-input";
 
 /**
  * Allows the user to create an account by inputting the required credentials (email and password).
@@ -86,18 +87,50 @@ const SignUp = () => {
         onChange={onChange}
       />
 
-      <InputField
+      <PasswordInput
         name="password"
         placeholder="Password"
-        type="password"
         onChange={onChange}
+        required
+        rootProps={{ mb: 2 }}
+        fontSize="10pt"
+        bg={{ base: "gray.50", _dark: "gray.800" }}
+        borderColor={{ base: "gray.200", _dark: "gray.600" }}
+        _placeholder={{ color: "gray.500" }}
+        _hover={{
+          bg: { base: "white", _dark: "gray.700" },
+          border: "1px solid",
+          borderColor: { base: "red.500", _dark: "red.400" },
+        }}
+        _focus={{
+          outline: "none",
+          bg: { base: "white", _dark: "gray.700" },
+          border: "1px solid",
+          borderColor: { base: "red.500", _dark: "red.400" },
+        }}
       />
 
-      <InputField
+      <PasswordInput
         name="confirmPassword"
         placeholder="Confirm Password"
-        type="password"
         onChange={onChange}
+        required
+        rootProps={{ mb: 2 }}
+        fontSize="10pt"
+        bg={{ base: "gray.50", _dark: "gray.800" }}
+        borderColor={{ base: "gray.200", _dark: "gray.600" }}
+        _placeholder={{ color: "gray.500" }}
+        _hover={{
+          bg: { base: "white", _dark: "gray.700" },
+          border: "1px solid",
+          borderColor: { base: "red.500", _dark: "red.400" },
+        }}
+        _focus={{
+          outline: "none",
+          bg: { base: "white", _dark: "gray.700" },
+          border: "1px solid",
+          borderColor: { base: "red.500", _dark: "red.400" },
+        }}
       />
 
       {/* If there is error than the error is shown */}
