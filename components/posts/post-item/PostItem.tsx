@@ -10,6 +10,7 @@ import PostDetails from "./PostDetails";
 import PostTitle from "./PostTitle";
 import PostBody from "./PostBody";
 import PostActions from "./PostActions";
+import ConfirmationDialog from "@/components/modal/ConfirmationDialog";
 
 type PostItemProps = {
   post: Post;
@@ -52,6 +53,7 @@ const PostItem: React.FC<PostItemProps> = ({
   const [loadingImage, setLoadingImage] = useState(true);
   const [error, setError] = useState(false);
   const [loadingDelete, setLoadingDelete] = useState(false);
+  const [deleteConfirmationOpen, setDeleteConfirmationOpen] = useState(false);
   const router = useRouter();
   const showToast = useCustomToast();
   const { onSavePost, isPostSaved } = useSavedPosts();
@@ -59,10 +61,14 @@ const PostItem: React.FC<PostItemProps> = ({
 
   const singlePostPage = !onSelectPost;
 
-  const handleDelete = async (
+  const handleDeleteClick = async (
     event: React.MouseEvent<HTMLButtonElement, MouseEvent>
   ) => {
-    event.stopPropagation(); // stop event bubbling up to parent
+    event.stopPropagation();
+    setDeleteConfirmationOpen(true);
+  };
+
+  const onConfirmDelete = async () => {
     setLoadingDelete(true);
     try {
       const success: boolean = await onDeletePost(post); // call the delete function from usePosts hook
@@ -80,7 +86,11 @@ const PostItem: React.FC<PostItemProps> = ({
       // if the user deletes post from the single post page, they should be redirected to the post's community page
       if (singlePostPage) {
         // if the post is on the single post page
-        router.push(`/community/${post.communityId}`); // redirect to the community page
+        if (post.communityId) {
+          router.push(`/community/${post.communityId}`); // redirect to the community page
+        } else {
+          router.push("/"); // redirect to home if communityId is missing
+        }
       }
     } catch (error: any) {
       setError(error.message);
@@ -91,6 +101,7 @@ const PostItem: React.FC<PostItemProps> = ({
       });
     } finally {
       setLoadingDelete(false);
+      setDeleteConfirmationOpen(false);
     }
   };
 
@@ -150,7 +161,7 @@ const PostItem: React.FC<PostItemProps> = ({
           />
         </Stack>
         <PostActions
-          handleDelete={handleDelete}
+          handleDelete={handleDeleteClick}
           loadingDelete={loadingDelete}
           userIsCreator={userIsCreator}
           userIsAdmin={userIsAdmin}
@@ -162,6 +173,15 @@ const PostItem: React.FC<PostItemProps> = ({
         <PostItemError
           error={error}
           message={"There was an error when loading this post"}
+        />
+        <ConfirmationDialog
+          open={deleteConfirmationOpen}
+          onClose={() => setDeleteConfirmationOpen(false)}
+          onConfirm={onConfirmDelete}
+          title="Delete Post"
+          body="Are you sure you want to delete this post? This action cannot be undone."
+          confirmButtonText="Delete"
+          isLoading={loadingDelete}
         />
       </Flex>
     </Flex>

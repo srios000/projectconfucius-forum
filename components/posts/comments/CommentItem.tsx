@@ -13,6 +13,7 @@ import React, { useState } from "react";
 import { CgProfile } from "react-icons/cg";
 import { LuPencil, LuReply, LuTrash } from "react-icons/lu";
 import CommentInput from "./CommentInput";
+import ConfirmationDialog from "@/components/modal/ConfirmationDialog";
 
 /**
  * Required props for CommentItem component
@@ -62,6 +63,7 @@ const CommentItem: React.FC<CommentItemProps> = ({
   const [isReplying, setIsReplying] = useState(false);
   const [replyText, setReplyText] = useState("");
   const [replyLoading, setReplyLoading] = useState(false);
+  const [deleteConfirmationOpen, setDeleteConfirmationOpen] = useState(false);
 
   const handleReply = async () => {
     if (!user) return;
@@ -145,7 +147,7 @@ const CommentItem: React.FC<CommentItemProps> = ({
                 color: { base: "red.500", _dark: "red.400" },
                 bg: "transparent",
               }}
-              onClick={() => onDeleteComment(comment)}
+              onClick={() => setDeleteConfirmationOpen(true)}
             >
               <Icon as={LuTrash} mr={2} />
               Delete
@@ -171,6 +173,18 @@ const CommentItem: React.FC<CommentItemProps> = ({
           />
         </Box>
       )}
+      <ConfirmationDialog
+        open={deleteConfirmationOpen}
+        onClose={() => setDeleteConfirmationOpen(false)}
+        onConfirm={() => {
+          onDeleteComment(comment);
+          setDeleteConfirmationOpen(false);
+        }}
+        title="Delete Comment"
+        body="Are you sure you want to delete this comment? This action cannot be undone."
+        confirmButtonText="Delete"
+        isLoading={loadingDelete}
+      />
     </Flex>
   );
 };

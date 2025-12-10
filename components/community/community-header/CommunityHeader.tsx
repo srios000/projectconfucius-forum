@@ -1,6 +1,6 @@
 import { Community } from "@/types/community";
 import { Box, Flex } from "@chakra-ui/react";
-import React from "react";
+import React, { useState } from "react";
 import useCommunityState from "@/hooks/community/useCommunityState";
 import useCommunityMembershipActions from "@/hooks/community/useCommunityMembershipActions";
 import CommunityIcon from "./CommunityIcon";
@@ -8,6 +8,7 @@ import CommunityName from "./CommunityName";
 import JoinOrLeaveButton from "./JoinOrLeaveButton";
 import CommunitySettings from "./CommunitySettings";
 import CommunityMembersButton from "./CommunityMembersButton";
+import ConfirmationDialog from "@/components/modal/ConfirmationDialog";
 
 /**
  * @param {communityData} - data required to be displayed
@@ -36,6 +37,21 @@ const CommunityHeader: React.FC<HeaderProps> = ({ communityData }) => {
   const isJoined = !!communityStateValue.mySnippets.find(
     (item) => item.communityId === communityData.id
   );
+  const [leaveConfirmationOpen, setLeaveConfirmationOpen] = useState(false);
+
+  const handleJoinOrLeave = () => {
+    if (isJoined) {
+      setLeaveConfirmationOpen(true);
+    } else {
+      onJoinOrLeaveCommunity(communityData, isJoined);
+    }
+  };
+
+  const onConfirmLeave = async () => {
+    await onJoinOrLeaveCommunity(communityData, isJoined);
+    setLeaveConfirmationOpen(false);
+  };
+
   return (
     <Flex direction="column" width="100%" height="120px">
       <Box height="30%" bg="red.500" />
@@ -66,12 +82,21 @@ const CommunityHeader: React.FC<HeaderProps> = ({ communityData }) => {
               <CommunitySettings communityData={communityData} />
               <JoinOrLeaveButton
                 isJoined={isJoined}
-                onClick={() => onJoinOrLeaveCommunity(communityData, isJoined)}
+                onClick={handleJoinOrLeave}
               />
             </Flex>
           </Flex>
         </Flex>
       </Flex>
+      <ConfirmationDialog
+        open={leaveConfirmationOpen}
+        onClose={() => setLeaveConfirmationOpen(false)}
+        onConfirm={onConfirmLeave}
+        title="Unsubscribe from Community"
+        body={`Are you sure you want to unsubscribe from r/${communityData.id}?`}
+        confirmButtonText="Unsubscribe"
+        isLoading={loading}
+      />
     </Flex>
   );
 };
