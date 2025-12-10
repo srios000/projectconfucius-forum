@@ -35,6 +35,7 @@ type CommentItemProps = {
     depth: number
   ) => Promise<void>;
   user?: User;
+  canComment?: boolean;
 };
 
 /**
@@ -60,6 +61,7 @@ const CommentItem: React.FC<CommentItemProps> = ({
   isCommunityAdmin,
   onCreateComment,
   user,
+  canComment = true,
 }) => {
   const [isReplying, setIsReplying] = useState(false);
   const [replyText, setReplyText] = useState("");
@@ -111,7 +113,7 @@ const CommentItem: React.FC<CommentItemProps> = ({
         borderColor={{ base: "gray.100", _dark: "gray.600" }}
       >
         <Stack direction="row" align="center" gap={2}>
-          {(comment.depth || 0) < 2 && (
+          {(comment.depth || 0) < 2 && canComment && (
             <Button
               size="sm"
               variant="ghost"

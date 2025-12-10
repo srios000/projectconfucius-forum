@@ -3,6 +3,8 @@ import { useRouter } from "next/navigation";
 import { User } from "firebase/auth";
 import useCustomToast from "@/hooks/useCustomToast";
 import { createPost } from "@/lib/posts/createPost";
+import useCommunityState from "../community/useCommunityState";
+import { checkCommunityPermission } from "@/lib/community/communityPermissions";
 
 /**
  * Creates a new post, uploads an optional image, and notifies the user.
@@ -18,6 +20,7 @@ const useCreatePost = () => {
   const showToast = useCustomToast();
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(false);
+  const { communityStateValue } = useCommunityState();
 
   const handleCreatePost = async (
     user: User,
@@ -28,6 +31,26 @@ const useCreatePost = () => {
   ) => {
     if (!user) return;
     setLoading(true);
+
+    // Check for restricted community permissions
+    const currentCommunity = communityStateValue.currentCommunity;
+    if (currentCommunity?.id === communityId) {
+      const hasPermission = checkCommunityPermission(
+        currentCommunity,
+        communityStateValue.mySnippets
+      );
+
+      if (!hasPermission) {
+        showToast({
+          title: "Restricted Community",
+          description: "You must be a member to post in this community.",
+          status: "error",
+        });
+        setLoading(false);
+        return;
+      }
+    }
+
     try {
       await createPost(
         user,
