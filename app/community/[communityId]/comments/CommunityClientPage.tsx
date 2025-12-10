@@ -6,7 +6,10 @@ import About from "@/components/community/about/About";
 import CommunityHeader from "@/components/community/community-header/CommunityHeader";
 import PageContent from "@/components/layout/PageContent";
 import Posts from "@/components/posts/Posts";
+import useCommunityPermissions from "@/hooks/community/useCommunityPermissions";
+import RestrictedCommunityBanner from "@/components/community/RestrictedCommunityBanner";
 import { Community } from "@/types/community";
+import { Stack } from "@chakra-ui/react";
 import { useAtom } from "jotai";
 import React, { useEffect } from "react";
 
@@ -39,17 +42,23 @@ const CommunityClientPage: React.FC<CommunityPageProps> = ({
       ? communityStateValue.currentCommunity
       : communityData;
 
+  const { canView } = useCommunityPermissions(currentCommunity);
+
   return (
     <>
       <CommunityHeader communityData={currentCommunity} />
       <PageContent>
         <>
-          <CreatePostLink />
-          <Posts communityData={currentCommunity} />
+          {canView ? (
+            <>
+              <CreatePostLink />
+              <Posts communityData={currentCommunity} />
+            </>
+          ) : (
+            <RestrictedCommunityBanner />
+          )}
         </>
-        <>
-          <About communityData={currentCommunity} />
-        </>
+        <>{canView && <About communityData={currentCommunity} />}</>
       </PageContent>
     </>
   );

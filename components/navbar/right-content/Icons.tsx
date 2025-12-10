@@ -1,7 +1,10 @@
 /* eslint-disable react-hooks/rules-of-hooks */
 import { savedPostStateAtom } from "@/atoms/savedPostsAtom";
 import { useColorMode } from "@/components/ui/color-mode";
+import useCommunityState from "@/hooks/community/useCommunityState";
+import useCommunityPermissions from "@/hooks/community/useCommunityPermissions";
 import useCallCreatePost from "@/hooks/posts/useCallCreatePost";
+import useCustomToast from "@/hooks/useCustomToast";
 import { Flex, IconButton, Icon } from "@chakra-ui/react";
 import { useSetAtom } from "jotai";
 import React from "react";
@@ -19,6 +22,23 @@ const icons: React.FC = () => {
   const { onClick } = useCallCreatePost();
   const { colorMode, toggleColorMode } = useColorMode();
   const setSavedPostState = useSetAtom(savedPostStateAtom);
+  const { communityStateValue } = useCommunityState();
+  const { canPost } = useCommunityPermissions(
+    communityStateValue.currentCommunity
+  );
+  const showToast = useCustomToast();
+
+  const handleCreatePostClick = () => {
+    if (communityStateValue.currentCommunity && !canPost) {
+      showToast({
+        title: "Restricted Community",
+        description: "You must be a member to post in this community.",
+        status: "error",
+      });
+      return;
+    }
+    onClick();
+  };
 
   return (
     <Flex align="center" p={1}>
@@ -52,7 +72,7 @@ const icons: React.FC = () => {
           aria-label="Create post"
           variant="ghost"
           fontSize={22}
-          onClick={onClick}
+          onClick={handleCreatePostClick}
           mr={1.5}
           ml={1.5}
         >

@@ -6,6 +6,8 @@ import { useSetAtom } from "jotai";
 import useCustomToast from "@/hooks/useCustomToast";
 import { Comment } from "../../types/comment";
 import { createComment } from "@/lib/comments/createComment";
+import useCommunityState from "../community/useCommunityState";
+import { checkCommunityPermission } from "@/lib/community/communityPermissions";
 
 /**
  * Creates a new comment or reply on the selected post and updates counts.
@@ -21,6 +23,7 @@ const useCreateComment = (
   const setPostState = useSetAtom(postStateAtom);
   const showToast = useCustomToast();
   const [createLoading, setCreateLoading] = useState(false);
+  const { communityStateValue } = useCommunityState();
 
   const onCreateComment = async (
     user: User,
@@ -30,6 +33,26 @@ const useCreateComment = (
   ) => {
     if (!selectedPost) return;
     setCreateLoading(true);
+
+    // Check for restricted community permissions
+    const currentCommunity = communityStateValue.currentCommunity;
+    if (currentCommunity?.id === selectedPost.communityId) {
+      const hasPermission = checkCommunityPermission(
+        currentCommunity,
+        communityStateValue.mySnippets
+      );
+
+      if (!hasPermission) {
+        showToast({
+          title: "Restricted Community",
+          description: "You must be a member to comment in this community.",
+          status: "error",
+        });
+        setCreateLoading(false);
+        return;
+      }
+    }
+
     try {
       const newComment = await createComment(
         user,

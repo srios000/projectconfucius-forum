@@ -12,6 +12,8 @@ import { Box, Stack, Text } from "@chakra-ui/react";
 import { useAtom, useSetAtom } from "jotai";
 import React, { useEffect } from "react";
 import { useAuthState } from "react-firebase-hooks/auth";
+import useCommunityPermissions from "@/hooks/community/useCommunityPermissions";
+import RestrictedCommunityBanner from "@/components/community/RestrictedCommunityBanner";
 
 type SubmitPostPageProps = {
   communityData: Community;
@@ -37,6 +39,19 @@ const SubmitPostPage: React.FC<SubmitPostPageProps> = ({ communityData }) => {
 
   const currentCommunity =
     communityStateValue.currentCommunity || communityData;
+  const { canPost } = useCommunityPermissions(currentCommunity);
+
+  if (!canPost) {
+    return (
+      <PageContent>
+        <RestrictedCommunityBanner
+          title="Restricted Access"
+          description="Only subscribers can create posts in this community."
+        />
+        <About communityData={currentCommunity} />
+      </PageContent>
+    );
+  }
 
   return (
     <PageContent>

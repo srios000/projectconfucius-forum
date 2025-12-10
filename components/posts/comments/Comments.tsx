@@ -4,6 +4,8 @@ import { Comment } from "@/types/comment";
 import useCommentList from "@/hooks/comments/useCommentList";
 import useCreateComment from "@/hooks/comments/useCreateComment";
 import useDeleteComment from "@/hooks/comments/useDeleteComment";
+import useCommunityState from "@/hooks/community/useCommunityState";
+import useCommunityPermissions from "@/hooks/community/useCommunityPermissions";
 import {
   Box,
   Flex,
@@ -51,6 +53,10 @@ const Comments: React.FC<CommentsProps> = ({
   const { deleteComment, deleteLoadingId } = useDeleteComment(
     comments,
     setComments
+  );
+  const { communityStateValue } = useCommunityState();
+  const { canComment } = useCommunityPermissions(
+    communityStateValue.currentCommunity
   );
 
   const handleCreateComment = async (text: string) => {
@@ -110,13 +116,15 @@ const Comments: React.FC<CommentsProps> = ({
         fontSize="10pt"
         width="100%"
       >
-        <CommentInput
-          commentText={commentText}
-          setCommentText={setCommentText}
-          user={user}
-          createLoading={createLoading}
-          onCreateComment={handleCreateComment}
-        />
+        {canComment && (
+          <CommentInput
+            commentText={commentText}
+            setCommentText={setCommentText}
+            user={user}
+            createLoading={createLoading}
+            onCreateComment={handleCreateComment}
+          />
+        )}
       </Flex>
       <Stack gap={4} m={4} ml={10}>
         {commentFetchLoading ? (
@@ -177,6 +185,7 @@ const Comments: React.FC<CommentsProps> = ({
                                 isCommunityAdmin={isCommunityAdmin}
                                 onCreateComment={createComment}
                                 user={user}
+                                canComment={canComment}
                               />
                             </Box>
                           </Flex>
@@ -198,6 +207,7 @@ const Comments: React.FC<CommentsProps> = ({
                               isCommunityAdmin={isCommunityAdmin}
                               onCreateComment={createComment}
                               user={user}
+                              canComment={canComment}
                             />
                           </Box>
                         </TreeView.Item>

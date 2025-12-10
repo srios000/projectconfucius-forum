@@ -12,6 +12,7 @@ import usePostDeletion from "@/hooks/posts/usePostDeletion";
 import usePostState from "@/hooks/posts/usePostState";
 import usePostVote from "@/hooks/posts/usePostVote";
 import usePostVoteSync from "@/hooks/posts/usePostVoteSync";
+import RestrictedCommunityBanner from "@/components/community/RestrictedCommunityBanner";
 import { Community } from "@/types/community";
 import { Post } from "@/types/post";
 import { Stack } from "@chakra-ui/react";
@@ -41,7 +42,8 @@ const PostPage: React.FC<PostPageProps> = ({ communityData, postData }) => {
     useAtom(communityStateAtom);
   const currentCommunity =
     communityStateValue.currentCommunity || communityData;
-  const { isAdmin } = useCommunityPermissions(currentCommunity);
+  const { isAdmin, canView, canPost } =
+    useCommunityPermissions(currentCommunity);
   const [user] = useAuthState(auth);
 
   useEffect(() => {
@@ -60,47 +62,49 @@ const PostPage: React.FC<PostPageProps> = ({ communityData, postData }) => {
     }
   }, [postData, setPostStateValue]);
 
+  if (!canView) {
+    return (
+      <PageContent>
+        <RestrictedCommunityBanner />
+        <></>
+      </PageContent>
+    );
+  }
+
   return (
     <PageContent>
-      {/* Left */}
       <>
-        {!postData && !postStateValue.selectedPost ? (
-          <PostLoader />
-        ) : (
-          <>
-            <Stack gap={3} direction="column">
-              {postStateValue.selectedPost && (
-                <PostItem
-                  post={postStateValue.selectedPost}
-                  onVote={onVote}
-                  onDeletePost={onDeletePost}
-                  userVoteValue={
-                    postStateValue.postVotes.find(
-                      (item) => item.postId === postStateValue.selectedPost?.id
-                    )?.voteValue
-                  }
-                  userIsCreator={
-                    user?.uid === postStateValue.selectedPost?.creatorId
-                  }
-                  userIsAdmin={isAdmin}
-                  showCommunityImage={true}
-                />
-              )}
-
-              <Comments
-                user={user as User}
-                selectedPost={postStateValue.selectedPost}
-                communityId={postStateValue.selectedPost?.communityId as string}
-                isCommunityAdmin={isAdmin}
-              />
-            </Stack>
-          </>
-        )}
+        <Stack gap={4}>
+          {postStateValue.selectedPost && (
+            <PostItem
+              post={postStateValue.selectedPost}
+              onVote={onVote}
+              onDeletePost={onDeletePost}
+              userVoteValue={
+                postStateValue.postVotes.find(
+                  (item) => item.postId === postStateValue.selectedPost!.id
+                )?.voteValue
+              }
+              userIsCreator={
+                user?.uid === postStateValue.selectedPost.creatorId
+              }
+              userIsAdmin={isAdmin}
+              votingDisabled={!canPost}
+            />
+          )}
+          <Comments
+            user={user as User}
+            selectedPost={postStateValue.selectedPost}
+            communityId={postStateValue.selectedPost?.communityId as string}
+            isCommunityAdmin={isAdmin}
+          />
+        </Stack>
       </>
-      {currentCommunity && <About communityData={currentCommunity} />}
-      {/* Right */}
-      <></>
+      <>
+        <About communityData={communityData} />
+      </>
     </PageContent>
   );
 };
+
 export default PostPage;
