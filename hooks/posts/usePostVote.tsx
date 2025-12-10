@@ -9,6 +9,8 @@ import { Post, PostVote } from "@/types/post";
 import { handlePostVote } from "@/lib/posts/handlePostVote";
 import { getPostVotes as getPostVotesLib } from "@/lib/posts/getPostVotes";
 import { getPost as getPostLib } from "@/lib/posts/getPost";
+import useCommunityState from "../community/useCommunityState";
+import { getCommunityData } from "@/lib/community/getCommunityData";
 
 type SetPostState = React.Dispatch<
   React.SetStateAction<{
@@ -35,6 +37,7 @@ const usePostVote = (
   const [user] = useAuthState(auth);
   const setAuthModalState = useSetAtom(authModalStateAtom);
   const showToast = useCustomToast();
+  const { communityStateValue } = useCommunityState();
 
   const onVote = async (
     event: React.MouseEvent<SVGElement, MouseEvent>,
@@ -49,8 +52,40 @@ const usePostVote = (
       return;
     }
 
+    // Check permissions
+    const isMember = !!communityStateValue.mySnippets.find(
+      (snippet) => snippet.communityId === communityId
+    );
+
+    if (!isMember) {
+      let community = communityStateValue.currentCommunity;
+
+      if (!community || community.id !== communityId) {
+        try {
+          community = await getCommunityData(communityId);
+        } catch (error) {
+          console.log(
+            "Error fetching community data for vote permission",
+            error
+          );
+        }
+      }
+
+      if (
+        community &&
+        (community.privacyType === "restricted" ||
+          community.privacyType === "private")
+      ) {
+        showToast({
+          title: "Restricted Community",
+          description: "You must be a member to vote in this community.",
+          status: "error",
+        });
+        return;
+      }
+    }
+
     try {
-      const { voteStatus } = post;
       const existingVote = postStateValue.postVotes.find(
         (v) => v.postId === post.id
       );
@@ -64,7 +99,7 @@ const usePostVote = (
       );
 
       let updatedPostVotes = [...postStateValue.postVotes];
-      const updatedPost = { ...post, voteStatus: voteStatus + voteChange };
+      const updatedPost = { ...post, voteStatus: post.voteStatus + voteChange };
       const updatedPosts = [...postStateValue.posts];
 
       if (voteIdToDelete) {

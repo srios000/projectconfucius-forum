@@ -26,6 +26,7 @@ type PostItemProps = {
   onDeletePost: (post: Post) => Promise<boolean>; // function to handle deleting post
   onSelectPost?: (post: Post) => void; // optional because once a post is selected it cannot be reselected
   showCommunityImage?: boolean;
+  votingDisabled?: boolean;
 };
 
 /**
@@ -49,6 +50,7 @@ const PostItem: React.FC<PostItemProps> = ({
   onDeletePost,
   onSelectPost,
   showCommunityImage,
+  votingDisabled,
 }) => {
   const [loadingImage, setLoadingImage] = useState(true);
   const [error, setError] = useState(false);

@@ -38,7 +38,7 @@ const About: React.FC<AboutProps> = ({ communityData }) => {
     (item) => item.communityId === communityData.id
   );
   const [isMembersModalOpen, setMembersModalOpen] = useState(false);
-  const { canView } = useCommunityPermissions(communityData);
+  const { canView, canPost } = useCommunityPermissions(communityData);
 
   if (!canView) {
     return null;
@@ -65,14 +65,16 @@ const About: React.FC<AboutProps> = ({ communityData }) => {
         )}
         <Stack>
           <AboutCommunity communityData={communityData} />
-          <Button
-            width="100%"
-            onClick={() => {
-              router.push(`/community/${communityData.id}/submit`);
-            }}
-          >
-            Create Post
-          </Button>
+          {canPost && (
+            <Button
+              width="100%"
+              onClick={() => {
+                router.push(`/community/${communityData.id}/submit`);
+              }}
+            >
+              Create Post
+            </Button>
+          )}
           {isJoined && (
             <Button
               width="100%"
