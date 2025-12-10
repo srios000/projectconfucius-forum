@@ -1,4 +1,4 @@
-import { createToaster } from "@chakra-ui/react";
+import { toaster } from "@/components/ui/toaster";
 import { useCallback } from "react";
 
 interface CustomToastOptions {
@@ -6,11 +6,6 @@ interface CustomToastOptions {
   description?: string;
   status: "success" | "error" | "warning" | "info";
 }
-
-export const toaster = createToaster({
-  placement: "top",
-  gap: 16,
-});
 
 /**
  * Returns a memoized helper to show consistent Chakra toasts.
