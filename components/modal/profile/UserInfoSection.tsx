@@ -9,6 +9,14 @@ type UserInfoSectionProps = {
   handleNameChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
 };
 
+/**
+ * Profile info block that toggles between read-only and editable username.
+ * @param user - Firebase user for email and current display name.
+ * @param isEditing - Whether to show the input.
+ * @param userName - Controlled input value for the name.
+ * @param handleNameChange - Change handler for the name field.
+ * @returns Email and name display with optional edit input.
+ */
 const UserInfoSection: React.FC<UserInfoSectionProps> = ({
   user,
   isEditing,

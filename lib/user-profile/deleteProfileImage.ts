@@ -3,7 +3,8 @@ import { deleteObject, ref } from "firebase/storage";
 
 /**
  * Deletes the profile image from Firebase Storage.
- * @param userId - ID of the user
+ * @param userId - Id of the user.
+ * @returns Resolves after the storage object is removed.
  */
 export const deleteProfileImage = async (userId: string) => {
   const imageRef = ref(storage, `users/${userId}/profileImage`);

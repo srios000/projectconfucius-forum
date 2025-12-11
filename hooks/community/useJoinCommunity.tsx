@@ -9,7 +9,6 @@ import { joinCommunity } from "@/lib/community/joinCommunity";
 
 /**
  * Adds the current user to a community and updates member counts and snippets.
- * @param communityData - Community the user wants to join.
  * @returns Join handler plus loading and error state.
  */
 const useJoinCommunity = () => {

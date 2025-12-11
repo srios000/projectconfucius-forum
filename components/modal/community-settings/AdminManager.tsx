@@ -23,6 +23,12 @@ type AdminManagerProps = {
   communityData: Community;
 };
 
+/**
+ * Admin management panel for adding and removing moderators on a community.
+ * Handles email search, duplication checks, and confirmation before removal.
+ * @param communityData - Community context for permission and mutations.
+ * @returns Form and list UI for managing admin users.
+ */
 const AdminManager: React.FC<AdminManagerProps> = ({ communityData }) => {
   const { admins, setAdmins, loading, loadAdmins } = useAdminList();
   const { searchUsers, findUser } = useAdminSearch();

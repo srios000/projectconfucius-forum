@@ -7,6 +7,11 @@ interface BackToCommunityButtonProps {
   communityId?: string;
 }
 
+/**
+ * Button that navigates back to the community page from the new post form.
+ * @param communityId - Target community id for the route.
+ * @returns Outline button with back icon.
+ */
 const BackToCommunityButton: React.FC<BackToCommunityButtonProps> = ({
   communityId,
 }) => {

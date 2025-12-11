@@ -14,10 +14,9 @@ const firebaseConfig = {
 };
 
 /**
- * Initialize Firebase (Changes made as Next.JS uses server side rendering).
- * If the app is already initialized, then use the existing app.
- * If the app is not initialized, then initialize the app.
- * This way, when the app is already initialized in the server, it is not re-initialized in the client.
+ * Initializes Firebase once and reuses the app across server and client renders.
+ * Avoids duplicate init calls when Next.js hydrates.
+ * @see https://firebase.google.com/docs/web/modular-upgrade
  */
 const app = !getApps().length ? initializeApp(firebaseConfig) : getApp();
 const firestore = getFirestore(app);

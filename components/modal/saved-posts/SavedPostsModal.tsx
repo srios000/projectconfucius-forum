@@ -25,10 +25,18 @@ const SavedPostsModal: React.FC = () => {
   const [savedPostState, setSavedPostState] = useAtom(savedPostStateAtom);
   const { onRemoveSavedPost } = useSavedPosts();
 
+  /**
+   * Closes the modal by toggling atom state.
+   */
   const handleClose = () => {
     setSavedPostState((prev) => ({ ...prev, isOpen: false }));
   };
 
+  /**
+   * Modal listing saved posts with quick navigation and remove controls.
+   * Relies on saved post atom for visibility and content.
+   * @returns Dialog with list items linking to posts and communities.
+   */
   return (
     <DialogRoot
       open={savedPostState.isOpen}

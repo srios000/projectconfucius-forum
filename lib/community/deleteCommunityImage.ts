@@ -8,6 +8,13 @@ import {
 } from "firebase/firestore";
 import { deleteObject, ref } from "firebase/storage";
 
+/**
+ * Removes a community image from Storage and clears references from the community and all user snippets.
+ * Keeps member thumbnails in sync when admins delete the image.
+ * @param communityId - Community id to locate related documents and storage file.
+ * @returns Resolves when all documents have been updated.
+ * @see https://firebase.google.com/docs/storage/web/delete-files
+ */
 export const deleteCommunityImage = async (communityId: string) => {
   const imageRef = ref(storage, `communities/${communityId}/image`);
   await deleteObject(imageRef);

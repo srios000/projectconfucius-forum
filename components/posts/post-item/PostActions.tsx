@@ -17,6 +17,18 @@ interface PostActionsProps {
   showToast: (options: any) => void;
 }
 
+/**
+ * Action bar for post cards with share, save, and delete controls.
+ * @param handleDelete - Delete handler (stops propagation internally).
+ * @param loadingDelete - Whether deletion is in progress.
+ * @param userIsCreator - Flag to allow delete.
+ * @param userIsAdmin - Flag to allow delete via moderation.
+ * @param postLink - Canonical link used for sharing.
+ * @param handleSave - Save/unsave handler.
+ * @param isSaved - Whether the post is saved by the viewer.
+ * @param showToast - Toast helper to display copy feedback.
+ * @returns Button stack for post interactions.
+ */
 const PostActions: React.FC<PostActionsProps> = ({
   handleDelete,
   loadingDelete,

@@ -7,6 +7,11 @@ type RestrictedCommunityBannerProps = {
   description?: string;
 };
 
+/**
+ * Lightweight banner used when a user lacks access to a community.
+ * @param props - Optional title and description overrides.
+ * @returns Lock icon with supporting text.
+ */
 const RestrictedCommunityBanner: React.FC<RestrictedCommunityBannerProps> = ({
   title = "This community is private",
   description = "Posts are only shown to subscribers.",

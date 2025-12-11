@@ -5,8 +5,6 @@ import { searchUsersByEmail } from "@/lib/community/searchUsersByEmail";
 
 /**
  * Provides helpers to search for potential admin users by email.
- * @param emailQuery - Partial email string for search.
- * @param email - Exact email to resolve to a user.
  * @returns Functions to search many users or fetch a single user.
  */
 const useAdminSearch = () => {

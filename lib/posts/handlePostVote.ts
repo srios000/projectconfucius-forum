@@ -2,6 +2,16 @@ import { firestore } from "@/firebase/clientApp";
 import { Post, PostVote } from "@/types/post";
 import { collection, doc, writeBatch } from "firebase/firestore";
 
+/**
+ * Applies an upvote or downvote for a post and updates aggregate vote counts.
+ * Handles new votes, toggling existing votes, and switching directions in a single batch.
+ * @param userId - Auth uid performing the vote.
+ * @param post - Post being voted on with current voteStatus.
+ * @param vote - Either 1 or -1 representing the intent.
+ * @param communityId - Community id used for vote metadata.
+ * @param existingVote - Prior vote from this user, if any.
+ * @returns Vote change delta, new/updated vote record, and any deleted vote id for local state.
+ */
 export const handlePostVote = async (
   userId: string,
   post: Post,

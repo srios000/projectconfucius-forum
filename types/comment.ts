@@ -2,6 +2,7 @@ import { Timestamp } from "firebase/firestore";
 
 /**
  * Comment document for a post, including optional parent for threaded replies.
+ * Stored at `comments/{id}` with depth used to limit nesting.
  */
 export type Comment = {
   id: string;

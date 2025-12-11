@@ -3,8 +3,9 @@ import { doc, increment, writeBatch } from "firebase/firestore";
 
 /**
  * Removes a user from a community by deleting their snippet and decrementing the member count.
- * @param communityId - The ID of the community.
- * @param memberId - The ID of the user to remove.
+ * @param communityId - Community id to remove membership from.
+ * @param memberId - User id to remove.
+ * @returns Resolves once membership and count are updated.
  */
 export const removeCommunityMember = async (
   communityId: string,

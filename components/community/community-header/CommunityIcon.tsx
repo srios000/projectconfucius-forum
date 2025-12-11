@@ -6,6 +6,11 @@ type CommunityIconProps = {
   imageURL?: string;
 };
 
+/**
+ * Renders the community avatar or a default icon.
+ * @param imageURL - Optional community image url.
+ * @returns Circle avatar image or fallback glyph.
+ */
 const CommunityIcon: React.FC<CommunityIconProps> = ({ imageURL }) => {
   return imageURL ? (
     <Image

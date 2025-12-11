@@ -8,11 +8,7 @@ import { checkCommunityPermission } from "@/lib/community/communityPermissions";
 
 /**
  * Creates a new post, uploads an optional image, and notifies the user.
- * @param user - Authenticated user creating the post.
- * @param communityId - Community where the post belongs.
- * @param communityImageURL - Optional community icon to store with the post.
- * @param postData - Title and body content for the post.
- * @param selectedFile - Optional base64 image to upload.
+ * Guards against posting in restricted communities when the user lacks a snippet.
  * @returns Handler to submit a post plus loading and error flags.
  */
 const useCreatePost = () => {

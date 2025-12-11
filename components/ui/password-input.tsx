@@ -44,6 +44,11 @@ export interface PasswordInputProps
   rootProps?: GroupProps
 }
 
+/**
+ * Combined input and toggle icon for password fields with optional controlled visibility.
+ * @param props - Chakra input props plus visibility state and icons.
+ * @returns Input group that toggles between text and password types.
+ */
 export const PasswordInput = React.forwardRef<
   HTMLInputElement,
   PasswordInputProps
@@ -114,6 +119,11 @@ interface PasswordStrengthMeterProps extends StackProps {
   value: number
 }
 
+/**
+ * Renders a simple strength meter for password validation feedback.
+ * @param props - Value to display and optional max segments.
+ * @returns Bar stack and label describing relative strength.
+ */
 export const PasswordStrengthMeter = React.forwardRef<
   HTMLDivElement,
   PasswordStrengthMeterProps
@@ -147,6 +157,11 @@ export const PasswordStrengthMeter = React.forwardRef<
   )
 })
 
+/**
+ * Maps the strength percentage to a label and color palette token.
+ * @param percent - Strength percentage from 0 to 100.
+ * @returns Palette info for the meter styling.
+ */
 function getColorPalette(percent: number) {
   switch (true) {
     case percent < 33:

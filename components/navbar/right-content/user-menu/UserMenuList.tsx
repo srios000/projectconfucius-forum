@@ -17,6 +17,12 @@ interface UserMenuListProps {
   setProfileModalOpen: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
+/**
+ * Menu content for the user dropdown, showing profile and auth actions.
+ * @param user - Firebase user to decide between auth options.
+ * @param setProfileModalOpen - Setter to open the profile modal.
+ * @returns MenuContent with action buttons.
+ */
 const UserMenuList: React.FC<UserMenuListProps> = ({
   user,
   setProfileModalOpen,

@@ -9,6 +9,13 @@ type CommunityItemButtonMembersSectionProps = {
   isJoined: boolean;
 };
 
+/**
+ * Shows member count and a subscribe/unsubscribe button for a community list row.
+ * @param community - Community data including member count.
+ * @param onJoinOrLeaveCommunity - Handler for join/leave clicks.
+ * @param isJoined - Membership flag to toggle variant and label.
+ * @returns Row with count icon and action button.
+ */
 const CommunityItemButtonMembersSection: React.FC<
   CommunityItemButtonMembersSectionProps
 > = ({ community, onJoinOrLeaveCommunity, isJoined }) => {

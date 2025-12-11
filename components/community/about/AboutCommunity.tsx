@@ -7,6 +7,11 @@ interface AboutCommunityProps {
   communityData: Community;
 }
 
+/**
+ * Displays community stats for the about card.
+ * @param communityData - Community metadata including member count and createdAt.
+ * @returns Two-column row showing subscribers and creation date.
+ */
 const AboutCommunity: React.FC<AboutCommunityProps> = ({ communityData }) => (
   <Flex width="100%" p={2} fontSize="10pt">
     <Flex direction="column" flexGrow={1}>

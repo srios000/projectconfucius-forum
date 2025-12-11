@@ -7,6 +7,11 @@ type CommunityItemNameIconSectionProps = {
   community: Community;
 };
 
+/**
+ * Renders the avatar and name for a community row.
+ * @param community - Community entity with id and optional imageURL.
+ * @returns Flex row with icon and title text.
+ */
 const CommunityItemNameIconSection: React.FC<
   CommunityItemNameIconSectionProps
 > = ({ community }) => {

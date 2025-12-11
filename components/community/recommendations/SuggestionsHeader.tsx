@@ -18,4 +18,8 @@ const SuggestionsHeader: React.FC = () => {
   );
 };
 
+/**
+ * Banner header for the recommendations card.
+ * @returns Gradient overlay with title text.
+ */
 export default SuggestionsHeader;

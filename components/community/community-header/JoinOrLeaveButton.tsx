@@ -7,6 +7,13 @@ type JoinOrLeaveButtonProps = {
   isLoading?: boolean;
 };
 
+/**
+ * Subscription toggle button for a community header.
+ * @param isJoined - Whether the viewer is already subscribed.
+ * @param onClick - Handler to join or leave.
+ * @param isLoading - Shows loading state when membership is updating.
+ * @returns Styled button with subscribe/unsubscribe label.
+ */
 const JoinOrLeaveButton: React.FC<JoinOrLeaveButtonProps> = ({
   isJoined,
   onClick,

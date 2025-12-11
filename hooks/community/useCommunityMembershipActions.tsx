@@ -8,8 +8,6 @@ import { Community } from "@/types/community";
 
 /**
  * Centralizes join/leave actions for community buttons and gates them on auth.
- * @param communityData - Community the user wants to join or leave.
- * @param isJoined - Whether the user is already a member.
  * @returns Handler that joins or leaves and a loading flag combining both flows.
  */
 const useCommunityMembershipActions = () => {

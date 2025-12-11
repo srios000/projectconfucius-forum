@@ -13,6 +13,17 @@ type UserImageSectionProps = {
   deleteImage: boolean;
 };
 
+/**
+ * Avatar block for the profile modal with upload and delete controls.
+ * @param user - Current Firebase user for existing photo and name.
+ * @param selectedFile - Pending upload preview.
+ * @param isEditing - Toggles visibility of upload/delete buttons.
+ * @param selectFileRef - Ref to the hidden file input.
+ * @param onSelectFile - Handler when a file is chosen.
+ * @param setDeleteImage - Setter to mark deletion intent.
+ * @param deleteImage - Whether delete is in progress or requested.
+ * @returns Image preview and editing controls.
+ */
 const UserImageSection: React.FC<UserImageSectionProps> = ({
   user,
   selectedFile,

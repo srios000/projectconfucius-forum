@@ -12,8 +12,7 @@ import { unsavePost } from "@/lib/posts/unsavePost";
 
 /**
  * Manages a user's saved posts collection and related UI state.
- * @param post - Post to save or unsave.
- * @param postId - Identifier of the saved post entry to remove or check.
+ * Handles auth gating, local cache updates, and toast feedback.
  * @returns Saved post state, loading flag, and handlers to fetch, toggle, or check saves.
  */
 const useSavedPosts = () => {

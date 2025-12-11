@@ -8,6 +8,11 @@ type AdminSectionAboutProps = {
   communityData: Community;
 };
 
+/**
+ * Shows a community settings entry point when the viewer is an admin.
+ * @param communityData - Community used to derive permissions and pass into the modal.
+ * @returns Button and modal wiring for admin settings.
+ */
 const AdminSectionAbout: React.FC<AdminSectionAboutProps> = ({
   communityData,
 }) => {

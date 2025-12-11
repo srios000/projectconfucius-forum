@@ -7,7 +7,7 @@ import { deleteComment } from "@/lib/comments/deleteComment";
 
 /**
  * Deletes a comment and its replies while syncing counts on the parent post.
- * @param comment - Comment to remove along with its descendants.
+ * Traverses nested replies locally to avoid extra reads.
  * @returns Delete handler and the id of the comment currently being deleted.
  */
 const useDeleteComment = (

@@ -23,26 +23,10 @@ import ResetPassword from "./ResetPassword";
 import OAuthButtons from "./oauth-buttons/OAuthButtons";
 
 /**
- * Displays an authentication modal while `open` is `true`.
- * If the `open` is `false`, then the modal is closed.
- * The modal has 3 different views as described by `authModalAtom`:
- *  - `login`: displays the log in view
- *  - `signup`: displays the signup view
- *  - `resetPassword`: displays the reset password view
- *
- * If the user is trying to log in or sign up,
- *  Third party authentication providers are displayed and
- *  sign up or log in forms are displayed.
- * If the user is resetting the password,
- *  only the reset password elements are shown and
- *  Third party authentication providers and log in or sign up forms are not displayed.
- * @returns {React.FC} - authentication modal which has 3 different views
- *
- * @requires ./AuthInputs - display correct form depending on `login` or `signup` state
- * @requires ./OAuthButtons - third party authentication providers such as Google or GitHub
- * @requires ./ResetPassword - display reset password view
- *
- * @see https://chakra-ui.com/docs/components/modal/usage
+ * Auth modal that switches between login, signup, and reset views based on atom state.
+ * Auto-closes when Firebase auth yields a user.
+ * @returns Dialog shell with auth form or reset password flow.
+ * @see https://chakra-ui.com/docs/components/dialog
  */
 const AuthModal: React.FC = () => {
   const [modalState, setModalState] = useAtom(authModalStateAtom);

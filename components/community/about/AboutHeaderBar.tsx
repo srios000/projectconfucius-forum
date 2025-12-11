@@ -6,6 +6,11 @@ interface AboutHeaderBarProps {
   communityName: string;
 }
 
+/**
+ * Header strip for the community about card.
+ * @param communityName - Community id to display.
+ * @returns Banner with title and action icon placeholder.
+ */
 const AboutHeaderBar: React.FC<AboutHeaderBarProps> = ({ communityName }) => (
   <Flex
     justify="space-between"

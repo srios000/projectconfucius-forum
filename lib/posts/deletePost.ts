@@ -11,6 +11,12 @@ import {
 } from "firebase/firestore";
 import { deleteObject, ref } from "firebase/storage";
 
+/**
+ * Deletes a post, its storage image, and all related comments.
+ * @param post - Post entity containing id and optional image url.
+ * @returns Resolves when Firestore and Storage cleanups finish.
+ * @see https://firebase.google.com/docs/firestore/manage-data/delete-data
+ */
 export const deletePost = async (post: Post) => {
   if (post.imageURL) {
     const imageRef = ref(storage, `posts/${post.id}/image`);

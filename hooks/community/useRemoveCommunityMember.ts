@@ -5,6 +5,7 @@ import { removeCommunityMember } from "@/lib/community/removeCommunityMember";
 /**
  * Hook to remove a member from a community.
  * Used by admins to unsubscribe users.
+ * @returns Removal handler and loading flag.
  */
 const useRemoveCommunityMember = () => {
   const showToast = useCustomToast();

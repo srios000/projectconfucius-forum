@@ -9,6 +9,12 @@ type PostDetailsProps = {
   post: Post;
 };
 
+/**
+ * Renders the post meta line with community icon, author, and relative time.
+ * @param showCommunityImage - Whether to show the community avatar/link.
+ * @param post - Post data for metadata fields.
+ * @returns Stack of metadata elements for a post card.
+ */
 const PostDetails: React.FC<PostDetailsProps> = ({
   showCommunityImage,
   post,

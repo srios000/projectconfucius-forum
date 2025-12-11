@@ -8,6 +8,14 @@ interface CommunityNameSectionProps {
   error: string;
 }
 
+/**
+ * Input block for community name entry with character counter and errors.
+ * @param communityName - Current name value.
+ * @param handleChange - Change handler enforced by the modal.
+ * @param charRemaining - Remaining characters allowed.
+ * @param error - Validation error message to display.
+ * @returns Form section for naming a community.
+ */
 const CommunityNameSection: React.FC<CommunityNameSectionProps> = ({
   communityName,
   handleChange,

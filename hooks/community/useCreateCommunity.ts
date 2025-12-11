@@ -7,8 +7,7 @@ import { createCommunity } from "@/lib/community/createCommunity";
 
 /**
  * Creates a new community with validation and a creator snippet transaction.
- * @param communityName - Desired community id.
- * @param communityType - Privacy type for the community.
+ * Validates slugs locally before hitting Firestore to avoid noisy toasts.
  * @returns Handler to run creation plus loading and error state.
  */
 export const useCreateCommunity = () => {
