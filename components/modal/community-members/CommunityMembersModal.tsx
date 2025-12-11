@@ -39,6 +39,7 @@ const CommunityMembersModal: React.FC<CommunityMembersModalProps> = ({
   communityId,
 }) => {
   const { members, loading, error, loadMembers } = useCommunityMembers();
+  const memberCount = members?.length ?? 0;
   const communityStateValue = useAtomValue(communityStateAtom);
   const { isAdmin } = useCommunityPermissions(
     communityStateValue.currentCommunity
@@ -126,16 +127,22 @@ const CommunityMembersModal: React.FC<CommunityMembersModalProps> = ({
       onOpenChange={(details: { open: boolean }) => !details.open && onClose()}
       placement="center"
     >
-      <DialogBackdrop />
-      <DialogPositioner>
-        <DialogContent>
-          <DialogHeader>
-            <DialogTitle>Community Members</DialogTitle>
-          </DialogHeader>
-          <DialogCloseTrigger />
-          <DialogBody pb={6}>{renderContent()}</DialogBody>
-        </DialogContent>
-      </DialogPositioner>
+      <Portal>
+        <DialogBackdrop bg="rgba(0, 0, 0, 0.4)" backdropFilter="blur(6px)" />
+        <DialogPositioner>
+          <DialogContent maxH="70vh" borderRadius="xl">
+            <DialogHeader>
+              <DialogTitle>
+                {memberCount} Community Member{memberCount === 1 ? "" : "s"}
+              </DialogTitle>
+            </DialogHeader>
+            <DialogCloseTrigger />
+            <DialogBody pb={6} overflowY="auto">
+              {renderContent()}
+            </DialogBody>
+          </DialogContent>
+        </DialogPositioner>
+      </Portal>
       <ConfirmationDialog
         open={!!memberToRemove}
         onClose={() => setMemberToRemove(null)}
