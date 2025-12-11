@@ -1,6 +1,6 @@
 import AuthModal from "@/components/modal/auth/AuthModal";
 import SavedPostsModal from "@/components/modal/saved-posts/SavedPostsModal";
-import { Flex } from "@chakra-ui/react";
+import { Flex, Spinner } from "@chakra-ui/react";
 import { User } from "firebase/auth";
 import React from "react";
 import AuthButtons from "./AuthButtons";
@@ -10,6 +10,7 @@ import UserMenu from "./user-menu/UserMenu";
 
 type RightContentProps = {
   user?: User | null;
+  loading?: boolean;
 };
 
 /**
@@ -20,6 +21,7 @@ type RightContentProps = {
  *  - GitHub project button
  * The user menu is always displayed but it changes depending on the authentication status of the user.
  * @param {User | null} user - User object from Firebase to determine whether user is authenticated
+ * @param {boolean} loading - Whether the authentication state is loading
  *
  * @returns {React.FC} - Right content of the navbar
  *
@@ -27,7 +29,7 @@ type RightContentProps = {
  * @requires ./UserMenu - user menu which changed depending on whether user is authenticated
  * @requires ./AuthModal - authentication modal which is closed by default
  */
-const RightContent: React.FC<RightContentProps> = ({ user }) => {
+const RightContent: React.FC<RightContentProps> = ({ user, loading }) => {
   return (
     <>
       <AuthModal />
@@ -35,7 +37,13 @@ const RightContent: React.FC<RightContentProps> = ({ user }) => {
       <Flex justify="center" align="center">
         {/* If user is logged in, icons are shown
         If user is not logged in, authentication buttons are shown */}
-        {user ? <Icons /> : <AuthButtons />}
+        {loading ? (
+          <Spinner size="sm" m={2} />
+        ) : user ? (
+          <Icons />
+        ) : (
+          <AuthButtons />
+        )}
         <UserMenu user={user} />
       </Flex>
     </>

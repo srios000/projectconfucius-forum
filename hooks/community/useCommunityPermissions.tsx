@@ -13,8 +13,11 @@ import {
  * @returns Boolean flags for creator, admin, admin-management rights, posting, commenting, and viewing.
  */
 const useCommunityPermissions = (communityData?: Community) => {
-  const [user] = useAuthState(auth);
+  const [user, loadingUser] = useAuthState(auth);
   const { communityStateValue } = useCommunityState();
+
+  const loading =
+    loadingUser || (!!user && !communityStateValue.snippetFetched);
 
   if (!communityData) {
     return {
@@ -24,6 +27,7 @@ const useCommunityPermissions = (communityData?: Community) => {
       canPost: false,
       canComment: false,
       canView: false,
+      loading,
     };
   }
 
@@ -48,6 +52,7 @@ const useCommunityPermissions = (communityData?: Community) => {
     canPost: hasPermission,
     canComment: hasPermission,
     canView,
+    loading,
   };
 };
 

@@ -4,11 +4,13 @@ import { Button } from "@chakra-ui/react";
 type JoinOrLeaveButtonProps = {
   isJoined: boolean;
   onClick: () => void;
+  isLoading?: boolean;
 };
 
 const JoinOrLeaveButton: React.FC<JoinOrLeaveButtonProps> = ({
   isJoined,
   onClick,
+  isLoading,
 }) => {
   return (
     <Button
@@ -19,6 +21,7 @@ const JoinOrLeaveButton: React.FC<JoinOrLeaveButtonProps> = ({
       onClick={onClick}
       shadow="md"
       width="120px"
+      loading={isLoading}
     >
       {isJoined ? "Unsubscribe" : "Subscribe"}
     </Button>

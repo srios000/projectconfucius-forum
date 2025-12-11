@@ -56,7 +56,7 @@ const Navbar: React.FC = () => {
       {user && <Directory />}
       <SearchInput />
       {/* Changes depending on whether user is authenticated or not */}
-      <RightContent user={user} />
+      <RightContent user={user} loading={loading} />
     </Flex>
   );
 };

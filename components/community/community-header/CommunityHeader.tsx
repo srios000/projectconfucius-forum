@@ -9,6 +9,8 @@ import JoinOrLeaveButton from "./JoinOrLeaveButton";
 import CommunitySettings from "./CommunitySettings";
 import CommunityMembersButton from "./CommunityMembersButton";
 import ConfirmationDialog from "@/components/modal/ConfirmationDialog";
+import { auth } from "@/firebase/clientApp";
+import { useAuthState } from "react-firebase-hooks/auth";
 
 /**
  * @param {communityData} - data required to be displayed
@@ -34,10 +36,14 @@ type HeaderProps = {
 const CommunityHeader: React.FC<HeaderProps> = ({ communityData }) => {
   const { communityStateValue } = useCommunityState();
   const { onJoinOrLeaveCommunity, loading } = useCommunityMembershipActions();
+  const [user, authLoading] = useAuthState(auth);
   const isJoined = !!communityStateValue.mySnippets.find(
     (item) => item.communityId === communityData.id
   );
   const [leaveConfirmationOpen, setLeaveConfirmationOpen] = useState(false);
+
+  const isGlobalLoading =
+    authLoading || (!!user && !communityStateValue.snippetFetched);
 
   const handleJoinOrLeave = () => {
     if (isJoined) {
@@ -83,6 +89,7 @@ const CommunityHeader: React.FC<HeaderProps> = ({ communityData }) => {
               <JoinOrLeaveButton
                 isJoined={isJoined}
                 onClick={handleJoinOrLeave}
+                isLoading={loading || isGlobalLoading}
               />
             </Flex>
           </Flex>
