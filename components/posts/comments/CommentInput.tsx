@@ -1,6 +1,7 @@
 import ProfileModal from "@/components/modal/profile/ProfileModal";
 import AuthButtons from "@/components/navbar/right-content/AuthButtons";
-import { Flex, Textarea, Button, Text, Stack } from "@chakra-ui/react";
+import { Flex, Textarea, Button, Text, Stack, Icon } from "@chakra-ui/react";
+import { LuSend, LuTrash } from "react-icons/lu";
 import { User } from "firebase/auth";
 import React, { useState } from "react";
 
@@ -73,45 +74,64 @@ const CommentInput: React.FC<CommentInputProps> = ({
             </Text>
           </Stack>
 
-          <Textarea
-            value={commentText}
-            onChange={(event) => setCommentText(event.target.value)}
-            placeholder="Comment"
-            fontSize="10pt"
-            borderRadius={10}
-            minHeight="140px"
-            padding={4}
-            pb={10}
-            bg={{ base: "gray.50", _dark: "gray.800" }}
-            borderColor={{ base: "gray.200", _dark: "gray.600" }}
-            _placeholder={{ color: "gray.500" }}
-            _focus={{
-              outline: "none",
-              bg: { base: "white", _dark: "gray.800" },
-              border: "1px solid",
-              borderColor: { base: "red.500", _dark: "red.400" },
-            }}
-          />
-
           <Flex
-            position="absolute"
-            left="1px"
-            right={0.1}
-            bottom="1px"
-            justify="flex-end"
-            bg={{ base: "gray.100", _dark: "gray.700" }}
-            p="6px 8px"
-            borderRadius="0px 0px 10px 10px"
-            zIndex="1"
+            direction="column"
+            bg={{ base: "white", _dark: "gray.800" }}
+            borderRadius="xl"
+            border="1px solid"
+            borderColor={{ base: "gray.200", _dark: "gray.600" }}
+            overflow="hidden"
+            _focusWithin={{
+              borderColor: { base: "black", _dark: "gray.200" },
+              boxShadow: {
+                base: "0 0 0 1px black",
+                _dark: "0 0 0 1px gray.200",
+              },
+            }}
           >
-            <Button
-              height="30px"
-              disabled={!commentText.length}
-              loading={createLoading}
-              onClick={() => onCreateComment(commentText)}
+            <Textarea
+              value={commentText}
+              onChange={(event) => setCommentText(event.target.value)}
+              placeholder="What are your thoughts?"
+              fontSize="11pt"
+              minHeight="100px"
+              border="none"
+              _focus={{ outline: "none", border: "none", boxShadow: "none" }}
+              p={4}
+              bg="transparent"
+              _placeholder={{ color: "gray.500" }}
+            />
+
+            <Flex
+              bg={{ base: "gray.50", _dark: "gray.700" }}
+              p={2}
+              justify="flex-end"
+              align="center"
+              borderTop="1px solid"
+              borderColor={{ base: "gray.100", _dark: "gray.600" }}
             >
-              Comment
-            </Button>
+              <Stack direction="row" gap={2} align="center">
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  onClick={() => setCommentText("")}
+                  disabled={!commentText.length}
+                >
+                  <Icon as={LuTrash} mr={2} />
+                  Clear
+                </Button>
+
+                <Button
+                  disabled={!commentText.length}
+                  loading={createLoading}
+                  borderRadius={"xl"}
+                  onClick={() => onCreateComment(commentText)}
+                >
+                  <Icon as={LuSend} mr={2} />
+                  Comment
+                </Button>
+              </Stack>
+            </Flex>
           </Flex>
         </>
       ) : (
