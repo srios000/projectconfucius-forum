@@ -14,6 +14,10 @@ export const toaster = createToaster({
   pauseOnPageIdle: true,
 });
 
+/**
+ * Renders the global toaster portal used by `useCustomToast`.
+ * @returns Portal-wrapped Chakra toaster with shared styling.
+ */
 export const Toaster = () => {
   return (
     <Portal>

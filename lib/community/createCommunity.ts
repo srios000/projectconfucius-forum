@@ -1,6 +1,15 @@
 import { firestore } from "@/firebase/clientApp";
 import { doc, runTransaction, serverTimestamp } from "firebase/firestore";
 
+/**
+ * Creates a new community document and the creator's membership snippet in a single transaction.
+ * Rejects when a community with the same id already exists.
+ * @param communityName - Desired community id used across routes and documents.
+ * @param communityType - Privacy setting applied on creation.
+ * @param userId - Auth uid creating the community and seeded as first member.
+ * @returns Resolves when both documents are written.
+ * @see https://firebase.google.com/docs/firestore/manage-data/transactions
+ */
 export const createCommunity = async (
   communityName: string,
   communityType: string,

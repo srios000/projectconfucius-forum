@@ -8,6 +8,14 @@ import {
 } from "firebase/firestore";
 import { getDownloadURL, ref, uploadString } from "firebase/storage";
 
+/**
+ * Replaces a community image in Storage and updates community and snippet references.
+ * Propagates the new URL to every user snippet containing the community.
+ * @param communityId - Community id used for the storage path and documents.
+ * @param selectedFile - Base64 data URL selected from the client.
+ * @returns Public download URL of the uploaded image.
+ * @see https://firebase.google.com/docs/storage/web/upload-files
+ */
 export const updateCommunityImage = async (
   communityId: string,
   selectedFile: string

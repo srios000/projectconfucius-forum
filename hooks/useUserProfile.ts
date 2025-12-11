@@ -11,10 +11,9 @@ import { useAuthState, useUpdateProfile } from "react-firebase-hooks/auth";
 import useCustomToast from "./useCustomToast";
 
 /**
- * Handles profile updates and keeps post state in sync with new user info.
- * @param selectedFile - Base64 image string to upload as the new avatar.
- * @param userName - New display name to apply across comments and posts.
- * @returns Actions for updating image or name plus a loading flag.
+ * Handles profile updates and keeps local post state in sync with the latest user info.
+ * Provides helpers for uploading/removing avatars and renaming the profile while updating posts and comments.
+ * @returns Functions for image and name updates along with a loading flag.
  */
 const useUserProfile = () => {
   const [user] = useAuthState(auth);

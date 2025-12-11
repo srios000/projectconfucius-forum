@@ -7,20 +7,15 @@ import {
 } from "@chakra-ui/react";
 import React from "react";
 
-/**
- * @param {boolean} error - Error state
- * @param {string} message - Error message
- */
 interface PostItemErrorProps {
   error: boolean;
   message: string;
 }
 
 /**
- * Displays an error message.
- * @param {boolean} error - Error state
- * @param {string} message - Error message
- * @returns React.FC: post item error component
+ * Shows a compact error alert when a list item fails to load.
+ * @param props - Error flag and message to display.
+ * @returns Alert container or null when no error.
  */
 const PostItemError: React.FC<PostItemErrorProps> = ({ error, message }) => {
   return (

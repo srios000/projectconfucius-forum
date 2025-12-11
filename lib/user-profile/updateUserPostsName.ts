@@ -4,8 +4,9 @@ import { collection, doc, getDocs, query, where, writeBatch } from "firebase/fir
 /**
  * Updates the name of the creator of the posts.
  * Finds all the posts a user has created and updates the creator name.
- * @param userId - ID of the user whose posts are to be updated
- * @param newUserName - New name of the user
+ * @param userId - Id of the user whose posts are updated.
+ * @param newUserName - New display name or email-derived label.
+ * @returns Resolves when every post document has been updated.
  */
 export const updateUserPostsName = async (
   userId: string,

@@ -6,7 +6,7 @@ import { Community, CommunitySnippet } from "@/types/community";
  *
  * @param community - The community to check permissions for.
  * @param userSnippets - The list of community snippets for the user (indicating membership).
- * @returns boolean - True if the user has permission, false otherwise.
+ * @returns True if the user has permission, otherwise false.
  */
 export const checkCommunityPermission = (
   community: Community,
@@ -29,7 +29,7 @@ export const checkCommunityPermission = (
  *
  * @param community - The community to check permissions for.
  * @param userSnippets - The list of community snippets for the user (indicating membership).
- * @returns boolean - True if the user has permission to view, false otherwise.
+ * @returns True if the user has permission to view, otherwise false.
  */
 export const checkCommunityViewPermission = (
   community: Community,

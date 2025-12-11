@@ -9,9 +9,7 @@ interface CustomToastOptions {
 
 /**
  * Returns a memoized helper to show consistent Chakra toasts.
- * @param title - Heading shown in the toast.
- * @param description - Optional supporting text.
- * @param status - One of success, error, warning, or info to pick styling.
+ * Centralizes default duration and styling so call sites stay light.
  * @returns Function that triggers a toast with standard options.
  */
 const useCustomToast = () => {

@@ -25,6 +25,12 @@ interface ConfirmationDialogProps {
   isLoading?: boolean;
 }
 
+/**
+ * Generic confirmation dialog used for destructive flows like deletions.
+ * Stops event propagation so parent click handlers do not fire.
+ * @param props - Control flags, callbacks, labels, and loading state.
+ * @returns Modal dialog with confirm and cancel actions.
+ */
 const ConfirmationDialog: React.FC<ConfirmationDialogProps> = ({
   open,
   onClose,

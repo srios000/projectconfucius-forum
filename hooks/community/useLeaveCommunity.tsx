@@ -8,7 +8,6 @@ import { leaveCommunity } from "@/lib/community/leaveCommunity";
 
 /**
  * Removes the current user from a community and decrements its member count.
- * @param communityId - Community id to leave.
  * @returns Leave handler plus loading and error state.
  */
 const useLeaveCommunity = () => {

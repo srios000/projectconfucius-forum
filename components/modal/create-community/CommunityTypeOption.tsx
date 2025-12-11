@@ -11,6 +11,16 @@ type CommunityTypeOptionProps = {
   onChange: (value: string) => void;
 };
 
+/**
+ * Single selectable option for community privacy type.
+ * @param name - Value representing the type.
+ * @param icon - Icon to display.
+ * @param label - Human-readable label.
+ * @param description - Short description of permissions.
+ * @param isChecked - Whether this option is active.
+ * @param onChange - Callback when the option is chosen.
+ * @returns Checkbox-styled card for selection.
+ */
 const CommunityTypeOption: FC<CommunityTypeOptionProps> = ({
   name,
   icon,

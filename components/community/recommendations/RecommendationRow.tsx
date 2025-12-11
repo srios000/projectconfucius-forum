@@ -11,6 +11,14 @@ type RecommendationRowProps = {
   onJoinOrLeaveCommunity: (community: Community, isJoined: boolean) => void;
 };
 
+/**
+ * Single recommendation row showing rank, avatar, and join/leave action.
+ * @param item - Community to render.
+ * @param index - Position in the recommendation list for ranking.
+ * @param isJoined - Whether the viewer is subscribed.
+ * @param onJoinOrLeaveCommunity - Callback to toggle membership.
+ * @returns Link-wrapped row with action button.
+ */
 const RecommendationRow: React.FC<RecommendationRowProps> = ({
   item,
   index,

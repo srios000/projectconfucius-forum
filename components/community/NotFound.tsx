@@ -3,8 +3,8 @@ import { Flex, Button, Stack, Text } from "@chakra-ui/react";
 import Link from "next/link";
 
 /**
- * Displays appropriate message when trying to visit a community that does not exit.
- * @returns {React.FC} - CommunityNotFound component
+ * Friendly empty state shown when a community id is invalid.
+ * @returns Message with links back to home and discovery.
  */
 const CommunityNotFound: React.FC = () => {
   return (

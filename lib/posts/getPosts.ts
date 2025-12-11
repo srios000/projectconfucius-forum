@@ -13,6 +13,15 @@ import {
   where,
 } from "firebase/firestore";
 
+/**
+ * Fetches a paginated list of posts for feeds.
+ * Supports community pages, subscribed home, and generic home sorted by votes.
+ * @param communityId - Specific community filter.
+ * @param communityIds - Array of subscribed community ids for personalized feed.
+ * @param isGenericHome - Flag to use vote-based ordering for logged-out users.
+ * @param lastVisible - Cursor from the previous fetch for pagination.
+ * @returns Posts and cursor for subsequent queries.
+ */
 export const getPosts = async (
   communityId?: string,
   communityIds?: string[],

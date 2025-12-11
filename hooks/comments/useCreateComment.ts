@@ -11,9 +11,7 @@ import { checkCommunityPermission } from "@/lib/community/communityPermissions";
 
 /**
  * Creates a new comment or reply on the selected post and updates counts.
- * @param user - Authenticated user authoring the comment.
- * @param commentText - Text body of the comment.
- * @param parentId - Optional parent comment id for threaded replies.
+ * Handles restricted community checks before calling Firestore.
  * @returns Comment creation handler and loading flag.
  */
 const useCreateComment = (

@@ -10,6 +10,11 @@ type Props = {
   error: boolean;
 };
 
+/**
+ * Error alert shown when post creation fails.
+ * @param error - Whether to render the alert.
+ * @returns Alert component or null.
+ */
 const PostCreateError: React.FC<Props> = ({ error }) => {
   return (
     <>

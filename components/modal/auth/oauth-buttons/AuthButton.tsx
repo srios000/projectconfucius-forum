@@ -8,6 +8,14 @@ interface AuthButtonProps {
   image: string;
 }
 
+/**
+ * OAuth provider button used in the auth modal.
+ * @param provider - Provider label shown on the button.
+ * @param loading - Shows spinner while sign-in is pending.
+ * @param onClick - Handler to trigger provider flow.
+ * @param image - Logo displayed beside the label.
+ * @returns Styled button for third-party auth.
+ */
 const AuthButton: React.FC<AuthButtonProps> = ({
   provider,
   loading,

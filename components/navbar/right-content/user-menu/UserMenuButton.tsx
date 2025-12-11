@@ -10,6 +10,12 @@ interface UserMenuButtonProps {
   isMenuOpen: boolean;
 }
 
+/**
+ * Trigger button for the user dropdown showing avatar and name when signed in.
+ * @param user - Firebase user or null.
+ * @param isMenuOpen - Controls chevron direction for affordance.
+ * @returns Menu trigger styled for the navbar.
+ */
 const UserMenuButton: React.FC<UserMenuButtonProps> = ({
   user,
   isMenuOpen,

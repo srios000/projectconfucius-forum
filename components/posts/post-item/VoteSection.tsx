@@ -20,6 +20,14 @@ type VoteSectionProps = {
   votingDisabled?: boolean;
 };
 
+/**
+ * Upvote/downvote controls for a post card.
+ * @param userVoteValue - Current user's vote value to style icons.
+ * @param onVote - Handler invoked with vote intent.
+ * @param post - Post being voted on.
+ * @param votingDisabled - Disables interaction when lacking permission.
+ * @returns Icon pair with vote count.
+ */
 const VoteSection: React.FC<VoteSectionProps> = ({
   userVoteValue,
   onVote,

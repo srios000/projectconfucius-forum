@@ -13,6 +13,13 @@ interface CommunityTypeOptionsProps {
   onCommunityTypeChange: (value: string) => void;
 }
 
+/**
+ * Renders radio-like options for selecting community privacy.
+ * @param options - Available types with labels and descriptions.
+ * @param communityType - Currently selected type.
+ * @param onCommunityTypeChange - Handler to update the selection.
+ * @returns Vertical stack of selectable options.
+ */
 const CommunityTypeOptions: React.FC<CommunityTypeOptionsProps> = ({
   options,
   communityType,

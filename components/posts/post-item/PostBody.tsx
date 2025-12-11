@@ -8,6 +8,13 @@ type PostBodyProps = {
   setLoadingImage: (value: React.SetStateAction<boolean>) => void;
 };
 
+/**
+ * Renders the post body preview and optional image with skeleton fallback.
+ * @param post - Post content to show.
+ * @param loadingImage - Whether the image is still loading.
+ * @param setLoadingImage - Setter triggered on image load.
+ * @returns Text excerpt and image block.
+ */
 const PostBody: React.FC<PostBodyProps> = ({
   post,
   loadingImage,

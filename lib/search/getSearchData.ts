@@ -10,6 +10,11 @@ import {
   where,
 } from "firebase/firestore";
 
+/**
+ * Preloads public communities and a recency-bounded slice of posts for client-side search.
+ * Limits posts to reduce payload while keeping recent discussions discoverable.
+ * @returns Public community list and latest posts.
+ */
 export const getSearchData = async () => {
   const communitiesQuery = query(
     collection(firestore, "communities"),

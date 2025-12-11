@@ -12,6 +12,11 @@ type CommunitySettingsProps = {
   communityData: Community;
 };
 
+/**
+ * Settings gear shown to community admins.
+ * @param communityData - Community used for permission checks and modal context.
+ * @returns Icon button that opens the community settings modal.
+ */
 const CommunitySettings: React.FC<CommunitySettingsProps> = ({
   communityData,
 }) => {

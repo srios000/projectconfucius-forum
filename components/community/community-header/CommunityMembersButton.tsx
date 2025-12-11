@@ -8,6 +8,12 @@ type CommunityMembersButtonProps = {
   isJoined: boolean;
 };
 
+/**
+ * Button that opens the community members modal for subscribers.
+ * @param communityId - Community whose members should be listed.
+ * @param isJoined - Whether the current user is a member; hides button otherwise.
+ * @returns Icon button and modal wiring.
+ */
 const CommunityMembersButton: React.FC<CommunityMembersButtonProps> = ({
   communityId,
   isJoined,

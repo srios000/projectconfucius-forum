@@ -33,6 +33,14 @@ type CommunityMembersModalProps = {
   communityId: string;
 };
 
+/**
+ * Modal that lists community members and allows admins to remove subscribers.
+ * Fetches members on open to keep the list fresh.
+ * @param isOpen - Whether the modal is visible.
+ * @param onClose - Callback to close the modal.
+ * @param communityId - Community whose members are shown.
+ * @returns Dialog with member cards and optional remove actions.
+ */
 const CommunityMembersModal: React.FC<CommunityMembersModalProps> = ({
   isOpen,
   onClose,
