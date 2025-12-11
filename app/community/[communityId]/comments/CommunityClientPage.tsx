@@ -8,6 +8,7 @@ import PageContent from "@/components/layout/PageContent";
 import Posts from "@/components/posts/Posts";
 import useCommunityPermissions from "@/hooks/community/useCommunityPermissions";
 import RestrictedCommunityBanner from "@/components/community/RestrictedCommunityBanner";
+import PostLoader from "@/components/loaders/post-loader/PostLoader";
 import { Community } from "@/types/community";
 import { Stack } from "@chakra-ui/react";
 import { useAtom } from "jotai";
@@ -42,14 +43,16 @@ const CommunityClientPage: React.FC<CommunityPageProps> = ({
       ? communityStateValue.currentCommunity
       : communityData;
 
-  const { canView } = useCommunityPermissions(currentCommunity);
+  const { canView, loading } = useCommunityPermissions(currentCommunity);
 
   return (
     <>
       <CommunityHeader communityData={currentCommunity} />
       <PageContent>
         <>
-          {canView ? (
+          {loading ? (
+            <PostLoader />
+          ) : canView ? (
             <>
               <CreatePostLink />
               <Posts communityData={currentCommunity} />

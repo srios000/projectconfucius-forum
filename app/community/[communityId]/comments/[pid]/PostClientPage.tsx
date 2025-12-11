@@ -42,7 +42,7 @@ const PostPage: React.FC<PostPageProps> = ({ communityData, postData }) => {
     useAtom(communityStateAtom);
   const currentCommunity =
     communityStateValue.currentCommunity || communityData;
-  const { isAdmin, canView, canPost } =
+  const { isAdmin, canView, canPost, loading } =
     useCommunityPermissions(currentCommunity);
   const [user] = useAuthState(auth);
 
@@ -61,6 +61,15 @@ const PostPage: React.FC<PostPageProps> = ({ communityData, postData }) => {
       }));
     }
   }, [postData, setPostStateValue]);
+
+  if (loading) {
+    return (
+      <PageContent>
+        <PostLoader />
+        <></>
+      </PageContent>
+    );
+  }
 
   if (!canView) {
     return (

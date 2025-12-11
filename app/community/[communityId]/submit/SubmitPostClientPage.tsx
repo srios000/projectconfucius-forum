@@ -14,6 +14,7 @@ import React, { useEffect } from "react";
 import { useAuthState } from "react-firebase-hooks/auth";
 import useCommunityPermissions from "@/hooks/community/useCommunityPermissions";
 import RestrictedCommunityBanner from "@/components/community/RestrictedCommunityBanner";
+import PostLoader from "@/components/loaders/post-loader/PostLoader";
 
 type SubmitPostPageProps = {
   communityData: Community;
@@ -39,7 +40,16 @@ const SubmitPostPage: React.FC<SubmitPostPageProps> = ({ communityData }) => {
 
   const currentCommunity =
     communityStateValue.currentCommunity || communityData;
-  const { canPost } = useCommunityPermissions(currentCommunity);
+  const { canPost, loading } = useCommunityPermissions(currentCommunity);
+
+  if (loading) {
+    return (
+      <PageContent>
+        <PostLoader />
+        <></>
+      </PageContent>
+    );
+  }
 
   if (!canPost) {
     return (
