@@ -24,6 +24,10 @@
         "./*"
       ]
     },
+    "types": [
+      "vitest/globals",
+      "node"
+    ],
     "plugins": [
       {
         "name": "next"
