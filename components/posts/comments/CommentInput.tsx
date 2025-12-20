@@ -116,6 +116,7 @@ const CommentInput: React.FC<CommentInputProps> = ({
                   size="sm"
                   onClick={() => setCommentText("")}
                   disabled={!commentText.length}
+                  height={"36px"}
                 >
                   <Icon as={LuTrash} mr={2} />
                   Clear
@@ -126,6 +127,7 @@ const CommentInput: React.FC<CommentInputProps> = ({
                   loading={createLoading}
                   borderRadius={"xl"}
                   onClick={() => onCreateComment(commentText)}
+                  height={"36px"}
                 >
                   <Icon as={LuSend} mr={2} />
                   Comment
