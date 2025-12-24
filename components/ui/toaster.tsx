@@ -15,8 +15,10 @@ export const toaster = createToaster({
 });
 
 /**
- * Renders the global toaster portal used by `useCustomToast`.
- * @returns Portal-wrapped Chakra toaster with shared styling.
+ * The global notification container for the application.
+ * Renders toast messages within a portal at the bottom-end of the screen.
+ * Integrates with the `toaster` instance to display success, error, and loading states.
+ * @returns A portal-wrapped toaster component.
  */
 export const Toaster = () => {
   return (

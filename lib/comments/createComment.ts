@@ -11,15 +11,18 @@ import {
 import { User } from "firebase/auth";
 
 /**
- * Creates a new comment document, supports threading up to depth 2, and bumps the post's comment count.
- * @param user - Auth user authoring the comment.
- * @param communityId - Community id for the parent post.
- * @param postId - Post id the comment belongs to.
- * @param postTitle - Cached title for search and saved lists.
- * @param commentText - Comment body text.
- * @param depth - Zero-based depth used to stop over-nesting.
- * @param parentId - Optional parent comment id for threaded replies.
- * @returns Newly created comment payload for optimistic UI.
+ * Creates a new comment on a post and updates the post's comment count.
+ * This function supports threaded comments up to a maximum depth of 2.
+ * All operations are performed in a Firestore batch to ensure atomicity.
+ * @param user - The Firebase Auth user object of the comment creator.
+ * @param communityId - The unique identifier of the community where the post resides.
+ * @param postId - The unique identifier of the post being commented on.
+ * @param postTitle - The title of the post, cached for display in user activity feeds.
+ * @param commentText - The content of the comment.
+ * @param depth - The nesting level of the comment (0 for top-level, 1 for reply, etc.).
+ * @param parentId - The identifier of the parent comment if this is a reply.
+ * @returns A promise that resolves to the newly created comment object.
+ * @throws Error if the maximum comment depth is exceeded.
  */
 export const createComment = async (
   user: User,

@@ -25,7 +25,8 @@ export const defaultCommunityState: CommunityState = {
 };
 
 /**
- * Stores the user's community snippets and the active community context.
- * @returns Jotai atom tracking membership data and whether snippets are loaded.
+ * A Jotai atom that manages the community-related state for the application.
+ * It stores the user's community membership snippets, the currently active community,
+ * and a flag indicating whether the snippets have been successfully fetched.
  */
 export const communityStateAtom = atom<CommunityState>(defaultCommunityState);

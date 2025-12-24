@@ -4,8 +4,9 @@ import { findUserByEmail } from "@/lib/community/findUserByEmail";
 import { searchUsersByEmail } from "@/lib/community/searchUsersByEmail";
 
 /**
- * Provides helpers to search for potential admin users by email.
- * @returns Functions to search many users or fetch a single user.
+ * A custom hook that provides utility functions for searching and finding users by email.
+ * This is primarily used in the admin management interface to identify users for promotion.
+ * @returns An object containing functions for searching multiple users and finding a single user by email.
  */
 const useAdminSearch = () => {
   const searchUsers = useCallback(async (emailQuery: string) => {

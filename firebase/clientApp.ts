@@ -14,9 +14,9 @@ const firebaseConfig = {
 };
 
 /**
- * Initializes Firebase once and reuses the app across server and client renders.
- * Avoids duplicate init calls when Next.js hydrates.
- * @see https://firebase.google.com/docs/web/modular-upgrade
+ * Initializes the Firebase client SDK with the provided configuration.
+ * Ensures that the Firebase app is only initialized once, even during Next.js hot reloads or hydration.
+ * Exports the initialized Firestore, Auth, and Storage services for use throughout the application.
  */
 const app = !getApps().length ? initializeApp(firebaseConfig) : getApp();
 const firestore = getFirestore(app);

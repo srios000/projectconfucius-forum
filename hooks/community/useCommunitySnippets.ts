@@ -8,8 +8,9 @@ import { useAuthState } from "react-firebase-hooks/auth";
 import useCustomToast from "../useCustomToast";
 
 /**
- * Loads and caches the current user's community snippets to drive menus and permissions.
- * @returns Loading and error flags; side effects populate the community atom.
+ * A custom hook that fetches and manages the current user's community membership snippets.
+ * These snippets are used to determine which communities the user has joined and their roles within them.
+ * @returns An object containing the loading state and any error message encountered during fetching.
  */
 export const useCommunitySnippets = () => {
   const [user] = useAuthState(auth);

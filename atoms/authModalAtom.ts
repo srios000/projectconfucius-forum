@@ -14,7 +14,7 @@ const defaultModalState: AuthModalState = {
 };
 
 /**
- * Controls whether the auth modal is visible and which screen is active.
- * @returns Jotai atom with open flag and active view.
+ * A Jotai atom that manages the state of the authentication modal.
+ * It tracks whether the modal is open and which view (login, signup, or reset password) is currently active.
  */
 export const authModalStateAtom = atom<AuthModalState>(defaultModalState);

@@ -4,11 +4,11 @@ import { doc, getDoc } from "firebase/firestore";
 import { AdminUser } from "../../types/adminUser";
 
 /**
- * Fetches all admins for a community.
- * Includes the community creator and all additional admins.
- * @param creatorId - UID of the community creator.
- * @param adminIds - Admin UIDs stored on the community document.
- * @returns Array of admin users pulled from Firestore.
+ * Retrieves the profile information for all administrators of a community.
+ * This includes the community creator and any users explicitly added as admins.
+ * @param creatorId - The unique identifier of the community creator.
+ * @param adminIds - An optional array of unique identifiers for additional community admins.
+ * @returns A promise that resolves to an array of admin user objects.
  */
 export const fetchCommunityAdmins = async (
   creatorId: string,

@@ -26,10 +26,17 @@ interface ConfirmationDialogProps {
 }
 
 /**
- * Generic confirmation dialog used for destructive flows like deletions.
- * Stops event propagation so parent click handlers do not fire.
- * @param props - Control flags, callbacks, labels, and loading state.
- * @returns Modal dialog with confirm and cancel actions.
+ * A reusable modal dialog for confirming user actions, particularly destructive ones like deletions.
+ * Provides customizable title, body text, and button labels, with support for loading states.
+ * @param open - Whether the dialog is currently visible.
+ * @param onClose - Callback to close the dialog without confirming.
+ * @param onConfirm - Callback triggered when the user confirms the action.
+ * @param title - The header text for the dialog.
+ * @param body - The main message text for the dialog.
+ * @param confirmButtonText - Custom label for the confirmation button.
+ * @param cancelButtonText - Custom label for the cancellation button.
+ * @param isLoading - Whether the confirmation action is currently in progress.
+ * @returns A themed confirmation modal.
  */
 const ConfirmationDialog: React.FC<ConfirmationDialogProps> = ({
   open,

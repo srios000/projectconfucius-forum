@@ -6,9 +6,10 @@ import React from "react";
 import { deletePost } from "@/lib/posts/deletePost";
 
 /**
- * Deletes posts along with their assets and related saved entries while keeping state in sync.
- * @param setPostStateValue - Setter for updating post state after deletion attempts.
- * @returns Handler to delete a post and the current post state snapshot.
+ * A custom hook that provides functionality for deleting a post and its associated data.
+ * It optimistically updates the local post and saved post states and handles rollback if the deletion fails.
+ * @param setPostStateValue - A state setter function to update the global post state.
+ * @returns An object containing the `onDeletePost` function and the current post state value.
  */
 const usePostDeletion = (
   setPostStateValue: React.Dispatch<

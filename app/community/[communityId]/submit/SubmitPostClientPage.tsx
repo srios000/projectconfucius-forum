@@ -21,9 +21,11 @@ type SubmitPostPageProps = {
 };
 
 /**
- * Client page for creating a new post inside a community.
- * @param communityData - Community where the post will be published.
- * @returns Post creation form with sidebar about section.
+ * The client-side page for submitting a new post to a community.
+ * Enforces authentication and community-specific posting permissions.
+ * Renders the post creation form and a sidebar with community information.
+ * @param communityData - The community context for the new post.
+ * @returns A page containing the post creation form or access restriction messages.
  */
 const SubmitPostPage: React.FC<SubmitPostPageProps> = ({ communityData }) => {
   const [user] = useAuthState(auth);

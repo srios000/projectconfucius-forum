@@ -3,9 +3,9 @@ import useCustomToast from "../useCustomToast";
 import { removeCommunityMember } from "@/lib/community/removeCommunityMember";
 
 /**
- * Hook to remove a member from a community.
- * Used by admins to unsubscribe users.
- * @returns Removal handler and loading flag.
+ * A custom hook that provides functionality for an administrator to remove a member from a community.
+ * It handles the backend removal logic and provides feedback via toast notifications.
+ * @returns An object containing the `removeMember` function and a loading state indicator.
  */
 const useRemoveCommunityMember = () => {
   const showToast = useCustomToast();

@@ -7,9 +7,10 @@ export const metadata: Metadata = {
 };
 
 /**
- * Root layout wiring global providers and metadata for the App Router.
- * @param children - Route content to render inside the provider tree.
- * @returns HTML scaffold with Providers applied to the body.
+ * The root layout component for the entire application.
+ * Defines the base HTML structure, global metadata, and wraps the application in the necessary providers.
+ * @param children - The content of the current route.
+ * @returns The top-level HTML structure for the application.
  */
 export default function RootLayout({
   children,

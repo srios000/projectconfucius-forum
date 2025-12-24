@@ -13,9 +13,11 @@ interface PostItemErrorProps {
 }
 
 /**
- * Shows a compact error alert when a list item fails to load.
- * @param props - Error flag and message to display.
- * @returns Alert container or null when no error.
+ * A reusable error alert component for displaying inline error messages.
+ * Typically used within list items or forms to provide feedback on failed operations.
+ * @param error - Whether to display the error message.
+ * @param message - The error message text to display.
+ * @returns An alert component if an error exists, otherwise null.
  */
 const PostItemError: React.FC<PostItemErrorProps> = ({ error, message }) => {
   return (

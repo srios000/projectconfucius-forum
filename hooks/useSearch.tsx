@@ -4,9 +4,10 @@ import { Post } from "@/types/post";
 import { getSearchData } from "@/lib/search/getSearchData";
 
 /**
- * Client-side search hook that preloads public communities and recent posts.
- * @param searchTerm - Text input from the search field.
- * @returns Filtered communities and posts along with a loading flag.
+ * A custom hook that handles client-side search logic for communities and posts.
+ * It preloads a subset of public data and provides filtered results based on the user's search term.
+ * @param searchTerm - The current string being searched for.
+ * @returns An object containing the filtered search results and a loading state indicator.
  */
 const useSearch = (searchTerm: string) => {
   const [results, setResults] = useState<{

@@ -5,9 +5,10 @@ import { Comment } from "../../types/comment";
 import { getComments as getCommentsLib } from "@/lib/comments/getComments";
 
 /**
- * Loads comments for the selected post and keeps them in local state.
- * @param selectedPost - Post whose comments should be fetched.
- * @returns Comment list, setter, loading flag, and a reload function.
+ * A custom hook that manages the retrieval and state of comments for a specific post.
+ * It automatically fetches comments when the selected post changes and provides a loading state.
+ * @param selectedPost - The post object for which comments are being loaded.
+ * @returns An object containing the comments array, a setter for comments, a loading flag, and a function to reload comments.
  */
 const useCommentList = (selectedPost: Post | null) => {
   const showToast = useCustomToast();

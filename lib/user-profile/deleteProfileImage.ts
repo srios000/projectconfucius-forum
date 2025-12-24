@@ -2,9 +2,10 @@ import { storage } from "@/firebase/clientApp";
 import { deleteObject, ref } from "firebase/storage";
 
 /**
- * Deletes the profile image from Firebase Storage.
- * @param userId - Id of the user.
- * @returns Resolves after the storage object is removed.
+ * Deletes a user's profile image from Firebase Storage.
+ * This is typically called when a user resets their profile picture to the default.
+ * @param userId - The unique identifier of the user whose profile image is being deleted.
+ * @returns A promise that resolves when the image has been successfully removed from storage.
  */
 export const deleteProfileImage = async (userId: string) => {
   const imageRef = ref(storage, `users/${userId}/profileImage`);

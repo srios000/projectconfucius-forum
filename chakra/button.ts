@@ -11,8 +11,9 @@ const solidBase = variantVariants.solid ?? {};
 const outlineBase = variantVariants.outline ?? {};
 
 /**
- * Custom button recipe used throughout the app.
- * Keeps the previous styling from Chakra v2 while leveraging the v3 recipe API.
+ * A custom component recipe for buttons that extends the default Chakra UI button styles.
+ * Defines base styles, size variants, and custom visual variants (solid, outline, oauth, action) used across the application.
+ * Ensures consistent branding and interactive states.
  */
 export const buttonRecipe = defineRecipe({
   ...baseRecipe,

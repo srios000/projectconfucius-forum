@@ -2,25 +2,24 @@ import { Button, Flex, Image, Stack } from "@chakra-ui/react";
 import React, { useRef } from "react";
 
 /**
- * Props for ImageUpload component.
+ * Interface for the ImageUpload component properties.
+ * @param selectedFile - Data URL of the currently selected image.
+ * @param onSelectImage - Callback triggered when a file is chosen.
+ * @param setSelectedTab - Callback to switch between form tabs.
+ * @param setSelectedFile - Callback to clear or update the selected file.
  */
 type ImageUploadProps = {
-  selectedFile?: string; // user does not need to upload a file
+  selectedFile?: string;
   onSelectImage: (event: React.ChangeEvent<HTMLInputElement>) => void;
-  setSelectedTab: (value: string) => void; // after image is uploaded, return to post section
-  setSelectedFile: (value: string) => void; // clear image and select a new one
+  setSelectedTab: (value: string) => void;
+  setSelectedFile: (value: string) => void;
 };
 
 /**
- * Sub-component of `NewPostForm` component.
- * Allows user to upload an image to be used in the post.
- * Initially, the user is presented with a button to upload an image.
- * After the image is uploaded, the user is presented with the image and two buttons:
- *  - Back to Post: returns to the post section
- *  - Remove Content: removes the image and returns to the upload button
- * @param {selectedFile, onSelectImage, setSelectedTab, setSelectedFile} - required props
- *
- * @returns (React.FC<ImageUploadProps>) - ImageUpload component
+ * Handles image selection and preview for new posts.
+ * Provides a drag-and-drop style interface for uploading and options to remove or confirm the selection.
+ * @param props - Component properties.
+ * @returns A preview of the selected image or an upload trigger.
  */
 const ImageUpload: React.FC<ImageUploadProps> = ({
   selectedFile,

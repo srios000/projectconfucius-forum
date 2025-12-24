@@ -2,9 +2,10 @@ import { Post, PostVote } from "@/types/post";
 import { useRouter } from "next/navigation";
 
 /**
- * Tracks the currently selected post and navigates to its comment page.
- * @param setPostStateValue - Setter for updating the selected post in global state.
- * @returns Handler to select a post and push the comment route.
+ * A custom hook that handles the selection of a post and navigation to its detailed comment view.
+ * It updates the global post state to track the currently selected post.
+ * @param setPostStateValue - A state setter function to update the global post state.
+ * @returns An object containing the `onSelectPost` function.
  */
 const usePostSelection = (
   setPostStateValue: React.Dispatch<

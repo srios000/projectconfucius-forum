@@ -12,8 +12,9 @@ import { AiOutlineSearch } from "react-icons/ai";
 import SearchModal from "./SearchModal";
 
 /**
- * Navbar search trigger that adapts between a button and input based on screen size.
- * @returns Search control and modal opener.
+ * A search trigger component for the navbar that adapts its UI based on screen size.
+ * On mobile, it displays as a button; on desktop, it shows a full-width search box.
+ * @returns A search control that opens the global search modal.
  */
 const SearchInput: React.FC = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);

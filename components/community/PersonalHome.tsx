@@ -6,8 +6,9 @@ import React, { useState } from "react";
 import CreateCommunityModal from "../modal/create-community/CreateCommunityModal";
 
 /**
- * Component for displaying card for creating a new community or post.
- * @returns {React.FC} Card for creating a new community or post.
+ * A sidebar card that provides quick actions for the user's personal home feed.
+ * Allows users to initiate post creation or open the community creation modal.
+ * @returns A themed card with action buttons for home feed management.
  */
 const PersonalHome: React.FC = () => {
   const [open, setOpen] = useState(false); // modal initially closed

@@ -2,10 +2,11 @@ import React, { useState } from "react";
 import useCustomToast from "./useCustomToast";
 
 /**
- * Validates and converts a chosen image into a base64 string under size and dimension limits.
- * @param maxHeight - Maximum allowed image height.
- * @param maxWidth - Maximum allowed image width.
- * @returns Selected image data plus helpers to update or handle file input changes.
+ * A custom hook that manages the selection and validation of image files from the user's device.
+ * It enforces file size, type, and dimension constraints, and provides a base64 encoded version of the selected image.
+ * @param maxHeight - The maximum allowed height for the selected image.
+ * @param maxWidth - The maximum allowed width for the selected image.
+ * @returns An object containing the selected file data and functions for handling file selection.
  */
 const useSelectFile = (maxHeight: number, maxWidth: number) => {
   const [selectedFile, setSelectedFile] = useState<string>();

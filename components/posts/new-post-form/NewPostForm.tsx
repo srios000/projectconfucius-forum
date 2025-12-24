@@ -20,12 +20,9 @@ type NewPostFormProps = {
   currentCommunity?: Community;
 };
 
-// Tab items which are static (not react) hence outside
 /**
- * Tabs for post creation form.
- * Static array of objects which are used to dynamically create the navbar component.
- * @param {title} - title of the tab
- * @param {icon} - icon of the tab
+ * Configuration for post creation tabs.
+ * Defines the title and icon for each section of the post form.
  */
 const formTabs: FormTab[] = [
   {
@@ -36,12 +33,12 @@ const formTabs: FormTab[] = [
     title: "Images",
     icon: IoImageOutline,
   },
-  // more can be added which would dynamically be fitted into post creation navbar component
 ];
 
 /**
- * @param {title} - title of the tab
- * @param {icon} - icon of the tab
+ * Represents a single tab in the post creation form.
+ * @param title - The display name of the tab.
+ * @param icon - The icon component to display.
  */
 export type FormTab = {
   title: string;
@@ -49,17 +46,10 @@ export type FormTab = {
 };
 
 /**
- * Component for creating a new post.
- * @param {User} user - user object
- * @param {string} communityImageURL - image url of the community
- * @param {Community} currentCommunity - current community
- *
- * @returns {React.FC} - NewPostForm component
- *
- * @requires TabList - tabs for post creation form
- * @requires BackToCommunityButton - button to go back to community page
- * @requires PostBody - body of the post
- * @requires PostCreateError - error message for post creation
+ * Multi-tab form for creating a new post with text and optional image.
+ * Handles form validation, file selection, and submission to Firestore.
+ * @param props - Component properties including the authenticated user and community context.
+ * @returns A tabbed interface for post creation.
  */
 const NewPostForm: React.FC<NewPostFormProps> = ({
   user,
@@ -89,10 +79,9 @@ const NewPostForm: React.FC<NewPostFormProps> = ({
   });
 
   /**
-   * Handles the creation of a new post.
-   * Uploads the posts contents to Firestore including any optional image.
-   *
-   * @async
+   * Orchestrates the post creation process.
+   * Validates the community context, uploads any selected image, and saves the post document.
+   * @param data - Validated form data containing title and body.
    */
   const onCreatePost = async (data: CreatePostInput) => {
     const communityId = params?.communityId as string;

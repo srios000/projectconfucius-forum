@@ -13,11 +13,12 @@ import {
 import { deleteObject, ref } from "firebase/storage";
 
 /**
- * Deletes a community and all related assets in Firestore and Storage.
- * Cleans post images, community image, posts, comments, and membership snippets in chunked batches.
- * @param communityData - Community with id, image, and metadata to remove.
- * @returns Resolves after all batch deletes finish.
- * @see https://firebase.google.com/docs/firestore/manage-data/delete-data#collections
+ * Performs a cascading deletion of a community and all its associated data.
+ * This includes deleting the community document, all posts, comments, post images,
+ * the community image, and all user membership snippets.
+ * Deletions are performed in chunked batches to respect Firestore limits.
+ * @param communityData - The community object containing the ID and image URL to be deleted.
+ * @returns A promise that resolves when all associated data has been successfully removed.
  */
 export const deleteCommunity = async (communityData: Community) => {
   const postsQuery = query(

@@ -8,9 +8,9 @@ interface CustomToastOptions {
 }
 
 /**
- * Returns a memoized helper to show consistent Chakra toasts.
- * Centralizes default duration and styling so call sites stay light.
- * @returns Function that triggers a toast with standard options.
+ * A custom hook that provides a simplified interface for displaying Chakra UI toasts.
+ * It centralizes toast configuration such as duration and closability to ensure a consistent user experience.
+ * @returns A function that can be called with title, description, and status to trigger a toast notification.
  */
 const useCustomToast = () => {
   const showToast = useCallback(

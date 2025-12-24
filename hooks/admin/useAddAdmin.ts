@@ -6,8 +6,9 @@ import { Dispatch, SetStateAction, useCallback } from "react";
 import { Community } from "@/types/community";
 
 /**
- * Adds a community admin and syncs the local community state.
- * @returns Callback that performs the add operation.
+ * A custom hook that provides functionality for adding a new administrator to a community.
+ * It handles the backend promotion logic and synchronizes the local Jotai state to reflect the change.
+ * @returns An object containing the `handleAddAdmin` callback function.
  */
 const useAddAdmin = () => {
   const setCommunityStateValue = useSetAtom(communityStateAtom);

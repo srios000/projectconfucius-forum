@@ -6,9 +6,10 @@ import { useServerInsertedHTML } from "next/navigation";
 import { useState } from "react";
 
 /**
- * Configures Emotion cache for the App Router and injects styles during SSR.
- * @param children - React tree that needs Emotion styling support.
- * @returns Cache provider that ensures styles render on both server and client.
+ * A client-side component that manages the Emotion CSS-in-JS cache for the Next.js App Router.
+ * Ensures that styles generated on the server are correctly hydrated and injected into the document.
+ * @param children - The component tree that requires Emotion styling.
+ * @returns A provider that supplies the Emotion cache to its descendants.
  */
 export default function EmotionRegistry({
   children,

@@ -4,9 +4,10 @@ import { notFound } from "next/navigation";
 import PostClientPage from "./PostClientPage";
 
 /**
- * Server component that fetches community and post data for the comments route.
- * @param params - Route params containing community and post ids.
- * @returns Client comment page or an error/not-found fallback.
+ * A server-side page component for viewing a single post and its comments.
+ * Fetches both the community and post data to provide full context for the client page.
+ * @param params - The dynamic route parameters containing the community ID and post ID.
+ * @returns The client-side post detail page.
  */
 export default async function PostPage({
   params,

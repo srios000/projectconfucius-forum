@@ -6,8 +6,9 @@ import React, { useEffect } from "react";
 import { useAuthState } from "react-firebase-hooks/auth";
 
 /**
- * Runs global data bootstrapping for community snippets and saved posts.
- * @returns Null render; side effects hydrate atoms based on auth state.
+ * A headless component that initializes global data based on the user's authentication state.
+ * Bootstraps community subscriptions and saved posts into global state atoms.
+ * @returns null, as this component only performs side effects.
  */
 const GlobalHooks: React.FC = () => {
   useCommunitySnippets();

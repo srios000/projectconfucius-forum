@@ -7,9 +7,9 @@ import useCommunityState from "../community/useCommunityState";
 import { checkCommunityPermission } from "@/lib/community/communityPermissions";
 
 /**
- * Creates a new post, uploads an optional image, and notifies the user.
- * Guards against posting in restricted communities when the user lacks a snippet.
- * @returns Handler to submit a post plus loading and error flags.
+ * A custom hook that provides functionality for creating a new post.
+ * It handles permission checks for restricted communities, image uploads, and provides feedback via toasts.
+ * @returns An object containing the `handleCreatePost` function, loading state, and error state.
  */
 const useCreatePost = () => {
   const router = useRouter();

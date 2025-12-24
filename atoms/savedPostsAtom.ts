@@ -14,7 +14,8 @@ const defaultSavedPostState: SavedPostState = {
 };
 
 /**
- * Tracks saved posts modal state and cached posts for the current user.
- * @returns Jotai atom with modal visibility, fetch flag, and saved items.
+ * A Jotai atom that manages the state of the user's saved posts.
+ * It tracks the list of saved posts, whether the saved posts modal is open,
+ * and whether the saved posts have been fetched from the backend.
  */
 export const savedPostStateAtom = atom<SavedPostState>(defaultSavedPostState);

@@ -6,8 +6,9 @@ import { Dispatch, SetStateAction, useCallback } from "react";
 import { Community } from "@/types/community";
 
 /**
- * Removes an admin from a community and updates local community state.
- * @returns Callback that performs the removal.
+ * A custom hook that provides functionality for removing an administrator from a community.
+ * It handles the backend demotion logic and synchronizes the local Jotai state to reflect the change.
+ * @returns An object containing the `handleRemoveAdmin` callback function.
  */
 const useRemoveAdmin = () => {
   const setCommunityStateValue = useSetAtom(communityStateAtom);

@@ -6,9 +6,11 @@ import { Comment } from "../../types/comment";
 import { deleteComment } from "@/lib/comments/deleteComment";
 
 /**
- * Deletes a comment and its replies while syncing counts on the parent post.
- * Traverses nested replies locally to avoid extra reads.
- * @returns Delete handler and the id of the comment currently being deleted.
+ * A custom hook that provides functionality for deleting comments and their threaded replies.
+ * It calculates all descendant comment IDs to ensure a clean cascading delete and updates the post's comment count.
+ * @param comments - The current list of comments for the post.
+ * @param setComments - A state setter function to update the local comments list.
+ * @returns An object containing the `onDeleteComment` function and the ID of the comment currently being deleted.
  */
 const useDeleteComment = (
   comments: Comment[],

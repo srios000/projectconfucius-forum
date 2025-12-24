@@ -12,34 +12,40 @@ import PostBody from "./PostBody";
 import PostActions from "./PostActions";
 import ConfirmationDialog from "@/components/modal/ConfirmationDialog";
 
+/**
+ * Interface for the PostItem component properties.
+ * @param post - The post data to render.
+ * @param userIsCreator - Whether the current user is the author of the post.
+ * @param userIsAdmin - Whether the current user has administrative rights in the community.
+ * @param userVoteValue - The current user's vote on this post (1, -1, or 0).
+ * @param onVote - Callback to handle voting actions.
+ * @param onDeletePost - Callback to handle post deletion.
+ * @param onSelectPost - Optional callback to navigate to the post's detail page.
+ * @param showCommunityImage - Whether to display the community's avatar.
+ * @param votingDisabled - Whether voting is restricted for the current user.
+ */
 type PostItemProps = {
   post: Post;
-  userIsCreator: boolean; // is the currently logged in user the creator of post
-  userIsAdmin?: boolean; // is the currently logged in user an admin of the community
-  userVoteValue?: number; // value of the vote of the currently logged in user
+  userIsCreator: boolean;
+  userIsAdmin?: boolean;
+  userVoteValue?: number;
   onVote: (
     event: React.MouseEvent<SVGElement, MouseEvent>,
     post: Post,
     vote: number,
     communityId: string
-  ) => void; // function to handle voting
-  onDeletePost: (post: Post) => Promise<boolean>; // function to handle deleting post
-  onSelectPost?: (post: Post) => void; // optional because once a post is selected it cannot be reselected
+  ) => void;
+  onDeletePost: (post: Post) => Promise<boolean>;
+  onSelectPost?: (post: Post) => void;
   showCommunityImage?: boolean;
   votingDisabled?: boolean;
 };
 
 /**
- * Card that displays post metadata, content preview, votes, and action buttons.
- * @param post - Post data to render.
- * @param userIsCreator - Whether the viewer authored the post.
- * @param userIsAdmin - Whether the viewer can moderate the post.
- * @param userVoteValue - Current user's vote value for this post.
- * @param onVote - Handler invoked when a vote button is clicked.
- * @param onDeletePost - Handler to delete the post.
- * @param onSelectPost - Optional handler to open the post details view.
- * @param showCommunityImage - Whether to show the community avatar.
- * @returns Interactive post card component.
+ * A comprehensive card component for displaying post summaries or details.
+ * Includes sections for voting, metadata, content preview, and moderation actions.
+ * @param props - Component properties.
+ * @returns A themed card representing a post.
  */
 const PostItem: React.FC<PostItemProps> = ({
   post,

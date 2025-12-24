@@ -8,8 +8,10 @@ import { useEffect } from "react";
 import { IoPeopleCircleOutline } from "react-icons/io5";
 
 /**
- * Manages the navbar directory menu, syncing it with routing and community context.
- * @returns Current directory state plus helpers to toggle the menu and pick items.
+ * A custom hook that manages the state and behavior of the navigation directory menu.
+ * It synchronizes the selected menu item with the current URL path and community context,
+ * and provides functions for toggling the menu and navigating between different sections of the app.
+ * @returns An object containing the directory state and functions for menu interaction.
  */
 const useDirectory = () => {
   const [directoryState, setDirectoryState] = useAtom(directoryMenuAtom);

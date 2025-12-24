@@ -7,8 +7,10 @@ import useLeaveCommunity from "./useLeaveCommunity";
 import { Community } from "@/types/community";
 
 /**
- * Centralizes join/leave actions for community buttons and gates them on auth.
- * @returns Handler that joins or leaves and a loading flag combining both flows.
+ * A custom hook that centralizes the logic for joining and leaving communities.
+ * It handles authentication gating, triggering the auth modal if necessary, and
+ * delegates the actual join/leave operations to specialized hooks.
+ * @returns An object containing the `onJoinOrLeaveCommunity` handler and a combined loading state.
  */
 const useCommunityMembershipActions = () => {
   const [user] = useAuthState(auth);

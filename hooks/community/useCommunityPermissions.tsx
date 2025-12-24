@@ -8,9 +8,10 @@ import {
 } from "@/lib/community/communityPermissions";
 
 /**
- * Calculates permission flags for the current user within a community.
- * @param communityData - Community to check against.
- * @returns Boolean flags for creator, admin, admin-management rights, posting, commenting, and viewing.
+ * A custom hook that calculates various permission flags for the current user within a specific community.
+ * It determines if the user is the creator, an admin, and whether they have rights to post, comment, or view the community.
+ * @param communityData - The community object to check permissions against.
+ * @returns An object containing boolean permission flags and a loading state indicator.
  */
 const useCommunityPermissions = (communityData?: Community) => {
   const [user, loadingUser] = useAuthState(auth);

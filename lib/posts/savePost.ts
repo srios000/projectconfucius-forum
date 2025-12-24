@@ -4,10 +4,11 @@ import { SavedPost } from "@/types/savedPost";
 import { doc, setDoc } from "firebase/firestore";
 
 /**
- * Saves a post for a user by writing to their `savedPosts` subcollection.
- * @param userId - Auth uid saving the post.
- * @param post - Post to persist with minimal metadata.
- * @returns Saved post payload for local caching.
+ * Saves a post to a user's personal collection for later viewing.
+ * This creates a document in the user's 'savedPosts' subcollection with essential post metadata.
+ * @param userId - The unique identifier of the user saving the post.
+ * @param post - The post object to be saved.
+ * @returns A promise that resolves to the newly created saved post object.
  */
 export const savePost = async (userId: string, post: Post) => {
   const savedPostRef = doc(firestore, `users/${userId}/savedPosts`, post.id!);

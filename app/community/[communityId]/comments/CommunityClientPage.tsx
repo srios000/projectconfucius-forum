@@ -19,9 +19,11 @@ type CommunityPageProps = {
 };
 
 /**
- * Client-side community page wiring header, posts feed, and about sidebar.
- * @param communityData - Community data fetched on the server.
- * @returns Community layout with feed and management panels.
+ * The client-side entry point for a community's main page.
+ * Synchronizes server-fetched community data with the global state and renders the community header, post feed, and sidebar.
+ * Handles permission checks to restrict access to private or restricted communities.
+ * @param communityData - The initial community data fetched on the server.
+ * @returns A structured layout containing the community's content and metadata.
  */
 const CommunityClientPage: React.FC<CommunityPageProps> = ({
   communityData,

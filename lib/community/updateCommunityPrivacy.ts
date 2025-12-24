@@ -2,11 +2,11 @@ import { firestore } from "@/firebase/clientApp";
 import { doc, updateDoc } from "firebase/firestore";
 
 /**
- * Updates the privacy setting for a community document.
- * Used by admins to toggle between public, restricted, and private.
- * @param communityId - Target community id.
- * @param privacyType - New privacy value to store.
- * @returns Resolves once the document is updated.
+ * Updates the privacy setting for a community.
+ * This determines whether the community is public, restricted, or private.
+ * @param communityId - The unique identifier of the community.
+ * @param privacyType - The new privacy setting to be applied.
+ * @returns A promise that resolves when the community document is updated.
  */
 export const updateCommunityPrivacy = async (
   communityId: string,

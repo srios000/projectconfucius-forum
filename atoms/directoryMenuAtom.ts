@@ -25,7 +25,7 @@ export const defaultMenuState: DirectoryMenuState = {
 };
 
 /**
- * Controls the navbar directory dropdown and the currently highlighted item.
- * @returns Jotai atom containing open state and selected menu item.
+ * A Jotai atom that manages the state of the navigation directory menu.
+ * It tracks whether the menu is open and which menu item is currently selected.
  */
 export const directoryMenuAtom = atom<DirectoryMenuState>(defaultMenuState);

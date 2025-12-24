@@ -3,8 +3,10 @@ import Link from "next/link";
 import React from "react";
 
 /**
- * Fallback page for unknown routes with quick links back to core pages.
- * @returns Centered message and navigation buttons.
+ * The default 404 error page for the application.
+ * Displayed when a user navigates to a non-existent route.
+ * Provides helpful links to return to the home page or browse communities.
+ * @returns A centered error message with navigation options.
  */
 const PageNotFound: React.FC = () => {
   return (

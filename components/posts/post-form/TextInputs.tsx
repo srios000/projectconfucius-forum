@@ -11,14 +11,13 @@ type TextInputsProps = {
 };
 
 /**
- * Sub-component of `NewPostForm` component.
- * Allows user to enter the title and body of the post.
- * @param register - React Hook Form register function
- * @param errors - React Hook Form errors object
- * @param handleCreatePost - function to handle creating post
- * @param loading - is the post being created
- *
- * @returns {React.FC<TextInputsProps>} - input fields for title and body of the post
+ * Input fields for the post title and body text.
+ * Integrates with React Hook Form for validation and state management.
+ * @param register - Function to register inputs with React Hook Form.
+ * @param errors - Object containing form validation errors.
+ * @param handleCreatePost - Callback to trigger post submission.
+ * @param loading - Whether the post is currently being submitted.
+ * @returns A stack of input fields and a submit button.
  */
 const TextInputs: React.FC<TextInputsProps> = ({
   register,

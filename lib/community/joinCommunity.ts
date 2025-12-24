@@ -3,13 +3,13 @@ import { CommunitySnippet } from "@/types/community";
 import { doc, increment, writeBatch } from "firebase/firestore";
 
 /**
- * Adds a user to a community and increments the member counter.
- * Seeds admin flag when the caller already has elevated rights (creator/moderator).
- * @param userId - Auth uid joining the community.
- * @param communityId - Community id to join.
- * @param communityImageURL - Current community image url copied into the snippet.
- * @param isCreatorOrAdmin - Whether the new snippet should be marked as admin.
- * @returns Newly created community snippet for local state.
+ * Joins a user to a community by creating a membership snippet and incrementing the member count.
+ * This operation is performed as a batch write to ensure data consistency.
+ * @param userId - The unique identifier of the user joining the community.
+ * @param communityId - The unique identifier of the community being joined.
+ * @param communityImageURL - The current image URL of the community to be stored in the user's snippet.
+ * @param isCreatorOrAdmin - Whether the user should be granted admin privileges upon joining.
+ * @returns A promise that resolves to the newly created community snippet.
  */
 export const joinCommunity = async (
   userId: string,

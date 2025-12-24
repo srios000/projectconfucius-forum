@@ -10,9 +10,9 @@ import useCommunityPermissions from "@/hooks/community/useCommunityPermissions";
 type CreatePostProps = {};
 
 /**
- * CTA bar that opens the create-post flow or auth modal when clicked.
- * Hides itself when the current community blocks posting.
- * @returns Input-like control with icons.
+ * A call-to-action bar that provides a shortcut to the post creation page.
+ * Automatically handles authentication checks and community-specific posting permissions.
+ * @returns A styled input-like component that triggers navigation or the auth modal.
  */
 const CreatePostLink: React.FC<CreatePostProps> = () => {
   const { onClick } = useCallCreatePost(); // hook for creating a new post

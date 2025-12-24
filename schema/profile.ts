@@ -1,5 +1,9 @@
 import { z } from "zod";
 
+/**
+ * A Zod validation schema for updating user profile information.
+ * Enforces mandatory display names with a maximum length constraint.
+ */
 export const editProfileSchema = z.object({
   displayName: z
     .string()

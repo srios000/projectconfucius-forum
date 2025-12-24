@@ -2,11 +2,12 @@ import { firestore } from "@/firebase/clientApp";
 import { arrayRemove, doc, getDoc, writeBatch } from "firebase/firestore";
 
 /**
- * Removes a user as an admin from a community.
- * Keeps them as a member but removes admin privileges.
- * @param communityId - Community identifier.
- * @param userId - User to demote.
- * @returns Resolves when admin role has been removed.
+ * Demotes a user from an admin role within a specific community.
+ * This function removes the user from the community's admin list and updates their membership snippet.
+ * The user remains a member of the community but loses administrative privileges.
+ * @param communityId - The unique identifier of the community.
+ * @param userId - The unique identifier of the user to be demoted.
+ * @returns A promise that resolves when the demotion batch write is complete.
  */
 export const removeCommunityAdmin = async (
   communityId: string,

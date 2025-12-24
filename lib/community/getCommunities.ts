@@ -12,11 +12,11 @@ import {
 } from "firebase/firestore";
 
 /**
- * Retrieves a page of communities ordered by member count for the discovery feed.
- * Supports pagination via the last visible document reference.
- * @param limitValue - Number of documents to fetch.
- * @param lastVisible - Last document from the previous page, if any.
- * @returns Community list and new cursor for subsequent fetches.
+ * Fetches a paginated list of communities, ordered by the number of members in descending order.
+ * This is used for the community discovery feed and recommendations.
+ * @param limitValue - The maximum number of communities to retrieve in a single request.
+ * @param lastVisible - The Firestore document snapshot to start the query after (for pagination).
+ * @returns A promise that resolves to an object containing the array of communities and the next pagination cursor.
  */
 export const getCommunities = async (
   limitValue: number,
