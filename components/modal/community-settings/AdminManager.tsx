@@ -18,6 +18,9 @@ import React, { useEffect, useState } from "react";
 import { useAuthState } from "react-firebase-hooks/auth";
 import { AdminUser } from "@/types/adminUser";
 import ConfirmationDialog from "@/components/modal/ConfirmationDialog";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { addAdminSchema, AddAdminInput } from "@/schema/admin";
 
 type AdminManagerProps = {
   communityData: Community;
@@ -34,7 +37,21 @@ const AdminManager: React.FC<AdminManagerProps> = ({ communityData }) => {
   const { searchUsers, findUser } = useAdminSearch();
   const { handleAddAdmin } = useAddAdmin();
   const { handleRemoveAdmin } = useRemoveAdmin();
-  const [newAdminEmail, setNewAdminEmail] = useState("");
+
+  const {
+    register,
+    handleSubmit,
+    watch,
+    setValue,
+    formState: { errors },
+    reset,
+  } = useForm<AddAdminInput>({
+    resolver: zodResolver(addAdminSchema),
+    defaultValues: { email: "" },
+  });
+
+  const emailValue = watch("email");
+
   const [addingAdmin, setAddingAdmin] = useState(false);
   const [searchResults, setSearchResults] = useState<AdminUser[]>([]);
   const [showResults, setShowResults] = useState(false);
@@ -55,12 +72,11 @@ const AdminManager: React.FC<AdminManagerProps> = ({ communityData }) => {
     );
   }, [communityData, loadAdmins, showToast]);
 
-  const onAddAdmin = async () => {
-    if (!newAdminEmail) return;
+  const onAddAdmin = async (data: AddAdminInput) => {
     setAddingAdmin(true);
     try {
       // 1. Find user by email
-      const newUser = await findUser(newAdminEmail);
+      const newUser = await findUser(data.email);
 
       if (!newUser) {
         showToast({
@@ -91,7 +107,7 @@ const AdminManager: React.FC<AdminManagerProps> = ({ communityData }) => {
         setAdmins
       );
 
-      setNewAdminEmail("");
+      reset();
 
       showToast({
         title: "Admin added",
@@ -137,13 +153,13 @@ const AdminManager: React.FC<AdminManagerProps> = ({ communityData }) => {
 
   useEffect(() => {
     const searchUsersAsync = async () => {
-      if (newAdminEmail.length < 3) {
+      if (!emailValue || emailValue.length < 3) {
         setSearchResults([]);
         setShowResults(false);
         return;
       }
       try {
-        const results = await searchUsers(newAdminEmail);
+        const results = await searchUsers(emailValue);
         // Filter out existing admins
         const filtered = results.filter(
           (u) => !admins.some((a) => a.uid === u.uid)
@@ -157,7 +173,7 @@ const AdminManager: React.FC<AdminManagerProps> = ({ communityData }) => {
 
     const timer = setTimeout(searchUsersAsync, 300);
     return () => clearTimeout(timer);
-  }, [newAdminEmail, admins, searchUsers]);
+  }, [emailValue, admins, searchUsers]);
 
   return (
     <Stack gap={4}>
@@ -166,22 +182,30 @@ const AdminManager: React.FC<AdminManagerProps> = ({ communityData }) => {
       </Text>
 
       <Box position="relative">
-        <Flex gap={2}>
-          <Input
-            placeholder="Enter email to add admin"
-            value={newAdminEmail}
-            onChange={(e) => setNewAdminEmail(e.target.value)}
-            onFocus={() => newAdminEmail.length >= 3 && setShowResults(true)}
-            onBlur={() => setTimeout(() => setShowResults(false), 200)}
-            borderRadius={"xl"}
-          />
-          <Button
-            onClick={onAddAdmin}
-            loading={addingAdmin}
-            disabled={!newAdminEmail}
-          >
-            Add
-          </Button>
+        <Flex gap={2} direction="column">
+          <Flex gap={2}>
+            <Input
+              placeholder="Enter email to add admin"
+              {...register("email")}
+              onFocus={() =>
+                emailValue && emailValue.length >= 3 && setShowResults(true)
+              }
+              onBlur={() => setTimeout(() => setShowResults(false), 200)}
+              borderRadius={"xl"}
+            />
+            <Button
+              onClick={handleSubmit(onAddAdmin)}
+              loading={addingAdmin}
+              disabled={!emailValue}
+            >
+              Add
+            </Button>
+          </Flex>
+          {errors.email && (
+            <Text color="red.500" fontSize="xs">
+              {errors.email.message}
+            </Text>
+          )}
         </Flex>
         {showResults && searchResults.length > 0 && (
           <Box
@@ -208,7 +232,7 @@ const AdminManager: React.FC<AdminManagerProps> = ({ communityData }) => {
                 cursor="pointer"
                 _hover={{ bg: "gray.100", _dark: { bg: "gray.600" } }}
                 onClick={() => {
-                  setNewAdminEmail(user.email);
+                  setValue("email", user.email);
                   setShowResults(false);
                 }}
               >

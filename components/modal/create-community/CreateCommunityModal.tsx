@@ -2,10 +2,6 @@ import { useCreateCommunity } from "@/hooks/community/useCreateCommunity";
 import {
   Box,
   Button,
-  CheckboxControl,
-  CheckboxIndicator,
-  CheckboxLabel,
-  CheckboxRoot,
   DialogBackdrop,
   DialogBody,
   DialogCloseTrigger,
@@ -15,19 +11,21 @@ import {
   DialogPositioner,
   DialogRoot,
   DialogTitle,
-  Flex,
-  Icon,
-  Input,
   Separator,
   Stack,
   Text,
 } from "@chakra-ui/react";
-import React, { FC, useState } from "react";
-import { IconType } from "react-icons";
+import React, { FC } from "react";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
 import { BsFillEyeFill, BsFillPersonFill } from "react-icons/bs";
 import { HiLockClosed } from "react-icons/hi";
 import CommunityTypeOptions from "./CommunityTypeOptions";
 import CommunityNameSection from "./CommunityNameSection";
+import {
+  createCommunitySchema,
+  CreateCommunityInput,
+} from "@/schema/community";
 
 const COMMUNITY_TYPE_OPTIONS = [
   {
@@ -55,33 +53,32 @@ type CreateCommunityModalProps = {
   handleClose: () => void;
 };
 
-/**
- * Modal for creating communities with name validation and privacy selection.
- * @param props - Open state and close handler provided by the parent.
- * @returns Dialog that submits creation through `useCreateCommunity`.
- */
 const CreateCommunityModal: React.FC<CreateCommunityModalProps> = ({
   open,
   handleClose,
 }) => {
-  const communityNameLengthLimit = 25; // community names are 25 characters long
-  const [communityName, setCommunityName] = useState("");
-  const [charRemaining, setCharRemaining] = useState(communityNameLengthLimit);
-  const [communityType, setCommunityType] = useState("public");
-  const { createCommunity, loading, error, setError } = useCreateCommunity();
+  const { createCommunity, loading } = useCreateCommunity();
+  const {
+    register,
+    handleSubmit,
+    watch,
+    setValue,
+    formState: { errors },
+  } = useForm<CreateCommunityInput>({
+    resolver: zodResolver(createCommunitySchema),
+    defaultValues: {
+      type: "public",
+      name: "",
+    },
+    mode: "onChange",
+  });
 
-  const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    if (event.target.value.length > communityNameLengthLimit) return; // community is not created if the name is above the limit
-    setCommunityName(event.target.value); // updates the state of `communityName`
-    setCharRemaining(communityNameLengthLimit - event.target.value.length); // computing remaining characters for community names
-  };
+  const communityName = watch("name");
+  const communityType = watch("type");
+  const charRemaining = 21 - (communityName?.length || 0);
 
-  const onCommunityTypeChange = (value: string) => {
-    setCommunityType(value);
-  };
-
-  const handleCreateCommunity = async () => {
-    const success = await createCommunity(communityName, communityType);
+  const onSubmit = async (data: CreateCommunityInput) => {
+    const success = await createCommunity(data.name, data.type);
     if (success) {
       handleClose();
     }
@@ -112,24 +109,27 @@ const CreateCommunityModal: React.FC<CreateCommunityModalProps> = ({
               flexDirection="column"
               padding="10px 0px"
             >
-              <CommunityNameSection
-                communityName={communityName}
-                handleChange={handleChange}
-                charRemaining={charRemaining}
-                error={error}
-              />
-              <Separator mt={3} />
-              <Box mt={4} mb={4}>
-                <Text fontWeight={600} fontSize={15}>
-                  Community Type
-                </Text>
-
-                <CommunityTypeOptions
-                  options={COMMUNITY_TYPE_OPTIONS}
-                  communityType={communityType}
-                  onCommunityTypeChange={onCommunityTypeChange}
+              <form onSubmit={handleSubmit(onSubmit)}>
+                <CommunityNameSection
+                  charRemaining={charRemaining}
+                  error={errors.name?.message}
+                  register={register("name")}
                 />
-              </Box>
+                <Separator mt={3} />
+                <Box mt={4} mb={4}>
+                  <Text fontWeight={600} fontSize={15}>
+                    Community Type
+                  </Text>
+
+                  <CommunityTypeOptions
+                    options={COMMUNITY_TYPE_OPTIONS}
+                    communityType={communityType}
+                    onCommunityTypeChange={(value) =>
+                      setValue("type", value as any)
+                    }
+                  />
+                </Box>
+              </form>
             </DialogBody>
           </Box>
 
@@ -149,7 +149,7 @@ const CreateCommunityModal: React.FC<CreateCommunityModalProps> = ({
               <Button
                 height="30px"
                 flex={1}
-                onClick={handleCreateCommunity}
+                onClick={handleSubmit(onSubmit)}
                 loading={loading}
               >
                 Create Community
