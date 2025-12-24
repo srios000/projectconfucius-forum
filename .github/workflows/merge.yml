@@ -138,6 +138,7 @@ jobs:
         run: ${{ steps.detect-package-manager.outputs.runner }} vitest run --coverage
 
   docker:
+    name: Docker
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
