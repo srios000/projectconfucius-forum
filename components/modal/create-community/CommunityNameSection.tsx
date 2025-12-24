@@ -1,26 +1,25 @@
 import React from "react";
-import { Box, Text, Input } from "@chakra-ui/react";
+import { Box, Text, Input, InputProps } from "@chakra-ui/react";
+import { UseFormRegisterReturn } from "react-hook-form";
 
-interface CommunityNameSectionProps {
-  communityName: string;
-  handleChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
-  charRemaining: number;
-  error: string;
+interface CommunityNameSectionProps extends InputProps {
+  charRemaining?: number;
+  error?: string;
+  register?: UseFormRegisterReturn;
 }
 
 /**
  * Input block for community name entry with character counter and errors.
- * @param communityName - Current name value.
- * @param handleChange - Change handler enforced by the modal.
  * @param charRemaining - Remaining characters allowed.
  * @param error - Validation error message to display.
+ * @param register - React Hook Form register object.
  * @returns Form section for naming a community.
  */
 const CommunityNameSection: React.FC<CommunityNameSectionProps> = ({
-  communityName,
-  handleChange,
   charRemaining,
   error,
+  register,
+  ...rest
 }) => {
   return (
     <Box>
@@ -32,9 +31,7 @@ const CommunityNameSection: React.FC<CommunityNameSectionProps> = ({
       </Text>
       <Input
         mt={2}
-        value={communityName}
         placeholder="Community Name"
-        onChange={handleChange}
         fontSize="10pt"
         borderRadius={"xl"}
         bg={{ base: "gray.50", _dark: "gray.800" }}
@@ -51,11 +48,13 @@ const CommunityNameSection: React.FC<CommunityNameSectionProps> = ({
           border: "1px solid",
           borderColor: { base: "red.500", _dark: "red.400" },
         }}
+        {...register}
+        {...rest}
       />
       <Text
         fontSize="9pt"
-        mt={1}
         color={charRemaining === 0 ? "red" : "gray.500"}
+        pt={2}
       >
         {charRemaining} Characters remaining
       </Text>

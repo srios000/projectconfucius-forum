@@ -5,16 +5,15 @@ import { Flex, Icon, Tabs, Text } from "@chakra-ui/react";
 import { User } from "firebase/auth";
 import { useParams, useRouter } from "next/navigation";
 import React, { useState } from "react";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
 import { IoDocumentText, IoImageOutline } from "react-icons/io5";
 import BackToCommunityButton from "./BackToCommunityButton";
 import PostCreateError from "./PostCreateError";
 import TextInputs from "../post-form/TextInputs";
 import ImageUpload from "../post-form/ImageUpload";
+import { createPostSchema, CreatePostInput } from "@/schema/post";
 
-/**
- * Props for NewPostForm component.
- * @param {user} - user object
- */
 type NewPostFormProps = {
   user: User; // parent component checks user so additional checks aer not needed ut
   communityImageURL?: string;
@@ -70,15 +69,24 @@ const NewPostForm: React.FC<NewPostFormProps> = ({
   const router = useRouter();
   const params = useParams();
   const [selectedTab, setSelectedTab] = useState(formTabs[0].title); // formTabs[0] = Post
-  const [textInputs, setTextInputs] = useState({
-    title: "",
-    body: "",
-  });
   const { selectedFile, setSelectedFile, onSelectFile } = useSelectFile(
     3000,
     3000
   );
   const { handleCreatePost, loading, error } = useCreatePost();
+
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm<CreatePostInput>({
+    resolver: zodResolver(createPostSchema),
+    defaultValues: {
+      title: "",
+      body: "",
+    },
+    mode: "onChange",
+  });
 
   /**
    * Handles the creation of a new post.
@@ -86,31 +94,15 @@ const NewPostForm: React.FC<NewPostFormProps> = ({
    *
    * @async
    */
-  const onCreatePost = async () => {
+  const onCreatePost = async (data: CreatePostInput) => {
     const communityId = params?.communityId as string;
     await handleCreatePost(
       user,
       communityId,
       communityImageURL,
-      textInputs,
+      { title: data.title, body: data.body || "" },
       selectedFile
     );
-  };
-
-  /**
-   * Keeps track of the text inputs in the form and updates the state.
-   * @param {React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>} event - event object from the input
-   */
-  const onTextChange = (
-    event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
-  ) => {
-    const {
-      target: { name, value },
-    } = event;
-    setTextInputs((prev) => ({
-      ...prev,
-      [name]: value,
-    })); // update the state
   };
 
   return (
@@ -166,9 +158,9 @@ const NewPostForm: React.FC<NewPostFormProps> = ({
         <BackToCommunityButton communityId={currentCommunity?.id} />
         <Tabs.Content value="Post" p={4}>
           <TextInputs
-            textInputs={textInputs}
-            handleCreatePost={onCreatePost}
-            onChange={onTextChange}
+            register={register}
+            errors={errors}
+            handleCreatePost={handleSubmit(onCreatePost)}
             loading={loading}
           />
         </Tabs.Content>

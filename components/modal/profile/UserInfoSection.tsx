@@ -1,27 +1,29 @@
 import { Flex, Input, Text } from "@chakra-ui/react";
 import { User } from "firebase/auth";
 import React from "react";
+import { UseFormRegister, FieldErrors } from "react-hook-form";
+import { EditProfileInput } from "@/schema/profile";
 
 type UserInfoSectionProps = {
   user: User | null | undefined;
   isEditing: boolean;
-  userName: string;
-  handleNameChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
+  register: UseFormRegister<EditProfileInput>;
+  errors: FieldErrors<EditProfileInput>;
 };
 
 /**
  * Profile info block that toggles between read-only and editable username.
  * @param user - Firebase user for email and current display name.
  * @param isEditing - Whether to show the input.
- * @param userName - Controlled input value for the name.
- * @param handleNameChange - Change handler for the name field.
+ * @param register - React Hook Form register function.
+ * @param errors - React Hook Form errors object.
  * @returns Email and name display with optional edit input.
  */
 const UserInfoSection: React.FC<UserInfoSectionProps> = ({
   user,
   isEditing,
-  userName,
-  handleNameChange,
+  register,
+  errors,
 }) => {
   return (
     <>
@@ -52,7 +54,7 @@ const UserInfoSection: React.FC<UserInfoSectionProps> = ({
         </Flex>
       )}
       {isEditing && (
-        <Flex direction="column">
+        <Flex direction="column" width="100%">
           <Text
             fontSize="sm"
             color={{ base: "gray.500", _dark: "gray.400" }}
@@ -61,23 +63,31 @@ const UserInfoSection: React.FC<UserInfoSectionProps> = ({
             User Name
           </Text>
           <Input
-            name="displayName"
             placeholder="User Name"
-            value={userName}
             type="text"
-            onChange={handleNameChange}
+            mb={2}
+            fontSize="10pt"
+            _placeholder={{ color: "gray.500" }}
             _hover={{
               bg: { base: "white", _dark: "gray.700" },
               border: "1px solid",
-              borderColor: { base: "red.500", _dark: "red.400" },
+              borderColor: "blue.500",
             }}
             _focus={{
+              outline: "none",
               bg: { base: "white", _dark: "gray.700" },
               border: "1px solid",
-              borderColor: { base: "red.500", _dark: "red.400" },
+              borderColor: "blue.500",
             }}
+            bg={{ base: "gray.50", _dark: "gray.800" }}
             borderRadius={10}
+            {...register("displayName")}
           />
+          {errors.displayName && (
+            <Text color="red.500" fontSize="10pt">
+              {errors.displayName.message}
+            </Text>
+          )}
         </Flex>
       )}
     </>

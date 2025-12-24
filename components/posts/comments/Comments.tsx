@@ -43,7 +43,6 @@ const Comments: React.FC<CommentsProps> = ({
   communityId,
   isCommunityAdmin,
 }) => {
-  const [commentText, setCommentText] = useState("");
   const { comments, setComments, commentFetchLoading } =
     useCommentList(selectedPost);
   const { createComment, createLoading } = useCreateComment(
@@ -61,7 +60,6 @@ const Comments: React.FC<CommentsProps> = ({
 
   const handleCreateComment = async (text: string) => {
     await createComment(user!, text);
-    setCommentText("");
   };
 
   const collection = useMemo(() => {
@@ -118,8 +116,6 @@ const Comments: React.FC<CommentsProps> = ({
       >
         {canComment && (
           <CommentInput
-            commentText={commentText}
-            setCommentText={setCommentText}
             user={user}
             createLoading={createLoading}
             onCreateComment={handleCreateComment}

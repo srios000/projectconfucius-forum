@@ -14,10 +14,13 @@ import {
   DialogTitle,
   Stack,
 } from "@chakra-ui/react";
-import React, { useRef, useState } from "react";
+import React, { useRef, useState, useEffect } from "react";
 import { useAuthState } from "react-firebase-hooks/auth";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
 import UserImageSection from "./UserImageSection";
 import UserInfoSection from "./UserInfoSection";
+import { editProfileSchema, EditProfileInput } from "@/schema/profile";
 
 type ProfileModalProps = {
   open: boolean;
@@ -33,12 +36,27 @@ const ProfileModal: React.FC<ProfileModalProps> = ({ open, handleClose }) => {
   );
   const selectFileRef = useRef<HTMLInputElement>(null);
   const [deleteImage, setDeleteImage] = useState(false);
-  const [userName, setUserName] = useState(user?.displayName || "");
   const [isEditing, setIsEditing] = useState(false);
 
-  /**
-   * Closes the modal and resets the states.
-   */
+  const {
+    register,
+    handleSubmit,
+    setValue,
+    formState: { errors },
+  } = useForm<EditProfileInput>({
+    resolver: zodResolver(editProfileSchema),
+    defaultValues: {
+      displayName: user?.displayName || "",
+    },
+    mode: "onChange",
+  });
+
+  useEffect(() => {
+    if (user?.displayName) {
+      setValue("displayName", user.displayName);
+    }
+  }, [user, setValue]);
+
   const closeModal = () => {
     setSelectedFile("");
     setDeleteImage(false);
@@ -46,62 +64,15 @@ const ProfileModal: React.FC<ProfileModalProps> = ({ open, handleClose }) => {
     handleClose();
   };
 
-  /**
-   * Update profile image of the currently logged in user.
-   * Exists if the user is not logged in or no image is selected.
-   */
-  const onUpdateImage = async () => {
+  const onUpdateProfile = async (data: EditProfileInput) => {
     if (selectedFile) {
       await updateImage(selectedFile);
     }
-  };
-
-  /**
-   * Deletes the profile image of the currently logged in user.
-   * Exists if the user is not logged in.
-   */
-  const onDeleteImage = async () => {
-    await removeImage();
-  };
-
-  /**
-   * Update profile name of the currently logged in user.
-   * Updates:
-   *  - `displayName` in `users` collection
-   *  - `creatorDisplayText` in `comments` collection
-   *  - `creatorUsername` in `posts` collection
-   * Updates values in multiple places as they are repeated in different collections.
-   */
-  const onUpdateUserName = async () => {
-    if (userName) {
-      await updateName(userName);
-    }
-  };
-
-  /**
-   * Updates the state which tracks the name of the user.
-   * @param {React.ChangeEvent<HTMLInputElement>} event - event of the input field
-   */
-  const handleNameChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setUserName(event.target.value);
-  };
-
-  /**
-   * Saves the changes made to the profile.
-   * If the profile image is changed, it is updated.
-   * If the profile image is deleted, it is deleted.
-   * If the profile name is changed, it is updated.
-   * Closes the modal after saving.
-   */
-  const handleSaveButtonClick = () => {
-    if (selectedFile) {
-      onUpdateImage();
-    }
     if (deleteImage) {
-      onDeleteImage();
+      await removeImage();
     }
-    if (userName && userName !== user?.displayName) {
-      onUpdateUserName();
+    if (data.displayName !== user?.displayName) {
+      await updateName(data.displayName);
     }
     closeModal();
   };
@@ -139,8 +110,8 @@ const ProfileModal: React.FC<ProfileModalProps> = ({ open, handleClose }) => {
               <UserInfoSection
                 user={user}
                 isEditing={isEditing}
-                userName={userName}
-                handleNameChange={handleNameChange}
+                register={register}
+                errors={errors}
               />
             </Stack>
           </DialogBody>
@@ -158,7 +129,12 @@ const ProfileModal: React.FC<ProfileModalProps> = ({ open, handleClose }) => {
                 Cancel
               </Button>
               {isEditing ? (
-                <Button height="30px" flex={1} onClick={handleSaveButtonClick}>
+                <Button
+                  height="30px"
+                  flex={1}
+                  onClick={handleSubmit(onUpdateProfile)}
+                  loading={loading}
+                >
                   Save
                 </Button>
               ) : (

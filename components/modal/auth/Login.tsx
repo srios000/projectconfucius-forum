@@ -1,12 +1,15 @@
-import { Button, Flex, Input, Text } from "@chakra-ui/react";
+import { Button, Flex, Text } from "@chakra-ui/react";
 import { useSetAtom } from "jotai";
-import React, { useState } from "react";
+import React from "react";
 import { useSignInWithEmailAndPassword } from "react-firebase-hooks/auth";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
 import { authModalStateAtom } from "../../../atoms/authModalAtom";
 import { auth } from "../../../firebase/clientApp";
 import { FIREBASE_ERRORS } from "../../../firebase/errors";
 import InputField from "./InputField";
 import { PasswordInput } from "@/components/ui/password-input";
+import { loginSchema, LoginInput } from "@/schema/auth";
 
 type LoginProps = {};
 
@@ -25,66 +28,34 @@ type LoginProps = {};
  */
 const Login: React.FC<LoginProps> = () => {
   const setAuthModalState = useSetAtom(authModalStateAtom); // Set global state
-  const [loginForm, setLoginForm] = useState({
-    email: "", // Initially empty email
-    password: "", // Initially empty password
-  });
-
   const [signInWithEmailAndPassword, user, loading, error] =
     useSignInWithEmailAndPassword(auth);
 
-  /**
-   * This function is used as the event handler for a form submission.
-   * It will prevent the page from refreshing.
-   * Automatically checks if the user with the email exists and if the password is correct.
-   * @param {React.FormEvent<HTMLFormElement>} event - the submit event triggered by the form
-   */
-  const onSubmit = (event: React.FormEvent<HTMLFormElement>) => {
-    event.preventDefault(); // Prevent page from reloading
+  const {
+    register,
+    handleSubmit,
+    formState: { errors, isValid },
+  } = useForm<LoginInput>({
+    resolver: zodResolver(loginSchema),
+    mode: "onChange",
+  });
 
-    signInWithEmailAndPassword(loginForm.email, loginForm.password); // Sign in with email and password
-  }; // Function to execute when the form is submitted
-
-  /**
-   * Function to execute when the form is changed (when email and password are typed).
-   * Multiple inputs use the same `onChange` function.
-   * @param event (React.ChangeEvent<HTMLInputElement>) - the event that is triggered when the form is changed
-   */
-  const onChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    // Update form state
-    setLoginForm((prev) => ({
-      ...prev, // Spread previous state because we don't want to lose the other input's value
-      [event.target.name]: event.target.value, // Catch the name of the input that was changed and update the corresponding state
-    }));
-  };
-
-  /**
-   * Determines whether the button is disabled or not.
-   * The button is disabled if the email or password is empty.
-   * @returns {boolean} - Whether the button is disabled or not
-   */
-  const isButtonDisabled = () => {
-    return (
-      !loginForm.email || !loginForm.password
-      // signUpForm.confirmPassword !== signUpForm.password
-    );
+  const onSubmit = (data: LoginInput) => {
+    signInWithEmailAndPassword(data.email, data.password);
   };
 
   return (
-    <form onSubmit={onSubmit}>
-      <InputField
-        name="email"
-        placeholder="Email"
-        type="email"
-        onChange={onChange}
-      />
+    <form onSubmit={handleSubmit(onSubmit)}>
+      <InputField placeholder="Email" type="email" {...register("email")} />
+      {errors.email && (
+        <Text color="red.500" fontSize="10pt" mt={1}>
+          {errors.email.message}
+        </Text>
+      )}
 
       <PasswordInput
-        name="password"
         placeholder="Password"
-        onChange={onChange}
-        required
-        rootProps={{ mb: 2 }}
+        rootProps={{ mb: 2, mt: 2 }}
         fontSize="10pt"
         bg={{ base: "gray.50", _dark: "gray.800" }}
         borderColor={{ base: "gray.200", _dark: "gray.600" }}
@@ -100,13 +71,20 @@ const Login: React.FC<LoginProps> = () => {
           border: "1px solid",
           borderColor: { base: "red.500", _dark: "red.400" },
         }}
+        {...register("password")}
       />
+      {errors.password && (
+        <Text color="red.500" fontSize="10pt" mt={1}>
+          {errors.password.message}
+        </Text>
+      )}
 
       <Text
         textAlign="center"
         color={{ base: "red.500", _dark: "red.400" }}
         fontSize="10pt"
         fontWeight="800"
+        mt={2}
       >
         {FIREBASE_ERRORS[error?.code as keyof typeof FIREBASE_ERRORS]}
       </Text>
@@ -118,7 +96,7 @@ const Login: React.FC<LoginProps> = () => {
         mb={2}
         type="submit"
         loading={loading}
-        disabled={isButtonDisabled()}
+        disabled={!isValid}
       >
         {" "}
         {/* When the form is submitted, execute onSubmit function */}

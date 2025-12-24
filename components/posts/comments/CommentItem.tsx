@@ -64,21 +64,14 @@ const CommentItem: React.FC<CommentItemProps> = ({
   canComment = true,
 }) => {
   const [isReplying, setIsReplying] = useState(false);
-  const [replyText, setReplyText] = useState("");
   const [replyLoading, setReplyLoading] = useState(false);
   const [deleteConfirmationOpen, setDeleteConfirmationOpen] = useState(false);
 
-  const handleReply = async () => {
+  const handleReply = async (text: string) => {
     if (!user) return;
     setReplyLoading(true);
-    await onCreateComment(
-      user,
-      replyText,
-      comment.id,
-      (comment.depth || 0) + 1
-    );
+    await onCreateComment(user, text, comment.id, (comment.depth || 0) + 1);
     setReplyLoading(false);
-    setReplyText("");
     setIsReplying(false);
   };
 
@@ -175,8 +168,6 @@ const CommentItem: React.FC<CommentItemProps> = ({
           borderColor={{ base: "gray.100", _dark: "gray.600" }}
         >
           <CommentInput
-            commentText={replyText}
-            setCommentText={setReplyText}
             user={user}
             createLoading={replyLoading}
             onCreateComment={handleReply}
