@@ -1,7 +1,6 @@
 /**
- * Firebase error messages.
- * The default error messages are not very user friendly hence they are mapped to more user friendly messages.
- * @see https://firebase.google.com/docs/reference/js/firebase.auth.Auth#signInWithEmailAndPassword
+ * A mapping of technical Firebase Auth error codes to user-friendly error messages.
+ * Used to provide clear feedback during sign-up and sign-in processes.
  */
 export const FIREBASE_ERRORS = {
   // Sign Up Errors

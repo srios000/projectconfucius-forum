@@ -3,9 +3,10 @@ import { Comment } from "@/types/comment";
 import { collection, getDocs, orderBy, query, where } from "firebase/firestore";
 
 /**
- * Loads comments for a post ordered by newest first.
- * @param postId - Target post id.
- * @returns List of comments with ids for rendering threads.
+ * Retrieves all comments for a specific post, ordered by creation time in descending order.
+ * This is used to populate the comment section of a post detail page.
+ * @param postId - The unique identifier of the post whose comments are being retrieved.
+ * @returns A promise that resolves to an array of comment objects.
  */
 export const getComments = async (postId: string) => {
   const commentsQuery = query(

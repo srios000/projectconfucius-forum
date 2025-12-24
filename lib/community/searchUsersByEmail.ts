@@ -4,10 +4,10 @@ import { collection, getDocs, limit, query, where } from "firebase/firestore";
 import { AdminUser } from "../../types/adminUser";
 
 /**
- * Searches for users by email.
- * Returns up to 5 matching users.
- * @param emailQuery - Email search term typed by the admin.
- * @returns Array of matching users with id and profile info.
+ * Performs a prefix search for users by their email address.
+ * This is used in administrative interfaces to find users for promotion or moderation.
+ * @param emailQuery - The search string to match against user emails.
+ * @returns A promise that resolves to an array of up to 5 matching user objects.
  */
 export const searchUsersByEmail = async (
   emailQuery: string

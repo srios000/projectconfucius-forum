@@ -3,9 +3,10 @@ import { notFound } from "next/navigation";
 import CommunityClientPage from "./comments/CommunityClientPage";
 
 /**
- * Server component that loads community data and renders the client view.
- * @param params - Route params containing the community id.
- * @returns Community client page or a not-found/error fallback.
+ * A server-side page component that fetches data for a specific community.
+ * Validates the community ID and handles error states or non-existent communities by showing a 404 page.
+ * @param params - The dynamic route parameters containing the community ID.
+ * @returns The client-side community page populated with server-fetched data.
  */
 export default async function Page({
   params,

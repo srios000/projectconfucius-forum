@@ -2,11 +2,13 @@ import { firestore } from "@/firebase/clientApp";
 import { doc, increment, writeBatch } from "firebase/firestore";
 
 /**
- * Deletes a comment and any threaded descendants, then decrements the post's comment count.
- * @param commentId - Comment id to delete.
- * @param postId - Parent post id whose count should be updated.
- * @param descendantIds - Child comment ids collected by the caller.
- * @returns Number of comments removed to mirror the counter change.
+ * Deletes a comment and all its threaded descendants, then updates the post's comment count.
+ * This ensures that deleting a parent comment also removes all replies associated with it.
+ * All deletions and the count update are performed in a Firestore batch.
+ * @param commentId - The unique identifier of the comment to be deleted.
+ * @param postId - The unique identifier of the post the comment belongs to.
+ * @param descendantIds - An array of identifiers for all child comments to be deleted.
+ * @returns A promise that resolves to the total number of comments deleted.
  */
 export const deleteComment = async (
   commentId: string,

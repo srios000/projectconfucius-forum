@@ -1,5 +1,9 @@
 import { z } from "zod";
 
+/**
+ * A Zod validation schema for community creation.
+ * Enforces strict naming conventions (length and alphanumeric) and valid privacy classifications.
+ */
 export const createCommunitySchema = z.object({
   name: z
     .string()

@@ -2,8 +2,9 @@ import { postStateAtom } from "@/atoms/postsAtom";
 import { useAtom } from "jotai";
 
 /**
- * Convenience hook for accessing and updating the global post atom.
- * @returns Current post state and setter for mutations.
+ * A custom hook that provides access to the global post state managed by Jotai.
+ * It returns the current state value and a setter function for updating it.
+ * @returns An object containing the post state value and its setter.
  */
 const usePostState = () => {
   const [postStateValue, setPostStateValue] = useAtom(postStateAtom);

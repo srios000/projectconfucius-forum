@@ -1,9 +1,10 @@
 import { useEffect, useRef, useState } from "react";
 
 /**
- * Observes when a sentinel element enters the viewport to drive infinite lists.
- * @param options - IntersectionObserver options passed to the browser API.
- * @returns Ref to attach to the sentinel element and a flag for intersection state.
+ * A custom hook that utilizes the Intersection Observer API to detect when an element enters or leaves the viewport.
+ * This is primarily used for implementing infinite scrolling by observing a sentinel element at the bottom of a list.
+ * @param options - Configuration options for the IntersectionObserver instance.
+ * @returns An object containing a ref to be attached to the target element and a boolean indicating if it is currently intersecting.
  */
 export const useIntersectionObserver = (options?: IntersectionObserverInit) => {
   const [isIntersecting, setIsIntersecting] = useState(false);

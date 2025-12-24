@@ -16,11 +16,15 @@ import CommentInput from "./CommentInput";
 import ConfirmationDialog from "@/components/modal/ConfirmationDialog";
 
 /**
- * Required props for CommentItem component
- * @param {Comment} comment - comment object
- * @param {onDeleteComment} onDeleteComment - function to handle deleting comment
- * @param {loadingDelete} loadingDelete - is the comment being deleted
- * @param {userId} userId - id of the currently logged in user
+ * Props for the CommentItem component.
+ * @param comment - The comment data to display.
+ * @param onDeleteComment - Callback to handle comment deletion.
+ * @param loadingDelete - Indicates if the comment is currently being deleted.
+ * @param userId - ID of the currently logged-in user.
+ * @param isCommunityAdmin - Whether the current user is an admin of the community.
+ * @param onCreateComment - Callback to create a new reply.
+ * @param user - The currently authenticated user.
+ * @param canComment - Whether the user has permission to comment in this community.
  */
 type CommentItemProps = {
   comment: Comment;
@@ -39,19 +43,10 @@ type CommentItemProps = {
 };
 
 /**
- * Renders a comment item.
- * The components displays:
- *  - Comment text
- *  - Creator of the comment
- *  - Time the comment was created
- *  - Delete button if the currently logged in user is the creator of the comment
- *
- * @param {Comment} comment - comment object
- * @param {onDeleteComment} onDeleteComment - function to handle deleting comment
- * @param {loadingDelete} loadingDelete - is the comment being deleted
- * @param {userId} userId - id of the currently logged in user
- *
- * @returns {React.FC<CommentItemProps>} - comment item
+ * Renders an individual comment with its metadata and action buttons.
+ * Displays the comment text, creator, and timestamp, along with options to reply or delete.
+ * @param props - Component properties.
+ * @returns A themed flex container representing the comment.
  */
 const CommentItem: React.FC<CommentItemProps> = ({
   comment,

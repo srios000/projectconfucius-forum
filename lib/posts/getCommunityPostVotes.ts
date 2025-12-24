@@ -3,11 +3,11 @@ import { PostVote } from "@/types/post";
 import { collection, getDocs, query, where } from "firebase/firestore";
 
 /**
- * Retrieves all votes a user has cast within a specific community.
- * Helps hydrate vote state when browsing a single community feed.
- * @param userId - Auth uid to query under `postVotes`.
- * @param communityId - Community filter applied to votes.
- * @returns Array of vote documents with ids.
+ * Retrieves all post votes cast by a specific user within a particular community.
+ * This is used to hydrate the voting state for posts when a user views a community's feed.
+ * @param userId - The unique identifier of the user whose votes are being retrieved.
+ * @param communityId - The unique identifier of the community to filter votes by.
+ * @returns A promise that resolves to an array of post vote objects.
  */
 export const getCommunityPostVotes = async (
   userId: string,

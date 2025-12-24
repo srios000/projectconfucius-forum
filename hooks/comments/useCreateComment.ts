@@ -10,9 +10,11 @@ import useCommunityState from "../community/useCommunityState";
 import { checkCommunityPermission } from "@/lib/community/communityPermissions";
 
 /**
- * Creates a new comment or reply on the selected post and updates counts.
- * Handles restricted community checks before calling Firestore.
- * @returns Comment creation handler and loading flag.
+ * A custom hook that provides functionality for creating new comments and replies.
+ * It handles permission checks for restricted communities and updates the local post state to reflect the new comment count.
+ * @param selectedPost - The post being commented on.
+ * @param setComments - A state setter function to update the local comments list.
+ * @returns An object containing the `onCreateComment` function and a loading state indicator.
  */
 const useCreateComment = (
   selectedPost: Post | null,

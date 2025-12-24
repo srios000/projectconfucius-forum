@@ -7,9 +7,12 @@ interface CustomMenuButtonProps {
 }
 
 /**
- * Custom menu button component for various menus.
- * @param props - Icon, label text, and click handler.
- * @returns Menu item styled for dropdown lists.
+ * A styled menu item component designed for use within Chakra UI menus.
+ * Combines an icon and text with consistent hover states and layout.
+ * @param icon - The icon element to display.
+ * @param text - The label text for the menu item.
+ * @param onClick - Callback triggered when the menu item is clicked.
+ * @returns A themed menu item component.
  */
 const CustomMenuButton: React.FC<CustomMenuButtonProps> = ({
   icon,

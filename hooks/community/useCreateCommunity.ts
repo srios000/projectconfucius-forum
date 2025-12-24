@@ -6,9 +6,9 @@ import useCustomToast from "../useCustomToast";
 import { createCommunity } from "@/lib/community/createCommunity";
 
 /**
- * Creates a new community with validation and a creator snippet transaction.
- * Validates slugs locally before hitting Firestore to avoid noisy toasts.
- * @returns Handler to run creation plus loading and error state.
+ * A custom hook that provides functionality for creating a new community.
+ * It includes client-side validation for the community name and handles the backend creation process.
+ * @returns An object containing the `createCommunity` function, loading state, and error state.
  */
 export const useCreateCommunity = () => {
   const [user] = useAuthState(auth);

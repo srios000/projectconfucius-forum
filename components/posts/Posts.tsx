@@ -19,9 +19,10 @@ type PostsProps = {
 };
 
 /**
- * Renders a community's posts with voting, deletion, and infinite scroll.
- * @param communityData - Community context used to scope posts and permissions.
- * @returns Stack of post cards with a sentinel for pagination.
+ * Manages and displays a feed of posts for a specific community.
+ * Handles infinite scrolling, post selection, voting, and deletion by coordinating multiple hooks.
+ * @param communityData - The community context for which to load and display posts.
+ * @returns A scrollable list of post items or a loading state.
  */
 const Posts: React.FC<PostsProps> = ({ communityData }) => {
   const [user] = useAuthState(auth);

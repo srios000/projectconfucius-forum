@@ -5,8 +5,9 @@ import { fetchCommunityMembers } from "@/lib/community/fetchCommunityMembers";
 import { CommunityMember } from "@/types/communityMember";
 
 /**
- * Fetches and caches the members of a community for modal displays.
- * @returns Member list, loading and error flags, plus a loader function.
+ * A custom hook that manages the retrieval and state of a community's member list.
+ * It provides a loading state and a function to fetch member details from Firestore.
+ * @returns An object containing the members array, loading and error states, and the fetch function.
  */
 const useCommunityMembers = () => {
   const [members, setMembers] = useState<CommunityMember[]>([]);

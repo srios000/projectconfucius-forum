@@ -10,6 +10,11 @@ import {
 } from "@chakra-ui/react";
 import { buttonRecipe } from "./button";
 
+/**
+ * The central configuration for the application's design system using Chakra UI.
+ * Customizes global styles, color palettes, typography, and component-specific recipes.
+ * Configured to support both light and dark modes via semantic tokens.
+ */
 const appConfig = defineConfig({
   globalCss: defineGlobalStyles({
     body: {

@@ -3,14 +3,18 @@ import { Post, PostVote } from "@/types/post";
 import { collection, doc, writeBatch } from "firebase/firestore";
 
 /**
- * Applies an upvote or downvote for a post and updates aggregate vote counts.
- * Handles new votes, toggling existing votes, and switching directions in a single batch.
- * @param userId - Auth uid performing the vote.
- * @param post - Post being voted on with current voteStatus.
- * @param vote - Either 1 or -1 representing the intent.
- * @param communityId - Community id used for vote metadata.
- * @param existingVote - Prior vote from this user, if any.
- * @returns Vote change delta, new/updated vote record, and any deleted vote id for local state.
+ * Processes a vote (upvote or downvote) on a post and updates the aggregate vote count.
+ * This function handles three scenarios:
+ * 1. Creating a new vote if none exists.
+ * 2. Removing an existing vote if the user clicks the same vote button again (toggle off).
+ * 3. Updating an existing vote if the user switches from upvote to downvote or vice versa.
+ * All operations are performed in a Firestore batch to ensure atomicity.
+ * @param userId - The unique identifier of the user casting the vote.
+ * @param post - The post object being voted on.
+ * @param vote - The value of the vote (1 for upvote, -1 for downvote).
+ * @param communityId - The identifier of the community where the post resides.
+ * @param existingVote - The user's previous vote on this post, if any.
+ * @returns A promise that resolves to an object containing the vote delta, the new vote record, and any deleted vote ID.
  */
 export const handlePostVote = async (
   userId: string,

@@ -2,13 +2,12 @@ import { firestore } from "@/firebase/clientApp";
 import { doc, runTransaction, serverTimestamp } from "firebase/firestore";
 
 /**
- * Creates a new community document and the creator's membership snippet in a single transaction.
- * Rejects when a community with the same id already exists.
- * @param communityName - Desired community id used across routes and documents.
- * @param communityType - Privacy setting applied on creation.
- * @param userId - Auth uid creating the community and seeded as first member.
- * @returns Resolves when both documents are written.
- * @see https://firebase.google.com/docs/firestore/manage-data/transactions
+ * Orchestrates the creation of a new community and the initial membership for the creator.
+ * Executes as a transaction to ensure that the community document and the user's membership snippet are created atomically.
+ * @param communityName - The unique identifier for the new community.
+ * @param communityType - The privacy setting (public, restricted, or private).
+ * @param userId - The ID of the user creating the community.
+ * @returns A promise that resolves when the transaction is successfully committed.
  */
 export const createCommunity = async (
   communityName: string,
@@ -36,7 +35,7 @@ export const createCommunity = async (
       doc(firestore, `users/${userId}/communitySnippets`, communityName),
       {
         communityId: communityName,
-        isModerator: true,
+        isAdmin: true,
       }
     );
   });

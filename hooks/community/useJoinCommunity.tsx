@@ -8,8 +8,10 @@ import useCustomToast from "../useCustomToast";
 import { joinCommunity } from "@/lib/community/joinCommunity";
 
 /**
- * Adds the current user to a community and updates member counts and snippets.
- * @returns Join handler plus loading and error state.
+ * A custom hook that provides functionality for a user to join a community.
+ * It handles the backend join logic, updates the user's membership snippets,
+ * and increments the community's member count in the local Jotai state.
+ * @returns An object containing the `joinCommunity` function, loading state, and error state.
  */
 const useJoinCommunity = () => {
   const [user] = useAuthState(auth);

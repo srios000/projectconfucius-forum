@@ -2,10 +2,11 @@ import { firestore } from "@/firebase/clientApp";
 import { doc, increment, writeBatch } from "firebase/firestore";
 
 /**
- * Removes a user from a community by deleting their snippet and decrementing the member count.
- * @param communityId - Community id to remove membership from.
- * @param memberId - User id to remove.
- * @returns Resolves once membership and count are updated.
+ * Removes a user from a community by deleting their membership snippet and decrementing the member count.
+ * This is typically used by community administrators to moderate the member list.
+ * @param communityId - The unique identifier of the community.
+ * @param memberId - The unique identifier of the user to be removed.
+ * @returns A promise that resolves when the removal batch write is successfully committed.
  */
 export const removeCommunityMember = async (
   communityId: string,

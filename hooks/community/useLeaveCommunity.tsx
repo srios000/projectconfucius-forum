@@ -7,8 +7,10 @@ import useCustomToast from "../useCustomToast";
 import { leaveCommunity } from "@/lib/community/leaveCommunity";
 
 /**
- * Removes the current user from a community and decrements its member count.
- * @returns Leave handler plus loading and error state.
+ * A custom hook that provides functionality for a user to leave a community.
+ * It handles the backend leave logic, removes the user's membership snippet,
+ * and decrements the community's member count in the local Jotai state.
+ * @returns An object containing the `leaveCommunity` function, loading state, and error state.
  */
 const useLeaveCommunity = () => {
   const [user] = useAuthState(auth);

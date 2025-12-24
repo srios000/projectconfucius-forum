@@ -4,9 +4,10 @@ import safeJsonStringify from "safe-json-stringify";
 import { Post } from "@/types/post";
 
 /**
- * Fetches a post by id from Firestore and returns a JSON-safe object.
- * @param postId - Identifier of the post to retrieve.
- * @returns Post data or null when missing or on error.
+ * Retrieves a single post by its unique identifier from Firestore.
+ * The returned object is serialized using `safe-json-stringify` to ensure it is safe for Next.js server-side props.
+ * @param postId - The unique identifier of the post to be retrieved.
+ * @returns A promise that resolves to the post object if found, or null if it does not exist or an error occurs.
  */
 export async function getPost(postId: string) {
   try {

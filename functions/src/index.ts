@@ -5,10 +5,8 @@ admin.initializeApp();
 const db = admin.firestore();
 
 /**
- * Creates a user document in Firestore when a new user account is created in Firebase Authentication.
- * Mirrors auth profile fields into `users/{uid}` to keep client bootstrap fast.
- * @returns Resolves after the write completes.
- * @see https://firebase.google.com/docs/functions/auth-events
+ * Automatically creates a corresponding Firestore document when a new user registers via Firebase Auth.
+ * Synchronizes essential profile data to the `users` collection for efficient client-side access.
  */
 export const createUserDocument = functions.auth
   .user()
@@ -32,9 +30,8 @@ export const createUserDocument = functions.auth
 //   });
 
 /**
- * Deletes the user document in Firestore when a user account is deleted in Firebase Authentication.
- * Keeps dangling profile documents from persisting after account removal.
- * @returns Resolves after the document is deleted.
+ * Removes the user's Firestore document when their Firebase Auth account is deleted.
+ * Ensures that no orphaned profile data remains in the database.
  */
 export const deleteUserDocument = functions.auth
   .user()
@@ -43,9 +40,8 @@ export const deleteUserDocument = functions.auth
   });
 
 /**
- * Deletes saved post references when a post is removed.
- * Cleans up `savedPosts` subcollections across all users to prevent broken links.
- * @returns Resolves after the batch delete finishes.
+ * A Firestore trigger that cleans up all user-saved references to a post when that post is deleted.
+ * Uses a collection group query to find and remove the post from all users' `savedPosts` subcollections.
  */
 export const deleteSavedPost = functions.firestore
   .document("posts/{postId}")

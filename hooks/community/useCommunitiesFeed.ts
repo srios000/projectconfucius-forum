@@ -10,10 +10,11 @@ type UseCommunitiesFeedProps = {
 };
 
 /**
- * Loads communities ordered by member count, with optional pagination support.
- * @param limitValue - Number of communities to fetch per page.
- * @param isPagination - Whether to enable fetching more on demand.
- * @returns Community list, loading flag, pagination status, and fetch function.
+ * A custom hook that manages the community discovery feed.
+ * It handles fetching communities ordered by member count and supports infinite scrolling via pagination.
+ * @param limitValue - The number of communities to fetch per request.
+ * @param isPagination - Whether to enable pagination for the feed.
+ * @returns An object containing the communities list, loading state, and a function to fetch more communities.
  */
 const useCommunitiesFeed = ({
   limitValue = 10,

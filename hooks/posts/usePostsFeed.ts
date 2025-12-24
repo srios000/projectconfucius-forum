@@ -14,11 +14,12 @@ type UsePostsFeedProps = {
 };
 
 /**
- * Fetches paginated posts for a community or the generic home feed with infinite scroll support.
- * @param communityId - Single community id to scope the feed.
- * @param communityIds - List of community ids to aggregate into the feed.
- * @param isGenericHome - Whether to sort by vote status for the default home view.
- * @returns Loading flag, sentinel ref, no-more-posts flag, and a fetch function.
+ * A custom hook that manages the post feed for communities and the home page.
+ * It handles paginated fetching of posts and integrates with an intersection observer for infinite scrolling.
+ * @param communityId - Optional identifier to fetch posts for a specific community.
+ * @param communityIds - Optional array of identifiers to fetch posts for a personalized home feed.
+ * @param isGenericHome - Optional flag to fetch posts for the generic home feed.
+ * @returns An object containing the loading state, a ref for the intersection observer, and a flag for no more posts.
  */
 const usePostsFeed = ({
   communityId,

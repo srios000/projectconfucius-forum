@@ -27,11 +27,11 @@ type SearchModalProps = {
 };
 
 /**
- * Full-screen search dialog for communities and recent posts.
- * Preloads public data and routes to selections.
- * @param isOpen - Visibility flag controlled by the navbar trigger.
- * @param onClose - Callback when the modal closes.
- * @returns Dialog with search input and grouped results.
+ * A full-screen search dialog that allows users to find communities and posts.
+ * Uses a custom search hook to filter preloaded data and provides navigation to results.
+ * @param isOpen - Whether the modal is currently visible.
+ * @param onClose - Callback to close the modal and reset search state.
+ * @returns A dialog containing a search input and categorized results.
  */
 const SearchModal: React.FC<SearchModalProps> = ({ isOpen, onClose }) => {
   const [searchTerm, setSearchTerm] = useState("");

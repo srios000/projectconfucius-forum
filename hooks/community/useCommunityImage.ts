@@ -7,9 +7,11 @@ import { updateCommunityImage } from "@/lib/community/updateCommunityImage";
 import { deleteCommunityImage } from "@/lib/community/deleteCommunityImage";
 
 /**
- * Uploads or removes a community image while syncing snippets and local state.
- * @param communityData - Community whose image is being managed.
- * @returns Handlers to update or delete the image along with an uploading flag.
+ * A custom hook that provides functionality for managing a community's profile image.
+ * It handles uploading new images, deleting existing ones, and synchronizing these changes
+ * across the community document and all user membership snippets.
+ * @param communityData - The community object whose image is being managed.
+ * @returns An object containing functions for updating and deleting the image, and an uploading state indicator.
  */
 const useCommunityImage = (communityData: Community) => {
   const setCommunityStateValue = useSetAtom(communityStateAtom);

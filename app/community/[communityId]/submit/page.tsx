@@ -3,9 +3,10 @@ import { notFound } from "next/navigation";
 import SubmitPostClientPage from "./SubmitPostClientPage";
 
 /**
- * Server component that prepares data for the submit-post page of a community.
- * @param params - Route params containing the community id.
- * @returns Client submit page or an error/not-found fallback.
+ * A server-side page component for the post submission route.
+ * Fetches the target community's data to ensure it exists and to provide context for the submission form.
+ * @param params - The dynamic route parameters containing the community ID.
+ * @returns The client-side post submission page.
  */
 export default async function SubmitPostPage({
   params,

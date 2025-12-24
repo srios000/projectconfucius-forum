@@ -3,8 +3,9 @@ import { AdminUser } from "@/types/adminUser";
 import { fetchCommunityAdmins } from "@/lib/community/fetchCommunityAdmins";
 
 /**
- * Loads and stores the list of admins for a community, including the creator.
- * @returns Admin list, setter, loading flag, and loader function.
+ * A custom hook that manages the retrieval and storage of a community's administrator list.
+ * It provides a loading state and a function to fetch admin details from Firestore.
+ * @returns An object containing the admin list, a setter for the list, a loading flag, and the fetch function.
  */
 const useAdminList = () => {
   const [admins, setAdmins] = useState<AdminUser[]>([]);

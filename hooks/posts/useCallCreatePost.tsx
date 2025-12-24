@@ -6,8 +6,10 @@ import { useAuthState } from "react-firebase-hooks/auth";
 import useDirectory from "../useDirectory";
 
 /**
- * Handles clicks on "Create Post" by gating on auth and routing to the right submit page.
- * @returns Click handler that opens auth modal, navigates, or toggles the directory menu.
+ * A custom hook that handles the logic for initiating the post creation process.
+ * It checks for user authentication and either navigates to the community's submit page
+ * or opens the directory menu to allow the user to select a community.
+ * @returns An object containing the `onClick` handler for the "Create Post" action.
  */
 const useCallCreatePost = () => {
   const router = useRouter();

@@ -3,10 +3,10 @@ import { Post } from "@/types/post";
 import { doc, getDoc } from "firebase/firestore";
 
 /**
- * Loads a single post by id without JSON stringification.
- * Used in client hooks where Firestore types are acceptable.
- * @param postId - Post id to fetch.
- * @returns Post data with id or null when missing.
+ * Retrieves a single post by its unique identifier from Firestore.
+ * Unlike the SSR version, this returns the raw Firestore data without JSON stringification.
+ * @param postId - The unique identifier of the post to be retrieved.
+ * @returns A promise that resolves to the post object if found, or null if it does not exist.
  */
 export const getPost = async (postId: string) => {
   const postDocRef = doc(firestore, "posts", postId);

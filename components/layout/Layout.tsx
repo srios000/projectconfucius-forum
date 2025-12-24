@@ -7,9 +7,10 @@ interface LayoutProps {
 }
 
 /**
- * Wraps pages with global hooks and the site navbar.
- * @param children - Page content to display below the navbar.
- * @returns Layout shell rendered on every page.
+ * The primary layout wrapper for all pages in the application.
+ * Injects global hooks for data bootstrapping and renders the persistent navbar.
+ * @param children - The page-specific content to be rendered within the layout.
+ * @returns A layout shell containing the navbar and main content area.
  */
 const Layout: React.FC<LayoutProps> = ({ children }) => {
   return (

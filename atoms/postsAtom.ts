@@ -32,7 +32,8 @@ const defaultPostState: PostState = {
 };
 
 /**
- * Holds the active post, loaded posts list, and vote cache for the user session.
- * @returns Jotai atom that stores post selection and voting state.
+ * A Jotai atom that manages the post-related state for the application.
+ * It stores the currently selected post, the list of posts being displayed,
+ * and the user's voting history for those posts.
  */
 export const postStateAtom = atom<PostState>(defaultPostState);

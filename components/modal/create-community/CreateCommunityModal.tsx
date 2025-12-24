@@ -53,6 +53,12 @@ type CreateCommunityModalProps = {
   handleClose: () => void;
 };
 
+/**
+ * Modal for creating a new community with name validation and privacy selection.
+ * @param open - Whether the modal is visible.
+ * @param handleClose - Callback to close the modal.
+ * @returns Dialog with community creation form.
+ */
 const CreateCommunityModal: React.FC<CreateCommunityModalProps> = ({
   open,
   handleClose,

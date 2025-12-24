@@ -3,11 +3,11 @@ import { PostVote } from "@/types/post";
 import { collection, getDocs, query, where } from "firebase/firestore";
 
 /**
- * Fetches the current user's votes for a list of posts in Firestore-friendly chunks.
- * Uses batched `in` queries to avoid exceeding Firestore limits.
- * @param userId - Auth uid whose votes should be read.
- * @param postIds - Post ids to match against.
- * @returns Array of vote documents with id and metadata.
+ * Retrieves the voting status for a specific set of posts for a given user.
+ * This function handles large sets of post IDs by chunking them into batches to comply with Firestore's 'in' query limits.
+ * @param userId - The unique identifier of the user whose votes are being retrieved.
+ * @param postIds - An array of post identifiers to check for votes.
+ * @returns A promise that resolves to an array of post vote objects for the specified posts.
  */
 export const getPostVotes = async (userId: string, postIds: string[]) => {
   const chunks = [];

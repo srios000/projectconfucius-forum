@@ -20,8 +20,10 @@ import { useEffect, useMemo } from "react";
 import { useAuthState } from "react-firebase-hooks/auth";
 
 /**
- * Renders the home feed with infinite scrolling posts and a sidebar of recommendations.
- * @returns Main content paired with community suggestions and personal shortcuts.
+ * The main landing page of the application.
+ * Displays a personalized feed of posts for authenticated users or a generic popular feed for guests.
+ * Includes a sidebar with community recommendations and personal shortcuts.
+ * @returns The home page component with infinite scrolling posts.
  */
 export default function Home() {
   const [user, loadingUser] = useAuthState(auth);

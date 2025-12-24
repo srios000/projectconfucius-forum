@@ -6,9 +6,11 @@ type PageContentProps = {
 };
 
 /**
- * Two-column responsive layout that expects main content and an optional sidebar.
- * @param children - Array-like children where index 0 is main content and index 1 is sidebar.
- * @returns Flex container that hides the sidebar on small screens.
+ * A responsive two-column layout component used for page content.
+ * Expects two children: the first for the main content area (left) and the second for the sidebar (right).
+ * The sidebar is hidden on smaller screens.
+ * @param children - The content to be displayed in the two columns.
+ * @returns A centered flex container with responsive column widths.
  */
 const PageContent: React.FC<PageContentProps> = ({ children }) => {
   return (

@@ -27,6 +27,12 @@ type ProfileModalProps = {
   handleClose: () => void;
 };
 
+/**
+ * Modal for editing user profile information including display name and profile image.
+ * @param open - Whether the modal is visible.
+ * @param handleClose - Callback to close the modal.
+ * @returns Dialog with profile editing form.
+ */
 const ProfileModal: React.FC<ProfileModalProps> = ({ open, handleClose }) => {
   const [user] = useAuthState(auth);
   const { updateImage, removeImage, updateName, loading } = useUserProfile();

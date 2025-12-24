@@ -11,9 +11,10 @@ import { savePost } from "@/lib/posts/savePost";
 import { unsavePost } from "@/lib/posts/unsavePost";
 
 /**
- * Manages a user's saved posts collection and related UI state.
- * Handles auth gating, local cache updates, and toast feedback.
- * @returns Saved post state, loading flag, and handlers to fetch, toggle, or check saves.
+ * A custom hook that manages the user's saved posts.
+ * It provides functionality for fetching saved posts, toggling the saved status of a post,
+ * and removing posts from the saved collection.
+ * @returns An object containing the saved posts state, loading state, and associated handlers.
  */
 const useSavedPosts = () => {
   const [user] = useAuthState(auth);

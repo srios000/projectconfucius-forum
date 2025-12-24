@@ -10,9 +10,10 @@ import { useEffect, useState } from "react";
 import EmotionRegistry from "./emotion-registry";
 
 /**
- * Wraps the app with global providers for state, styling, theming, and layout shell.
- * @param children - Next.js page content to render inside the provider tree.
- * @returns Provider hierarchy with a mounted flag to avoid hydration issues for the toaster.
+ * The root provider component that initializes the application's global context.
+ * Orchestrates state management (Jotai), styling (Emotion, Chakra UI), theming (ColorMode), and the global layout shell.
+ * @param children - The application content to be wrapped by the providers.
+ * @returns A nested provider tree ensuring all global services are available.
  */
 export function Providers({ children }: { children: React.ReactNode }) {
   const [mounted, setMounted] = useState(false);

@@ -27,10 +27,12 @@ type PostPageProps = {
 };
 
 /**
- * Client page for a single post with voting, deletion, and threaded comments.
- * @param communityData - Community context for the post.
- * @param postData - Post fetched on the server; may be null if not found.
- * @returns Layout with post content on the left and community about panel on the right.
+ * The client-side page for viewing a single post and its associated comment thread.
+ * Manages post-specific state including voting, deletion, and comment loading.
+ * Enforces community-level viewing permissions.
+ * @param communityData - The community context for the post.
+ * @param postData - The post data fetched on the server.
+ * @returns A page layout with the post item and its comments.
  */
 const PostPage: React.FC<PostPageProps> = ({ communityData, postData }) => {
   const { postStateValue, setPostStateValue } = usePostState();

@@ -5,9 +5,10 @@ import useCustomToast from "../useCustomToast";
 import { deleteCommunity } from "@/lib/community/deleteCommunity";
 
 /**
- * Deletes a community and all related posts, comments, votes, and snippets.
- * @param communityData - Community to remove.
- * @returns Handler that performs the cascade delete and a loading flag.
+ * A custom hook that provides functionality for deleting a community and all its associated data.
+ * It handles the cascading deletion process and provides feedback via toasts and navigation.
+ * @param communityData - The community object to be deleted.
+ * @returns An object containing the `deleteCommunity` function and a loading state indicator.
  */
 const useDeleteCommunity = (communityData: Community) => {
   const router = useRouter();

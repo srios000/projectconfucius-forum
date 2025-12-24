@@ -1,12 +1,20 @@
 import { firestore } from "@/firebase/clientApp";
-import { collection, doc, getDocs, query, where, writeBatch } from "firebase/firestore";
+import {
+  collection,
+  doc,
+  getDocs,
+  query,
+  where,
+  writeBatch,
+} from "firebase/firestore";
 
 /**
- * Updates the name of the creator of the comments.
- * Finds all the comments a user has created and updates the creator name.
- * @param userId - Id of the user whose comments are to be updated.
- * @param newUserName - New display name to store on past comments.
- * @returns Resolves when every comment document has been updated.
+ * Updates the display name of the creator across all their existing comments.
+ * This ensures that name changes are propagated throughout the platform's comment threads.
+ * The updates are performed in a Firestore batch for efficiency.
+ * @param userId - The unique identifier of the user whose comments are being updated.
+ * @param newUserName - The new display name to be applied to all the user's comments.
+ * @returns A promise that resolves when all comment documents have been updated.
  */
 export const updateUserCommentsName = async (
   userId: string,

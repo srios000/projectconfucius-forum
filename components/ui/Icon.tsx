@@ -11,9 +11,14 @@ type IconProps = {
 };
 
 /**
- * Renders an icon with a hoverable chip wrapper.
- * @param props - Icon, size, optional click handler, color, and aria label.
- * @returns Clickable flex container with the icon.
+ * A wrapper component for rendering icons with consistent hover effects and accessibility attributes.
+ * Supports optional click handlers and custom coloring.
+ * @param icon - The icon component from `react-icons` to render.
+ * @param fontSize - The size of the icon.
+ * @param onClick - Optional callback for click events.
+ * @param iconColor - Optional custom color for the icon.
+ * @param label - Optional aria-label for accessibility.
+ * @returns A styled flex container wrapping the icon.
  */
 const IconItem: React.FC<IconProps> = ({
   icon,

@@ -1,20 +1,21 @@
 import { firestore, storage } from "@/firebase/clientApp";
 import {
-  collection,
+  collectionGroup,
   doc,
-  getDoc,
   getDocs,
+  query,
   updateDoc,
+  where,
+  writeBatch,
 } from "firebase/firestore";
 import { getDownloadURL, ref, uploadString } from "firebase/storage";
 
 /**
- * Replaces a community image in Storage and updates community and snippet references.
- * Propagates the new URL to every user snippet containing the community.
- * @param communityId - Community id used for the storage path and documents.
- * @param selectedFile - Base64 data URL selected from the client.
- * @returns Public download URL of the uploaded image.
- * @see https://firebase.google.com/docs/storage/web/upload-files
+ * Uploads a new profile image for a community and updates all associated references.
+ * This includes updating the community document and all user membership snippets.
+ * @param communityId - The unique identifier of the community.
+ * @param selectedFile - The base64 encoded image data to be uploaded.
+ * @returns A promise that resolves to the public download URL of the uploaded image.
  */
 export const updateCommunityImage = async (
   communityId: string,
@@ -23,25 +24,26 @@ export const updateCommunityImage = async (
   const imageRef = ref(storage, `communities/${communityId}/image`);
   await uploadString(imageRef, selectedFile, "data_url");
   const downloadURL = await getDownloadURL(imageRef);
-  await updateDoc(doc(firestore, "communities", communityId), {
+
+  const communityDocRef = doc(firestore, "communities", communityId);
+  await updateDoc(communityDocRef, {
     imageURL: downloadURL,
   });
 
-  const usersSnapshot = await getDocs(collection(firestore, "users"));
-  const updatePromises = usersSnapshot.docs.map(async (userDoc) => {
-    const communitySnippetDoc = await getDoc(
-      doc(firestore, "users", userDoc.id, "communitySnippets", communityId)
-    );
-    if (communitySnippetDoc.exists()) {
-      await updateDoc(
-        doc(firestore, "users", userDoc.id, "communitySnippets", communityId),
-        {
-          imageURL: downloadURL,
-        }
-      );
-    }
+  const snippetsQuery = query(
+    collectionGroup(firestore, "communitySnippets"),
+    where("communityId", "==", communityId)
+  );
+  const snippetsSnapshot = await getDocs(snippetsQuery);
+
+  const batch = writeBatch(firestore);
+  snippetsSnapshot.docs.forEach((snippetDoc) => {
+    batch.update(snippetDoc.ref, {
+      imageURL: downloadURL,
+    });
   });
-  await Promise.all(updatePromises);
+
+  await batch.commit();
 
   return downloadURL;
 };

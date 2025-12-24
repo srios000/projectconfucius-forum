@@ -9,8 +9,9 @@ import RightContent from "./right-content/RightContent";
 import SearchInput from "./SearchInput";
 
 /**
- * Top navigation bar with branding, search, community directory, and auth-aware actions.
- * @returns Responsive navbar that updates based on authentication state.
+ * The primary navigation header for the application.
+ * Contains the site logo, community directory (for logged-in users), search input, and user authentication controls.
+ * @returns A sticky, responsive navbar component.
  */
 const Navbar: React.FC = () => {
   const [user, loading, error] = useAuthState(auth); // will be passed to child components

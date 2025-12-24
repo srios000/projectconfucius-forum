@@ -1,40 +1,42 @@
 import { firestore, storage } from "@/firebase/clientApp";
 import {
-  collection,
+  collectionGroup,
   doc,
-  getDoc,
   getDocs,
+  query,
   updateDoc,
+  where,
+  writeBatch,
 } from "firebase/firestore";
 import { deleteObject, ref } from "firebase/storage";
 
 /**
- * Removes a community image from Storage and clears references from the community and all user snippets.
- * Keeps member thumbnails in sync when admins delete the image.
- * @param communityId - Community id to locate related documents and storage file.
- * @returns Resolves when all documents have been updated.
- * @see https://firebase.google.com/docs/storage/web/delete-files
+ * Deletes the community's profile image from Firebase Storage and updates all references.
+ * This includes clearing the `imageURL` in the community document and all user membership snippets.
+ * @param communityId - The unique identifier of the community whose image is being deleted.
+ * @returns A promise that resolves when the image is deleted and all references are cleared.
  */
 export const deleteCommunityImage = async (communityId: string) => {
   const imageRef = ref(storage, `communities/${communityId}/image`);
   await deleteObject(imageRef);
-  await updateDoc(doc(firestore, "communities", communityId), {
+
+  const communityDocRef = doc(firestore, "communities", communityId);
+  await updateDoc(communityDocRef, {
     imageURL: "",
   });
 
-  const usersSnapshot = await getDocs(collection(firestore, "users"));
-  const updatePromises = usersSnapshot.docs.map(async (userDoc) => {
-    const communitySnippetDoc = await getDoc(
-      doc(firestore, "users", userDoc.id, "communitySnippets", communityId)
-    );
-    if (communitySnippetDoc.exists()) {
-      await updateDoc(
-        doc(firestore, "users", userDoc.id, "communitySnippets", communityId),
-        {
-          imageURL: "",
-        }
-      );
-    }
+  const snippetsQuery = query(
+    collectionGroup(firestore, "communitySnippets"),
+    where("communityId", "==", communityId)
+  );
+  const snippetsSnapshot = await getDocs(snippetsQuery);
+
+  const batch = writeBatch(firestore);
+  snippetsSnapshot.docs.forEach((snippetDoc) => {
+    batch.update(snippetDoc.ref, {
+      imageURL: "",
+    });
   });
-  await Promise.all(updatePromises);
+
+  await batch.commit();
 };

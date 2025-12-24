@@ -21,6 +21,12 @@ import React from "react";
 import { LuTrash } from "react-icons/lu";
 import { FaReddit } from "react-icons/fa";
 
+/**
+ * Modal listing saved posts with quick navigation and remove controls.
+ * Relies on saved post atom for visibility and content.
+ * Allows users to view their saved posts and navigate to them or their communities.
+ * @returns Dialog with list items linking to posts and communities.
+ */
 const SavedPostsModal: React.FC = () => {
   const [savedPostState, setSavedPostState] = useAtom(savedPostStateAtom);
   const { onRemoveSavedPost } = useSavedPosts();

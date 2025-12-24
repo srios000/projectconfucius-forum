@@ -13,8 +13,10 @@ import React, { useEffect, useMemo } from "react";
 import { Community } from "@/types/community";
 
 /**
- * Lists communities with infinite scroll, grouped by membership state.
- * @returns Communities page with moderation, joined, and discovery sections.
+ * A page that displays a comprehensive list of all communities.
+ * Organizes communities into categories: those the user moderates, those they have joined, and others for discovery.
+ * Implements infinite scrolling for efficient data loading.
+ * @returns The communities directory page.
  */
 const Communities: React.FC = () => {
   const { communityStateValue } = useCommunityState();

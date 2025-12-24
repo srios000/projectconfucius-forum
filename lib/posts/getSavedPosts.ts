@@ -3,9 +3,10 @@ import { SavedPost } from "@/types/savedPost";
 import { collection, getDocs } from "firebase/firestore";
 
 /**
- * Loads all saved posts for a user from their subcollection.
- * @param userId - Auth uid whose saved posts should be read.
- * @returns Array of saved post metadata for the saved tab.
+ * Retrieves all posts saved by a specific user from their personal 'savedPosts' subcollection.
+ * This is used to populate the 'Saved' tab in the user's profile or dashboard.
+ * @param userId - The unique identifier of the user whose saved posts are being retrieved.
+ * @returns A promise that resolves to an array of saved post objects.
  */
 export const getSavedPosts = async (userId: string) => {
   const querySnapshot = await getDocs(

@@ -1,12 +1,20 @@
 import { firestore } from "@/firebase/clientApp";
-import { collection, doc, getDocs, query, where, writeBatch } from "firebase/firestore";
+import {
+  collection,
+  doc,
+  getDocs,
+  query,
+  where,
+  writeBatch,
+} from "firebase/firestore";
 
 /**
- * Updates the name of the creator of the posts.
- * Finds all the posts a user has created and updates the creator name.
- * @param userId - Id of the user whose posts are updated.
- * @param newUserName - New display name or email-derived label.
- * @returns Resolves when every post document has been updated.
+ * Updates the creator's username across all their existing posts.
+ * This ensures that name changes are propagated throughout the platform's post feeds.
+ * The updates are performed in a Firestore batch for efficiency.
+ * @param userId - The unique identifier of the user whose posts are being updated.
+ * @param newUserName - The new username or display name to be applied to all the user's posts.
+ * @returns A promise that resolves when all post documents have been updated.
  */
 export const updateUserPostsName = async (
   userId: string,

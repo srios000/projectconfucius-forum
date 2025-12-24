@@ -12,15 +12,14 @@ import {
 import { getDownloadURL, ref, uploadString } from "firebase/storage";
 
 /**
- * Creates a new post document and uploads an optional image.
- * Captures creator identity from the Firebase user and seeds counters.
- * @param user - Auth user creating the post.
- * @param communityId - Target community id.
- * @param communityImageURL - Current community icon for feed cards.
- * @param postData - Post title and body text.
- * @param selectedFile - Optional base64 image data to upload.
- * @returns Created post id.
- * @see https://firebase.google.com/docs/firestore/manage-data/add-data
+ * Creates a new post within a community and optionally uploads an associated image.
+ * This function handles the creation of the post document in Firestore and the image upload to Firebase Storage.
+ * @param user - The Firebase Auth user object of the post creator.
+ * @param communityId - The unique identifier of the community where the post is being created.
+ * @param communityImageURL - The current image URL of the community, used for display in feeds.
+ * @param postData - An object containing the title and body text of the post.
+ * @param selectedFile - An optional base64 encoded image string to be uploaded with the post.
+ * @returns A promise that resolves to the unique identifier of the newly created post.
  */
 export const createPost = async (
   user: User,
