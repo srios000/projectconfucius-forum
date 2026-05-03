@@ -20,7 +20,7 @@ const AuthInputs: React.FC<AuthInputsProps> = () => {
   const modalState = useAtomValue(authModalStateAtom);
 
   return (
-    <Flex direction="column" align="center" width="100%" mt={4}>
+    <Flex direction="column" align="stretch" width="100%" mt={4}>
       {modalState.view === "login" && <Login />}
       {modalState.view === "signup" && <Signup />}
     </Flex>
