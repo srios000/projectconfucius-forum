@@ -14,6 +14,7 @@ import {
   DialogTitle,
   Flex,
   Separator,
+  Box,
 } from "@chakra-ui/react";
 import { useAtom } from "jotai";
 import React, { useEffect } from "react";
@@ -92,12 +93,12 @@ const AuthModal: React.FC = () => {
             >
               {/* If user is trying to authenticate (log in or sign up) */}
               {modalState.view === "login" || modalState.view === "signup" ? (
-                <>
+                <Box width="100%">
                   <OAuthButtons />
                   {/* <Text color='gray.500' fontWeight={700}>OR</Text> */}
                   <Separator />
                   <AuthInputs />
-                </>
+                </Box>
               ) : (
                 // If user is trying to reset password
                 <ResetPassword />

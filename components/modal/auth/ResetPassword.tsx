@@ -1,4 +1,4 @@
-import { Button, Flex, Icon, Image, Input, Text } from "@chakra-ui/react";
+import { Button, Flex, Icon, Image, Input, Text, Box } from "@chakra-ui/react";
 import { useSetAtom } from "jotai";
 import React, { useState } from "react";
 import { useSendPasswordResetEmail } from "react-firebase-hooks/auth";
@@ -38,12 +38,12 @@ const ResetPassword: React.FC = () => {
       {success ? (
         <Text mb={4}>Check your email</Text>
       ) : (
-        <>
+        <Box width="100%" display="flex" flexDirection="column" alignItems="center">
           <Text fontSize="sm" textAlign="center" mb={2}>
             Enter the email associated with your account and we will send you a
             reset link
           </Text>
-          <form onSubmit={handleSubmit(onSubmit)} style={{ width: "100%" }}>
+          <form onSubmit={(e) => { e.preventDefault(); handleSubmit(onSubmit)(e); }} style={{ width: "100%" }}>
             <Input
               placeholder="Email"
               type="email"
@@ -76,19 +76,20 @@ const ResetPassword: React.FC = () => {
             >
               {error?.message}
             </Text>
-            <Button
+              <Button
               width="100%"
               height="36px"
               mb={2}
               mt={2}
-              type="submit"
+              type="button"
+              onClick={handleSubmit(onSubmit)}
               loading={sending}
               disabled={!isValid}
             >
               Reset Password
             </Button>
           </form>
-        </>
+        </Box>
       )}
       <Flex
         alignItems="center"

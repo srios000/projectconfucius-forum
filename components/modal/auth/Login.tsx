@@ -45,7 +45,13 @@ const Login: React.FC<LoginProps> = () => {
   };
 
   return (
-    <form onSubmit={handleSubmit(onSubmit)}>
+    <form
+      onSubmit={(e) => {
+        e.preventDefault();
+        handleSubmit(onSubmit)(e);
+      }}
+      style={{ width: "100%" }}
+    >
       <InputField placeholder="Email" type="email" {...register("email")} />
       {errors.email && (
         <Text color="red.500" fontSize="10pt" mt={1}>
@@ -94,7 +100,8 @@ const Login: React.FC<LoginProps> = () => {
         height="36px"
         mt={2}
         mb={2}
-        type="submit"
+        type="button"
+        onClick={handleSubmit(onSubmit)}
         loading={loading}
         disabled={!isValid}
       >
