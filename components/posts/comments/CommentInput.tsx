@@ -1,6 +1,6 @@
 import ProfileModal from "@/components/modal/profile/ProfileModal";
 import AuthButtons from "@/components/navbar/right-content/AuthButtons";
-import { Flex, Textarea, Button, Text, Stack, Icon } from "@chakra-ui/react";
+import { Flex, Textarea, Button, Text, Stack, Icon, Box } from "@chakra-ui/react";
 import { LuSend, LuTrash } from "react-icons/lu";
 import { User } from "firebase/auth";
 import React, { useState } from "react";
@@ -37,6 +37,7 @@ const CommentInput: React.FC<CommentInputProps> = ({
   const commentText = watch("text");
 
   const onSubmit = (data: CommentInputType) => {
+    console.log("Submitting comment:", data.text);
     onCreateComment(data.text);
     reset();
   };
@@ -44,7 +45,7 @@ const CommentInput: React.FC<CommentInputProps> = ({
   return (
     <Flex direction="column" position="relative">
       {user ? (
-        <>
+        <Box width="100%">
           <ProfileModal
             handleClose={() => setProfileModalOpen(false)}
             open={isProfileModalOpen}
@@ -67,7 +68,7 @@ const CommentInput: React.FC<CommentInputProps> = ({
             </Text>
           </Stack>
 
-          <form onSubmit={handleSubmit(onSubmit)}>
+          <form onSubmit={(e) => { e.preventDefault(); handleSubmit(onSubmit)(e); }}>
             <Flex
               direction="column"
               bg={{ base: "white", _dark: "gray.800" }}
@@ -124,7 +125,8 @@ const CommentInput: React.FC<CommentInputProps> = ({
                     disabled={!isValid}
                     loading={createLoading}
                     borderRadius={"xl"}
-                    type="submit"
+                    type="button"
+                    onClick={handleSubmit(onSubmit)}
                     height={"36px"}
                   >
                     <Icon as={LuSend} mr={2} />
@@ -134,7 +136,7 @@ const CommentInput: React.FC<CommentInputProps> = ({
               </Flex>
             </Flex>
           </form>
-        </>
+        </Box>
       ) : (
         <Flex
           align="center"
