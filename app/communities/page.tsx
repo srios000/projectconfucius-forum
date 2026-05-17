@@ -7,9 +7,8 @@ import CommunityLoader from "@/components/loaders/CommunityLoader";
 import useCommunitiesFeed from "@/hooks/community/useCommunitiesFeed";
 import useCommunityState from "@/hooks/community/useCommunityState";
 import useCommunityMembershipActions from "@/hooks/community/useCommunityMembershipActions";
-import { useIntersectionObserver } from "@/hooks/useIntersectionObserver";
-import { Box, Heading, Spinner, Stack, Text } from "@chakra-ui/react";
-import React, { useEffect, useMemo } from "react";
+import { Box, Button, Heading, Stack, Text } from "@chakra-ui/react";
+import React, { useMemo } from "react";
 import { Community } from "@/types/community";
 
 /**
@@ -23,14 +22,6 @@ const Communities: React.FC = () => {
   const { onJoinOrLeaveCommunity } = useCommunityMembershipActions();
   const { communities, loading, fetchCommunities, noMoreCommunities } =
     useCommunitiesFeed({ limitValue: 10, isPagination: true });
-  const observerOptions = useMemo(() => ({ threshold: 0.5 }), []);
-  const { ref, isIntersecting } = useIntersectionObserver(observerOptions);
-
-  useEffect(() => {
-    if (isIntersecting && !loading && !noMoreCommunities) {
-      fetchCommunities(false);
-    }
-  }, [isIntersecting, loading, noMoreCommunities, fetchCommunities]);
 
   const [adminCommunities, subscribedCommunities, notSubscribedCommunities] =
     useMemo(() => {
@@ -127,16 +118,15 @@ const Communities: React.FC = () => {
               </Stack>
             )}
             {!noMoreCommunities ? (
-              <Box
-                ref={ref}
-                height="20px"
-                display="flex"
-                justifyContent="center"
-                alignItems="center"
-                p={2}
+              <Button
+                onClick={() => fetchCommunities(false)}
+                loading={loading}
+                variant="outline"
+                width="100%"
+                my={4}
               >
-                {loading && <Spinner size="sm" />}
-              </Box>
+                Load More
+              </Button>
             ) : (
               <Text textAlign="center" p={2} fontSize="sm" color="gray.500">
                 No more communities

@@ -15,7 +15,7 @@ import usePostVote from "@/hooks/posts/usePostVote";
 import usePostVoteSync from "@/hooks/posts/usePostVoteSync";
 import usePostsFeed from "@/hooks/posts/usePostsFeed";
 import useCustomToast from "@/hooks/useCustomToast";
-import { Box, Spinner, Stack, Text } from "@chakra-ui/react";
+import { Button, Stack, Text } from "@chakra-ui/react";
 import { useEffect, useMemo } from "react";
 import { useAuthState } from "react-firebase-hooks/auth";
 
@@ -43,7 +43,7 @@ export default function Home() {
     [communityStateValue.mySnippets]
   );
 
-  const { loading, fetchPosts, ref, noMorePosts } = usePostsFeed({
+  const { loading, fetchPosts, noMorePosts } = usePostsFeed({
     communityIds: user && communityIds.length > 0 ? communityIds : undefined,
     isGenericHome: !user || communityIds.length === 0,
   });
@@ -116,15 +116,15 @@ export default function Home() {
               />
             ))}
             {!noMorePosts ? (
-              <Box
-                ref={ref}
-                height="20px"
-                display="flex"
-                justifyContent="center"
-                alignItems="center"
+              <Button
+                onClick={() => fetchPosts(false)}
+                loading={loading}
+                variant="outline"
+                width="100%"
+                my={4}
               >
-                {loading && <Spinner size="sm" />}
-              </Box>
+                Load More
+              </Button>
             ) : (
               <Text textAlign="center" p={2} fontSize="sm" color="gray.500">
                 No more posts

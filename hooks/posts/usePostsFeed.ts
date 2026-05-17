@@ -1,9 +1,8 @@
 import { postStateAtom } from "@/atoms/postsAtom";
 import { DocumentData, QueryDocumentSnapshot } from "firebase/firestore";
 import { useSetAtom } from "jotai";
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useState } from "react";
 import useCustomToast from "../useCustomToast";
-import { useIntersectionObserver } from "../useIntersectionObserver";
 import { Post } from "@/types/post";
 import { getPosts as getPostsLib } from "@/lib/posts/getPosts";
 
@@ -15,11 +14,11 @@ type UsePostsFeedProps = {
 
 /**
  * A custom hook that manages the post feed for communities and the home page.
- * It handles paginated fetching of posts and integrates with an intersection observer for infinite scrolling.
+ * It handles paginated fetching of posts.
  * @param communityId - Optional identifier to fetch posts for a specific community.
  * @param communityIds - Optional array of identifiers to fetch posts for a personalized home feed.
  * @param isGenericHome - Optional flag to fetch posts for the generic home feed.
- * @returns An object containing the loading state, a ref for the intersection observer, and a flag for no more posts.
+ * @returns An object containing the loading state, fetchPosts function, and a flag for no more posts.
  */
 const usePostsFeed = ({
   communityId,
@@ -32,9 +31,6 @@ const usePostsFeed = ({
     useState<QueryDocumentSnapshot<DocumentData> | null>(null);
   const [noMorePosts, setNoMorePosts] = useState(false);
   const showToast = useCustomToast();
-
-  const observerOptions = useMemo(() => ({ threshold: 0.5 }), []);
-  const { ref, isIntersecting } = useIntersectionObserver(observerOptions);
 
   const fetchPosts = async (initial = false) => {
     if (loading) return;
@@ -75,13 +71,6 @@ const usePostsFeed = ({
   };
 
   useEffect(() => {
-    if (isIntersecting && !loading && !noMorePosts && lastVisible) {
-      fetchPosts(false);
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [isIntersecting, loading, noMorePosts, lastVisible]);
-
-  useEffect(() => {
     setNoMorePosts(false);
     setLastVisible(null);
     setPostStateValue((prev) => ({
@@ -100,7 +89,6 @@ const usePostsFeed = ({
   return {
     loading,
     fetchPosts,
-    ref,
     noMorePosts,
   };
 };
