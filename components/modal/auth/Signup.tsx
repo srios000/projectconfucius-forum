@@ -104,7 +104,7 @@ const SignUp = () => {
         mt={2}
       >
         {userError &&
-          FIREBASE_ERRORS[userError?.code as keyof typeof FIREBASE_ERRORS]}
+          (FIREBASE_ERRORS[userError.code as keyof typeof FIREBASE_ERRORS] || userError.message)}
       </Text>
 
       <Button
