@@ -22,7 +22,7 @@
     "@types/node": "20.14.0",
     "@types/react": "^18.3.12",
     "@types/react-dom": "^18.3.0",
-    "eslint-config-next": "^16.0.3",
+    "eslint-config-next": "16.2.6",
     "firebase": "^12.6.0",
     "firebase-admin": "^13.6.0",
     "firebase-functions": "^7.0.0",
@@ -30,7 +30,7 @@
     "jotai": "^2.15.1",
     "jotai-utils": "^0.0.0",
     "moment": "^2.29.4",
-    "next": "^16.0.3",
+    "next": "16.2.6",
     "next-themes": "^0.4.6",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
@@ -48,10 +48,13 @@
     "@testing-library/react": "^16.3.0",
     "@types/safe-json-stringify": "^1.1.2",
     "@vitest/coverage-v8": "^4.0.15",
-    "baseline-browser-mapping": "^2.9.3",
+    "baseline-browser-mapping": "^2.10.30",
     "eslint": "^9",
     "jsdom": "^27.3.0",
     "vite-tsconfig-paths": "^5.1.4",
     "vitest": "^4.0.15"
+  },
+  "resolutions": {
+    "baseline-browser-mapping": "^2.10.30"
   }
 }

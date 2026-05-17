@@ -13,11 +13,13 @@ interface ErrorMessageProps {
  * @returns Text element when an error exists, otherwise null.
  */
 const AuthenticationErrorMessage: React.FC<ErrorMessageProps> = ({ error }) => {
-  return error ? (
+  if (!error) return null;
+  const message = FIREBASE_ERRORS[error.code as keyof typeof FIREBASE_ERRORS] || error.message;
+  return (
     <Text textAlign="center" color="red" fontSize="10pt" fontWeight="800">
-      {FIREBASE_ERRORS[error.message as keyof typeof FIREBASE_ERRORS]}
+      {message}
     </Text>
-  ) : null;
+  );
 };
 
 export default AuthenticationErrorMessage;
