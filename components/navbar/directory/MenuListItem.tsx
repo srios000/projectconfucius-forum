@@ -39,6 +39,7 @@ const MenuListItem: React.FC<MenuListItemProps> = ({
 
   return (
     <MenuItem
+      value={displayText}
       mt={1}
       mb={1}
       fontSize="10pt"

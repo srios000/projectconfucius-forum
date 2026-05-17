@@ -21,6 +21,7 @@ const CustomMenuButton: React.FC<CustomMenuButtonProps> = ({
 }) => {
   return (
     <MenuItem
+      value={text}
       fontSize="10pt"
       fontWeight={700}
       onClick={onClick}
