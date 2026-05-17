@@ -1,7 +1,7 @@
 # ---- Build Stage ----
 FROM node:20-alpine AS builder
 WORKDIR /app
-COPY package*.json ./
+COPY package*.json yarn.lock ./
 RUN yarn install
 COPY . .
 RUN yarn build
@@ -9,8 +9,8 @@ RUN yarn build
 # ---- Release Stage ----
 FROM node:20-alpine AS release
 WORKDIR /app
-COPY --from=builder /app/package*.json ./
-RUN yarn install
+COPY --from=builder /app/package*.json /app/yarn.lock ./
+RUN yarn install --production
 COPY --from=builder /app/.next ./.next
 COPY --from=builder /app/public ./public
 EXPOSE 3000

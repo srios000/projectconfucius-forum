@@ -8,7 +8,7 @@ import usePostVote from "@/hooks/posts/usePostVote";
 import usePostDeletion from "@/hooks/posts/usePostDeletion";
 import usePostVoteSync from "@/hooks/posts/usePostVoteSync";
 import usePostsFeed from "@/hooks/posts/usePostsFeed";
-import { Box, Spinner, Stack, Text } from "@chakra-ui/react";
+import { Button, Stack, Text } from "@chakra-ui/react";
 import React, { useEffect } from "react";
 import { useAuthState } from "react-firebase-hooks/auth";
 import PostLoader from "../loaders/post-loader/PostLoader";
@@ -33,7 +33,7 @@ const Posts: React.FC<PostsProps> = ({ communityData }) => {
   usePostVoteSync(setPostStateValue);
   const { isAdmin, canPost } = useCommunityPermissions(communityData);
 
-  const { loading, fetchPosts, ref, noMorePosts } = usePostsFeed({
+  const { loading, fetchPosts, noMorePosts } = usePostsFeed({
     communityId: communityData.id,
   });
 
@@ -67,15 +67,15 @@ const Posts: React.FC<PostsProps> = ({ communityData }) => {
             />
           ))}
           {!noMorePosts ? (
-            <Box
-              ref={ref}
-              height="20px"
-              display="flex"
-              justifyContent="center"
-              alignItems="center"
+            <Button
+              onClick={() => fetchPosts(false)}
+              loading={loading}
+              variant="outline"
+              width="100%"
+              my={4}
             >
-              {loading && <Spinner size="sm" />}
-            </Box>
+              Load More
+            </Button>
           ) : (
             <Text textAlign="center" p={2} fontSize="sm" color="gray.500">
               No more posts
