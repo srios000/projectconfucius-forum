@@ -1,8 +1,6 @@
-import { Timestamp } from "firebase/firestore";
-
 /**
- * Comment document for a post, including optional parent for threaded replies.
- * Stored at `comments/{id}` with depth used to limit nesting.
+ * Comment record for a post, including optional parent for threaded replies.
+ * `depth` is used to limit nesting.
  */
 export type Comment = {
   id: string;
@@ -12,7 +10,7 @@ export type Comment = {
   postId: string;
   postTitle: string;
   text: string;
-  createdAt: Timestamp;
+  createdAt: Date;
   parentId?: string;
   depth: number;
 };
