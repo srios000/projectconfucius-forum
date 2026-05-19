@@ -308,7 +308,7 @@ Co-Authored-By: Claude Opus 4.7 <noreply@anthropic.com>"
 - Create: `lib/db/auth-db.ts`
 - Test: `tests/db/auth-db.test.ts`
 
-- [ ] **Step 1: Write `lib/db/auth-schema.ts`**
+- [x] **Step 1: Write `lib/db/auth-schema.ts`**
 
 Mirror the four Better Auth core tables (column names match the central app's Postgres). Source of truth: `projectconfucius-auth` schema. Minimum needed by the Drizzle adapter:
 
@@ -362,7 +362,7 @@ export const verification = pgTable("verification", {
 
 > **Executor note:** Before relying on this, open `projectconfucius-auth/lib/db/schema.ts` (per memory `reference_better_auth_schema_drift`, the live schema is there) and reconcile exact column names/casing. Adjust if the central schema differs. Do NOT run `drizzle-kit` against the auth DB — the forum never migrates it.
 
-- [ ] **Step 2: Write `lib/db/auth-db.ts`**
+- [x] **Step 2: Write `lib/db/auth-db.ts`**
 
 ```ts
 import { drizzle } from "drizzle-orm/postgres-js";
@@ -376,7 +376,7 @@ const client = postgres(connectionString, { prepare: false, max: 5 });
 export const authDb = drizzle(client, { schema: authSchema });
 ```
 
-- [ ] **Step 3: Write test `tests/db/auth-db.test.ts`**
+- [x] **Step 3: Write test `tests/db/auth-db.test.ts`**
 
 ```ts
 import { describe, it, expect } from "vitest";
@@ -392,12 +392,12 @@ describe("auth schema mirror", () => {
 });
 ```
 
-- [ ] **Step 4: Run test**
+- [x] **Step 4: Run test**
 
 Run: `pnpm test tests/db/auth-db.test.ts`
 Expected: PASS.
 
-- [ ] **Step 5: Commit**
+- [x] **Step 5: Commit**
 
 ```bash
 git add lib/db/auth-schema.ts lib/db/auth-db.ts tests/db/auth-db.test.ts
