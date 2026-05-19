@@ -620,7 +620,7 @@ Co-Authored-By: Claude Opus 4.7 <noreply@anthropic.com>"
 - Create: `lib/auth/session.ts`, `app/api/auth/start/route.ts`, `app/api/auth/signout/route.ts`, `middleware.ts`
 - Test: `tests/auth/start-route.test.ts`
 
-- [ ] **Step 1: Write `lib/auth/session.ts`**
+- [x] **Step 1: Write `lib/auth/session.ts`**
 
 ```ts
 import { headers } from "next/headers";
@@ -645,7 +645,7 @@ export async function requireUser() {
 }
 ```
 
-- [ ] **Step 2: Write `app/api/auth/start/route.ts`**
+- [x] **Step 2: Write `app/api/auth/start/route.ts`**
 
 ```ts
 import { NextRequest, NextResponse } from "next/server";
@@ -664,7 +664,7 @@ export async function GET(req: NextRequest) {
 }
 ```
 
-- [ ] **Step 3: Write `app/api/auth/signout/route.ts`**
+- [x] **Step 3: Write `app/api/auth/signout/route.ts`**
 
 ```ts
 import { NextRequest, NextResponse } from "next/server";
@@ -676,7 +676,7 @@ export async function GET(req: NextRequest) {
 }
 ```
 
-- [ ] **Step 4: Write `middleware.ts`**
+- [x] **Step 4: Write `middleware.ts`**
 
 ```ts
 import { NextRequest, NextResponse } from "next/server";
@@ -701,7 +701,7 @@ export function middleware(req: NextRequest) {
 export const config = { matcher: ["/community/:path*"] };
 ```
 
-- [ ] **Step 5: Write test `tests/auth/start-route.test.ts`**
+- [x] **Step 5: Write test `tests/auth/start-route.test.ts`**
 
 ```ts
 import { describe, it, expect } from "vitest";
@@ -720,12 +720,12 @@ describe("/api/auth/start", () => {
 });
 ```
 
-- [ ] **Step 6: Run test**
+- [x] **Step 6: Run test**
 
 Run: `pnpm test tests/auth/start-route.test.ts`
 Expected: PASS.
 
-- [ ] **Step 7: Commit**
+- [x] **Step 7: Commit**
 
 ```bash
 git add lib/auth/session.ts app/api/auth/start app/api/auth/signout middleware.ts tests/auth/start-route.test.ts
