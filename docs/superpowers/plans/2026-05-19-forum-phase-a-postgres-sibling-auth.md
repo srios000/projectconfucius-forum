@@ -272,12 +272,12 @@ Co-Authored-By: Claude Opus 4.7 <noreply@anthropic.com>"
 **Files:**
 - Create: `drizzle/*` (generated)
 
-- [ ] **Step 1: STOP — ask the user to generate the migration**
+- [x] **Step 1: STOP — ask the user to generate the migration**
 
 Tell the user to run: `pnpm db:generate`
 (The user runs DB tooling. Wait for them to confirm `drizzle/` was created.)
 
-- [ ] **Step 2: Add the `comments.parent_id` self-FK to the generated SQL**
+- [x] **Step 2: Add the `comments.parent_id` self-FK to the generated SQL**
 
 In the newly generated `drizzle/0000_*.sql`, append after the `comments` table creation:
 ```sql
@@ -285,12 +285,12 @@ ALTER TABLE "comments" ADD CONSTRAINT "comments_parent_id_fk"
   FOREIGN KEY ("parent_id") REFERENCES "comments"("id") ON DELETE CASCADE;
 ```
 
-- [ ] **Step 3: STOP — ask the user to apply the migration**
+- [x] **Step 3: STOP — ask the user to apply the migration**
 
 Tell the user to run (with a real `DATABASE_URL` pointing at a dev Neon DB): `pnpm db:migrate`
 Wait for confirmation that tables exist.
 
-- [ ] **Step 4: Commit**
+- [x] **Step 4: Commit**
 
 ```bash
 git add drizzle
