@@ -414,7 +414,7 @@ Co-Authored-By: Claude Opus 4.7 <noreply@anthropic.com>"
 - Create: `lib/auth.ts`, `lib/auth-client.ts`
 - Create: `app/api/auth/[...all]/route.ts`
 
-- [ ] **Step 1: Write `lib/auth.ts`**
+- [x] **Step 1: Write `lib/auth.ts`**
 
 ```ts
 import { betterAuth } from "better-auth";
@@ -454,7 +454,7 @@ export const auth = betterAuth({
 export type Session = typeof auth.$Infer.Session;
 ```
 
-- [ ] **Step 2: Write `lib/auth-client.ts`**
+- [x] **Step 2: Write `lib/auth-client.ts`**
 
 ```ts
 "use client";
@@ -467,7 +467,7 @@ export const authClient = createAuthClient({
 export const { useSession, signOut } = authClient;
 ```
 
-- [ ] **Step 3: Write `app/api/auth/[...all]/route.ts`**
+- [x] **Step 3: Write `app/api/auth/[...all]/route.ts`**
 
 ```ts
 import { auth } from "@/lib/auth";
@@ -476,12 +476,12 @@ import { toNextJsHandler } from "better-auth/next-js";
 export const { GET, POST } = toNextJsHandler(auth.handler);
 ```
 
-- [ ] **Step 4: Typecheck**
+- [x] **Step 4: Typecheck**
 
 Run: `pnpm exec tsc --noEmit lib/auth.ts lib/auth-client.ts`
 Expected: no errors in these files (other files still reference Firebase — ignore those).
 
-- [ ] **Step 5: Commit**
+- [x] **Step 5: Commit**
 
 ```bash
 git add lib/auth.ts lib/auth-client.ts app/api/auth
