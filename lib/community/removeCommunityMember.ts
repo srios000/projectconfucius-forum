@@ -1,33 +1,31 @@
-import { firestore } from "@/firebase/clientApp";
-import { doc, increment, writeBatch } from "firebase/firestore";
+import { db } from "@/lib/db";
+import { communities, communityMembers } from "@/lib/db/schema";
+import { and, eq, sql } from "drizzle-orm";
 
 /**
- * Removes a user from a community by deleting their membership snippet and decrementing the member count.
- * This is typically used by community administrators to moderate the member list.
+ * Removes a member from a community and decrements the member count.
+ * Typically used by moderators to manage the member list.
  * @param communityId - The unique identifier of the community.
- * @param memberId - The unique identifier of the user to be removed.
- * @returns A promise that resolves when the removal batch write is successfully committed.
+ * @param memberId - The local user id of the member to remove.
+ * @returns A promise that resolves when the transaction is committed.
  */
 export const removeCommunityMember = async (
   communityId: string,
   memberId: string
 ) => {
-  try {
-    const batch = writeBatch(firestore);
+  await db.transaction(async (tx) => {
+    await tx
+      .delete(communityMembers)
+      .where(
+        and(
+          eq(communityMembers.userId, memberId),
+          eq(communityMembers.communityId, communityId)
+        )
+      );
 
-    // Delete the user's community snippet
-    batch.delete(
-      doc(firestore, `users/${memberId}/communitySnippets`, communityId)
-    );
-
-    // Decrement the community member count
-    batch.update(doc(firestore, "communities", communityId), {
-      numberOfMembers: increment(-1),
-    });
-
-    await batch.commit();
-  } catch (error) {
-    console.error("Error removing community member", error);
-    throw error;
-  }
+    await tx
+      .update(communities)
+      .set({ numberOfMembers: sql`${communities.numberOfMembers} - 1` })
+      .where(eq(communities.id, communityId));
+  });
 };

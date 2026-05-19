@@ -1,33 +1,34 @@
-import { firestore } from "@/firebase/clientApp";
-import { doc, increment, writeBatch } from "firebase/firestore";
+import { db } from "@/lib/db";
+import { comments, posts } from "@/lib/db/schema";
+import { eq, sql } from "drizzle-orm";
 
 /**
- * Deletes a comment and all its threaded descendants, then updates the post's comment count.
- * This ensures that deleting a parent comment also removes all replies associated with it.
- * All deletions and the count update are performed in a Firestore batch.
- * @param commentId - The unique identifier of the comment to be deleted.
- * @param postId - The unique identifier of the post the comment belongs to.
- * @param descendantIds - An array of identifiers for all child comments to be deleted.
+ * Deletes a comment and all of its threaded descendants, then decrements the
+ * post's comment count by the number of comments removed.
+ *
+ * The descendant count is computed via a recursive CTE before deletion; the
+ * children themselves are removed automatically by the `parent_id`
+ * self-referential `ON DELETE CASCADE` foreign key.
+ * @param commentId - The id of the comment (subtree root) to delete.
+ * @param postId - The id of the post the comment belongs to.
  * @returns A promise that resolves to the total number of comments deleted.
  */
-export const deleteComment = async (
-  commentId: string,
-  postId: string,
-  descendantIds: string[]
-) => {
-  const batch = writeBatch(firestore);
-  const allIdsToDelete = [commentId, ...descendantIds];
+export const deleteComment = async (commentId: string, postId: string) => {
+  return db.transaction(async (tx) => {
+    const ids = await tx.execute(sql`
+      WITH RECURSIVE t AS (
+        SELECT id FROM comments WHERE id = ${commentId}
+        UNION ALL SELECT c.id FROM comments c JOIN t ON c.parent_id = t.id
+      ) SELECT count(*)::int AS n FROM t`);
+    const n = (ids as unknown as { n: number }[])[0].n;
 
-  allIdsToDelete.forEach((id) => {
-    const commentDocRef = doc(firestore, "comments", id);
-    batch.delete(commentDocRef);
+    await tx.delete(comments).where(eq(comments.id, commentId));
+
+    await tx
+      .update(posts)
+      .set({ numberOfComments: sql`${posts.numberOfComments} - ${n}` })
+      .where(eq(posts.id, postId));
+
+    return n;
   });
-
-  const postDocRef = doc(firestore, "posts", postId);
-  batch.update(postDocRef, {
-    numberOfComments: increment(-allIdsToDelete.length),
-  });
-
-  await batch.commit();
-  return allIdsToDelete.length;
 };

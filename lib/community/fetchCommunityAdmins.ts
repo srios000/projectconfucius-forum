@@ -1,40 +1,34 @@
-import { firestore } from "@/firebase/clientApp";
-import { doc, getDoc } from "firebase/firestore";
-
-import { AdminUser } from "../../types/adminUser";
+import { db } from "@/lib/db";
+import { communityMembers, users } from "@/lib/db/schema";
+import { CommunityMember } from "@/types/communityMember";
+import { and, eq } from "drizzle-orm";
 
 /**
- * Retrieves the profile information for all administrators of a community.
- * This includes the community creator and any users explicitly added as admins.
- * @param creatorId - The unique identifier of the community creator.
- * @param adminIds - An optional array of unique identifiers for additional community admins.
- * @returns A promise that resolves to an array of admin user objects.
+ * Retrieves the moderators of a community (members with `isModerator = true`),
+ * joined with their user profile.
+ *
+ * Note: the previous `creatorId`/`adminIds` arguments were removed in Phase A —
+ * moderator status now lives on `community_members.isModerator`.
+ * @param communityId - The unique identifier of the community.
+ * @returns A promise that resolves to an array of moderator members.
  */
 export const fetchCommunityAdmins = async (
-  creatorId: string,
-  adminIds?: string[]
-): Promise<AdminUser[]> => {
-  const allAdminIds = [creatorId, ...(adminIds || [])];
-  const uniqueAdminIds = Array.from(new Set(allAdminIds));
+  communityId: string
+): Promise<CommunityMember[]> => {
+  const rows = await db
+    .select({ id: users.id, email: users.email, name: users.name })
+    .from(communityMembers)
+    .innerJoin(users, eq(communityMembers.userId, users.id))
+    .where(
+      and(
+        eq(communityMembers.communityId, communityId),
+        eq(communityMembers.isModerator, true)
+      )
+    );
 
-  const adminPromises = uniqueAdminIds.map((uid) =>
-    getDoc(doc(firestore, "users", uid))
-  );
-  const adminDocs = await Promise.all(adminPromises);
-
-  const adminUsers = adminDocs
-    .map((doc) => {
-      if (doc.exists()) {
-        const data = doc.data();
-        return {
-          uid: doc.id,
-          email: data.email,
-          displayName: data.displayName,
-        } as AdminUser;
-      }
-      return null;
-    })
-    .filter((user): user is AdminUser => user !== null);
-
-  return adminUsers;
+  return rows.map((r) => ({
+    id: r.id,
+    email: r.email || "Unknown email",
+    displayName: r.name ?? null,
+  }));
 };

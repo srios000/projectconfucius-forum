@@ -1,39 +1,42 @@
-import { firestore } from "@/firebase/clientApp";
+import { db } from "@/lib/db";
+import { communities, communityMembers } from "@/lib/db/schema";
 import { CommunitySnippet } from "@/types/community";
-import { doc, increment, writeBatch } from "firebase/firestore";
+import { eq, sql } from "drizzle-orm";
 
 /**
- * Joins a user to a community by creating a membership snippet and incrementing the member count.
- * This operation is performed as a batch write to ensure data consistency.
- * @param userId - The unique identifier of the user joining the community.
+ * Joins a user to a community and increments the member count.
+ * Runs as a transaction so the membership row and the counter stay consistent.
+ * @param userId - The local user id of the user joining the community.
  * @param communityId - The unique identifier of the community being joined.
- * @param communityImageURL - The current image URL of the community to be stored in the user's snippet.
- * @param isCreatorOrAdmin - Whether the user should be granted admin privileges upon joining.
+ * @param communityImageURL - Optional community image URL stored in the returned snippet.
+ * @param isCreatorOrAdmin - Whether the user should be granted moderator privileges.
  * @returns A promise that resolves to the newly created community snippet.
  */
 export const joinCommunity = async (
   userId: string,
   communityId: string,
-  communityImageURL: string,
-  isCreatorOrAdmin: boolean
-) => {
-  const batch = writeBatch(firestore);
+  communityImageURL?: string,
+  isCreatorOrAdmin?: boolean
+): Promise<CommunitySnippet> => {
+  await db.transaction(async (tx) => {
+    await tx
+      .insert(communityMembers)
+      .values({
+        userId,
+        communityId,
+        isModerator: !!isCreatorOrAdmin,
+      })
+      .onConflictDoNothing();
 
-  const newSnippet: CommunitySnippet = {
-    communityId: communityId,
-    imageURL: communityImageURL || "",
-    isAdmin: isCreatorOrAdmin,
-  };
-
-  batch.set(
-    doc(firestore, `users/${userId}/communitySnippets`, communityId),
-    newSnippet
-  );
-
-  batch.update(doc(firestore, "communities", communityId), {
-    numberOfMembers: increment(1),
+    await tx
+      .update(communities)
+      .set({ numberOfMembers: sql`${communities.numberOfMembers} + 1` })
+      .where(eq(communities.id, communityId));
   });
 
-  await batch.commit();
-  return newSnippet;
+  return {
+    communityId,
+    imageUrl: communityImageURL || undefined,
+    isModerator: !!isCreatorOrAdmin,
+  };
 };

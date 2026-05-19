@@ -1,13 +1,15 @@
-import { storage } from "@/firebase/clientApp";
-import { deleteObject, ref } from "firebase/storage";
+import { db } from "@/lib/db";
+import { users } from "@/lib/db/schema";
+import { eq } from "drizzle-orm";
 
 /**
- * Deletes a user's profile image from Firebase Storage.
- * This is typically called when a user resets their profile picture to the default.
- * @param userId - The unique identifier of the user whose profile image is being deleted.
- * @returns A promise that resolves when the image has been successfully removed from storage.
+ * Clears a user's profile image URL.
+ * @param userId - The local user id.
+ * @returns A promise that resolves when the user row is updated.
  */
 export const deleteProfileImage = async (userId: string) => {
-  const imageRef = ref(storage, `users/${userId}/profileImage`);
-  await deleteObject(imageRef);
+  await db
+    .update(users)
+    .set({ imageUrl: null })
+    .where(eq(users.id, userId));
 };

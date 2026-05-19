@@ -1,18 +1,21 @@
-import { firestore } from "@/firebase/clientApp";
-import { doc, updateDoc } from "firebase/firestore";
+import { db } from "@/lib/db";
+import { communities } from "@/lib/db/schema";
+import { eq } from "drizzle-orm";
 
 /**
- * Updates the privacy setting for a community.
- * This determines whether the community is public, restricted, or private.
+ * Updates the privacy setting for a community (public, restricted, or private).
  * @param communityId - The unique identifier of the community.
- * @param privacyType - The new privacy setting to be applied.
- * @returns A promise that resolves when the community document is updated.
+ * @param privacyType - The new privacy setting to apply.
+ * @returns A promise that resolves when the community row is updated.
  */
 export const updateCommunityPrivacy = async (
   communityId: string,
   privacyType: string
 ) => {
-  await updateDoc(doc(firestore, "communities", communityId), {
-    privacyType,
-  });
+  await db
+    .update(communities)
+    .set({
+      privacyType: privacyType as "public" | "restricted" | "private",
+    })
+    .where(eq(communities.id, communityId));
 };

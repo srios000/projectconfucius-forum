@@ -1,51 +1,34 @@
-import { firestore } from "@/firebase/clientApp";
-import { collection, doc, getDoc, getDocs } from "firebase/firestore";
+import { db } from "@/lib/db";
+import { communityMembers, users } from "@/lib/db/schema";
 import { CommunityMember } from "@/types/communityMember";
+import { eq } from "drizzle-orm";
 
 /**
- * Retrieves a list of all members belonging to a specific community.
- * Members are identified by the presence of a community snippet in their user profile.
- * The resulting list is sorted alphabetically by display name or email.
+ * Retrieves all members of a community, joined with their user profile,
+ * sorted alphabetically by display name (falling back to email).
  * @param communityId - The unique identifier of the community.
- * @returns A promise that resolves to a sorted array of community member objects.
+ * @returns A promise that resolves to a sorted array of community members.
  */
 export const fetchCommunityMembers = async (
   communityId: string
 ): Promise<CommunityMember[]> => {
-  const usersSnapshot = await getDocs(collection(firestore, "users"));
+  const rows = await db
+    .select({ id: users.id, email: users.email, name: users.name })
+    .from(communityMembers)
+    .innerJoin(users, eq(communityMembers.userId, users.id))
+    .where(eq(communityMembers.communityId, communityId));
 
-  const members = await Promise.all(
-    usersSnapshot.docs.map(async (userDoc) => {
-      const snippetDoc = await getDoc(
-        doc(firestore, "users", userDoc.id, "communitySnippets", communityId)
-      );
+  const members: CommunityMember[] = rows.map((r) => ({
+    id: r.id,
+    email: r.email || "Unknown email",
+    displayName: r.name ?? null,
+  }));
 
-      if (!snippetDoc.exists()) {
-        return null;
-      }
-
-      const data = userDoc.data() as {
-        email?: string;
-        displayName?: string | null;
-      };
-
-      return {
-        uid: userDoc.id,
-        email: data.email || "Unknown email",
-        displayName: data.displayName ?? null,
-      } satisfies CommunityMember;
-    })
-  );
-
-  const filteredMembers = members.filter(
-    (member): member is CommunityMember => !!member
-  );
-
-  filteredMembers.sort((a, b) => {
+  members.sort((a, b) => {
     const nameA = (a.displayName || a.email).toLowerCase();
     const nameB = (b.displayName || b.email).toLowerCase();
     return nameA.localeCompare(nameB);
   });
 
-  return filteredMembers;
+  return members;
 };
