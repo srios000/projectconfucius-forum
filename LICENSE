@@ -1,21 +1,85 @@
-MIT License
+# Licenses
+
+---
+
+## Part I — Original Work
+
+The original codebase on which this project is based is licensed under the MIT License by its original author. That copyright notice and permission notice are reproduced below in full, as required by the MIT License.
+
+---
+
+**MIT License**
 
 Copyright (c) 2022 Maruf Bepary
 
-Permission is hereby granted, free of charge, to any person obtaining a copy
-of this software and associated documentation files (the "Software"), to deal
-in the Software without restriction, including without limitation the rights
-to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-copies of the Software, and to permit persons to whom the Software is
-furnished to do so, subject to the following conditions:
+Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
 
-The above copyright notice and this permission notice shall be included in all
-copies or substantial portions of the Software.
+The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
 
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-SOFTWARE.
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+
+---
+
+## Part II — Modifications and Additions
+
+All modifications, additions, and new files contributed to this repository beyond the original work described in Part I are copyright (c) their respective contributors and are licensed under the terms below.
+
+This license is based on the GNU Affero General Public License, Version 3 ("AGPL v3"), with the following Additional Restriction and Additional Permissions applied under the authority granted by Section 7 of the GNU General Public License v3. Because of the Additional Restriction (Section A below), this license is not identical to the AGPL v3 and is not OSI-approved. The full text of the AGPL v3 is incorporated by reference and is available at:
+
+> <https://www.gnu.org/licenses/agpl-3.0.txt>
+
+The terms of the AGPL v3 apply in full except as modified by the following sections.
+
+---
+
+### A. Additional Restriction — Non-Commercial Use Only
+*Applied under GNU GPL v3, Section 7(e)*
+
+You may not use, run, deploy, distribute, sublicense, or otherwise exercise any rights granted by the AGPL v3 for Commercial Purposes without obtaining a separate written commercial license from the copyright holder.
+
+**"Commercial Purposes"** means any use intended for or directed toward commercial advantage or private monetary compensation, including but not limited to:
+
+1. Running the software as a paid or monetised service (SaaS, subscription, freemium, or advertising-supported);
+2. Integrating the software into a product or service that is sold, licensed, or otherwise provided in exchange for payment;
+3. Using the software in the internal operations of a for-profit organisation where that use directly supports revenue-generating activities.
+
+Use by non-profit organisations, educational institutions, and individuals for personal, academic, or research purposes is not considered Commercial and does not require a separate license, provided all other terms of this license are met.
+
+To enquire about a commercial license, contact the copyright holder directly.
+
+---
+
+### B. Additional Permission — Private and Internal Deployments
+*Applied under GNU GPL v3, Section 7*
+
+If you deploy a modified version of the software solely for private or internal use — meaning the software is not made available over a network to any users outside your own organisation or household — you are not required to make the corresponding source code of your modifications available under Section 13 of the AGPL v3.
+
+This exception does not apply once the software is exposed over a network, even partially, to external users. In that case the full source-disclosure requirements of the AGPL v3 apply.
+
+---
+
+### C. Additional Permission — Project Confucius Licensor Exception
+*Applied under GNU GPL v3, Section 7*
+
+The copyright holder of the modifications (Project Confucius and its authorised contributors) retains the right to use, deploy, sublicense, and distribute those modifications under terms other than this license, including proprietary or commercial terms, without being bound by the copyleft or non-commercial requirements set out above.
+
+This exception applies solely to the copyright holder and does not extend to any third party.
+
+---
+
+### Summary of Rights and Obligations *(non-binding reference)*
+
+**You can:**
+- Use, study, modify, and self-host this software for non-commercial purposes
+- Distribute copies or modified versions for non-commercial purposes, provided you: (a) keep this license intact, (b) make your source code available under the same terms, and (c) prominently state your changes
+- Deploy internally without sharing source, as long as no external users access the deployment over a network (Section B)
+
+**You cannot:**
+- Use this software for Commercial Purposes without a separate license
+- Distribute it under different terms (except as permitted in Section C)
+- Remove or obscure this license or the original MIT notice in Part I
+
+**You must** (when distributing or operating as a network service to external users):
+- Make the complete corresponding source code available under this license
+- Preserve all copyright notices, including the MIT notice in Part I
+- Clearly indicate any modifications you have made

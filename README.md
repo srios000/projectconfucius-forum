@@ -1,127 +1,201 @@
-# **Circus Discussions**
-*Forum Discussions Web Application*
+# Circus Discussions
 
-<img width="1000" alt="cover" src="https://github.com/mbeps/next_discussion_platform/assets/58662575/21829226-db49-4f91-815c-8af72ff6dacf">
+**A community discussion forum.** Circus handles communities, threaded posts and comments, voting, saved posts, and admin controls. This repository is a fork adapted for Project Confucius — migrating authentication to Better Auth, the database to Postgres with Drizzle, and delegating sign-in to a central auth app at `login.projectconfucius.id`.
 
 ---
 
-Introducing Circus, a discussion platform built on Next.js, Postgres, and Drizzle. It covers communities, voting, saved posts, and admin controls.
-Users join and manage communities, post with images, vote, share, and save posts for later. Threaded comments and search keep discussions connected.
-Authentication is delegated to the central `login.projectconfucius.id` app via a sibling Better Auth instance — there is no sign-up or sign-in inside the forum. Profile edits sync to posts and comments. The UI is responsive with light/dark mode and global toasts.
+## Table of Contents
 
-# **Requirements**
-These are the requirements needed to run the project:
-- Node.js 20.12+
-- pnpm 9+
-- A Postgres database for the forum's own data (the project uses [Neon](https://neon.tech/))
-- Read access to the shared auth Postgres database — an `auth_sibling` role provided by the `projectconfucius-auth` owner
-- A running / deployed `login.projectconfucius.id` central auth app for end-to-end sign-in
+- [Features](#features)
+- [Stack](#stack)
+- [Architecture Overview](#architecture-overview)
+- [Requirements](#requirements)
+- [Getting Started](#getting-started)
+- [Running via Docker](#running-via-docker)
+- [Environment Variables](#environment-variables)
+- [Troubleshooting](#troubleshooting)
 
-# **Features**
-## **Authentication & Account Management**
-Authentication is handled by the central `login.projectconfucius.id` app; the forum is a sibling consumer of that session (a shared `.projectconfucius.id` cookie):
-- Sign-up and sign-in happen on the central login app — the forum has no local auth UI
-- "Log In" / "Sign Up" redirect to the central app; sign-out clears the shared session
-- A local user row is provisioned automatically on first authenticated request (dual-key relink by auth id / email)
-- Read and vote-ranked feeds are available to guests; mutations require an authenticated session
-- Users can update their username, with changes synced to their posts and comments (profile image upload is deferred to a later phase)
+---
 
-## **Community**
-The system has several key community management features designed to promote engagement and collaboration among users:
-- Users can create communities with public, restricted, or private types
-- Users can subscribe and unsubscribe to and from a community
-- Admins can upload, change, or delete the community logo
-- Admins can change community visibility
-- Admins can add or remove other admins
-- Admins can remove members from a community
-- Users can view and paginate public and restricted communities, grouped by moderating, joined, or discover
-- Admins can delete a community with cascade cleanup of posts, comments, votes, snippets, and images
+## Features
 
-## **Posts**
-The system has several key features designed to make it easy for users to create and view posts within communities:
-- Users can create a post in a specific community with an optional image
-- Users can browse infinite feeds per community or home, with personalized subscribed feeds and a vote-ranked feed for guests
-- Users can open a post to interact with threaded comments
-- Users can view posts from subscribed communities and discover posts from all communities
-- Users can delete a post they have created
-- Users can vote on a post
-- Users can share a post
-- Users can save and unsave posts, and review them in a saved posts modal
+### Authentication & Accounts
 
-## **Comments**
-The web application has several key features designed to make it easy for users to engage with others by creating and viewing comments:
-- Users can create threaded replies to posts and comments
-- Users can view nested comments in a post
-- Users can delete a comment they created
-- Comment counts stay in sync when threads change
+Authentication is handled entirely by the central `login.projectconfucius.id` app. The forum consumes the shared `.projectconfucius.id` session cookie — there is no local sign-up or sign-in UI.
 
-## **General**
-The system has several general features to make the site user-friendly and accessible:
-- Logged-in users can view an infinite home feed from communities they are subscribed to
-- Logged-out users can view a vote-ranked home feed from all communities
+- Sign-in and sign-up redirect to the central login app; sign-out clears the shared session
+- A local user row is provisioned automatically on first authenticated request (dual-key relink by auth ID / email)
+- Guests can read and browse vote-ranked feeds; all mutations require an authenticated session
+- Users can update their username; changes sync to their posts and comments
+
+### Communities
+
+- Create communities with public, restricted, or private visibility
+- Subscribe and unsubscribe from communities
+- Browse and paginate communities grouped by: moderating, joined, or discover
+- Admins can upload, change, or remove the community logo
+- Admins can change visibility, add or remove other admins, and remove members
+- Admins can delete a community with full cascade cleanup (posts, comments, votes, saved posts, images)
+
+### Posts
+
+- Create posts in a community with an optional image attachment
+- Infinite-scroll feeds per community or home — personalized for logged-in users, vote-ranked for guests
+- Vote, share, save, and unsave posts; review saved posts in a dedicated modal
+- Delete your own posts
+
+### Comments
+
+- Threaded replies to posts and to other comments
+- Nested comment rendering within a post view
+- Delete your own comments; comment counts stay in sync as threads change
+
+### General
+
 - Global search modal for public communities and recent posts
 - Community discovery and recommendations with infinite scroll
-- System UI is responsive, hence it can be used on smartphones, tablets, or computers
-- Global light/dark-mode toggle with preference persistence across sessions
+- Responsive layout for mobile, tablet, and desktop
+- Light/dark mode toggle with preference persisted across sessions
 - Toast notifications for key actions
 
-# **Stack**
-These are the main technologies that were used in this project:
+---
 
-## **Front-End**
-- [**TypeScript**](https://www.typescriptlang.org/): Typed React code for safer changes and strong editor support.
-- [**Next.js (App Router)**](https://nextjs.org/): Runs on Next.js 16 with the App Router on React 18, using server components, streaming layouts, and route handlers in `app/`.
-- [**Jotai State Manager**](https://github.com/pmndrs/jotai/): Lightweight global state for posts, votes, communities, saved posts, and modals.
-- [**Chakra UI**](https://chakra-ui.com/): Chakra UI 3 with a custom theme, Emotion styling, and `next-themes` for persistent light/dark mode.
+## Stack
 
+### Front-End
 
-## **Back-End**
-- [**Postgres**](https://www.postgresql.org/): The forum's own database (hosted on [Neon](https://neon.tech/)) stores communities, posts, comments, votes, members, and saved posts. Counters and threaded deletes are kept consistent with transactions and a recursive CTE.
-- [**Drizzle ORM**](https://orm.drizzle.team/): Type-safe schema and queries; migrations managed with `drizzle-kit` (`pnpm db:generate` / `pnpm db:migrate`).
-- [**Better Auth**](https://www.better-auth.com/): A sibling instance of the central `login.projectconfucius.id` auth app. It reads the shared auth Postgres (read-only `auth_sibling` role) and never migrates it; the forum has no local sign-up/sign-in.
+| Technology | Role |
+|---|---|
+| [TypeScript](https://www.typescriptlang.org/) | Typed React code for safer changes and strong editor support |
+| [Next.js 16 (App Router)](https://nextjs.org/) | Server components, streaming layouts, and route handlers in `app/` |
+| [Jotai](https://github.com/pmndrs/jotai/) | Lightweight global state for posts, votes, communities, saved posts, and modals |
+| [Chakra UI 3](https://chakra-ui.com/) | Component library with a custom theme; `next-themes` for light/dark mode |
 
-# **Running Application Locally**
-These are simple steps to run the application locally. For more detail instructions, refer to the [Wiki](https://github.com/mbeps/next_discussion_platform/wiki). 
+### Back-End
 
-## 1. **Clone the Project Locally**
-```sh
-git clone https://github.com/mbeps/next_discussion_platform.git
+| Technology | Role |
+|---|---|
+| [Postgres (Neon)](https://neon.tech/) | Forum database — communities, posts, comments, votes, members, saved posts |
+| [Drizzle ORM](https://orm.drizzle.team/) | Type-safe schema and queries; migrations managed with `drizzle-kit` |
+| [Better Auth](https://www.better-auth.com/) | Sibling instance consuming the shared auth Postgres (read-only); no local auth migrations |
+
+---
+
+## Architecture Overview
+
+Circus operates alongside two other services:
+
+```
+┌─────────────────────────────────┐      ┌──────────────────────────────────┐
+│   login.projectconfucius.id     │      │   Circus (this app)              │
+│   Central Auth App              │      │   Forum                          │
+│                                 │      │                                  │
+│  - Sign-up / sign-in UI         │◄────►│  - No local auth UI              │
+│  - Issues shared session cookie │      │  - Reads session via Better Auth │
+│  - Owns the auth Postgres DB    │      │  - Provisions local user on      │
+│                                 │      │    first authenticated request   │
+└─────────────────────────────────┘      └──────────────────────────────────┘
+              │                                         │
+              │  auth Postgres (read-only via           │  forum Postgres
+              │  auth_sibling role)                     │  (Neon, read-write)
+              ▼                                         ▼
+     ┌─────────────────┐                      ┌─────────────────┐
+     │  Auth DB        │                      │  Forum DB       │
+     │  (users,        │                      │  (communities,  │
+     │   sessions)     │                      │   posts, votes) │
+     └─────────────────┘                      └─────────────────┘
 ```
 
-## 2. **Install Dependencies**
+The forum never writes to the auth database and never runs migrations against it.
+
+---
+
+## Requirements
+
+- Node.js 20.12+
+- pnpm 9+
+- A Postgres database for the forum (the project uses [Neon](https://neon.tech/))
+- Read access to the shared auth Postgres via an `auth_sibling` role (provisioned by the `projectconfucius-auth` owner)
+- The central `login.projectconfucius.id` app running and reachable for end-to-end sign-in
+
+---
+
+## Getting Started
+
+### 1. Clone the Repository
+
+```sh
+git clone https://github.com/srios000/projectconfucius-forum.git
+cd circus-discussions
+```
+
+### 2. Install Dependencies
+
 ```sh
 pnpm install
 ```
 
-## 3. **Set Up Environment**
-1. Copy `.env.example` to `.env`
-2. Populate it with:
-   - `DATABASE_URL` — the forum's own Postgres (Neon) connection string
-   - `AUTH_DATABASE_URL` — read-only `auth_sibling` connection to the shared auth Postgres (from the `projectconfucius-auth` owner)
-   - `BETTER_AUTH_URL`, `BETTER_AUTH_SECRET`, `NEXT_PUBLIC_BETTER_AUTH_URL` — sibling Better Auth config (the public URL points at the central login app)
+### 3. Configure Environment
 
-## 4. **Set Up the Database**
-Generate and apply the Drizzle migrations against your `DATABASE_URL` (the forum never migrates the shared auth database):
+Copy the example environment file and fill in your values:
+
 ```sh
-pnpm db:generate   # generate SQL migrations from lib/db/schema.ts
-pnpm db:migrate    # apply them to the forum Postgres
+cp .env.example .env
 ```
 
-## 5. **Run Project**
+See the [Environment Variables](#environment-variables) section for a full reference.
+
+### 4. Set Up the Database
+
+Generate and apply Drizzle migrations against the forum database only. The auth database is never migrated from this app.
+
+```sh
+pnpm db:generate   # generate SQL from lib/db/schema.ts
+pnpm db:migrate    # apply migrations to the forum Postgres
+```
+
+### 5. Run the Dev Server
+
 ```sh
 pnpm dev
 ```
-This should run the project on `localhost:3000`. Sign-in flows require the central `login.projectconfucius.id` app to be reachable.
 
-# **Running via Docker**
-You can build and run the application through Docker. This requires a completed `.env` file (see *Set Up Environment* above) and a reachable Postgres database.
+The app runs at `http://localhost:3000`. Sign-in flows require the central `login.projectconfucius.id` app to be reachable.
 
-Once everything is ready, use the command below to run the application.
+---
+
+## Running via Docker
+
+Ensure your `.env` file is complete and your Postgres database is reachable before building.
+
 ```sh
 docker-compose -f docker/docker-compose.yml up --build
 ```
 
-# **Demo**
-This video demonstrates the features and functionality of the project. 
+---
 
-https://user-images.githubusercontent.com/58662575/236821702-25dfb59c-162f-4de5-af8f-e0e7b8315aae.mp4
+## Environment Variables
+
+| Variable | Required | Description |
+|---|---|---|
+| `DATABASE_URL` | ✅ | Connection string for the forum's own Postgres (Neon) |
+| `AUTH_DATABASE_URL` | ✅ | Read-only connection to the shared auth Postgres using the `auth_sibling` role — obtain this from the `projectconfucius-auth` owner |
+| `BETTER_AUTH_SECRET` | ✅ | A long, random secret string used to sign sessions. Generate one with `openssl rand -base64 32` |
+| `BETTER_AUTH_URL` | ✅ | Internal URL of the Better Auth instance (typically `http://localhost:3000` locally) |
+| `NEXT_PUBLIC_BETTER_AUTH_URL` | ✅ | Public-facing URL of the central login app (`https://login.projectconfucius.id`). This is what the browser redirects to for sign-in |
+
+---
+
+## Troubleshooting
+
+**Sign-in redirects loop or fail**
+The central `login.projectconfucius.id` app must be running and accessible. Locally, you may need to run both apps simultaneously. Verify `NEXT_PUBLIC_BETTER_AUTH_URL` points to the correct URL.
+
+**`AUTH_DATABASE_URL` connection refused**
+This database is owned by the `projectconfucius-auth` project. Request the `auth_sibling` role credentials from the auth project owner — the forum does not and cannot create this role itself.
+
+**Migrations fail**
+`pnpm db:migrate` only runs against `DATABASE_URL` (the forum database). Never point `DATABASE_URL` at the auth database.
+
+**User not provisioned after sign-in**
+If a user signs in successfully at the central app but has no local row in the forum database, check that `AUTH_DATABASE_URL` is correct and that the `auth_sibling` role has read access to the `users` and `sessions` tables.
