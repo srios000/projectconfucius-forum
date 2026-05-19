@@ -1,13 +1,13 @@
 import { Button, Icon, Image, Stack, Text } from "@chakra-ui/react";
-import { User } from "firebase/auth";
+import { SessionUser } from "@/types/sessionUser";
 import React, { RefObject } from "react";
 import { MdAccountCircle } from "react-icons/md";
 
 type UserImageSectionProps = {
-  user: User | null | undefined;
+  user: SessionUser | null | undefined;
   selectedFile: string | undefined;
   isEditing: boolean;
-  selectFileRef: RefObject<HTMLInputElement>;
+  selectFileRef: RefObject<HTMLInputElement | null>;
   onSelectFile: (event: React.ChangeEvent<HTMLInputElement>) => void;
   setDeleteImage: (value: boolean) => void;
   deleteImage: boolean;
@@ -36,9 +36,9 @@ const UserImageSection: React.FC<UserImageSectionProps> = ({
   return (
     <>
       <Stack direction="column" align="center" justify="center" p={2}>
-        {user?.photoURL || selectedFile ? (
+        {user?.image || selectedFile ? (
           <Image
-            src={selectedFile || (user?.photoURL as string)}
+            src={selectedFile || (user?.image as string)}
             alt="User Photo"
             height="120px"
             borderRadius="full"
@@ -48,7 +48,7 @@ const UserImageSection: React.FC<UserImageSectionProps> = ({
           <Icon fontSize={120} mr={1} color="gray.300" as={MdAccountCircle} />
         )}
         <Text fontSize="xl" color={{ base: "gray.700", _dark: "gray.200" }}>
-          {user?.displayName}
+          {user?.name}
         </Text>
       </Stack>
 
@@ -59,7 +59,7 @@ const UserImageSection: React.FC<UserImageSectionProps> = ({
             height={34}
             onClick={() => selectFileRef.current?.click()}
           >
-            {user?.photoURL ? "Change Image" : "Add Image"}
+            {user?.image ? "Change Image" : "Add Image"}
           </Button>
           <input
             id="file-upload"
@@ -69,7 +69,7 @@ const UserImageSection: React.FC<UserImageSectionProps> = ({
             ref={selectFileRef}
             onChange={onSelectFile}
           />
-          {user?.photoURL && (
+          {user?.image && (
             <Button
               flex={1}
               height={34}

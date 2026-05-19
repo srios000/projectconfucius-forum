@@ -8,7 +8,7 @@ import {
   Stack,
   Text,
 } from "@chakra-ui/react";
-import { User } from "firebase/auth";
+import { SessionUser } from "@/types/sessionUser";
 import React, { useState } from "react";
 import { CgProfile } from "react-icons/cg";
 import { LuPencil, LuReply, LuTrash } from "react-icons/lu";
@@ -32,13 +32,8 @@ type CommentItemProps = {
   loadingDelete: boolean;
   userId?: string;
   isCommunityAdmin?: boolean;
-  onCreateComment: (
-    user: User,
-    text: string,
-    parentId: string,
-    depth: number
-  ) => Promise<void>;
-  user?: User;
+  onCreateComment: (text: string, parentId?: string) => Promise<void>;
+  user?: SessionUser | null;
   canComment?: boolean;
 };
 
@@ -65,7 +60,7 @@ const CommentItem: React.FC<CommentItemProps> = ({
   const handleReply = async (text: string) => {
     if (!user) return;
     setReplyLoading(true);
-    await onCreateComment(user, text, comment.id, (comment.depth || 0) + 1);
+    await onCreateComment(text, comment.id);
     setReplyLoading(false);
     setIsReplying(false);
   };

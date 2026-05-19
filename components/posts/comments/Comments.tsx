@@ -16,14 +16,14 @@ import {
   createTreeCollection,
   TreeView,
 } from "@chakra-ui/react";
-import { User } from "firebase/auth";
-import React, { useState, useMemo } from "react";
+import { SessionUser } from "@/types/sessionUser";
+import React, { useMemo } from "react";
 import CommentInput from "./CommentInput";
 import CommentItem from "./CommentItem";
 import { LuChevronRight } from "react-icons/lu";
 
 type CommentsProps = {
-  user?: User;
+  user?: SessionUser | null;
   selectedPost: Post | null;
   communityId: string;
   isCommunityAdmin?: boolean;
@@ -59,7 +59,7 @@ const Comments: React.FC<CommentsProps> = ({
   );
 
   const handleCreateComment = async (text: string) => {
-    await createComment(user!, text);
+    await createComment(text);
   };
 
   const collection = useMemo(() => {
@@ -177,7 +177,7 @@ const Comments: React.FC<CommentsProps> = ({
                                 comment={comment}
                                 onDeleteComment={deleteComment}
                                 loadingDelete={deleteLoadingId === comment.id}
-                                userId={user?.uid}
+                                userId={user?.id}
                                 isCommunityAdmin={isCommunityAdmin}
                                 onCreateComment={createComment}
                                 user={user}
@@ -199,7 +199,7 @@ const Comments: React.FC<CommentsProps> = ({
                               comment={comment}
                               onDeleteComment={deleteComment}
                               loadingDelete={deleteLoadingId === comment.id}
-                              userId={user?.uid}
+                              userId={user?.id}
                               isCommunityAdmin={isCommunityAdmin}
                               onCreateComment={createComment}
                               user={user}

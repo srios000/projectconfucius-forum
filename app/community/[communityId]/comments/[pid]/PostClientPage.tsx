@@ -6,7 +6,7 @@ import PageContent from "@/components/layout/PageContent";
 import PostLoader from "@/components/loaders/post-loader/PostLoader";
 import Comments from "@/components/posts/comments/Comments";
 import PostItem from "@/components/posts/post-item/PostItem";
-import { auth } from "@/firebase/clientApp";
+import { useSession } from "@/lib/auth-client";
 import useCommunityPermissions from "@/hooks/community/useCommunityPermissions";
 import usePostDeletion from "@/hooks/posts/usePostDeletion";
 import usePostState from "@/hooks/posts/usePostState";
@@ -16,10 +16,8 @@ import RestrictedCommunityBanner from "@/components/community/RestrictedCommunit
 import { Community } from "@/types/community";
 import { Post } from "@/types/post";
 import { Stack } from "@chakra-ui/react";
-import { User } from "firebase/auth";
 import { useAtom } from "jotai";
 import React, { useEffect } from "react";
-import { useAuthState } from "react-firebase-hooks/auth";
 
 type PostPageProps = {
   communityData: Community;
@@ -46,7 +44,8 @@ const PostPage: React.FC<PostPageProps> = ({ communityData, postData }) => {
     communityStateValue.currentCommunity || communityData;
   const { isAdmin, canView, canPost, loading } =
     useCommunityPermissions(currentCommunity);
-  const [user] = useAuthState(auth);
+  const { data: session } = useSession();
+  const user = session?.user ?? null;
 
   useEffect(() => {
     setCommunityStateValue((prev) => ({
@@ -96,15 +95,13 @@ const PostPage: React.FC<PostPageProps> = ({ communityData, postData }) => {
                   (item) => item.postId === postStateValue.selectedPost!.id
                 )?.voteValue
               }
-              userIsCreator={
-                user?.uid === postStateValue.selectedPost.creatorId
-              }
+              userIsCreator={false}
               userIsAdmin={isAdmin}
               votingDisabled={!canPost}
             />
           )}
           <Comments
-            user={user as User}
+            user={user}
             selectedPost={postStateValue.selectedPost}
             communityId={postStateValue.selectedPost?.communityId as string}
             isCommunityAdmin={isAdmin}

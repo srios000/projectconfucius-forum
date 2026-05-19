@@ -20,7 +20,7 @@ const PostDetails: React.FC<PostDetailsProps> = ({
   post,
 }) => {
   const topText: string = `By ${post.creatorUsername} ${moment(
-    new Date(post.createTime.seconds * 1000)
+    new Date(post.createdAt)
   ).fromNow()}`;
 
   return (
@@ -36,11 +36,11 @@ const PostDetails: React.FC<PostDetailsProps> = ({
     >
       {showCommunityImage && (
         <>
-          {post.communityImageURL ? (
+          {post.communityImageUrl ? (
             <Image
               borderRadius="full"
               boxSize="18px"
-              src={post.communityImageURL}
+              src={post.communityImageUrl}
               mr={2}
               alt="Community logo"
             />

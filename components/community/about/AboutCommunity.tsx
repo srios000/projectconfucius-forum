@@ -23,9 +23,7 @@ const AboutCommunity: React.FC<AboutCommunityProps> = ({ communityData }) => (
       <Text fontWeight={700}>Created</Text>
       <Text>
         {communityData.createdAt &&
-          moment(new Date(communityData.createdAt.seconds * 1000)).format(
-            "MMM DD, YYYY"
-          )}
+          moment(new Date(communityData.createdAt)).format("MMM DD, YYYY")}
       </Text>
     </Flex>
   </Flex>

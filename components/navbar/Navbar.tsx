@@ -1,9 +1,8 @@
 import { defaultMenuItem } from "@/atoms/directoryMenuAtom";
-import { auth } from "@/firebase/clientApp";
+import { useSession } from "@/lib/auth-client";
 import useDirectory from "@/hooks/useDirectory";
 import { Flex, Image, Text } from "@chakra-ui/react";
 import React from "react";
-import { useAuthState } from "react-firebase-hooks/auth";
 import Directory from "./directory/Directory";
 import RightContent from "./right-content/RightContent";
 import SearchInput from "./SearchInput";
@@ -14,7 +13,8 @@ import SearchInput from "./SearchInput";
  * @returns A sticky, responsive navbar component.
  */
 const Navbar: React.FC = () => {
-  const [user, loading, error] = useAuthState(auth); // will be passed to child components
+  const { data: session, isPending } = useSession();
+  const user = session?.user ?? null; // passed to child components
   const { onSelectMenuItem } = useDirectory();
 
   return (
@@ -57,7 +57,7 @@ const Navbar: React.FC = () => {
       {user && <Directory />}
       <SearchInput />
       {/* Changes depending on whether user is authenticated or not */}
-      <RightContent user={user} loading={loading} />
+      <RightContent user={user} loading={isPending} />
     </Flex>
   );
 };

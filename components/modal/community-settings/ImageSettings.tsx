@@ -5,7 +5,7 @@ import React from "react";
 type ImageSettingsProps = {
   selectedFile: string;
   onSelectFile: (event: React.ChangeEvent<HTMLInputElement>) => void;
-  selectFileRef: React.RefObject<HTMLInputElement>;
+  selectFileRef: React.RefObject<HTMLInputElement | null>;
   currentCommunity: Community | null;
   deleteImage: boolean;
   setDeleteImage: (value: boolean) => void;
@@ -22,7 +22,7 @@ const ImageSettings: React.FC<ImageSettingsProps> = ({
   deleteImage,
   setDeleteImage,
 }) => {
-  const imageToDisplay = selectedFile || currentCommunity?.imageURL;
+  const imageToDisplay = selectedFile || currentCommunity?.imageUrl;
 
   return (
     <Stack>
@@ -49,7 +49,7 @@ const ImageSettings: React.FC<ImageSettingsProps> = ({
           <Button height="28px" onClick={() => selectFileRef.current?.click()}>
             Change Image
           </Button>
-          {(currentCommunity?.imageURL || selectedFile) && (
+          {(currentCommunity?.imageUrl || selectedFile) && (
             <Button
               height="28px"
               onClick={() => setDeleteImage(!deleteImage)}

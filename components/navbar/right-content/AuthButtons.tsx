@@ -1,38 +1,36 @@
-import { authModalStateAtom } from "@/atoms/authModalAtom";
 import { Button } from "@chakra-ui/react";
-import { useSetAtom } from "jotai";
 import React from "react";
 
 /**
- * Displays 2 authentication buttons which open the authentication modal when clicked:
- *  - `Log In`: opens the log in modal
- *  - `Sign Up`: opens the sign up modal
+ * Log In / Sign Up buttons. Both delegate to the central login app
+ * (`/api/auth/start`); the forum has no local auth UI.
  * @returns {React.FC} - Authentication buttons (log in and sign up)
  */
 const AuthButtons: React.FC = () => {
-  const setAuthModalState = useSetAtom(authModalStateAtom); // Set global state
   return (
     <>
-      <Button
-        variant="outline"
-        height="28px"
-        display={{ base: "none", md: "flex" }} // on mobile, this button is not displayed
-        width={{ base: "70px", md: "110px" }} // on mobile the width is 70px, on desktop 110px
-        mr={2}
-        ml={2}
-        onClick={() => setAuthModalState({ open: true, view: "login" })} // When clicked execute this function, the modal is opened in the log in view
-      >
-        Log In
-      </Button>
-      <Button
-        height="28px"
-        display={{ base: "none", md: "flex" }} // on mobile, this button is not displayed
-        width={{ base: "70px", md: "110px" }} // on mobile the width is 70px, on desktop 110px
-        mr={2} // margin right
-        onClick={() => setAuthModalState({ open: true, view: "signup" })} // When clicked execute this function, the modal is opened in the sign up view
-      >
-        Sign Up
-      </Button>
+      <a href="/api/auth/start">
+        <Button
+          variant="outline"
+          height="28px"
+          display={{ base: "none", md: "flex" }}
+          width={{ base: "70px", md: "110px" }}
+          mr={2}
+          ml={2}
+        >
+          Log In
+        </Button>
+      </a>
+      <a href="/api/auth/start">
+        <Button
+          height="28px"
+          display={{ base: "none", md: "flex" }}
+          width={{ base: "70px", md: "110px" }}
+          mr={2}
+        >
+          Sign Up
+        </Button>
+      </a>
     </>
   );
 };

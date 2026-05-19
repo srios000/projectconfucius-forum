@@ -141,9 +141,9 @@ const SearchModal: React.FC<SearchModalProps> = ({ isOpen, onClose }) => {
                               borderRadius="xl"
                               onClick={() => onSelectCommunity(item.id)}
                             >
-                              {item.imageURL ? (
+                              {item.imageUrl ? (
                                 <Image
-                                  src={item.imageURL}
+                                  src={item.imageUrl}
                                   borderRadius="full"
                                   boxSize="30px"
                                   mr={3}
@@ -196,9 +196,7 @@ const SearchModal: React.FC<SearchModalProps> = ({ isOpen, onClose }) => {
                               <Text fontSize="xs" color="gray.500">
                                 {item.communityId} • Posted by u/
                                 {item.creatorUsername}{" "}
-                                {moment(
-                                  new Date(item.createTime?.seconds * 1000)
-                                ).fromNow()}
+                                {moment(new Date(item.createdAt)).fromNow()}
                               </Text>
                             </Flex>
                           ))}

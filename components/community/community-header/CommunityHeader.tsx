@@ -9,8 +9,7 @@ import JoinOrLeaveButton from "./JoinOrLeaveButton";
 import CommunitySettings from "./CommunitySettings";
 import CommunityMembersButton from "./CommunityMembersButton";
 import ConfirmationDialog from "@/components/modal/ConfirmationDialog";
-import { auth } from "@/firebase/clientApp";
-import { useAuthState } from "react-firebase-hooks/auth";
+import { useSession } from "@/lib/auth-client";
 
 /**
  * @param {communityData} - data required to be displayed
@@ -36,7 +35,8 @@ type HeaderProps = {
 const CommunityHeader: React.FC<HeaderProps> = ({ communityData }) => {
   const { communityStateValue } = useCommunityState();
   const { onJoinOrLeaveCommunity, loading } = useCommunityMembershipActions();
-  const [user, authLoading] = useAuthState(auth);
+  const { data: session, isPending: authLoading } = useSession();
+  const user = session?.user ?? null;
   const isJoined = !!communityStateValue.mySnippets.find(
     (item) => item.communityId === communityData.id
   );
@@ -69,7 +69,7 @@ const CommunityHeader: React.FC<HeaderProps> = ({ communityData }) => {
         <Flex width="95%" maxWidth="1200px" align="center">
           {/* using state instead of fetching from db as no refresh of the page is required */}
           <CommunityIcon
-            imageURL={communityStateValue.currentCommunity?.imageURL}
+            imageURL={communityStateValue.currentCommunity?.imageUrl}
           />
 
           <Flex padding="10px 16px" width="100%">

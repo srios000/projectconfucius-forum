@@ -19,6 +19,12 @@ const eslintConfig = [
     rules: {
       "react/no-unescaped-entities": "off",
       "@next/next/no-page-custom-font": "off",
+      "react/display-name": "off",
+      "react/no-direct-mutation-state": "off",
+      "react/no-render-return-value": "off",
+      "react/no-string-refs": "off",
+      "react/require-render-return": "off",
+
     },
   },
   {

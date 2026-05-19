@@ -60,7 +60,7 @@ const Communities: React.FC<CommunitiesProps> = ({ handleCreateCommunity }) => {
           PRIVILEGED
         </Text>
         {mySnippets
-          .filter((snippet) => snippet.isAdmin)
+          .filter((snippet) => snippet.isModerator)
           .map((snippet) => (
             <MenuListItem
               key={snippet.communityId}
@@ -68,7 +68,7 @@ const Communities: React.FC<CommunitiesProps> = ({ handleCreateCommunity }) => {
               displayText={snippet.communityId}
               link={`/community/${snippet.communityId}`}
               iconColor={"red.500"}
-              imageURL={snippet.imageURL}
+              imageURL={snippet.imageUrl}
             />
           ))}
       </Box>
@@ -90,7 +90,7 @@ const Communities: React.FC<CommunitiesProps> = ({ handleCreateCommunity }) => {
             displayText={snippet.communityId}
             link={`/community/${snippet.communityId}`}
             iconColor={"red.500"}
-            imageURL={snippet.imageURL}
+            imageURL={snippet.imageUrl}
           />
         ))}
       </Box>

@@ -11,6 +11,7 @@ const baseCommunity: Community = {
   creatorId: "owner",
   numberOfMembers: 10,
   privacyType: "public",
+  createdAt: new Date(),
 };
 
 const memberSnippets: CommunitySnippet[] = [{ communityId: "fitness" }];

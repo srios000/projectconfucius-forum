@@ -6,7 +6,7 @@ import Recommendations from "@/components/community/recommendations/Recommendati
 import PageContent from "@/components/layout/PageContent";
 import PostLoader from "@/components/loaders/post-loader/PostLoader";
 import PostItem from "@/components/posts/post-item/PostItem";
-import { auth } from "@/firebase/clientApp";
+import { useSession } from "@/lib/auth-client";
 import useCommunityState from "@/hooks/community/useCommunityState";
 import usePostDeletion from "@/hooks/posts/usePostDeletion";
 import usePostSelection from "@/hooks/posts/usePostSelection";
@@ -17,7 +17,6 @@ import usePostsFeed from "@/hooks/posts/usePostsFeed";
 import useCustomToast from "@/hooks/useCustomToast";
 import { Button, Stack, Text } from "@chakra-ui/react";
 import { useEffect, useMemo } from "react";
-import { useAuthState } from "react-firebase-hooks/auth";
 
 /**
  * The main landing page of the application.
@@ -26,7 +25,8 @@ import { useAuthState } from "react-firebase-hooks/auth";
  * @returns The home page component with infinite scrolling posts.
  */
 export default function Home() {
-  const [user, loadingUser] = useAuthState(auth);
+  const { data: session, isPending: loadingUser } = useSession();
+  const user = session?.user ?? null;
   const { communityStateValue } = useCommunityState();
   const { postStateValue, setPostStateValue } = usePostState();
   const { onSelectPost } = usePostSelection(setPostStateValue);
@@ -106,11 +106,11 @@ export default function Home() {
                     (item) => item.postId === post.id
                   )?.voteValue
                 }
-                userIsCreator={user?.uid === post.creatorId}
+                userIsCreator={false}
                 userIsAdmin={
                   !!communityStateValue.mySnippets.find(
                     (snippet) => snippet.communityId === post.communityId
-                  )?.isAdmin
+                  )?.isModerator
                 }
                 showCommunityImage={true}
               />

@@ -1,4 +1,4 @@
-import { auth } from "@/firebase/clientApp";
+import { useSession } from "@/lib/auth-client";
 import useSelectFile from "@/hooks/useSelectFile";
 import useUserProfile from "@/hooks/useUserProfile";
 import {
@@ -15,7 +15,6 @@ import {
   Stack,
 } from "@chakra-ui/react";
 import React, { useRef, useState, useEffect } from "react";
-import { useAuthState } from "react-firebase-hooks/auth";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import UserImageSection from "./UserImageSection";
@@ -34,7 +33,8 @@ type ProfileModalProps = {
  * @returns Dialog with profile editing form.
  */
 const ProfileModal: React.FC<ProfileModalProps> = ({ open, handleClose }) => {
-  const [user] = useAuthState(auth);
+  const { data: session } = useSession();
+  const user = session?.user ?? null;
   const { updateImage, removeImage, updateName, loading } = useUserProfile();
   const { selectedFile, setSelectedFile, onSelectFile } = useSelectFile(
     300,
@@ -52,14 +52,14 @@ const ProfileModal: React.FC<ProfileModalProps> = ({ open, handleClose }) => {
   } = useForm<EditProfileInput>({
     resolver: zodResolver(editProfileSchema),
     defaultValues: {
-      displayName: user?.displayName || "",
+      displayName: user?.name || "",
     },
     mode: "onChange",
   });
 
   useEffect(() => {
-    if (user?.displayName) {
-      setValue("displayName", user.displayName);
+    if (user?.name) {
+      setValue("displayName", user.name);
     }
   }, [user, setValue]);
 
@@ -77,7 +77,7 @@ const ProfileModal: React.FC<ProfileModalProps> = ({ open, handleClose }) => {
     if (deleteImage) {
       await removeImage();
     }
-    if (data.displayName !== user?.displayName) {
+    if (data.displayName !== user?.name) {
       await updateName(data.displayName);
     }
     closeModal();
