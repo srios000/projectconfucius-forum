@@ -121,7 +121,7 @@ Co-Authored-By: Claude Opus 4.7 <noreply@anthropic.com>"
 - Create: `drizzle.config.ts`
 - Test: `tests/db/schema.test.ts`
 
-- [ ] **Step 1: Write `lib/db/schema.ts`**
+- [x] **Step 1: Write `lib/db/schema.ts`**
 
 ```ts
 import { pgTable, text, integer, smallint, boolean, timestamp, pgEnum, uniqueIndex, index, primaryKey } from "drizzle-orm/pg-core";
@@ -204,7 +204,7 @@ export const savedPosts = pgTable("saved_posts", {
 
 Self-FK note: `comments.parentId` is declared without a Drizzle `.references()` to avoid the circular-reference TS pitfall; the FK with `ON DELETE CASCADE` is added in the generated SQL migration manually in Task 3 Step 2.
 
-- [ ] **Step 2: Write `lib/db/index.ts`**
+- [x] **Step 2: Write `lib/db/index.ts`**
 
 ```ts
 import { drizzle } from "drizzle-orm/postgres-js";
@@ -219,7 +219,7 @@ export const db = drizzle(client, { schema });
 export * as schema from "./schema";
 ```
 
-- [ ] **Step 3: Write `drizzle.config.ts`**
+- [x] **Step 3: Write `drizzle.config.ts`**
 
 ```ts
 import { defineConfig } from "drizzle-kit";
@@ -232,7 +232,7 @@ export default defineConfig({
 });
 ```
 
-- [ ] **Step 4: Write the failing test `tests/db/schema.test.ts`**
+- [x] **Step 4: Write the failing test `tests/db/schema.test.ts`**
 
 ```ts
 import { describe, it, expect } from "vitest";
@@ -251,12 +251,12 @@ describe("forum schema", () => {
 });
 ```
 
-- [ ] **Step 5: Run test**
+- [x] **Step 5: Run test**
 
 Run: `pnpm test tests/db/schema.test.ts`
 Expected: PASS.
 
-- [ ] **Step 6: Commit**
+- [x] **Step 6: Commit**
 
 ```bash
 git add lib/db/schema.ts lib/db/index.ts drizzle.config.ts tests/db/schema.test.ts
