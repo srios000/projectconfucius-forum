@@ -741,7 +741,7 @@ Co-Authored-By: Claude Opus 4.7 <noreply@anthropic.com>"
 **Files:**
 - Modify: `C:\Users\sinta\projects\projectconfucius-auth\lib\auth.ts`
 
-- [ ] **Step 1: Add the forum host to `ALLOWED_HOSTS`**
+- [x] **Step 1: Add the forum host to `ALLOWED_HOSTS`**
 
 In `projectconfucius-auth/lib/auth.ts`, change:
 ```ts
@@ -753,12 +753,12 @@ const ALLOWED_HOSTS = [
 ```
 to add `"forum.projectconfucius.id",` as the last entry. `trustedOriginsProd` maps over `ALLOWED_HOSTS`, so `https://forum.projectconfucius.id` is included automatically. No cookie-domain change (already `.projectconfucius.id`).
 
-- [ ] **Step 2: Verify auth project still builds**
+- [x] **Step 2: Verify auth project still builds**
 
 Run (in the auth repo): `cd C:\Users\sinta\projects\projectconfucius-auth && pnpm exec tsc --noEmit`
 Expected: PASS.
 
-- [ ] **Step 3: Commit in the auth repo**
+- [x] **Step 3: Commit in the auth repo**
 
 ```bash
 cd C:\Users\sinta\projects\projectconfucius-auth
@@ -778,7 +778,7 @@ Co-Authored-By: Claude Opus 4.7 <noreply@anthropic.com>"
 - Modify: `types/post.ts`, `types/community.ts`, `types/comment.ts`, `types/communityMember.ts`, `types/savedPost.ts`
 - Delete: `types/authModal.ts`
 
-- [ ] **Step 1: Replace `Timestamp` with `Date` (or ISO `string`) across `types/*`**
+- [x] **Step 1: Replace `Timestamp` with `Date` (or ISO `string`) across `types/*`**
 
 In each file: remove `import { Timestamp } from "firebase/firestore";` and change every `Timestamp` field to `Date`. Specifically:
 - `types/post.ts`: `createTime: Timestamp` → `createdAt: Date`; rename `imageURL`→`imageUrl`, `communityImageURL`→`communityImageUrl`, `creatorUsername` unchanged. `PostVote` unchanged (no Timestamp).
@@ -789,11 +789,11 @@ In each file: remove `import { Timestamp } from "firebase/firestore";` and chang
 
 > **Executor note:** Field renames (`imageURL`→`imageUrl`, `createTime`→`createdAt`) ripple into components/hooks. Every subsequent task that touches a consumer must update references. The green gate `tsc --noEmit` is the safety net — it must be clean by Task 14.
 
-- [ ] **Step 2: Delete `types/authModal.ts`**
+- [x] **Step 2: Delete `types/authModal.ts`**
 
 Run: `git rm types/authModal.ts`
 
-- [ ] **Step 3: Commit**
+- [x] **Step 3: Commit**
 
 ```bash
 git add types/
