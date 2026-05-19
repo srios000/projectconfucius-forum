@@ -1146,12 +1146,12 @@ it("inserts membership and bumps member count", async () => {
 });
 ```
 
-- [ ] **Step 7: Run tests**
+- [x] **Step 7: Run tests**
 
 Run: `pnpm test tests/lib/community.test.ts tests/lib/comments.test.ts`
 Expected: PASS.
 
-- [ ] **Step 8: Commit**
+- [x] **Step 8: Commit**
 
 ```bash
 git add lib/community lib/comments lib/search lib/user-profile tests/lib/community.test.ts tests/lib/comments.test.ts
