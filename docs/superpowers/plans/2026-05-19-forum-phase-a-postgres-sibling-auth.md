@@ -1277,7 +1277,7 @@ Co-Authored-By: Claude Opus 4.7 <noreply@anthropic.com>"
 
 - [ ] **Step 3: Full green gate**
 
-Run: `pnpm test && pnpm exec tsc --noEmit && pnpm lint && pnpm build`
+Run: `pnpm test; pnpm typecheck; pnpm lint; pnpm build`
 Expected: all PASS. `pnpm build` must succeed with zero `firebase` modules in the graph.
 
 - [ ] **Step 4: Manual smoke (ask the user)**
