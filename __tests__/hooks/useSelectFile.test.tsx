@@ -54,7 +54,7 @@ describe("useSelectFile", () => {
     vi.stubGlobal("Image", MockImage as any);
     HTMLCanvasElement.prototype.getContext = vi.fn(() => ({
       drawImage: vi.fn(),
-    })) as typeof HTMLCanvasElement.prototype.getContext;
+    })) as unknown as typeof HTMLCanvasElement.prototype.getContext;
     HTMLCanvasElement.prototype.toDataURL = vi
       .fn()
       .mockReturnValue("data:image/jpeg;base64,mocked");

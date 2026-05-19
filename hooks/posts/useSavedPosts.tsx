@@ -1,14 +1,14 @@
-import { authModalStateAtom } from "@/atoms/authModalAtom";
 import { savedPostStateAtom } from "@/atoms/savedPostsAtom";
-import { auth } from "@/firebase/clientApp";
+import { useSession } from "@/lib/auth-client";
 import { Post } from "@/types/post";
-import { useAtom, useSetAtom } from "jotai";
-import { useEffect, useState } from "react";
-import { useAuthState } from "react-firebase-hooks/auth";
+import { useAtom } from "jotai";
+import { useState } from "react";
 import useCustomToast from "../useCustomToast";
-import { getSavedPosts as getSavedPostsLib } from "@/lib/posts/getSavedPosts";
-import { savePost } from "@/lib/posts/savePost";
-import { unsavePost } from "@/lib/posts/unsavePost";
+import {
+  getSavedPostsAction,
+  savePostAction,
+  unsavePostAction,
+} from "@/app/actions/posts";
 
 /**
  * A custom hook that manages the user's saved posts.
@@ -17,9 +17,9 @@ import { unsavePost } from "@/lib/posts/unsavePost";
  * @returns An object containing the saved posts state, loading state, and associated handlers.
  */
 const useSavedPosts = () => {
-  const [user] = useAuthState(auth);
+  const { data: session } = useSession();
+  const user = session?.user ?? null;
   const [savedPostState, setSavedPostState] = useAtom(savedPostStateAtom);
-  const setAuthModalState = useSetAtom(authModalStateAtom);
   const [loading, setLoading] = useState(false);
   const showToast = useCustomToast();
 
@@ -27,7 +27,7 @@ const useSavedPosts = () => {
     if (!user) return;
     setLoading(true);
     try {
-      const savedPosts = await getSavedPostsLib(user.uid);
+      const savedPosts = await getSavedPostsAction();
 
       setSavedPostState((prev) => ({
         ...prev,
@@ -46,7 +46,7 @@ const useSavedPosts = () => {
 
   const onSavePost = async (post: Post) => {
     if (!user) {
-      setAuthModalState({ open: true, view: "login" });
+      window.location.assign("/api/auth/start");
       return;
     }
 
@@ -56,7 +56,7 @@ const useSavedPosts = () => {
       );
 
       if (isSaved) {
-        await unsavePost(user.uid, post.id!);
+        await unsavePostAction(post.id!);
         setSavedPostState((prev) => ({
           ...prev,
           savedPosts: prev.savedPosts.filter((item) => item.postId !== post.id),
@@ -66,7 +66,7 @@ const useSavedPosts = () => {
           status: "success",
         });
       } else {
-        const newSavedPost = await savePost(user.uid, post);
+        const newSavedPost = await savePostAction(post);
         setSavedPostState((prev) => ({
           ...prev,
           savedPosts: [...prev.savedPosts, newSavedPost],
@@ -89,7 +89,7 @@ const useSavedPosts = () => {
   const onRemoveSavedPost = async (postId: string) => {
     if (!user) return;
     try {
-      await unsavePost(user.uid, postId);
+      await unsavePostAction(postId);
       setSavedPostState((prev) => ({
         ...prev,
         savedPosts: prev.savedPosts.filter((item) => item.postId !== postId),

@@ -34,7 +34,7 @@ const Communities: React.FC = () => {
           (s) => s.communityId === community.id
         );
         if (snippet) {
-          if (snippet.isAdmin) {
+          if (snippet.isModerator) {
             admin.push(community);
           } else {
             subscribed.push(community);

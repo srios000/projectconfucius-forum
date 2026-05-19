@@ -5,25 +5,26 @@
 
 ---
 
-Introducing Circus, a discussion platform built on Next.js and Firebase. It now covers communities, voting, saved posts, and admin controls.
+Introducing Circus, a discussion platform built on Next.js, Postgres, and Drizzle. It covers communities, voting, saved posts, and admin controls.
 Users join and manage communities, post with images, vote, share, and save posts for later. Threaded comments and search keep discussions connected.
-Authentication supports email/password plus Google and GitHub. Profile edits sync to posts and comments. The UI is responsive with light/dark mode and global toasts.
+Authentication is delegated to the central `login.projectconfucius.id` app via a sibling Better Auth instance — there is no sign-up or sign-in inside the forum. Profile edits sync to posts and comments. The UI is responsive with light/dark mode and global toasts.
 
 # **Requirements**
 These are the requirements needed to run the project:
-- Node.js 20+
-- Yarn 1.22+
-- Firebase project with Auth, Firestore, and Storage
-- Firebase CLI for deploying functions
+- Node.js 20.12+
+- pnpm 9+
+- A Postgres database for the forum's own data (the project uses [Neon](https://neon.tech/))
+- Read access to the shared auth Postgres database — an `auth_sibling` role provided by the `projectconfucius-auth` owner
+- A running / deployed `login.projectconfucius.id` central auth app for end-to-end sign-in
 
 # **Features**
 ## **Authentication & Account Management**
-The system has several key user authentication and account management features designed to ensure that users have a seamless and secure experience:
-- Users can sign up using email and password
-- Users can sign up using third-party authentication providers such as Google and GitHub
-- Users can log in and log out
-- Users can reset their password
-- Users can update their profile image and username, with changes synced to posts and comments
+Authentication is handled by the central `login.projectconfucius.id` app; the forum is a sibling consumer of that session (a shared `.projectconfucius.id` cookie):
+- Sign-up and sign-in happen on the central login app — the forum has no local auth UI
+- "Log In" / "Sign Up" redirect to the central app; sign-out clears the shared session
+- A local user row is provisioned automatically on first authenticated request (dual-key relink by auth id / email)
+- Read and vote-ranked feeds are available to guests; mutations require an authenticated session
+- Users can update their username, with changes synced to their posts and comments (profile image upload is deferred to a later phase)
 
 ## **Community**
 The system has several key community management features designed to promote engagement and collaboration among users:
@@ -75,7 +76,9 @@ These are the main technologies that were used in this project:
 
 
 ## **Back-End**
-- [**Firebase**](https://firebase.google.com/): Firestore, Auth, and Storage power the app; Cloud Functions sync user documents and remove saved posts when a post is deleted.
+- [**Postgres**](https://www.postgresql.org/): The forum's own database (hosted on [Neon](https://neon.tech/)) stores communities, posts, comments, votes, members, and saved posts. Counters and threaded deletes are kept consistent with transactions and a recursive CTE.
+- [**Drizzle ORM**](https://orm.drizzle.team/): Type-safe schema and queries; migrations managed with `drizzle-kit` (`pnpm db:generate` / `pnpm db:migrate`).
+- [**Better Auth**](https://www.better-auth.com/): A sibling instance of the central `login.projectconfucius.id` auth app. It reads the shared auth Postgres (read-only `auth_sibling` role) and never migrates it; the forum has no local sign-up/sign-in.
 
 # **Running Application Locally**
 These are simple steps to run the application locally. For more detail instructions, refer to the [Wiki](https://github.com/mbeps/next_discussion_platform/wiki). 
@@ -87,51 +90,33 @@ git clone https://github.com/mbeps/next_discussion_platform.git
 
 ## 2. **Install Dependencies**
 ```sh
-yarn install
+pnpm install
 ```
 
 ## 3. **Set Up Environment**
-1. Copy the `.env.example` file and call it `.env.local`
-2. Populate the `.env.local` with the required Firebase secrets 
+1. Copy `.env.example` to `.env`
+2. Populate it with:
+   - `DATABASE_URL` — the forum's own Postgres (Neon) connection string
+   - `AUTH_DATABASE_URL` — read-only `auth_sibling` connection to the shared auth Postgres (from the `projectconfucius-auth` owner)
+   - `BETTER_AUTH_URL`, `BETTER_AUTH_SECRET`, `NEXT_PUBLIC_BETTER_AUTH_URL` — sibling Better Auth config (the public URL points at the central login app)
 
-## 4. **Set Up Firebase**
-### **Set Up Cloud Functions**
-1. **Install Firebase tools**
+## 4. **Set Up the Database**
+Generate and apply the Drizzle migrations against your `DATABASE_URL` (the forum never migrates the shared auth database):
 ```sh
-npm install -g firebase-tools
+pnpm db:generate   # generate SQL migrations from lib/db/schema.ts
+pnpm db:migrate    # apply them to the forum Postgres
 ```
-
-2. **Initialise Firebase project**
-```sh
-firebase init
-```
-
-3. **Deploy cloud functions**
-```sh
-firebase deploy --only functions
-```
-
-### **Set Up Firestore Indexing**
-Set the following indexes in the `Firestore Database` under the `Indexes` section. 
-These support feed and comments queries.
-
-| Collection ID | Fields Indexed                                                      |
-| ------------- | ------------------------------------------------------------------- |
-| `posts`       | `communityId` Ascending `createdAt` Descending __name__ Descending  |
-| `comments`    | `postId` Ascending `createdAt` Descending __name__ Descending       |
-| `posts`       | `communityId` Ascending `createTime` Descending __name__ Descending |
 
 ## 5. **Run Project**
 ```sh
-yarn dev
+pnpm dev
 ```
-This should run the project on `localhost:3000`
+This should run the project on `localhost:3000`. Sign-in flows require the central `login.projectconfucius.id` app to be reachable.
 
 # **Running via Docker**
-You can build and run the application through Docker. This requires the `.env.local` file to be completed, refer to 
-installation instructions in the [Wiki](https://github.com/mbeps/next_discussion_platform/wiki/3.-Installation#step-32-obtain-firebase-secrets-and-add-them-to-the-envlocal-file) for setting it up.
+You can build and run the application through Docker. This requires a completed `.env` file (see *Set Up Environment* above) and a reachable Postgres database.
 
-Once everything is ready, use the command bellow to run the application. 
+Once everything is ready, use the command below to run the application.
 ```sh
 docker-compose -f docker/docker-compose.yml up --build
 ```

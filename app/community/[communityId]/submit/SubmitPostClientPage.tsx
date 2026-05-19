@@ -1,17 +1,15 @@
 "use client";
 
-import { authModalStateAtom } from "@/atoms/authModalAtom";
 import { communityStateAtom } from "@/atoms/communitiesAtom";
 import About from "@/components/community/about/About";
 import PageContent from "@/components/layout/PageContent";
 import AuthButtons from "@/components/navbar/right-content/AuthButtons";
 import NewPostForm from "@/components/posts/new-post-form/NewPostForm";
-import { auth } from "@/firebase/clientApp";
+import { useSession } from "@/lib/auth-client";
 import { Community } from "@/types/community";
 import { Box, Stack, Text } from "@chakra-ui/react";
-import { useAtom, useSetAtom } from "jotai";
+import { useAtom } from "jotai";
 import React, { useEffect } from "react";
-import { useAuthState } from "react-firebase-hooks/auth";
 import useCommunityPermissions from "@/hooks/community/useCommunityPermissions";
 import RestrictedCommunityBanner from "@/components/community/RestrictedCommunityBanner";
 import PostLoader from "@/components/loaders/post-loader/PostLoader";
@@ -28,10 +26,10 @@ type SubmitPostPageProps = {
  * @returns A page containing the post creation form or access restriction messages.
  */
 const SubmitPostPage: React.FC<SubmitPostPageProps> = ({ communityData }) => {
-  const [user] = useAuthState(auth);
+  const { data: session } = useSession();
+  const user = session?.user ?? null;
   const [communityStateValue, setCommunityStateValue] =
     useAtom(communityStateAtom);
-  const setAuthModalState = useSetAtom(authModalStateAtom);
 
   useEffect(() => {
     setCommunityStateValue((prev) => ({
@@ -79,8 +77,7 @@ const SubmitPostPage: React.FC<SubmitPostPageProps> = ({ communityData }) => {
         </Box>
         {user ? (
           <NewPostForm
-            user={user}
-            communityImageURL={currentCommunity.imageURL}
+            communityImageURL={currentCommunity.imageUrl}
             currentCommunity={currentCommunity}
           />
         ) : (

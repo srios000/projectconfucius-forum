@@ -1,53 +1,43 @@
-import { firestore } from "@/firebase/clientApp";
+import { db } from "@/lib/db";
+import { communities } from "@/lib/db/schema";
 import { Community } from "@/types/community";
-import {
-  collection,
-  DocumentData,
-  getDocs,
-  limit,
-  orderBy,
-  query,
-  QueryDocumentSnapshot,
-  startAfter,
-} from "firebase/firestore";
+import { and, desc, eq, lt, or } from "drizzle-orm";
+
+export type CommunityCursor = { createdAt: Date; id: string } | null;
 
 /**
- * Fetches a paginated list of communities, ordered by the number of members in descending order.
- * This is used for the community discovery feed and recommendations.
- * @param limitValue - The maximum number of communities to retrieve in a single request.
- * @param lastVisible - The Firestore document snapshot to start the query after (for pagination).
- * @returns A promise that resolves to an object containing the array of communities and the next pagination cursor.
+ * Fetches a paginated list of communities using keyset pagination on
+ * (createdAt, id) — the same cursor pattern as `getPosts`.
+ * @param limitValue - The maximum number of communities to retrieve.
+ * @param lastVisible - The keyset cursor returned by the previous page (or null/undefined for the first page).
+ * @returns A promise that resolves to the communities and the next pagination cursor.
  */
 export const getCommunities = async (
   limitValue: number,
-  lastVisible?: QueryDocumentSnapshot<DocumentData> | null
+  lastVisible?: CommunityCursor
 ) => {
-  let communityQuery;
-  if (!lastVisible) {
-    communityQuery = query(
-      collection(firestore, "communities"),
-      orderBy("numberOfMembers", "desc"),
-      limit(limitValue)
-    );
-  } else {
-    communityQuery = query(
-      collection(firestore, "communities"),
-      orderBy("numberOfMembers", "desc"),
-      startAfter(lastVisible),
-      limit(limitValue)
-    );
-  }
+  const where = lastVisible
+    ? or(
+        lt(communities.createdAt, lastVisible.createdAt),
+        and(
+          eq(communities.createdAt, lastVisible.createdAt),
+          lt(communities.id, lastVisible.id)
+        )
+      )
+    : undefined;
 
-  const communityDocs = await getDocs(communityQuery);
-  const communities = communityDocs.docs.map((doc) => ({
-    id: doc.id,
-    ...doc.data(),
-  })) as Community[];
+  const rows = await db
+    .select()
+    .from(communities)
+    .where(where)
+    .orderBy(desc(communities.createdAt), desc(communities.id))
+    .limit(limitValue);
 
+  const result = rows as unknown as Community[];
   const newLastVisible =
-    communityDocs.docs.length > 0
-      ? communityDocs.docs[communityDocs.docs.length - 1]
+    rows.length > 0
+      ? { createdAt: rows[rows.length - 1].createdAt, id: rows[rows.length - 1].id }
       : null;
 
-  return { communities, newLastVisible };
+  return { communities: result, newLastVisible };
 };

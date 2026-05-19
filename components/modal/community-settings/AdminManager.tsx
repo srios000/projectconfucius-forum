@@ -1,5 +1,4 @@
 import { Community } from "@/types/community";
-import { auth } from "@/firebase/clientApp";
 import useCustomToast from "@/hooks/useCustomToast";
 import useAddAdmin from "@/hooks/admin/useAddAdmin";
 import useAdminList from "@/hooks/admin/useAdminList";
@@ -15,7 +14,6 @@ import {
   Text,
 } from "@chakra-ui/react";
 import React, { useEffect, useState } from "react";
-import { useAuthState } from "react-firebase-hooks/auth";
 import { AdminUser } from "@/types/adminUser";
 import ConfirmationDialog from "@/components/modal/ConfirmationDialog";
 import { useForm } from "react-hook-form";
@@ -56,20 +54,17 @@ const AdminManager: React.FC<AdminManagerProps> = ({ communityData }) => {
   const [searchResults, setSearchResults] = useState<AdminUser[]>([]);
   const [showResults, setShowResults] = useState(false);
   const showToast = useCustomToast();
-  const [user] = useAuthState(auth);
   const [adminToRemove, setAdminToRemove] = useState<string | null>(null);
   const [removingAdmin, setRemovingAdmin] = useState(false);
 
   useEffect(() => {
-    loadAdmins(communityData.creatorId, communityData.adminIds).catch(
-      (error) => {
-        showToast({
-          title: "Error",
-          description: "Could not fetch admins",
-          status: "error",
-        });
-      }
-    );
+    loadAdmins(communityData.id).catch(() => {
+      showToast({
+        title: "Error",
+        description: "Could not fetch admins",
+        status: "error",
+      });
+    });
   }, [communityData, loadAdmins, showToast]);
 
   const onAddAdmin = async (data: AddAdminInput) => {
@@ -103,7 +98,7 @@ const AdminManager: React.FC<AdminManagerProps> = ({ communityData }) => {
       await handleAddAdmin(
         communityData.id,
         newUser,
-        communityData.imageURL,
+        communityData.imageUrl,
         setAdmins
       );
 
@@ -271,17 +266,16 @@ const AdminManager: React.FC<AdminManagerProps> = ({ communityData }) => {
                   {admin.email}
                 </Text>
               </Stack>
-              {admin.uid !== communityData.creatorId &&
-                admin.uid !== user?.uid && (
-                  <Button
-                    size="sm"
-                    variant="outline"
-                    colorPalette="red"
-                    onClick={() => setAdminToRemove(admin.uid)}
-                  >
-                    Remove
-                  </Button>
-                )}
+              {admin.uid !== communityData.creatorId && (
+                <Button
+                  size="sm"
+                  variant="outline"
+                  colorPalette="red"
+                  onClick={() => setAdminToRemove(admin.uid)}
+                >
+                  Remove
+                </Button>
+              )}
               {admin.uid === communityData.creatorId && (
                 <Text fontSize="xs" color="gray.500" fontStyle="italic">
                   Creator

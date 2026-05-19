@@ -1,7 +1,5 @@
-import { firestore } from "@/firebase/clientApp";
-import { Post } from "@/types/post";
-import { SavedPost } from "@/types/savedPost";
-import { doc, setDoc } from "firebase/firestore";
+import { db } from "@/lib/db";
+import { savedPosts } from "@/lib/db/schema";
 
 /**
  * Saves a post to a user's personal collection for later viewing.
@@ -10,15 +8,7 @@ import { doc, setDoc } from "firebase/firestore";
  * @param post - The post object to be saved.
  * @returns A promise that resolves to the newly created saved post object.
  */
-export const savePost = async (userId: string, post: Post) => {
-  const savedPostRef = doc(firestore, `users/${userId}/savedPosts`, post.id!);
-  const newSavedPost: SavedPost = {
-    id: post.id!,
-    postId: post.id!,
-    communityId: post.communityId,
-    postTitle: post.title,
-    communityImageURL: post.communityImageURL || "",
-  };
-  await setDoc(savedPostRef, newSavedPost);
-  return newSavedPost;
+export const savePost = async (userId: string, p: { id: string; communityId: string; title: string; communityImageUrl?: string }) => {
+  await db.insert(savedPosts).values({ userId, postId: p.id, communityId: p.communityId, postTitle: p.title, communityImageUrl: p.communityImageUrl ?? null })
+    .onConflictDoNothing();
 };

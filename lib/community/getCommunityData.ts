@@ -1,26 +1,18 @@
-import { firestore } from "@/firebase/clientApp";
-import { doc, getDoc } from "firebase/firestore";
-import safeJsonStringify from "safe-json-stringify";
+import { db } from "@/lib/db";
+import { communities } from "@/lib/db/schema";
+import { Community } from "@/types/community";
+import { eq } from "drizzle-orm";
 
 /**
- * Retrieves community data by id with JSON-safe serialization.
+ * Retrieves community data by id.
  * @param communityId - Id of the community to fetch.
  * @returns Community object or null if it does not exist.
  */
-export async function getCommunityData(communityId: string) {
-  try {
-    const communityDocRef = doc(firestore, "communities", communityId);
-    const communityDoc = await getDoc(communityDocRef);
-
-    if (!communityDoc.exists()) {
-      return null;
-    }
-
-    return JSON.parse(
-      safeJsonStringify({ id: communityDoc.id, ...communityDoc.data() })
-    );
-  } catch (error) {
-    console.log("Error: getCommunityData", error);
-    throw error;
-  }
+export async function getCommunityData(
+  communityId: string
+): Promise<Community | null> {
+  const row = await db.query.communities.findFirst({
+    where: eq(communities.id, communityId),
+  });
+  return (row as unknown as Community) ?? null;
 }

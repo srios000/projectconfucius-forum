@@ -76,9 +76,9 @@ const SavedPostsModal: React.FC = () => {
                     _hover={{ borderColor: "gray.400" }}
                   >
                     <Flex align="center" flex={1} gap={3}>
-                      {item.communityImageURL ? (
+                      {item.communityImageUrl ? (
                         <Image
-                          src={item.communityImageURL}
+                          src={item.communityImageUrl}
                           borderRadius="full"
                           boxSize="40px"
                           alt="Community Image"

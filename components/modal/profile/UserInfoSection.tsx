@@ -1,11 +1,11 @@
 import { Flex, Input, Text } from "@chakra-ui/react";
-import { User } from "firebase/auth";
+import { SessionUser } from "@/types/sessionUser";
 import React from "react";
 import { UseFormRegister, FieldErrors } from "react-hook-form";
 import { EditProfileInput } from "@/schema/profile";
 
 type UserInfoSectionProps = {
-  user: User | null | undefined;
+  user: SessionUser | null | undefined;
   isEditing: boolean;
   register: UseFormRegister<EditProfileInput>;
   errors: FieldErrors<EditProfileInput>;
@@ -49,7 +49,7 @@ const UserInfoSection: React.FC<UserInfoSectionProps> = ({
             >
               User Name:
             </Text>
-            <Text fontSize="12pt">{user?.displayName || ""}</Text>
+            <Text fontSize="12pt">{user?.name || ""}</Text>
           </Flex>
         </Flex>
       )}

@@ -1,6 +1,6 @@
 import { useState } from "react";
 import useCustomToast from "../useCustomToast";
-import { removeCommunityMember } from "@/lib/community/removeCommunityMember";
+import { removeCommunityMemberAction } from "@/app/actions/community";
 
 /**
  * A custom hook that provides functionality for an administrator to remove a member from a community.
@@ -14,7 +14,7 @@ const useRemoveCommunityMember = () => {
   const removeMember = async (communityId: string, memberId: string) => {
     setLoading(true);
     try {
-      await removeCommunityMember(communityId, memberId);
+      await removeCommunityMemberAction(communityId, memberId);
       showToast({
         title: "User removed",
         description: "The user has been removed from the community.",

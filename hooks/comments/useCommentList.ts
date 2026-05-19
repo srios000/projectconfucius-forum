@@ -2,7 +2,7 @@ import { useCallback, useEffect, useState } from "react";
 import { Post } from "@/types/post";
 import useCustomToast from "@/hooks/useCustomToast";
 import { Comment } from "../../types/comment";
-import { getComments as getCommentsLib } from "@/lib/comments/getComments";
+import { getCommentsAction } from "@/app/actions/reads";
 
 /**
  * A custom hook that manages the retrieval and state of comments for a specific post.
@@ -19,7 +19,7 @@ const useCommentList = (selectedPost: Post | null) => {
     if (!selectedPost) return;
     setCommentFetchLoading(true);
     try {
-      const comments = await getCommentsLib(selectedPost.id!);
+      const comments = await getCommentsAction(selectedPost.id!);
       setComments(comments);
     } catch (error: any) {
       console.log("getPostComments error", error);

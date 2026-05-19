@@ -37,9 +37,9 @@ const RecommendationRow: React.FC<RecommendationRowProps> = ({
           <Text flexShrink={0} width="20px">
             {index + 1}
           </Text>
-          {item.imageURL ? (
+          {item.imageUrl ? (
             <Image
-              src={item.imageURL}
+              src={item.imageUrl}
               borderRadius="full"
               boxSize="28px"
               alt="Community Icon"

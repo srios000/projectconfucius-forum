@@ -2,7 +2,7 @@ import { communityStateAtom } from "@/atoms/communitiesAtom";
 import { Community } from "@/types/community";
 import { useSetAtom } from "jotai";
 import useCustomToast from "../useCustomToast";
-import { updateCommunityPrivacy } from "@/lib/community/updateCommunityPrivacy";
+import { updateCommunityPrivacyAction } from "@/app/actions/community";
 
 /**
  * A custom hook that provides functionality for updating a community's privacy setting.
@@ -16,7 +16,7 @@ const useCommunityPrivacy = (communityData: Community) => {
 
   const updatePrivacyType = async (privacyType: string) => {
     try {
-      await updateCommunityPrivacy(communityData.id, privacyType);
+      await updateCommunityPrivacyAction(communityData.id, privacyType);
       setCommunityStateValue((prev) => ({
         ...prev,
         currentCommunity: {

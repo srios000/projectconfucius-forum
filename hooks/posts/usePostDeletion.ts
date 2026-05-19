@@ -3,7 +3,7 @@ import { savedPostStateAtom } from "@/atoms/savedPostsAtom";
 import { Post, PostVote } from "@/types/post";
 import { useAtom, useSetAtom } from "jotai";
 import React from "react";
-import { deletePost } from "@/lib/posts/deletePost";
+import { deletePostAction } from "@/app/actions/posts";
 
 /**
  * A custom hook that provides functionality for deleting a post and its associated data.
@@ -35,7 +35,7 @@ const usePostDeletion = (
     }));
 
     try {
-      await deletePost(post);
+      await deletePostAction(post.id!);
       return true;
     } catch (error) {
       console.log("Error deleting post", error);

@@ -1,5 +1,6 @@
-import { firestore } from "@/firebase/clientApp";
-import { deleteDoc, doc } from "firebase/firestore";
+import { db } from "@/lib/db";
+import { savedPosts } from "@/lib/db/schema";
+import { and, eq } from "drizzle-orm";
 
 /**
  * Removes a previously saved post from a user's personal collection.
@@ -8,5 +9,5 @@ import { deleteDoc, doc } from "firebase/firestore";
  * @returns A promise that resolves when the saved post document is deleted.
  */
 export const unsavePost = async (userId: string, postId: string) => {
-  await deleteDoc(doc(firestore, `users/${userId}/savedPosts`, postId));
+  await db.delete(savedPosts).where(and(eq(savedPosts.userId, userId), eq(savedPosts.postId, postId)));
 };

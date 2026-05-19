@@ -1,17 +1,18 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { auth } from "@/firebase/clientApp";
-import { useAuthState } from "react-firebase-hooks/auth";
+import { useSession } from "@/lib/auth-client";
 import useCustomToast from "../useCustomToast";
-import { createCommunity } from "@/lib/community/createCommunity";
+import { createCommunityAction } from "@/app/actions/community";
 
 /**
  * A custom hook that provides functionality for creating a new community.
- * It includes client-side validation for the community name and handles the backend creation process.
+ * It includes client-side validation for the community name and delegates
+ * creation to a server action.
  * @returns An object containing the `createCommunity` function, loading state, and error state.
  */
 export const useCreateCommunity = () => {
-  const [user] = useAuthState(auth);
+  const { data: session } = useSession();
+  const user = session?.user ?? null;
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const router = useRouter();
@@ -34,10 +35,15 @@ export const useCreateCommunity = () => {
       return false;
     }
 
+    if (!user) {
+      window.location.assign("/api/auth/start");
+      return false;
+    }
+
     setLoading(true);
 
     try {
-      await createCommunity(communityName, communityType, user?.uid!);
+      await createCommunityAction(communityName, communityType);
 
       router.push(`/community/${communityName}`);
       return true;

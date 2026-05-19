@@ -18,9 +18,9 @@ const CommunityItemNameIconSection: React.FC<
   return (
     <Flex align="center" width="100%">
       <Flex align="center" direction="row">
-        {community.imageURL ? (
+        {community.imageUrl ? (
           <Image
-            src={community.imageURL}
+            src={community.imageUrl}
             borderRadius="full"
             boxSize="35px"
             mr={4}

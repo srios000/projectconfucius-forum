@@ -3,23 +3,17 @@ import { MenuContent, Flex, Stack } from "@chakra-ui/react";
 import CustomMenuButton from "@/components/ui/CustomMenuButton";
 import { CgProfile } from "react-icons/cg";
 import { MdOutlineLogin } from "react-icons/md";
-import {
-  MdOutlineLogin as MdOutlineLoginAlias,
-  MdOutlineLogin as MdOutlineLoginAlias2,
-} from "react-icons/md";
-import { useSetAtom } from "jotai";
-import { authModalStateAtom } from "@/atoms/authModalAtom";
-import { signOut, User } from "firebase/auth";
-import { auth } from "@/firebase/clientApp";
+import { SessionUser } from "@/types/sessionUser";
 
 interface UserMenuListProps {
-  user: User | null | undefined;
+  user: SessionUser | null | undefined;
   setProfileModalOpen: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
 /**
  * Menu content for the user dropdown, showing profile and auth actions.
- * @param user - Firebase user to decide between auth options.
+ * Auth actions delegate to the central login app.
+ * @param user - Session user to decide between auth options.
  * @param setProfileModalOpen - Setter to open the profile modal.
  * @returns MenuContent with action buttons.
  */
@@ -27,12 +21,6 @@ const UserMenuList: React.FC<UserMenuListProps> = ({
   user,
   setProfileModalOpen,
 }) => {
-  const setAuthModalState = useSetAtom(authModalStateAtom);
-
-  const logout = async () => {
-    await signOut(auth);
-  };
-
   return (
     <MenuContent borderRadius={10} mt={2} shadow="lg" minW="180px">
       <Flex justifyContent="center">
@@ -48,15 +36,15 @@ const UserMenuList: React.FC<UserMenuListProps> = ({
               <CustomMenuButton
                 icon={<MdOutlineLogin />}
                 text="Log Out"
-                onClick={logout}
+                onClick={() => window.location.assign("/api/auth/signout")}
               />
             </>
           ) : (
             <>
               <CustomMenuButton
-                icon={<MdOutlineLoginAlias />}
+                icon={<MdOutlineLogin />}
                 text="Log In / Sign Up"
-                onClick={() => setAuthModalState({ open: true, view: "login" })}
+                onClick={() => window.location.assign("/api/auth/start")}
               />
             </>
           )}

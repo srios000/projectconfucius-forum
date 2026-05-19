@@ -2,7 +2,6 @@ import { Community } from "@/types/community";
 import useCreatePost from "@/hooks/posts/useCreatePost";
 import useSelectFile from "@/hooks/useSelectFile";
 import { Flex, Icon, Tabs, Text } from "@chakra-ui/react";
-import { User } from "firebase/auth";
 import { useParams, useRouter } from "next/navigation";
 import React, { useState } from "react";
 import { useForm } from "react-hook-form";
@@ -15,7 +14,6 @@ import ImageUpload from "../post-form/ImageUpload";
 import { createPostSchema, CreatePostInput } from "@/schema/post";
 
 type NewPostFormProps = {
-  user: User; // parent component checks user so additional checks aer not needed ut
   communityImageURL?: string;
   currentCommunity?: Community;
 };
@@ -52,7 +50,6 @@ export type FormTab = {
  * @returns A tabbed interface for post creation.
  */
 const NewPostForm: React.FC<NewPostFormProps> = ({
-  user,
   communityImageURL,
   currentCommunity,
 }) => {
@@ -86,7 +83,6 @@ const NewPostForm: React.FC<NewPostFormProps> = ({
   const onCreatePost = async (data: CreatePostInput) => {
     const communityId = params?.communityId as string;
     await handleCreatePost(
-      user,
       communityId,
       communityImageURL,
       { title: data.title, body: data.body || "" },

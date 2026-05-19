@@ -1,8 +1,8 @@
 import useCustomToast from "@/hooks/useCustomToast";
-import { DocumentData, QueryDocumentSnapshot } from "firebase/firestore";
 import { useEffect, useState } from "react";
 import { Community } from "@/types/community";
-import { getCommunities as getCommunitiesLib } from "@/lib/community/getCommunities";
+import { getCommunitiesAction } from "@/app/actions/reads";
+import type { CommunityCursor } from "@/lib/community/getCommunities";
 
 type UseCommunitiesFeedProps = {
   limitValue?: number;
@@ -11,7 +11,7 @@ type UseCommunitiesFeedProps = {
 
 /**
  * A custom hook that manages the community discovery feed.
- * It handles fetching communities ordered by member count and supports infinite scrolling via pagination.
+ * It handles paginated fetching of communities and supports infinite scrolling.
  * @param limitValue - The number of communities to fetch per request.
  * @param isPagination - Whether to enable pagination for the feed.
  * @returns An object containing the communities list, loading state, and a function to fetch more communities.
@@ -22,8 +22,7 @@ const useCommunitiesFeed = ({
 }: UseCommunitiesFeedProps) => {
   const [loading, setLoading] = useState(false);
   const [communities, setCommunities] = useState<Community[]>([]);
-  const [lastVisible, setLastVisible] =
-    useState<QueryDocumentSnapshot<DocumentData> | null>(null);
+  const [lastVisible, setLastVisible] = useState<CommunityCursor>(null);
   const [noMoreCommunities, setNoMoreCommunities] = useState(false);
   const showToast = useCustomToast();
 
@@ -37,7 +36,7 @@ const useCommunitiesFeed = ({
       }
 
       const { communities: fetchedCommunities, newLastVisible } =
-        await getCommunitiesLib(limitValue, initial ? null : lastVisible);
+        await getCommunitiesAction(limitValue, initial ? null : lastVisible);
 
       if (fetchedCommunities.length < limitValue) setNoMoreCommunities(true);
       if (newLastVisible) setLastVisible(newLastVisible);

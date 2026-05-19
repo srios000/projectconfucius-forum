@@ -1,7 +1,7 @@
 "use client";
 
 import { useCallback, useState } from "react";
-import { fetchCommunityMembers } from "@/lib/community/fetchCommunityMembers";
+import { fetchCommunityMembersAction } from "@/app/actions/reads";
 import { CommunityMember } from "@/types/communityMember";
 
 /**
@@ -17,7 +17,7 @@ const useCommunityMembers = () => {
   const loadMembers = useCallback(async (communityId: string) => {
     setLoading(true);
     try {
-      const result = await fetchCommunityMembers(communityId);
+      const result = await fetchCommunityMembersAction(communityId);
       setMembers(result);
       setError(null);
     } catch (err: any) {

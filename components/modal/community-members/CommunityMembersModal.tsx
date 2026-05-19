@@ -96,7 +96,7 @@ const CommunityMembersModal: React.FC<CommunityMembersModalProps> = ({
       <Stack gap={2}>
         {members.map((member: CommunityMember) => (
           <Flex
-            key={member.uid}
+            key={member.id}
             borderWidth="1px"
             borderRadius="xl"
             p={3}
@@ -118,7 +118,7 @@ const CommunityMembersModal: React.FC<CommunityMembersModalProps> = ({
                 colorPalette="red"
                 size="sm"
                 aria-label="Remove member"
-                onClick={() => setMemberToRemove(member.uid)}
+                onClick={() => setMemberToRemove(member.id)}
               >
                 <LuTrash />
               </IconButton>

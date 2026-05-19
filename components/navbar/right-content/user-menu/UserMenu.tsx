@@ -1,15 +1,15 @@
 import ProfileModal from "@/components/modal/profile/ProfileModal";
 import { MenuPositioner, MenuRoot } from "@chakra-ui/react";
-import { User } from "firebase/auth";
+import { SessionUser } from "@/types/sessionUser";
 import React, { useState } from "react";
 import UserMenuButton from "./UserMenuButton";
 import UserMenuList from "./UserMenuList";
 
 /**
- * @param {User | null} user - user currently logged in if any
+ * @param user - session user currently logged in if any
  */
 type UserMenuProps = {
-  user?: User | null;
+  user?: SessionUser | null;
 };
 
 /**

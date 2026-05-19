@@ -1,40 +1,32 @@
-import { firestore } from "@/firebase/clientApp";
+import { db } from "@/lib/db";
+import { communities, posts } from "@/lib/db/schema";
 import { Community } from "@/types/community";
 import { Post } from "@/types/post";
-import {
-  collection,
-  getDocs,
-  limit,
-  orderBy,
-  query,
-  where,
-} from "firebase/firestore";
+import { desc, ilike } from "drizzle-orm";
 
 /**
- * Preloads a dataset of public communities and recent posts to facilitate client-side search.
- * This function retrieves all public communities and the 100 most recent posts to provide
- * a responsive search experience without frequent network requests.
- * @returns A promise that resolves to an object containing arrays of communities and posts.
+ * Searches communities and posts for a query string.
+ * Returns up to 5 matching communities (by id) and up to 5 matching posts
+ * (by title, newest first).
+ * @param q - The search query.
+ * @returns A promise that resolves to `{ communities, posts }`.
  */
-export const getSearchData = async () => {
-  const communitiesQuery = query(
-    collection(firestore, "communities"),
-    where("privacyType", "==", "public")
-  );
-  const communitiesSnap = await getDocs(communitiesQuery);
-  const communities = communitiesSnap.docs.map(
-    (doc) => ({ id: doc.id, ...doc.data() } as Community)
-  );
+export const getSearchData = async (q: string) => {
+  const communityRows = await db
+    .select()
+    .from(communities)
+    .where(ilike(communities.id, `%${q}%`))
+    .limit(5);
 
-  const postsQuery = query(
-    collection(firestore, "posts"),
-    orderBy("createTime", "desc"),
-    limit(100)
-  );
-  const postsSnap = await getDocs(postsQuery);
-  const posts = postsSnap.docs.map(
-    (doc) => ({ id: doc.id, ...doc.data() } as Post)
-  );
+  const postRows = await db
+    .select()
+    .from(posts)
+    .where(ilike(posts.title, `%${q}%`))
+    .orderBy(desc(posts.createdAt))
+    .limit(5);
 
-  return { communities, posts };
+  return {
+    communities: communityRows as unknown as Community[],
+    posts: postRows as unknown as Post[],
+  };
 };

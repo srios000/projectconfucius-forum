@@ -1,8 +1,5 @@
-import { authModalStateAtom } from "@/atoms/authModalAtom";
-import { auth } from "@/firebase/clientApp";
-import { useSetAtom } from "jotai";
+import { useSession } from "@/lib/auth-client";
 import { useRouter, useParams } from "next/navigation";
-import { useAuthState } from "react-firebase-hooks/auth";
 import useDirectory from "../useDirectory";
 
 /**
@@ -14,13 +11,13 @@ import useDirectory from "../useDirectory";
 const useCallCreatePost = () => {
   const router = useRouter();
   const params = useParams();
-  const [user] = useAuthState(auth);
-  const setAuthModalState = useSetAtom(authModalStateAtom);
+  const { data: session } = useSession();
+  const user = session?.user ?? null;
   const { toggleMenuOpen } = useDirectory();
 
   const onClick = () => {
     if (!user) {
-      setAuthModalState({ open: true, view: "login" });
+      window.location.assign("/api/auth/start");
       return;
     }
     const communityId = params?.communityId;

@@ -1,16 +1,11 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import { authModalStateAtom } from "@/atoms/authModalAtom";
-import { auth } from "@/firebase/clientApp";
-import { useSetAtom } from "jotai";
-import { useAuthState } from "react-firebase-hooks/auth";
+import { useSession } from "@/lib/auth-client";
 import useCustomToast from "../useCustomToast";
 import React from "react";
 import { Post, PostVote } from "@/types/post";
-import { handlePostVote } from "@/lib/posts/handlePostVote";
-import { getPostVotes as getPostVotesLib } from "@/lib/posts/getPostVotes";
-import { getPost as getPostLib } from "@/lib/posts/getPost";
+import { voteAction, getPostVotesAction } from "@/app/actions/posts";
+import { getPostAction, getCommunityDataAction } from "@/app/actions/reads";
 import useCommunityState from "../community/useCommunityState";
-import { getCommunityData } from "@/lib/community/getCommunityData";
 
 type SetPostState = React.Dispatch<
   React.SetStateAction<{
@@ -36,8 +31,8 @@ const usePostVote = (
   },
   setPostStateValue: SetPostState
 ) => {
-  const [user] = useAuthState(auth);
-  const setAuthModalState = useSetAtom(authModalStateAtom);
+  const { data: session } = useSession();
+  const user = session?.user ?? null;
   const showToast = useCustomToast();
   const { communityStateValue } = useCommunityState();
 
@@ -49,8 +44,8 @@ const usePostVote = (
   ) => {
     event.stopPropagation();
 
-    if (!user?.uid) {
-      setAuthModalState({ open: true, view: "login" });
+    if (!user) {
+      window.location.assign("/api/auth/start");
       return;
     }
 
@@ -64,7 +59,7 @@ const usePostVote = (
 
       if (!community || community.id !== communityId) {
         try {
-          community = await getCommunityData(communityId);
+          community = (await getCommunityDataAction(communityId)) ?? undefined;
         } catch (error) {
           console.log(
             "Error fetching community data for vote permission",
@@ -92,8 +87,7 @@ const usePostVote = (
         (v) => v.postId === post.id
       );
 
-      const { voteChange, newVote, voteIdToDelete } = await handlePostVote(
-        user.uid,
+      const { voteChange, newVote, voteIdToDelete } = await voteAction(
         post,
         vote,
         communityId,
@@ -148,7 +142,7 @@ const usePostVote = (
   const getPostVotes = async (postIds: string[]) => {
     if (!user || !postIds.length) return;
     try {
-      const postVotes = await getPostVotesLib(user.uid, postIds);
+      const postVotes = await getPostVotesAction(postIds);
 
       setPostStateValue((prev) => ({
         ...prev,
@@ -166,7 +160,7 @@ const usePostVote = (
 
   const getPost = async (postId: string) => {
     try {
-      const post = await getPostLib(postId);
+      const post = await getPostAction(postId);
       if (post) {
         setPostStateValue((prev) => ({
           ...prev,

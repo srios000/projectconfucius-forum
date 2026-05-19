@@ -23,14 +23,14 @@ const PostBody: React.FC<PostBodyProps> = ({
   return (
     <>
       <Text fontSize="12pt">{post.body.split(" ").slice(0, 30).join(" ")}</Text>
-      {post.imageURL && (
+      {post.imageUrl && (
         <Flex justify="center" align="center">
           {loadingImage && (
             <Skeleton height="300px" width="100%" borderRadius={10} />
           )}
           <Image
             mt={4}
-            src={post.imageURL}
+            src={post.imageUrl}
             alt="Image for post"
             maxHeight="450px"
             maxWidth="100%"

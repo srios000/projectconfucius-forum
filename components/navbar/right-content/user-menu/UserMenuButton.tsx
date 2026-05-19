@@ -1,12 +1,12 @@
 import React from "react";
 import { MenuTrigger, Flex, Icon, Image, Text } from "@chakra-ui/react";
-import { User } from "firebase/auth";
+import { SessionUser } from "@/types/sessionUser";
 import { MdAccountCircle } from "react-icons/md";
 import { VscAccount } from "react-icons/vsc";
 import { FiChevronDown, FiChevronUp } from "react-icons/fi";
 
 interface UserMenuButtonProps {
-  user: User | null | undefined;
+  user: SessionUser | null | undefined;
   isMenuOpen: boolean;
 }
 
@@ -34,9 +34,9 @@ const UserMenuButton: React.FC<UserMenuButtonProps> = ({
     <Flex align="center">
       {user ? (
         <>
-          {user.photoURL ? (
+          {user.image ? (
             <Image
-              src={user.photoURL}
+              src={user.image}
               alt="User Profile Photo"
               height="36px"
               borderRadius="full"
@@ -54,7 +54,7 @@ const UserMenuButton: React.FC<UserMenuButtonProps> = ({
             mr={2}
           >
             <Text fontWeight={700} whiteSpace="normal" wordBreak="break-word">
-              {user?.displayName || user.email?.split("@")[0]}
+              {user?.name || user.email?.split("@")[0]}
             </Text>
           </Flex>
         </>

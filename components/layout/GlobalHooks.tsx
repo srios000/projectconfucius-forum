@@ -1,9 +1,8 @@
 "use client";
-import { auth } from "@/firebase/clientApp";
 import { useCommunitySnippets } from "@/hooks/community/useCommunitySnippets";
 import useSavedPosts from "@/hooks/posts/useSavedPosts";
+import { useSession } from "@/lib/auth-client";
 import React, { useEffect } from "react";
-import { useAuthState } from "react-firebase-hooks/auth";
 
 /**
  * A headless component that initializes global data based on the user's authentication state.
@@ -13,7 +12,8 @@ import { useAuthState } from "react-firebase-hooks/auth";
 const GlobalHooks: React.FC = () => {
   useCommunitySnippets();
   const { fetchSavedPosts, setSavedPostState } = useSavedPosts();
-  const [user] = useAuthState(auth);
+  const { data: session } = useSession();
+  const user = session?.user ?? null;
 
   useEffect(() => {
     if (user) {

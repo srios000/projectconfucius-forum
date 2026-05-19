@@ -1,13 +1,13 @@
 import { useState, useEffect } from "react";
 import { Community } from "@/types/community";
 import { Post } from "@/types/post";
-import { getSearchData } from "@/lib/search/getSearchData";
+import { getSearchDataAction } from "@/app/actions/reads";
 
 /**
- * A custom hook that handles client-side search logic for communities and posts.
- * It preloads a subset of public data and provides filtered results based on the user's search term.
+ * A custom hook that handles search for communities and posts.
+ * It queries the server (debounced) as the user types and returns the matches.
  * @param searchTerm - The current string being searched for.
- * @returns An object containing the filtered search results and a loading state indicator.
+ * @returns An object containing the search results and a loading state indicator.
  */
 const useSearch = (searchTerm: string) => {
   const [results, setResults] = useState<{
@@ -18,52 +18,36 @@ const useSearch = (searchTerm: string) => {
     posts: [],
   });
   const [loading, setLoading] = useState(false);
-  const [allData, setAllData] = useState<{
-    communities: Community[];
-    posts: Post[];
-  } | null>(null);
 
   useEffect(() => {
-    const fetchData = async () => {
-      setLoading(true);
-      try {
-        const { communities, posts } = await getSearchData();
-        setAllData({ communities, posts });
-      } catch (error) {
-        console.error("Error fetching search data", error);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchData();
-  }, []);
-
-  useEffect(() => {
-    if (!allData || !searchTerm) {
+    const term = searchTerm.trim();
+    if (!term) {
       setResults({ communities: [], posts: [] });
+      setLoading(false);
       return;
     }
 
-    const lowerTerm = searchTerm.toLowerCase();
+    let cancelled = false;
+    setLoading(true);
+    const handle = setTimeout(async () => {
+      try {
+        const { communities, posts } = await getSearchDataAction(term);
+        if (!cancelled) setResults({ communities, posts });
+      } catch (error) {
+        console.error("Error fetching search data", error);
+        if (!cancelled) setResults({ communities: [], posts: [] });
+      } finally {
+        if (!cancelled) setLoading(false);
+      }
+    }, 250);
 
-    const filteredCommunities = allData.communities.filter((comm) =>
-      comm.id.toLowerCase().includes(lowerTerm)
-    );
+    return () => {
+      cancelled = true;
+      clearTimeout(handle);
+    };
+  }, [searchTerm]);
 
-    const filteredPosts = allData.posts.filter(
-      (post) =>
-        post.title.toLowerCase().includes(lowerTerm) ||
-        post.body.toLowerCase().includes(lowerTerm)
-    );
-
-    setResults({
-      communities: filteredCommunities,
-      posts: filteredPosts,
-    });
-  }, [searchTerm, allData]);
-
-  return { results, loading: loading && !allData };
+  return { results, loading };
 };
 
 export default useSearch;
