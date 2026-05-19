@@ -498,7 +498,7 @@ Co-Authored-By: Claude Opus 4.7 <noreply@anthropic.com>"
 - Create: `lib/auth/provision.ts`
 - Test: `tests/auth/provision.test.ts`
 
-- [ ] **Step 1: Write failing test `tests/auth/provision.test.ts`**
+- [x] **Step 1: Write failing test `tests/auth/provision.test.ts`**
 
 ```ts
 import { describe, it, expect, vi, beforeEach } from "vitest";
@@ -546,12 +546,12 @@ describe("provisionLocalUser", () => {
 });
 ```
 
-- [ ] **Step 2: Run test — expect FAIL**
+- [x] **Step 2: Run test — expect FAIL**
 
 Run: `pnpm test tests/auth/provision.test.ts`
 Expected: FAIL (`provisionLocalUser` not found).
 
-- [ ] **Step 3: Write `lib/auth/provision.ts`**
+- [x] **Step 3: Write `lib/auth/provision.ts`**
 
 ```ts
 import { db } from "@/lib/db";
@@ -598,12 +598,12 @@ export async function provisionLocalUser(input: {
 }
 ```
 
-- [ ] **Step 4: Run test — expect PASS**
+- [x] **Step 4: Run test — expect PASS**
 
 Run: `pnpm test tests/auth/provision.test.ts`
 Expected: PASS (all 3).
 
-- [ ] **Step 5: Commit**
+- [x] **Step 5: Commit**
 
 ```bash
 git add lib/auth/provision.ts tests/auth/provision.test.ts
