@@ -55,7 +55,7 @@
 - Delete: `yarn.lock`, `.firebaserc`, `firebase.json`, `firebase/`, `functions/`
 - Create: `.env.example` (overwrite)
 
-- [ ] **Step 1: Remove Firebase, add Postgres/auth deps**
+- [x] **Step 1: Remove Firebase, add Postgres/auth deps**
 
 Run:
 ```bash
@@ -65,14 +65,14 @@ pnpm add -D drizzle-kit
 ```
 (Pin `better-auth@1.6.11` to match `makinsegar-app`/`formdataumat` for cross-app session compatibility — do not bump to latest.)
 
-- [ ] **Step 2: Delete Firebase project files**
+- [x] **Step 2: Delete Firebase project files**
 
 Run:
 ```bash
 git rm -r firebase functions .firebaserc firebase.json yarn.lock
 ```
 
-- [ ] **Step 3: Overwrite `.env.example`**
+- [x] **Step 3: Overwrite `.env.example`**
 
 ```
 # Forum's own Neon Postgres
@@ -89,7 +89,7 @@ NEXT_PUBLIC_BETTER_AUTH_URL=http://localhost:4000
 
 > **Note for executor:** `AUTH_DATABASE_URL` must point at the same Postgres `projectconfucius-auth` uses, ideally via a read-only `auth_sibling` role. If that credential does not exist yet, STOP and ask the user to provision it in the auth project before Task 8 can be verified end-to-end.
 
-- [ ] **Step 4: Add db scripts to `package.json`**
+- [x] **Step 4: Add db scripts to `package.json`**
 
 Add to `scripts`:
 ```json
@@ -97,12 +97,12 @@ Add to `scripts`:
 "db:migrate": "drizzle-kit migrate"
 ```
 
-- [ ] **Step 5: Verify install**
+- [x] **Step 5: Verify install**
 
 Run: `pnpm install && pnpm exec tsc --noEmit`
 Expected: install succeeds; tsc will still error on files importing `firebase` — that is expected and fixed in later tasks. Confirm no dependency-resolution errors.
 
-- [ ] **Step 6: Commit**
+- [x] **Step 6: Commit**
 
 ```bash
 git add -A
