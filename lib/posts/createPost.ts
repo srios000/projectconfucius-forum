@@ -1,15 +1,6 @@
-import { firestore, storage } from "@/firebase/clientApp";
-import { Post } from "@/types/post";
-import { User } from "firebase/auth";
-import {
-  addDoc,
-  collection,
-  doc,
-  serverTimestamp,
-  Timestamp,
-  updateDoc,
-} from "firebase/firestore";
-import { getDownloadURL, ref, uploadString } from "firebase/storage";
+import { db } from "@/lib/db";
+import { posts } from "@/lib/db/schema";
+import { randomUUID } from "crypto";
 
 /**
  * Creates a new post within a community and optionally uploads an associated image.
@@ -22,34 +13,24 @@ import { getDownloadURL, ref, uploadString } from "firebase/storage";
  * @returns A promise that resolves to the unique identifier of the newly created post.
  */
 export const createPost = async (
-  user: User,
+  author: { id: string; username: string },
   communityId: string,
-  communityImageURL: string | undefined,
+  communityImageUrl: string | undefined,
   postData: { title: string; body: string },
-  selectedFile?: string
+  imageUrl?: string,
 ) => {
-  const newPost: Post = {
+  const id = randomUUID();
+  await db.insert(posts).values({
+    id,
     communityId,
-    communityImageURL: communityImageURL || "",
-    creatorId: user.uid,
-    creatorUsername: user.displayName || user.email!.split("@")[0],
+    communityImageUrl: communityImageUrl ?? null,
+    creatorId: author.id,
+    creatorUsername: author.username,
     title: postData.title,
     body: postData.body,
+    imageUrl: imageUrl ?? null,
     numberOfComments: 0,
     voteStatus: 0,
-    createTime: serverTimestamp() as Timestamp,
-  };
-
-  const postDocRef = await addDoc(collection(firestore, "posts"), newPost);
-
-  if (selectedFile) {
-    const imageRef = ref(storage, `posts/${postDocRef.id}/image`);
-    await uploadString(imageRef, selectedFile, "data_url");
-    const downloadURL = await getDownloadURL(imageRef);
-
-    await updateDoc(doc(firestore, "posts", postDocRef.id), {
-      imageURL: downloadURL,
-    });
-  }
-  return postDocRef.id;
-};
+  });
+  return id;
+};  

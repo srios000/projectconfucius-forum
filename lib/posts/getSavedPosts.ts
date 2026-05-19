@@ -1,6 +1,7 @@
-import { firestore } from "@/firebase/clientApp";
+import { db } from "@/lib/db";
+import { savedPosts } from "@/lib/db/schema";
 import { SavedPost } from "@/types/savedPost";
-import { collection, getDocs } from "firebase/firestore";
+import { eq } from "drizzle-orm";
 
 /**
  * Retrieves all posts saved by a specific user from their personal 'savedPosts' subcollection.
@@ -8,13 +9,6 @@ import { collection, getDocs } from "firebase/firestore";
  * @param userId - The unique identifier of the user whose saved posts are being retrieved.
  * @returns A promise that resolves to an array of saved post objects.
  */
-export const getSavedPosts = async (userId: string) => {
-  const querySnapshot = await getDocs(
-    collection(firestore, `users/${userId}/savedPosts`)
-  );
-  const savedPosts = querySnapshot.docs.map((doc) => ({
-    id: doc.id,
-    ...doc.data(),
-  })) as SavedPost[];
-  return savedPosts;
-};
+export const getSavedPosts = async (userId: string): Promise<SavedPost[]> =>
+  (await db.select().from(savedPosts).where(eq(savedPosts.userId, userId)))
+    .map((r) => ({ id: r.postId, postId: r.postId, communityId: r.communityId, postTitle: r.postTitle, communityImageUrl: r.communityImageUrl ?? undefined }));

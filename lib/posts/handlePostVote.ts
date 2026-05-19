@@ -1,6 +1,8 @@
-import { firestore } from "@/firebase/clientApp";
+import { db } from "@/lib/db";
+import { postVotes, posts } from "@/lib/db/schema";
 import { Post, PostVote } from "@/types/post";
-import { collection, doc, writeBatch } from "firebase/firestore";
+import { and, eq, sql } from "drizzle-orm";
+import { randomUUID } from "crypto";
 
 /**
  * Processes a vote (upvote or downvote) on a post and updates the aggregate vote count.
@@ -17,56 +19,30 @@ import { collection, doc, writeBatch } from "firebase/firestore";
  * @returns A promise that resolves to an object containing the vote delta, the new vote record, and any deleted vote ID.
  */
 export const handlePostVote = async (
-  userId: string,
-  post: Post,
-  vote: number,
-  communityId: string,
-  existingVote?: PostVote
+  userId: string, post: Post, vote: number, communityId: string, existingVote?: PostVote,
 ) => {
-  const batch = writeBatch(firestore);
   let voteChange = vote;
   let newVote: PostVote | undefined;
   let voteIdToDelete: string | undefined;
 
-  if (!existingVote) {
-    const postVoteRef = doc(
-      collection(firestore, "users", `${userId}/postVotes`)
-    );
-    newVote = {
-      id: postVoteRef.id,
-      postId: post.id!,
-      communityId,
-      voteValue: vote,
-    };
-
-    batch.set(postVoteRef, newVote);
-    voteChange = vote;
-  } else {
-    const postVoteRef = doc(
-      firestore,
-      "users",
-      `${userId}/postVotes/${existingVote.id}`
-    );
-
-    if (existingVote.voteValue === vote) {
-      batch.delete(postVoteRef);
+  await db.transaction(async (tx) => {
+    if (!existingVote) {
+      const id = randomUUID();
+      await tx.insert(postVotes).values({ id, userId, postId: post.id!, communityId, voteValue: vote });
+      newVote = { id, postId: post.id!, communityId, voteValue: vote };
+      voteChange = vote;
+    } else if (existingVote.voteValue === vote) {
+      await tx.delete(postVotes).where(eq(postVotes.id, existingVote.id));
       voteChange = -vote;
       voteIdToDelete = existingVote.id;
     } else {
-      batch.update(postVoteRef, {
-        voteValue: vote,
-      });
+      await tx.update(postVotes).set({ voteValue: vote }).where(eq(postVotes.id, existingVote.id));
       voteChange = 2 * vote;
-      newVote = {
-        ...existingVote,
-        voteValue: vote,
-      };
+      newVote = { ...existingVote, voteValue: vote };
     }
-  }
-
-  const postRef = doc(firestore, "posts", post.id!);
-  batch.update(postRef, { voteStatus: post.voteStatus + voteChange });
-  await batch.commit();
+    await tx.update(posts).set({ voteStatus: sql`${posts.voteStatus} + ${voteChange}` })
+      .where(eq(posts.id, post.id!));
+  });
 
   return { voteChange, newVote, voteIdToDelete };
 };

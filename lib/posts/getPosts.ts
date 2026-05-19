@@ -1,17 +1,9 @@
-import { firestore } from "@/firebase/clientApp";
+import { db } from "@/lib/db";
+import { posts } from "@/lib/db/schema";
 import { Post } from "@/types/post";
-import {
-  collection,
-  DocumentData,
-  getDocs,
-  limit,
-  orderBy,
-  query,
-  QueryConstraint,
-  QueryDocumentSnapshot,
-  startAfter,
-  where,
-} from "firebase/firestore";
+import { and, desc, eq, inArray, lt, or } from "drizzle-orm";
+
+export type PostCursor = { createdAt: Date; id: string } | { voteStatus: number; id: string } | null;
 
 /**
  * Fetches a paginated list of posts based on various filtering criteria.
@@ -27,35 +19,34 @@ export const getPosts = async (
   communityId?: string,
   communityIds?: string[],
   isGenericHome?: boolean,
-  lastVisible?: QueryDocumentSnapshot<DocumentData> | null
+  lastVisible?: PostCursor,
 ) => {
-  const constraints: QueryConstraint[] = [];
+  const where = [];
+  if (communityId) where.push(eq(posts.communityId, communityId));
+  else if (communityIds && communityIds.length > 0) where.push(inArray(posts.communityId, communityIds));
 
-  if (communityId) {
-    constraints.push(where("communityId", "==", communityId));
-    constraints.push(orderBy("createTime", "desc"));
-  } else if (communityIds && communityIds.length > 0) {
-    constraints.push(where("communityId", "in", communityIds));
-    constraints.push(orderBy("createTime", "desc"));
-  } else if (isGenericHome) {
-    constraints.push(orderBy("voteStatus", "desc"));
-  }
+  const orderByVote = isGenericHome && !communityId && !(communityIds && communityIds.length);
 
   if (lastVisible) {
-    constraints.push(startAfter(lastVisible));
+    if (orderByVote && "voteStatus" in lastVisible) {
+      where.push(or(lt(posts.voteStatus, lastVisible.voteStatus),
+        and(eq(posts.voteStatus, lastVisible.voteStatus), lt(posts.id, lastVisible.id))));
+    } else if ("createdAt" in lastVisible) {
+      where.push(or(lt(posts.createdAt, lastVisible.createdAt),
+        and(eq(posts.createdAt, lastVisible.createdAt), lt(posts.id, lastVisible.id))));
+    }
   }
 
-  constraints.push(limit(10));
+  const rows = await db.select().from(posts)
+    .where(where.length ? and(...where) : undefined)
+    .orderBy(orderByVote ? desc(posts.voteStatus) : desc(posts.createdAt), desc(posts.id))
+    .limit(10);
 
-  const postQuery = query(collection(firestore, "posts"), ...constraints);
-  const postDocs = await getDocs(postQuery);
-  const posts = postDocs.docs.map((doc) => ({
-    id: doc.id,
-    ...doc.data(),
-  })) as Post[];
-
-  const newLastVisible =
-    postDocs.docs.length > 0 ? postDocs.docs[postDocs.docs.length - 1] : null;
-
-  return { posts, newLastVisible };
+  const result = rows as unknown as Post[];
+  const last = rows.length
+    ? (orderByVote
+      ? { voteStatus: rows[rows.length - 1].voteStatus, id: rows[rows.length - 1].id }
+      : { createdAt: rows[rows.length - 1].createdAt, id: rows[rows.length - 1].id })
+    : null;
+  return { posts: result, newLastVisible: last };
 };

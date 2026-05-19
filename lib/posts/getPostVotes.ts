@@ -1,6 +1,7 @@
-import { firestore } from "@/firebase/clientApp";
+import { db } from "@/lib/db";
+import { postVotes } from "@/lib/db/schema";
 import { PostVote } from "@/types/post";
-import { collection, getDocs, query, where } from "firebase/firestore";
+import { eq } from "drizzle-orm";
 
 /**
  * Retrieves the voting status for a specific set of posts for a given user.
@@ -9,29 +10,5 @@ import { collection, getDocs, query, where } from "firebase/firestore";
  * @param postIds - An array of post identifiers to check for votes.
  * @returns A promise that resolves to an array of post vote objects for the specified posts.
  */
-export const getPostVotes = async (userId: string, postIds: string[]) => {
-  const chunks = [];
-  const chunkSize = 10;
-  for (let i = 0; i < postIds.length; i += chunkSize) {
-    chunks.push(postIds.slice(i, i + chunkSize));
-  }
-
-  const promises = chunks.map((chunk) => {
-    const postVotesQuery = query(
-      collection(firestore, `users/${userId}/postVotes`),
-      where("postId", "in", chunk)
-    );
-    return getDocs(postVotesQuery);
-  });
-
-  const querySnapshots = await Promise.all(promises);
-
-  const postVotes = querySnapshots.flatMap((snapshot) =>
-    snapshot.docs.map((doc) => ({
-      id: doc.id,
-      ...doc.data(),
-    }))
-  );
-
-  return postVotes as PostVote[];
-};
+export const getPostVotes = async (userId: string): Promise<PostVote[]> =>
+  (await db.select().from(postVotes).where(eq(postVotes.userId, userId))) as unknown as PostVote[];

@@ -812,7 +812,7 @@ Co-Authored-By: Claude Opus 4.7 <noreply@anthropic.com>"
 
 Each function keeps its **exported name and call signature**; only the body changes from Firestore to Drizzle. `lastVisible` cursors change type from `QueryDocumentSnapshot` to `{ createdAt: Date; id: string } | null` (feeds) or `{ voteStatus: number; id: string } | null` (guest feed); callers pass the returned cursor back unchanged.
 
-- [ ] **Step 1: Rewrite `lib/posts/getPosts.ts`**
+- [x] **Step 1: Rewrite `lib/posts/getPosts.ts`**
 
 ```ts
 import { db } from "@/lib/db";
@@ -859,7 +859,7 @@ export const getPosts = async (
 };
 ```
 
-- [ ] **Step 2: Rewrite `lib/posts/getPost.ts` and `lib/post/getPost.ts`**
+- [x] **Step 2: Rewrite `lib/posts/getPost.ts` and `lib/post/getPost.ts`**
 
 Both fetch a single post by id. Body:
 ```ts
@@ -875,7 +875,7 @@ export const getPost = async (postId: string): Promise<Post | null> => {
 ```
 > Note: there are two duplicate `getPost.ts` files (`lib/post/` and `lib/posts/`). Keep both for now (callers import from each); make their bodies identical. Consolidation is out of scope (no unrelated refactor).
 
-- [ ] **Step 3: Rewrite `lib/posts/createPost.ts`**
+- [x] **Step 3: Rewrite `lib/posts/createPost.ts`**
 
 Signature changes: the old `user: FirebaseUser` becomes `author: { id: string; username: string }` (the local user id + display name resolved by the caller via `requireUser`). Image upload stays Firebase Storage for now (Phase B) — keep the existing `uploadString` block but guard import; if that creates a Firebase dependency we are removing in Task 1, instead **stub image upload**: accept `imageUrl?: string` already-uploaded and persist it. Final body:
 
@@ -909,7 +909,7 @@ export const createPost = async (
 ```
 > **Decision locked:** Firebase Storage upload is Phase B. In Phase A `createPost`/profile/community image flows accept an already-resolved `imageUrl` string (or `undefined`); the actual upload pathway is rewired in Phase B. The image picker UI stays but its submit handler passes `undefined` until Phase B (documented in Task 13).
 
-- [ ] **Step 4: Rewrite `lib/posts/deletePost.ts`**
+- [x] **Step 4: Rewrite `lib/posts/deletePost.ts`**
 
 ```ts
 import { db } from "@/lib/db";
@@ -922,7 +922,7 @@ export const deletePost = async (postId: string) => {
 };
 ```
 
-- [ ] **Step 5: Rewrite `getPostVotes.ts` / `getCommunityPostVotes.ts`**
+- [x] **Step 5: Rewrite `getPostVotes.ts` / `getCommunityPostVotes.ts`**
 
 ```ts
 // getPostVotes.ts — all of a user's votes
@@ -946,7 +946,7 @@ export const getCommunityPostVotes = async (userId: string, communityId: string)
     .where(and(eq(postVotes.userId, userId), eq(postVotes.communityId, communityId)))) as unknown as PostVote[];
 ```
 
-- [ ] **Step 6: Rewrite `handlePostVote.ts` (transactional)**
+- [x] **Step 6: Rewrite `handlePostVote.ts` (transactional)**
 
 ```ts
 import { db } from "@/lib/db";
@@ -1017,7 +1017,7 @@ export const unsavePost = async (userId: string, postId: string) => {
 ```
 > **Executor note:** adjust `savePost`/`unsavePost` parameter shapes to match their current callers in `hooks/posts/useSavedPosts.tsx`; keep the *exported function name* identical and update the hook in Task 12 to pass the new shape.
 
-- [ ] **Step 8: Write test `tests/lib/posts.test.ts`**
+- [x] **Step 8: Write test `tests/lib/posts.test.ts`**
 
 ```ts
 import { describe, it, expect, vi } from "vitest";
@@ -1044,12 +1044,12 @@ describe("getPosts", () => {
 });
 ```
 
-- [ ] **Step 9: Run test**
+- [x] **Step 9: Run test**
 
 Run: `pnpm test tests/lib/posts.test.ts`
 Expected: PASS.
 
-- [ ] **Step 10: Commit**
+- [x] **Step 10: Commit**
 
 ```bash
 git add lib/posts lib/post tests/lib/posts.test.ts
