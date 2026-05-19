@@ -1,17 +1,18 @@
 import { Dispatch, SetStateAction, useState } from "react";
-import { User } from "firebase/auth";
 import { postStateAtom } from "@/atoms/postsAtom";
 import { Post } from "@/types/post";
 import { useSetAtom } from "jotai";
 import useCustomToast from "@/hooks/useCustomToast";
 import { Comment } from "../../types/comment";
-import { createComment } from "@/lib/comments/createComment";
+import { createCommentAction } from "@/app/actions/comments";
 import useCommunityState from "../community/useCommunityState";
 import { checkCommunityPermission } from "@/lib/community/communityPermissions";
 
 /**
  * A custom hook that provides functionality for creating new comments and replies.
- * It handles permission checks for restricted communities and updates the local post state to reflect the new comment count.
+ * It handles permission checks for restricted communities and updates the local
+ * post state to reflect the new comment count. Comment depth is derived
+ * server-side from the parent.
  * @param selectedPost - The post being commented on.
  * @param setComments - A state setter function to update the local comments list.
  * @returns An object containing the `onCreateComment` function and a loading state indicator.
@@ -25,12 +26,7 @@ const useCreateComment = (
   const [createLoading, setCreateLoading] = useState(false);
   const { communityStateValue } = useCommunityState();
 
-  const onCreateComment = async (
-    user: User,
-    commentText: string,
-    parentId?: string,
-    depth: number = 0
-  ) => {
+  const onCreateComment = async (commentText: string, parentId?: string) => {
     if (!selectedPost) return;
     setCreateLoading(true);
 
@@ -54,13 +50,11 @@ const useCreateComment = (
     }
 
     try {
-      const newComment = await createComment(
-        user,
+      const newComment = await createCommentAction(
         selectedPost.communityId,
         selectedPost.id!,
         selectedPost.title,
         commentText,
-        depth,
         parentId
       );
 

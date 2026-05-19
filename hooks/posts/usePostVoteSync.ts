@@ -1,10 +1,9 @@
 import { communityStateAtom } from "@/atoms/communitiesAtom";
 import { useAtomValue } from "jotai";
 import React, { useEffect } from "react";
-import { useAuthState } from "react-firebase-hooks/auth";
-import { auth } from "@/firebase/clientApp";
+import { useSession } from "@/lib/auth-client";
 import { Post, PostVote } from "@/types/post";
-import { getCommunityPostVotes as getCommunityPostVotesLib } from "@/lib/posts/getCommunityPostVotes";
+import { getCommunityPostVotesAction } from "@/app/actions/posts";
 
 type SetPostState = React.Dispatch<
   React.SetStateAction<{
@@ -21,12 +20,13 @@ type SetPostState = React.Dispatch<
  * @returns This hook does not return any values; it performs synchronization as a side effect.
  */
 const usePostVoteSync = (setPostStateValue: SetPostState) => {
-  const [user] = useAuthState(auth);
+  const { data: session } = useSession();
+  const user = session?.user ?? null;
   const currentCommunity = useAtomValue(communityStateAtom).currentCommunity;
 
   const getCommunityPostVotes = async (communityId: string) => {
     if (!user) return;
-    const postVotes = await getCommunityPostVotesLib(user.uid, communityId);
+    const postVotes = await getCommunityPostVotesAction(communityId);
     setPostStateValue((prev) => ({
       ...prev,
       postVotes: postVotes as PostVote[],
@@ -38,6 +38,7 @@ const usePostVoteSync = (setPostStateValue: SetPostState) => {
       return;
     }
     getCommunityPostVotes(currentCommunity?.id);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [user, currentCommunity]);
 
   useEffect(() => {

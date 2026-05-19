@@ -1,6 +1,5 @@
 import { Community } from "@/types/community";
-import { auth } from "@/firebase/clientApp";
-import { useAuthState } from "react-firebase-hooks/auth";
+import { useSession } from "@/lib/auth-client";
 import useCommunityState from "./useCommunityState";
 import {
   checkCommunityPermission,
@@ -8,17 +7,21 @@ import {
 } from "@/lib/community/communityPermissions";
 
 /**
- * A custom hook that calculates various permission flags for the current user within a specific community.
- * It determines if the user is the creator, an admin, and whether they have rights to post, comment, or view the community.
+ * A custom hook that calculates permission flags for the current user within a community.
+ *
+ * Moderator/creator status is derived from the user's community snippet
+ * (`isModerator`), since the client session only exposes the central auth id —
+ * the authoritative checks run server-side in the write actions.
  * @param communityData - The community object to check permissions against.
  * @returns An object containing boolean permission flags and a loading state indicator.
  */
 const useCommunityPermissions = (communityData?: Community) => {
-  const [user, loadingUser] = useAuthState(auth);
+  const { data: session, isPending } = useSession();
+  const user = session?.user ?? null;
   const { communityStateValue } = useCommunityState();
 
   const loading =
-    loadingUser || (!!user && !communityStateValue.snippetFetched);
+    isPending || (!!user && !communityStateValue.snippetFetched);
 
   if (!communityData) {
     return {
@@ -32,9 +35,14 @@ const useCommunityPermissions = (communityData?: Community) => {
     };
   }
 
-  const isCreator = user?.uid === communityData.creatorId;
-  const isAdmin =
-    isCreator || communityData.adminIds?.includes(user?.uid || "");
+  const snippet = communityStateValue.mySnippets.find(
+    (s) => s.communityId === communityData.id
+  );
+  const isModerator = !!snippet?.isModerator;
+  // The creator is always seeded as a moderator; the client cannot map the
+  // central auth id to the local creatorId, so moderator status is used.
+  const isCreator = isModerator;
+  const isAdmin = isModerator;
 
   const hasPermission = checkCommunityPermission(
     communityData,

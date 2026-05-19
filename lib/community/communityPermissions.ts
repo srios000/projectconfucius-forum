@@ -1,26 +1,4 @@
-import { db } from "@/lib/db";
-import { communityMembers } from "@/lib/db/schema";
 import { Community, CommunitySnippet } from "@/types/community";
-import { and, eq } from "drizzle-orm";
-
-/**
- * Resolves a user's membership and moderator status in a community.
- * @param userId - The local user id.
- * @param communityId - The community to check.
- * @returns `{ isMember, isModerator }` for the user in that community.
- */
-export const communityPermissions = async (
-  userId: string,
-  communityId: string
-): Promise<{ isMember: boolean; isModerator: boolean }> => {
-  const row = await db.query.communityMembers.findFirst({
-    where: and(
-      eq(communityMembers.userId, userId),
-      eq(communityMembers.communityId, communityId)
-    ),
-  });
-  return { isMember: !!row, isModerator: row?.isModerator ?? false };
-};
 
 /**
  * Checks if a user has permission to perform an action in a community.

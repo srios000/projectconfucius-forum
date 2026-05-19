@@ -1,10 +1,10 @@
 import { postStateAtom } from "@/atoms/postsAtom";
-import { DocumentData, QueryDocumentSnapshot } from "firebase/firestore";
 import { useSetAtom } from "jotai";
 import { useEffect, useState } from "react";
 import useCustomToast from "../useCustomToast";
 import { Post } from "@/types/post";
-import { getPosts as getPostsLib } from "@/lib/posts/getPosts";
+import { getPostsAction } from "@/app/actions/reads";
+import type { PostCursor } from "@/lib/posts/getPosts";
 
 type UsePostsFeedProps = {
   communityId?: string;
@@ -27,8 +27,7 @@ const usePostsFeed = ({
 }: UsePostsFeedProps) => {
   const setPostStateValue = useSetAtom(postStateAtom);
   const [loading, setLoading] = useState(false);
-  const [lastVisible, setLastVisible] =
-    useState<QueryDocumentSnapshot<DocumentData> | null>(null);
+  const [lastVisible, setLastVisible] = useState<PostCursor>(null);
   const [noMorePosts, setNoMorePosts] = useState(false);
   const showToast = useCustomToast();
 
@@ -39,7 +38,7 @@ const usePostsFeed = ({
 
     setLoading(true);
     try {
-      const { posts, newLastVisible } = await getPostsLib(
+      const { posts, newLastVisible } = await getPostsAction(
         communityId,
         communityIds,
         isGenericHome,

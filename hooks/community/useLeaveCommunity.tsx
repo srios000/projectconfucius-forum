@@ -1,29 +1,32 @@
 import { useState } from "react";
 import { communityStateAtom } from "@/atoms/communitiesAtom";
-import { auth } from "@/firebase/clientApp";
+import { useSession } from "@/lib/auth-client";
 import { useSetAtom } from "jotai";
-import { useAuthState } from "react-firebase-hooks/auth";
 import useCustomToast from "../useCustomToast";
-import { leaveCommunity } from "@/lib/community/leaveCommunity";
+import { leaveCommunityAction } from "@/app/actions/community";
 
 /**
  * A custom hook that provides functionality for a user to leave a community.
- * It handles the backend leave logic, removes the user's membership snippet,
- * and decrements the community's member count in the local Jotai state.
+ * It delegates the leave to a server action, removes the user's membership
+ * snippet, and decrements the community's member count in local Jotai state.
  * @returns An object containing the `leaveCommunity` function, loading state, and error state.
  */
 const useLeaveCommunity = () => {
-  const [user] = useAuthState(auth);
+  const { data: session } = useSession();
+  const user = session?.user ?? null;
   const setCommunityStateValue = useSetAtom(communityStateAtom);
   const showToast = useCustomToast();
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
 
   const onLeaveCommunity = async (communityId: string) => {
-    if (!user) return;
+    if (!user) {
+      window.location.assign("/api/auth/start");
+      return;
+    }
     setLoading(true);
     try {
-      await leaveCommunity(user.uid, communityId);
+      await leaveCommunityAction(communityId);
 
       setCommunityStateValue((prev) => ({
         ...prev,

@@ -1,20 +1,17 @@
-import { authModalStateAtom } from "@/atoms/authModalAtom";
-import { useSetAtom } from "jotai";
-import { useAuthState } from "react-firebase-hooks/auth";
-import { auth } from "@/firebase/clientApp";
+import { useSession } from "@/lib/auth-client";
 import useJoinCommunity from "./useJoinCommunity";
 import useLeaveCommunity from "./useLeaveCommunity";
 import { Community } from "@/types/community";
 
 /**
  * A custom hook that centralizes the logic for joining and leaving communities.
- * It handles authentication gating, triggering the auth modal if necessary, and
- * delegates the actual join/leave operations to specialized hooks.
+ * It handles authentication gating (redirecting guests to the central login)
+ * and delegates the actual join/leave operations to specialized hooks.
  * @returns An object containing the `onJoinOrLeaveCommunity` handler and a combined loading state.
  */
 const useCommunityMembershipActions = () => {
-  const [user] = useAuthState(auth);
-  const setAuthModalState = useSetAtom(authModalStateAtom);
+  const { data: session } = useSession();
+  const user = session?.user ?? null;
   const { joinCommunity, joinLoading } = useJoinCommunity();
   const { leaveCommunity, leaveLoading } = useLeaveCommunity();
 
@@ -23,7 +20,7 @@ const useCommunityMembershipActions = () => {
     isJoined: boolean
   ) => {
     if (!user) {
-      setAuthModalState({ open: true, view: "login" });
+      window.location.assign("/api/auth/start");
       return;
     }
 

@@ -1,31 +1,38 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { User } from "firebase/auth";
+import { useSession } from "@/lib/auth-client";
 import useCustomToast from "@/hooks/useCustomToast";
-import { createPost } from "@/lib/posts/createPost";
+import { createPostAction } from "@/app/actions/posts";
 import useCommunityState from "../community/useCommunityState";
 import { checkCommunityPermission } from "@/lib/community/communityPermissions";
 
 /**
  * A custom hook that provides functionality for creating a new post.
- * It handles permission checks for restricted communities, image uploads, and provides feedback via toasts.
+ * It handles permission checks for restricted communities and provides feedback via toasts.
+ *
+ * Phase A: image upload is deferred to Phase B — `selectedFile` is accepted for
+ * signature stability but not persisted (the create action stores no image yet).
  * @returns An object containing the `handleCreatePost` function, loading state, and error state.
  */
 const useCreatePost = () => {
   const router = useRouter();
   const showToast = useCustomToast();
+  const { data: session } = useSession();
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(false);
   const { communityStateValue } = useCommunityState();
 
   const handleCreatePost = async (
-    user: User,
     communityId: string,
     communityImageURL: string | undefined,
     postData: { title: string; body: string },
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     selectedFile?: string
   ) => {
-    if (!user) return;
+    if (!session?.user) {
+      window.location.assign("/api/auth/start");
+      return;
+    }
     setLoading(true);
 
     // Check for restricted community permissions
@@ -48,13 +55,7 @@ const useCreatePost = () => {
     }
 
     try {
-      await createPost(
-        user,
-        communityId,
-        communityImageURL,
-        postData,
-        selectedFile
-      );
+      await createPostAction(communityId, communityImageURL, postData);
 
       router.back();
       showToast({

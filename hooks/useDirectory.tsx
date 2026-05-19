@@ -65,7 +65,7 @@ const useDirectory = () => {
         selectedMenuItem: {
           displayText: currentCommunity?.id,
           link: `community/${currentCommunity?.id}`,
-          imageURL: currentCommunity?.imageURL,
+          imageURL: currentCommunity?.imageUrl,
           icon: IoPeopleCircleOutline,
           iconColor: { base: "red.500", _dark: "red.400" },
         },

@@ -1,11 +1,9 @@
 import { communityStateAtom } from "@/atoms/communitiesAtom";
-import { CommunitySnippet } from "@/types/community";
-import { auth, firestore } from "@/firebase/clientApp";
-import { collection, getDocs } from "firebase/firestore";
+import { useSession } from "@/lib/auth-client";
 import { useSetAtom } from "jotai";
 import { useEffect, useState } from "react";
-import { useAuthState } from "react-firebase-hooks/auth";
 import useCustomToast from "../useCustomToast";
+import { getCommunitySnippetsAction } from "@/app/actions/community";
 
 /**
  * A custom hook that fetches and manages the current user's community membership snippets.
@@ -13,7 +11,8 @@ import useCustomToast from "../useCustomToast";
  * @returns An object containing the loading state and any error message encountered during fetching.
  */
 export const useCommunitySnippets = () => {
-  const [user] = useAuthState(auth);
+  const { data: session } = useSession();
+  const user = session?.user ?? null;
   const setCommunityStateValue = useSetAtom(communityStateAtom);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
@@ -22,13 +21,10 @@ export const useCommunitySnippets = () => {
   const getMySnippets = async () => {
     setLoading(true);
     try {
-      const snippetDocs = await getDocs(
-        collection(firestore, `users/${user?.uid}/communitySnippets`)
-      );
-      const snippets = snippetDocs.docs.map((doc) => ({ ...doc.data() }));
+      const snippets = await getCommunitySnippetsAction();
       setCommunityStateValue((prev) => ({
         ...prev,
-        mySnippets: snippets as CommunitySnippet[],
+        mySnippets: snippets,
         snippetFetched: true,
       }));
     } catch (error: any) {

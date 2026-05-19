@@ -1,85 +1,42 @@
-import { postStateAtom } from "@/atoms/postsAtom";
-import { auth } from "@/firebase/clientApp";
-import { deleteProfileImage } from "@/lib/user-profile/deleteProfileImage";
-import { updateUserCommentsName } from "@/lib/user-profile/updateUserCommentsName";
-import { updateUserPostsName } from "@/lib/user-profile/updateUserPostsName";
-import { uploadProfileImage } from "@/lib/user-profile/uploadProfileImage";
-import { useSetAtom } from "jotai";
+import { useSession } from "@/lib/auth-client";
+import { profileNameAction, removeProfileImageAction } from "@/app/actions/profile";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
-import { useAuthState, useUpdateProfile } from "react-firebase-hooks/auth";
 import useCustomToast from "./useCustomToast";
 
 /**
  * A custom hook that provides functionality for managing the authenticated user's profile.
- * This includes updating the user's display name, profile image, and ensuring these changes
- * are reflected across their existing posts and comments.
+ * Name changes propagate to the user's posts/comments via a server action.
+ *
+ * Phase A: profile image upload is deferred to Phase B — `updateImage` is a
+ * no-op that surfaces a toast; `removeImage` clears the stored image. The
+ * functions are kept exported so callers compile unchanged.
  * @returns An object containing functions for profile updates and associated loading states.
  */
 const useUserProfile = () => {
-  const [user] = useAuthState(auth);
-  const [updateProfile, updating, error] = useUpdateProfile(auth);
-  const setPostStateValue = useSetAtom(postStateAtom);
+  const { data: session } = useSession();
+  const user = session?.user ?? null;
   const router = useRouter();
   const showToast = useCustomToast();
-  const [uploadingImage, setUploadingImage] = useState(false);
+  const [loading, setLoading] = useState(false);
 
-  const updateImage = async (selectedFile: string) => {
-    if (!user || !selectedFile) return;
-
-    try {
-      setUploadingImage(true);
-      const downloadURL = await uploadProfileImage(user.uid, selectedFile);
-
-      const success = await updateProfile({
-        photoURL: downloadURL,
-      });
-
-      if (!success) {
-        throw new Error("Failed to update profile image");
-      }
-
-      await user.reload();
-      router.refresh();
-
-      showToast({
-        title: "Profile updated",
-        description: "Your profile has been updated",
-        status: "success",
-      });
-      return true;
-    } catch (error) {
-      console.error("Error: updateImage: ", error);
-      showToast({
-        title: "Image not Updated",
-        description: "Failed to update profile image",
-        status: "error",
-      });
-      return false;
-    } finally {
-      setUploadingImage(false);
-    }
+  const updateImage = async (_selectedFile: string) => {
+    showToast({
+      title: "Image upload coming soon",
+      description: "Profile image upload is not available yet.",
+      status: "info",
+    });
+    return false;
   };
 
   const removeImage = async () => {
-    if (!user) return;
-
+    if (!user) return false;
     try {
-      await deleteProfileImage(user.uid);
-      const success = await updateProfile({
-        photoURL: "",
-      });
-
-      if (!success) {
-        throw new Error("Failed to delete profile image");
-      }
-
-      await user.reload();
+      await removeProfileImageAction();
       router.refresh();
-
       showToast({
         title: "Profile updated",
-        description: "Your profile has been updated",
+        description: "Your profile image has been removed",
         status: "success",
       });
       return true;
@@ -95,31 +52,10 @@ const useUserProfile = () => {
   };
 
   const updateName = async (userName: string) => {
-    if (!user) return;
-
+    if (!user) return false;
     try {
-      const success = await updateProfile({
-        displayName: userName,
-      });
-
-      if (!success) {
-        throw new Error("Failed to update profile name");
-      }
-
-      await updateUserCommentsName(user.uid, userName);
-      await updateUserPostsName(user.uid, userName);
-
-      setPostStateValue((prev) => ({
-        ...prev,
-        posts: prev.posts.map((post) => {
-          if (post.creatorId === user.uid) {
-            return { ...post, creatorUsername: userName };
-          }
-          return post;
-        }),
-      }));
-
-      await user.reload();
+      setLoading(true);
+      await profileNameAction(userName);
       router.refresh();
       return true;
     } catch (error) {
@@ -130,6 +66,8 @@ const useUserProfile = () => {
         status: "error",
       });
       return false;
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -137,7 +75,7 @@ const useUserProfile = () => {
     updateImage,
     removeImage,
     updateName,
-    loading: updating || uploadingImage,
+    loading,
   };
 };
 

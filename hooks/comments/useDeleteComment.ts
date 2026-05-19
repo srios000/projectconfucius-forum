@@ -3,7 +3,7 @@ import { postStateAtom } from "@/atoms/postsAtom";
 import { useSetAtom } from "jotai";
 import useCustomToast from "@/hooks/useCustomToast";
 import { Comment } from "../../types/comment";
-import { deleteComment } from "@/lib/comments/deleteComment";
+import { deleteCommentAction } from "@/app/actions/comments";
 
 /**
  * A custom hook that provides functionality for deleting comments and their threaded replies.
@@ -35,7 +35,7 @@ const useDeleteComment = (
       const descendantIds = getDescendantIds(comment.id);
       const allIdsToDelete = [comment.id, ...descendantIds];
 
-      await deleteComment(comment.id, comment.postId, descendantIds);
+      await deleteCommentAction(comment.id, comment.postId);
 
       setComments((prev) =>
         prev.filter((item) => !allIdsToDelete.includes(item.id))

@@ -1,36 +1,33 @@
 import { useState } from "react";
 import { communityStateAtom } from "@/atoms/communitiesAtom";
 import { Community } from "@/types/community";
-import { auth } from "@/firebase/clientApp";
+import { useSession } from "@/lib/auth-client";
 import { useSetAtom } from "jotai";
-import { useAuthState } from "react-firebase-hooks/auth";
 import useCustomToast from "../useCustomToast";
-import { joinCommunity } from "@/lib/community/joinCommunity";
+import { joinCommunityAction } from "@/app/actions/community";
 
 /**
  * A custom hook that provides functionality for a user to join a community.
- * It handles the backend join logic, updates the user's membership snippets,
- * and increments the community's member count in the local Jotai state.
+ * It delegates the join to a server action, updates the user's membership
+ * snippets, and increments the community's member count in local Jotai state.
  * @returns An object containing the `joinCommunity` function, loading state, and error state.
  */
 const useJoinCommunity = () => {
-  const [user] = useAuthState(auth);
+  const { data: session } = useSession();
+  const user = session?.user ?? null;
   const setCommunityStateValue = useSetAtom(communityStateAtom);
   const showToast = useCustomToast();
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
 
   const onJoinCommunity = async (communityData: Community) => {
-    if (!user) return;
+    if (!user) {
+      window.location.assign("/api/auth/start");
+      return;
+    }
     setLoading(true);
     try {
-      const newSnippet = await joinCommunity(
-        user.uid,
-        communityData.id,
-        communityData.imageURL || "",
-        user.uid === communityData.creatorId ||
-          (communityData.adminIds?.includes(user.uid || "") ?? false)
-      );
+      const newSnippet = await joinCommunityAction(communityData);
 
       setCommunityStateValue((prev) => ({
         ...prev,
