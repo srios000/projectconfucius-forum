@@ -77,7 +77,7 @@ git commit -m "chore: add @tanstack/react-query for Phase C"
 - Create: `lib/queries/keys.ts`
 - Create: `__tests__/lib/queries/keys.test.ts`
 
-- [ ] **Step 1: Write the failing test**
+- [x] **Step 1: Write the failing test**
 
 Create `__tests__/lib/queries/keys.test.ts`:
 
@@ -116,7 +116,7 @@ describe("queryKey factory", () => {
 });
 ```
 
-- [ ] **Step 2: Run test to verify it fails**
+- [x] **Step 2: Run test to verify it fails**
 
 Run:
 
@@ -126,7 +126,7 @@ pnpm test -- __tests__/lib/queries/keys.test.ts
 
 Expected: FAIL — cannot find module `@/lib/queries/keys`.
 
-- [ ] **Step 3: Write the factory**
+- [x] **Step 3: Write the factory**
 
 Create `lib/queries/keys.ts`:
 
@@ -164,7 +164,7 @@ export const keys = {
 } as const;
 ```
 
-- [ ] **Step 4: Run test to verify it passes**
+- [x] **Step 4: Run test to verify it passes**
 
 Run:
 
@@ -174,7 +174,7 @@ pnpm test -- __tests__/lib/queries/keys.test.ts
 
 Expected: 6 tests pass.
 
-- [ ] **Step 5: Typecheck**
+- [x] **Step 5: Typecheck**
 
 Run:
 
@@ -184,7 +184,7 @@ pnpm typecheck
 
 Expected: clean.
 
-- [ ] **Step 6: Commit**
+- [x] **Step 6: Commit**
 
 ```bash
 git add lib/queries/keys.ts __tests__/lib/queries/keys.test.ts
