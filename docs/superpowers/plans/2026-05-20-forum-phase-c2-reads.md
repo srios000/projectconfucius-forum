@@ -1249,7 +1249,7 @@ git commit -m "feat(queries): useCommunityMembersQuery + delegating shell"
 
 Note: the current hook lives under `hooks/admin/` but the **query** belongs under `lib/queries/community/` per spec §4.1 (`use-community-admins.ts`), because admins are a property of a community, not of the admin tooling.
 
-- [ ] **Step 1: Write the primitive**
+- [x] **Step 1: Write the primitive**
 
 Create `lib/queries/community/use-community-admins.ts`:
 
@@ -1284,7 +1284,7 @@ export function useCommunityAdminsQuery({
 }
 ```
 
-- [ ] **Step 2: Rewrite the shell**
+- [x] **Step 2: Rewrite the shell**
 
 Replace `hooks/admin/useAdminList.ts`:
 
@@ -1335,7 +1335,7 @@ const useAdminList = () => {
 export default useAdminList;
 ```
 
-- [ ] **Step 3: Verify types + commit**
+- [x] **Step 3: Verify types + commit**
 
 ```bash
 pnpm typecheck
