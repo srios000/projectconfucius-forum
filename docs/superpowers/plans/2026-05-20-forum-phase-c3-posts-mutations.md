@@ -803,7 +803,7 @@ git commit -m "refactor(posts): route usePostDeletion through useDeletePostMutat
 
 Two mutations sharing one file. Both invalidate `posts.saved(userId)` on success. `useSavePostMutation` returns the new `SavedPost` from `savePostAction`; `useUnsavePostMutation` returns void.
 
-- [ ] **Step 1: Write the failing test**
+- [x] **Step 1: Write the failing test**
 
 Create `__tests__/lib/queries/posts/use-saved-posts-mutation.test.tsx`:
 
@@ -888,7 +888,7 @@ describe("useUnsavePostMutation", () => {
 });
 ```
 
-- [ ] **Step 2: Run test to confirm it fails**
+- [x] **Step 2: Run test to confirm it fails**
 
 ```bash
 pnpm test __tests__/lib/queries/posts/use-saved-posts-mutation.test.tsx
@@ -896,7 +896,7 @@ pnpm test __tests__/lib/queries/posts/use-saved-posts-mutation.test.tsx
 
 Expected: FAIL — module not found.
 
-- [ ] **Step 3: Write the primitives**
+- [x] **Step 3: Write the primitives**
 
 Create `lib/queries/posts/use-saved-posts-mutation.ts`:
 
@@ -940,7 +940,7 @@ export function useUnsavePostMutation() {
 }
 ```
 
-- [ ] **Step 4: Run test to verify it passes**
+- [x] **Step 4: Run test to verify it passes**
 
 ```bash
 pnpm test __tests__/lib/queries/posts/use-saved-posts-mutation.test.tsx
@@ -948,7 +948,7 @@ pnpm test __tests__/lib/queries/posts/use-saved-posts-mutation.test.tsx
 
 Expected: PASS.
 
-- [ ] **Step 5: Commit**
+- [x] **Step 5: Commit**
 
 ```bash
 git add lib/queries/posts/use-saved-posts-mutation.ts __tests__/lib/queries/posts/use-saved-posts-mutation.test.tsx
