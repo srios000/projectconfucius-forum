@@ -453,11 +453,11 @@ pnpm grep "TanStack Query migration tracked separately" hooks/posts/usePostsFeed
 
 (Use ripgrep equivalent on your shell.) Expected: zero matches in this file.
 
-- [ ] **Step 8: Smoke test in the browser**
+- [x] **Step 8: Smoke test in the browser**
 
 Reload http://localhost:3000 and scroll the home feed. Expect: posts load, "Load more" works, no console errors.
 
-- [ ] **Step 9: Commit**
+- [x] **Step 9: Commit**
 
 ```bash
 git add lib/queries/keys.ts lib/queries/posts/use-posts-feed.ts hooks/posts/usePostsFeed.ts __tests__/lib/queries/posts/use-posts-feed.test.ts __tests__/lib/queries/keys.test.ts
@@ -474,7 +474,7 @@ git commit -m "feat(queries): usePostsFeedQuery + delegating shell"
 
 Today `usePostVoteSync` is called for its side effect: it pulls the user's votes for the current community and writes them into `postStateAtom.postVotes`. After C2 the query is the source of truth; the shell mirrors into the dying atom until Task 15.
 
-- [ ] **Step 1: Write the query primitive**
+- [x] **Step 1: Write the query primitive**
 
 Create `lib/queries/posts/use-post-votes.ts`:
 
@@ -501,7 +501,7 @@ export function useCommunityPostVotesQuery({
 }
 ```
 
-- [ ] **Step 2: Rewrite the shell**
+- [x] **Step 2: Rewrite the shell**
 
 Replace `hooks/posts/usePostVoteSync.ts`:
 
@@ -547,7 +547,7 @@ export default usePostVoteSync;
 
 The remaining `useEffect` exists solely to **mirror** query result + auth state into the dying `postStateAtom.postVotes`. It vanishes in Task 15 when the field is removed and consumers read `postVotes` directly from the query.
 
-- [ ] **Step 3: Run types + smoke**
+- [x] **Step 3: Run types + smoke**
 
 ```bash
 pnpm typecheck
@@ -555,7 +555,7 @@ pnpm typecheck
 
 Expected: clean.
 
-- [ ] **Step 4: Commit**
+- [x] **Step 4: Commit**
 
 ```bash
 git add lib/queries/posts/use-post-votes.ts hooks/posts/usePostVoteSync.ts

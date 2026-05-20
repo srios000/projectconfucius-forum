@@ -1,9 +1,11 @@
-import { communityStateAtom } from "@/atoms/communitiesAtom";
+"use client";
+
+import { useEffect } from "react";
 import { useAtomValue } from "jotai";
-import React, { useEffect } from "react";
+import { communityStateAtom } from "@/atoms/communitiesAtom";
 import { useSession } from "@/lib/auth-client";
 import { Post, PostVote } from "@/types/post";
-import { getCommunityPostVotesAction } from "@/app/actions/posts";
+import { useCommunityPostVotesQuery } from "@/lib/queries/posts/use-post-votes";
 
 type SetPostState = React.Dispatch<
   React.SetStateAction<{
@@ -23,32 +25,19 @@ const usePostVoteSync = (setPostStateValue: SetPostState) => {
   const { data: session } = useSession();
   const user = session?.user ?? null;
   const currentCommunity = useAtomValue(communityStateAtom).currentCommunity;
+  const communityId = currentCommunity?.id;
 
-  const getCommunityPostVotes = async (communityId: string) => {
-    if (!user) return;
-    const postVotes = await getCommunityPostVotesAction(communityId);
+  const { data: postVotes } = useCommunityPostVotesQuery({
+    communityId,
+    enabled: !!user && !!communityId,
+  });
+
+  useEffect(() => {
     setPostStateValue((prev) => ({
       ...prev,
-      postVotes: postVotes as PostVote[],
+      postVotes: !user || !communityId ? [] : (postVotes ?? []),
     }));
-  };
-
-  useEffect(() => {
-    if (!user || !currentCommunity?.id) {
-      return;
-    }
-    getCommunityPostVotes(currentCommunity?.id);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [user, currentCommunity]);
-
-  useEffect(() => {
-    if (!user) {
-      setPostStateValue((prev) => ({
-        ...prev,
-        postVotes: [],
-      }));
-    }
-  }, [user, setPostStateValue]);
+  }, [user, communityId, postVotes, setPostStateValue]);
 };
 
 export default usePostVoteSync;

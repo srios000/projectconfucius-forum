@@ -16,6 +16,14 @@ type UsePostsFeedProps = {
   isGenericHome?: boolean;
 };
 
+/**
+ * A custom hook that manages the post feed for communities and the home page.
+ * It handles paginated fetching of posts.
+ * @param communityId - Optional identifier to fetch posts for a specific community.
+ * @param communityIds - Optional array of identifiers to fetch posts for a personalized home feed.
+ * @param isGenericHome - Optional flag to fetch posts for the generic home feed.
+ * @returns An object containing the loading state, fetchPosts function, and a flag for no more posts.
+ */
 const usePostsFeed = ({
   communityId,
   communityIds,
