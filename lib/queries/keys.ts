@@ -16,7 +16,8 @@ export const keys = {
     },
     community: {
         all: ["community"] as const,
-        list: (limit: number) => ["community", "list", limit] as const,
+        list: (args: { limit: number; cursor: unknown }) =>
+            ["community", "list", args] as const,
         detail: (id: string) => ["community", "detail", id] as const,
         snippets: (userId: string) => ["community", "snippets", userId] as const,
         members: (id: string) => ["community", "members", id] as const,

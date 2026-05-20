@@ -784,7 +784,7 @@ git commit -m "feat(queries): usePostQuery"
 
 Same paged-feed pattern as Task 2. The query holds one page keyed by `{ limit, cursor }`; the shell accumulates pages in component-local `useState` and preserves the legacy `{ communities, loading, fetchCommunities, noMoreCommunities }` surface.
 
-- [ ] **Step 1: Add the community-feed key**
+- [x] **Step 1: Add the community-feed key**
 
 Open `lib/queries/keys.ts` and replace `community.list` to take a page cursor:
 
@@ -800,7 +800,7 @@ community: {
 },
 ```
 
-- [ ] **Step 2: Write the primitive**
+- [x] **Step 2: Write the primitive**
 
 Create `lib/queries/community/use-communities.ts`:
 
@@ -914,7 +914,7 @@ export default useCommunitiesFeed;
 
 The `// eslint-disable-next-line react-hooks/set-state-in-effect -- ... TanStack Query migration tracked separately` previously above the `useEffect` is removed. The remaining `exhaustive-deps` suppression is unrelated and stays.
 
-- [ ] **Step 4: Verify types**
+- [x] **Step 4: Verify types**
 
 ```bash
 pnpm typecheck
@@ -922,11 +922,11 @@ pnpm typecheck
 
 Expected: clean.
 
-- [ ] **Step 5: Smoke**
+- [x] **Step 5: Smoke**
 
 Reload the home/community-discovery view and confirm the list renders + pagination works.
 
-- [ ] **Step 6: Commit**
+- [x] **Step 6: Commit**
 
 ```bash
 git add lib/queries/keys.ts lib/queries/community/use-communities.ts hooks/community/useCommunitiesFeed.ts
