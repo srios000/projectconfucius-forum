@@ -54,7 +54,7 @@ These are inherited from parent spec §13 and the C2 deferral of `useInfiniteQue
 
 The mutation wraps `voteAction` and, on success, invalidates `posts.detail(post.id)`, every `posts.feed.*` key via predicate, and `posts.votes(communityId)`. It returns the action's `{ voteChange, newVote, voteIdToDelete }` payload so the shell can apply it to caller-supplied local state.
 
-- [ ] **Step 1: Write the failing test**
+- [x] **Step 1: Write the failing test**
 
 Create `__tests__/lib/queries/posts/use-post-vote.test.tsx`:
 
@@ -119,7 +119,7 @@ describe("usePostVoteMutation", () => {
 });
 ```
 
-- [ ] **Step 2: Run test to confirm it fails**
+- [x] **Step 2: Run test to confirm it fails**
 
 ```bash
 pnpm test __tests__/lib/queries/posts/use-post-vote.test.tsx
@@ -127,7 +127,7 @@ pnpm test __tests__/lib/queries/posts/use-post-vote.test.tsx
 
 Expected: FAIL — `Cannot find module '@/lib/queries/posts/use-post-vote'`.
 
-- [ ] **Step 3: Write the primitive**
+- [x] **Step 3: Write the primitive**
 
 Create `lib/queries/posts/use-post-vote.ts`:
 
@@ -163,7 +163,7 @@ export function usePostVoteMutation() {
 }
 ```
 
-- [ ] **Step 4: Run test to verify it passes**
+- [x] **Step 4: Run test to verify it passes**
 
 ```bash
 pnpm test __tests__/lib/queries/posts/use-post-vote.test.tsx
@@ -171,7 +171,7 @@ pnpm test __tests__/lib/queries/posts/use-post-vote.test.tsx
 
 Expected: PASS.
 
-- [ ] **Step 5: Commit**
+- [x] **Step 5: Commit**
 
 ```bash
 git add lib/queries/posts/use-post-vote.ts __tests__/lib/queries/posts/use-post-vote.test.tsx
