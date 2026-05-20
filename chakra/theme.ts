@@ -27,7 +27,7 @@ const appConfig = defineConfig({
     tokens: {
       colors: {
         brand: {
-          100: { value: "#FF3C00" },
+          100: { value: "#10b981" },
         },
       },
       fonts: {

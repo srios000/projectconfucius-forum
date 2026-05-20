@@ -70,6 +70,7 @@ const usePostsFeed = ({
   };
 
   useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect -- legacy feed state reset on route/community change; TanStack Query migration tracked separately
     setNoMorePosts(false);
     setLastVisible(null);
     setPostStateValue((prev) => ({

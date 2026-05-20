@@ -1,5 +1,3 @@
-/// <reference types="vitest" />
-
 import { act, renderHook, waitFor } from "@testing-library/react";
 import type React from "react";
 import { vi } from "vitest";

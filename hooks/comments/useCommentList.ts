@@ -35,6 +35,7 @@ const useCommentList = (selectedPost: Post | null) => {
 
   useEffect(() => {
     if (selectedPost) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect -- legacy effect-driven fetch; TanStack Query migration tracked separately
       loadComments();
     }
   }, [selectedPost, loadComments]);

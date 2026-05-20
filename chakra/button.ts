@@ -48,21 +48,21 @@ export const buttonRecipe = defineRecipe({
       solid: {
         ...solidBase,
         color: "white",
-        bg: { base: "red.500", _dark: "red.600" },
-        borderColor: { base: "red.500", _dark: "red.600" },
+        bg: { base: "green.500", _dark: "green.600" },
+        borderColor: { base: "green.500", _dark: "green.600" },
         _hover: {
           ...(solidBase._hover ?? {}),
-          bg: { base: "red.400", _dark: "red.500" },
+          bg: { base: "green.400", _dark: "green.500" },
         },
       },
       outline: {
         ...outlineBase,
-        color: { base: "red.500", _dark: "red.400" },
+        color: { base: "green.500", _dark: "green.400" },
         borderWidth: "1px",
-        borderColor: { base: "red.500", _dark: "red.400" },
+        borderColor: { base: "green.500", _dark: "green.400" },
         _hover: {
           ...(outlineBase._hover ?? {}),
-          bg: { base: "red.50", _dark: "whiteAlpha.100" },
+          bg: { base: "green.50", _dark: "whiteAlpha.100" },
         },
       },
       oauth: {
@@ -71,7 +71,7 @@ export const buttonRecipe = defineRecipe({
         borderColor: { base: "gray.300", _dark: "gray.600" },
         _hover: {
           bg: { base: "gray.50", _dark: "gray.700" },
-          borderColor: "red.400",
+          borderColor: "green.400",
         },
       },
       action: {
@@ -80,7 +80,7 @@ export const buttonRecipe = defineRecipe({
         borderColor: { base: "white", _dark: "gray.800" },
         _hover: {
           bg: { base: "gray.50", _dark: "gray.700" },
-          borderColor: "red.400",
+          borderColor: "green.400",
         },
       },
     },

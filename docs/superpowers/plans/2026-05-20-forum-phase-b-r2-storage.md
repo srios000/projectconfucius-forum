@@ -66,7 +66,7 @@
 **Files:**
 - Modify: `package.json`, `.env.example`
 
-- [ ] **Step 1: Add R2 SDK deps**
+- [x] **Step 1: Add R2 SDK deps**
 
 Run:
 ```bash
@@ -75,7 +75,7 @@ pnpm add @aws-sdk/client-s3@^3.1020.0 @aws-sdk/s3-request-presigner@^3.1020.0
 
 (Versions pinned to projectk's for cross-app consistency.)
 
-- [ ] **Step 2: Append five env vars to `.env.example`**
+- [x] **Step 2: Append five env vars to `.env.example`**
 
 Append to the existing `.env.example`:
 ```
@@ -89,12 +89,12 @@ FORUM_R2_PUBLIC_URL=https://litang.projectconfucius.id
 
 (Account id and public URL are not secrets — they live in `.env.example` so a new clone has the right values out of the box. The two keys stay blank in the example.)
 
-- [ ] **Step 3: Sanity check — no source files reference R2 yet**
+- [x] **Step 3: Sanity check — no source files reference R2 yet**
 
 Run: `pnpm exec tsc --noEmit`
 Expected: PASS (no R2 imports anywhere yet — this is just to confirm the dep install didn't break anything).
 
-- [ ] **Step 4: Commit**
+- [x] **Step 4: Commit**
 
 ```bash
 git add package.json pnpm-lock.yaml .env.example

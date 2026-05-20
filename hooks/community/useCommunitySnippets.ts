@@ -49,6 +49,7 @@ export const useCommunitySnippets = () => {
       }));
       return;
     }
+    // eslint-disable-next-line react-hooks/set-state-in-effect -- legacy on-auth-change fetch; TanStack Query migration tracked separately
     getMySnippets();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [user]);
