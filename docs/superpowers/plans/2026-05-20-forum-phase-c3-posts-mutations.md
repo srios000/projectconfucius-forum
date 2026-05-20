@@ -714,7 +714,7 @@ pnpm test __tests__/lib/queries/posts/use-delete-post.test.tsx
 
 Expected: PASS.
 
-- [x ] **Step 5: Commit**
+- [x] **Step 5: Commit**
 
 ```bash
 git add lib/queries/posts/use-delete-post.ts __tests__/lib/queries/posts/use-delete-post.test.tsx
@@ -737,7 +737,7 @@ Preserves `{ onDeletePost }` surface. The old shell did:
 
 After C3 we drop the optimistic `setQueryData` on `posts.saved` (per known-limitation #2). The caller-supplied local list removal stays — that's just UI plumbing for the caller's own state. Rollback on error stays. Detail + feed invalidation moves to the mutation.
 
-- [ ] **Step 1: Replace the shell file**
+- [x] **Step 1: Replace the shell file**
 
 Replace `hooks/posts/usePostDeletion.ts`:
 
@@ -774,7 +774,7 @@ const usePostDeletion = ({ posts, setPosts }: UsePostDeletionOpts) => {
 export default usePostDeletion;
 ```
 
-- [ ] **Step 2: Verify types**
+- [x] **Step 2: Verify types**
 
 ```bash
 pnpm typecheck
@@ -782,11 +782,11 @@ pnpm typecheck
 
 Expected: clean.
 
-- [ ] **Step 3: Smoke in browser**
+- [x] **Step 3: Smoke in browser**
 
 Sign in, delete a post you own from the feed (community admin or post owner). Expect: post disappears from feed; navigating to its detail URL shows 404 or empty. If the post was also in your saved list, it disappears from saved list on next visit (one network round trip's delay because the optimistic `setQueryData` is gone).
 
-- [ ] **Step 4: Commit**
+- [x] **Step 4: Commit**
 
 ```bash
 git add hooks/posts/usePostDeletion.ts
