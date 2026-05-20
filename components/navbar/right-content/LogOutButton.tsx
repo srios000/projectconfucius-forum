@@ -8,6 +8,7 @@ import React from "react";
  */
 const LogOutButton: React.FC = () => {
   return (
+    // eslint-disable-next-line @next/next/no-html-link-for-pages -- API route, not a page; must hit the server to clear session and redirect
     <a href="/api/auth/signout">
       <Button
         height="28px"

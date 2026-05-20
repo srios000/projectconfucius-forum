@@ -59,6 +59,7 @@ const useCommunitiesFeed = ({
   };
 
   useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect -- legacy on-mount fetch; TanStack Query migration tracked separately
     fetchCommunities(true);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);

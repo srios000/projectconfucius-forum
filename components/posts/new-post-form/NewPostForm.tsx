@@ -13,6 +13,7 @@ import TextInputs from "../post-form/TextInputs";
 import ImageUpload from "../post-form/ImageUpload";
 import { createPostSchema, CreatePostInput } from "@/schema/post";
 
+
 type NewPostFormProps = {
   communityImageURL?: string;
   currentCommunity?: Community;
@@ -56,10 +57,7 @@ const NewPostForm: React.FC<NewPostFormProps> = ({
   const router = useRouter();
   const params = useParams();
   const [selectedTab, setSelectedTab] = useState(formTabs[0].title); // formTabs[0] = Post
-  const { selectedFile, setSelectedFile, onSelectFile } = useSelectFile(
-    3000,
-    3000
-  );
+  const { selectedFile, setSelectedFile, selectedBlob, onSelectFile } = useSelectFile(3000, 3000);
   const { handleCreatePost, loading, error } = useCreatePost();
 
   const {
@@ -80,15 +78,14 @@ const NewPostForm: React.FC<NewPostFormProps> = ({
    * Validates the community context, uploads any selected image, and saves the post document.
    * @param data - Validated form data containing title and body.
    */
-  const onCreatePost = async (data: CreatePostInput) => {
-    const communityId = params?.communityId as string;
+  const onCreatePost = handleSubmit(async (data) => {
     await handleCreatePost(
-      communityId,
-      communityImageURL,
-      { title: data.title, body: data.body || "" },
-      selectedFile
+      params.communityId as string,
+      currentCommunity?.imageUrl,
+      { title: data.title, body: data.body ?? "" },
+      selectedBlob,
     );
-  };
+  });
 
   return (
     <Flex
@@ -145,7 +142,7 @@ const NewPostForm: React.FC<NewPostFormProps> = ({
           <TextInputs
             register={register}
             errors={errors}
-            handleCreatePost={handleSubmit(onCreatePost)}
+            handleCreatePost={onCreatePost}
             loading={loading}
           />
         </Tabs.Content>

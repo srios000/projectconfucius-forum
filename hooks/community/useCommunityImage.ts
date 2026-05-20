@@ -3,10 +3,8 @@ import { useSetAtom } from "jotai";
 import { useState } from "react";
 import useCustomToast from "../useCustomToast";
 import { Community } from "@/types/community";
-import {
-  updateCommunityImageAction,
-  deleteCommunityImageAction,
-} from "@/app/actions/community";
+import { uploadImage } from "@/lib/upload/uploadImage";
+import { deleteCommunityImageAction } from "@/app/actions/community";
 
 /**
  * A custom hook that provides functionality for managing a community's profile image.
@@ -20,41 +18,28 @@ const useCommunityImage = (communityData: Community) => {
   const showToast = useCustomToast();
   const [uploadingImage, setUploadingImage] = useState(false);
 
-  const onUpdateImage = async (selectedFile: string) => {
-    if (!selectedFile) return;
+  const onUpdateImage = async (blob: Blob) => {
+    if (!blob) return;
     setUploadingImage(true);
 
     try {
-      const downloadURL = await updateCommunityImageAction(
-        communityData.id,
-        selectedFile
-      );
+      const { imageUrl } = await uploadImage("community-image", blob, communityData.id);
 
       setCommunityStateValue((prev) => ({
         ...prev,
-        currentCommunity: {
-          ...prev.currentCommunity,
-          imageURL: downloadURL,
-        } as Community,
+        currentCommunity: { ...prev.currentCommunity, imageUrl } as Community,
       }));
-
       setCommunityStateValue((prev) => ({
         ...prev,
-        mySnippets: prev.mySnippets.map((snippet) => {
-          if (snippet.communityId === communityData.id) {
-            return {
-              ...snippet,
-              imageURL: downloadURL,
-            };
-          }
-          return snippet;
-        }),
+        mySnippets: prev.mySnippets.map((snippet) =>
+          snippet.communityId === communityData.id ? { ...snippet, imageUrl } : snippet,
+        ),
       }));
-    } catch (error) {
-      console.log("Error: onUploadImage", error);
+    } catch (err) {
+      console.log("Error: onUploadImage", err);
       showToast({
         title: "Image not Updated",
-        description: "There was an error updating the image",
+        description: err instanceof Error ? err.message : "There was an error updating the image",
         status: "error",
       });
     } finally {
@@ -70,7 +55,7 @@ const useCommunityImage = (communityData: Community) => {
         ...prev,
         currentCommunity: {
           ...prev.currentCommunity,
-          imageURL: "",
+          imageUrl: "",
         } as Community,
       }));
 
@@ -80,7 +65,7 @@ const useCommunityImage = (communityData: Community) => {
           if (snippet.communityId === communityData.id) {
             return {
               ...snippet,
-              imageURL: "",
+              imageUrl: "",
             };
           }
           return snippet;

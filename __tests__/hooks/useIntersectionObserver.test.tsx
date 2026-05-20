@@ -1,5 +1,3 @@
-/// <reference types="vitest" />
-
 import { act, renderHook, waitFor } from "@testing-library/react";
 import { vi } from "vitest";
 
@@ -14,6 +12,7 @@ class IntersectionObserverMock {
   readonly disconnect = vi.fn();
 
   constructor(callback: IntersectionObserverCallback) {
+    // eslint-disable-next-line @typescript-eslint/no-this-alias -- test mock must expose the last-constructed instance
     lastObserver = this;
     triggerIntersection = (isIntersecting: boolean) =>
       callback(

@@ -36,10 +36,7 @@ const ProfileModal: React.FC<ProfileModalProps> = ({ open, handleClose }) => {
   const { data: session } = useSession();
   const user = session?.user ?? null;
   const { updateImage, removeImage, updateName, loading } = useUserProfile();
-  const { selectedFile, setSelectedFile, onSelectFile } = useSelectFile(
-    300,
-    300
-  );
+  const { selectedFile, selectedBlob, setSelectedFile, onSelectFile } = useSelectFile(300, 300);
   const selectFileRef = useRef<HTMLInputElement>(null);
   const [deleteImage, setDeleteImage] = useState(false);
   const [isEditing, setIsEditing] = useState(false);
@@ -71,8 +68,8 @@ const ProfileModal: React.FC<ProfileModalProps> = ({ open, handleClose }) => {
   };
 
   const onUpdateProfile = async (data: EditProfileInput) => {
-    if (selectedFile) {
-      await updateImage(selectedFile);
+    if (selectedBlob) {
+      await updateImage(selectedBlob);
     }
     if (deleteImage) {
       await removeImage();

@@ -6,7 +6,6 @@ import { users } from "@/lib/db/schema";
 import { eq } from "drizzle-orm";
 import { updateUserCommentsName } from "@/lib/user-profile/updateUserCommentsName";
 import { updateUserPostsName } from "@/lib/user-profile/updateUserPostsName";
-import { uploadProfileImage } from "@/lib/user-profile/uploadProfileImage";
 import { deleteProfileImage } from "@/lib/user-profile/deleteProfileImage";
 
 export async function profileNameAction(name: string) {
@@ -19,13 +18,6 @@ export async function profileNameAction(name: string) {
   await updateUserCommentsName(userId, trimmed);
   await updateUserPostsName(userId, trimmed);
   return { userId };
-}
-
-// Phase A: image upload is deferred to Phase B. `imageUrl` is an
-// already-resolved URL string; here it is only persisted.
-export async function profileImageAction(imageUrl: string) {
-  const { userId } = await requireUser();
-  return uploadProfileImage(userId, imageUrl);
 }
 
 export async function removeProfileImageAction() {

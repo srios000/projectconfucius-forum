@@ -9,6 +9,7 @@ import React from "react";
 const AuthButtons: React.FC = () => {
   return (
     <>
+      {/* eslint-disable-next-line @next/next/no-html-link-for-pages -- API route, not a page; must hit the server to redirect to the central login app */}
       <a href="/api/auth/start">
         <Button
           variant="outline"
@@ -21,6 +22,7 @@ const AuthButtons: React.FC = () => {
           Log In
         </Button>
       </a>
+      {/* eslint-disable-next-line @next/next/no-html-link-for-pages -- API route, not a page; must hit the server to redirect to the central login app */}
       <a href="/api/auth/start">
         <Button
           height="28px"

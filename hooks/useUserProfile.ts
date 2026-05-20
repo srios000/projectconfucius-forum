@@ -3,6 +3,7 @@ import { profileNameAction, removeProfileImageAction } from "@/app/actions/profi
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import useCustomToast from "./useCustomToast";
+import { uploadImage } from "@/lib/upload/uploadImage";
 
 /**
  * A custom hook that provides functionality for managing the authenticated user's profile.
@@ -20,13 +21,29 @@ const useUserProfile = () => {
   const showToast = useCustomToast();
   const [loading, setLoading] = useState(false);
 
-  const updateImage = async (_selectedFile: string) => {
-    showToast({
-      title: "Image upload coming soon",
-      description: "Profile image upload is not available yet.",
-      status: "info",
-    });
-    return false;
+  const updateImage = async (blob: Blob) => {
+    if (!user) return false;
+    try {
+      setLoading(true);
+      await uploadImage("profile-image", blob);
+      router.refresh();
+      showToast({
+        title: "Profile updated",
+        description: "Your profile image has been updated",
+        status: "success",
+      });
+      return true;
+    } catch (err) {
+      console.error("Error: updateImage:", err);
+      showToast({
+        title: "Image not Updated",
+        description: err instanceof Error ? err.message : "Failed to upload image",
+        status: "error",
+      });
+      return false;
+    } finally {
+      setLoading(false);
+    }
   };
 
   const removeImage = async () => {

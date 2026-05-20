@@ -42,10 +42,7 @@ const CommunitySettingsModal: React.FC<CommunitySettingsModalProps> = ({
   handleClose,
   communityData,
 }) => {
-  const { selectedFile, setSelectedFile, onSelectFile } = useSelectFile(
-    300,
-    300
-  );
+  const { selectedFile, selectedBlob, setSelectedFile, onSelectFile } = useSelectFile(300, 300);
   const selectFileRef = useRef<HTMLInputElement>(null);
   const [communityStateValue] = useAtom(communityStateAtom);
   const [deleteImage, setDeleteImage] = useState(false);
@@ -65,8 +62,8 @@ const CommunitySettingsModal: React.FC<CommunitySettingsModalProps> = ({
     if (selectedPrivacyType) {
       await updatePrivacyType(selectedPrivacyType);
     }
-    if (selectedFile) {
-      await updateImage(selectedFile);
+    if (selectedBlob) {
+      await updateImage(selectedBlob);
       setSelectedFile("");
     }
     if (deleteImage) {

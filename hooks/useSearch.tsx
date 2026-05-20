@@ -22,6 +22,7 @@ const useSearch = (searchTerm: string) => {
   useEffect(() => {
     const term = searchTerm.trim();
     if (!term) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect -- reset on empty-term prop change; TanStack Query migration tracked separately
       setResults({ communities: [], posts: [] });
       setLoading(false);
       return;
