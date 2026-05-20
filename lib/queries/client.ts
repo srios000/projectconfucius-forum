@@ -1,4 +1,4 @@
-import { QueryClient, isServer } from "@tanstack/react-query";
+import { QueryClient, environmentManager } from "@tanstack/react-query";
 
 function makeQueryClient() {
     return new QueryClient({
@@ -21,7 +21,7 @@ function makeQueryClient() {
 let browserQueryClient: QueryClient | undefined;
 
 export function getQueryClient(): QueryClient {
-    if (isServer) {
+    if (environmentManager.isServer()) {
         // Server: always a fresh client per request, never share across requests.
         return makeQueryClient();
     }
