@@ -572,7 +572,7 @@ git commit -m "feat(queries): useCommunityPostVotesQuery + mirror shell"
 
 C2 only migrates the **read** half (`fetchSavedPosts` → query). The three mutations (`onSavePost`, `onRemoveSavedPost`, `isPostSaved`) stay closure-style until C3 — they continue reading and writing the dying `savedPostStateAtom`. This is the cleanest split given the choice locked in upfront (read in C2, mutate in C3).
 
-- [ ] **Step 1: Write the query primitive**
+- [x] **Step 1: Write the query primitive**
 
 Create `lib/queries/posts/use-saved-posts.ts`:
 
@@ -595,7 +595,7 @@ export function useSavedPostsQuery() {
 }
 ```
 
-- [ ] **Step 2: Rewrite the read portion of the shell**
+- [x] **Step 2: Rewrite the read portion of the shell**
 
 Edit `hooks/posts/useSavedPosts.tsx`. Replace the `fetchSavedPosts` function and the `loading` state with a delegation to the query; keep `onSavePost`, `onRemoveSavedPost`, `isPostSaved` as-is (they remain closures that read/write the atom until C3). Whole-file replacement:
 
@@ -707,7 +707,7 @@ const useSavedPosts = () => {
 export default useSavedPosts;
 ```
 
-- [ ] **Step 3: Verify types + smoke**
+- [x] **Step 3: Verify types + smoke**
 
 ```bash
 pnpm typecheck
@@ -717,7 +717,7 @@ Expected: clean.
 
 Smoke: open a community feed while signed in, hit "save" on a post, refresh — saved state should persist (mutation still hits action; new query rehydrates).
 
-- [ ] **Step 4: Commit**
+- [x] **Step 4: Commit**
 
 ```bash
 git add lib/queries/posts/use-saved-posts.ts hooks/posts/useSavedPosts.tsx

@@ -1,14 +1,16 @@
+"use client";
+
 import { savedPostStateAtom } from "@/atoms/savedPostsAtom";
 import { useSession } from "@/lib/auth-client";
 import { Post } from "@/types/post";
 import { useAtom } from "jotai";
-import { useState } from "react";
+import { useEffect } from "react";
 import useCustomToast from "../useCustomToast";
 import {
-  getSavedPostsAction,
   savePostAction,
   unsavePostAction,
 } from "@/app/actions/posts";
+import { useSavedPostsQuery } from "@/lib/queries/posts/use-saved-posts";
 
 /**
  * A custom hook that manages the user's saved posts.
@@ -20,28 +22,23 @@ const useSavedPosts = () => {
   const { data: session } = useSession();
   const user = session?.user ?? null;
   const [savedPostState, setSavedPostState] = useAtom(savedPostStateAtom);
-  const [loading, setLoading] = useState(false);
   const showToast = useCustomToast();
 
-  const fetchSavedPosts = async () => {
-    if (!user) return;
-    setLoading(true);
-    try {
-      const savedPosts = await getSavedPostsAction();
+  const savedQuery = useSavedPostsQuery();
+  const loading = savedQuery.isLoading;
 
-      setSavedPostState((prev) => ({
-        ...prev,
-        savedPosts,
-      }));
-    } catch (error: any) {
-      console.log("fetchSavedPosts error", error);
-      showToast({
-        title: "Error fetching saved posts",
-        description: error.message,
-        status: "error",
-      });
+  useEffect(() => {
+    if (!user) {
+      setSavedPostState((prev) => ({ ...prev, savedPosts: [] }));
+      return;
     }
-    setLoading(false);
+    if (savedQuery.data) {
+      setSavedPostState((prev) => ({ ...prev, savedPosts: savedQuery.data }));
+    }
+  }, [user, savedQuery.data, setSavedPostState]);
+
+  const fetchSavedPosts = async () => {
+    await savedQuery.refetch();
   };
 
   const onSavePost = async (post: Post) => {
@@ -49,32 +46,24 @@ const useSavedPosts = () => {
       window.location.assign("/api/auth/start");
       return;
     }
-
     try {
       const isSaved = savedPostState.savedPosts.find(
-        (item) => item.postId === post.id
+        (item) => item.postId === post.id,
       );
-
       if (isSaved) {
         await unsavePostAction(post.id!);
         setSavedPostState((prev) => ({
           ...prev,
           savedPosts: prev.savedPosts.filter((item) => item.postId !== post.id),
         }));
-        showToast({
-          title: "Post removed from saved",
-          status: "success",
-        });
+        showToast({ title: "Post removed from saved", status: "success" });
       } else {
         const newSavedPost = await savePostAction(post);
         setSavedPostState((prev) => ({
           ...prev,
           savedPosts: [...prev.savedPosts, newSavedPost],
         }));
-        showToast({
-          title: "Post saved",
-          status: "success",
-        });
+        showToast({ title: "Post saved", status: "success" });
       }
     } catch (error: any) {
       console.log("onSavePost error", error);
@@ -94,10 +83,7 @@ const useSavedPosts = () => {
         ...prev,
         savedPosts: prev.savedPosts.filter((item) => item.postId !== postId),
       }));
-      showToast({
-        title: "Post removed from saved",
-        status: "success",
-      });
+      showToast({ title: "Post removed from saved", status: "success" });
     } catch (error: any) {
       console.log("onRemoveSavedPost error", error);
       showToast({
@@ -108,9 +94,8 @@ const useSavedPosts = () => {
     }
   };
 
-  const isPostSaved = (postId: string) => {
-    return !!savedPostState.savedPosts.find((item) => item.postId === postId);
-  };
+  const isPostSaved = (postId: string) =>
+    !!savedPostState.savedPosts.find((item) => item.postId === postId);
 
   return {
     savedPostState,
