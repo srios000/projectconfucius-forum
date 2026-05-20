@@ -5,6 +5,7 @@ import useCustomToast from "@/hooks/useCustomToast";
 import { createPostAction } from "@/app/actions/posts";
 import useCommunityState from "../community/useCommunityState";
 import { checkCommunityPermission } from "@/lib/community/communityPermissions";
+import { uploadImage } from "@/lib/upload/uploadImage";
 
 /**
  * A custom hook that provides functionality for creating a new post.
@@ -26,8 +27,7 @@ const useCreatePost = () => {
     communityId: string,
     communityImageURL: string | undefined,
     postData: { title: string; body: string },
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    selectedFile?: string
+    selectedBlob?: Blob,
   ) => {
     if (!session?.user) {
       window.location.assign("/api/auth/start");
@@ -35,14 +35,9 @@ const useCreatePost = () => {
     }
     setLoading(true);
 
-    // Check for restricted community permissions
     const currentCommunity = communityStateValue.currentCommunity;
     if (currentCommunity?.id === communityId) {
-      const hasPermission = checkCommunityPermission(
-        currentCommunity,
-        communityStateValue.mySnippets
-      );
-
+      const hasPermission = checkCommunityPermission(currentCommunity, communityStateValue.mySnippets);
       if (!hasPermission) {
         showToast({
           title: "Restricted Community",
@@ -55,20 +50,24 @@ const useCreatePost = () => {
     }
 
     try {
-      await createPostAction(communityId, communityImageURL, postData);
-
+      let imageUrl: string | undefined;
+      if (selectedBlob) {
+        const result = await uploadImage("post-image", selectedBlob);
+        imageUrl = result.imageUrl;
+      }
+      await createPostAction(communityId, communityImageURL, postData, imageUrl);
       router.back();
       showToast({
         title: "Post Created",
         description: "Your post has been created successfully",
         status: "success",
       });
-    } catch (error: any) {
-      console.log("handleCreatePost error", error);
+    } catch (err) {
+      console.log("handleCreatePost error", err);
       setError(true);
       showToast({
         title: "Error Creating Post",
-        description: "There was an error creating your post",
+        description: err instanceof Error ? err.message : "There was an error creating your post",
         status: "error",
       });
     } finally {

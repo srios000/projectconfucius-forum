@@ -1387,7 +1387,7 @@ Co-Authored-By: Claude Opus 4.7 <noreply@anthropic.com>"
 
 The Phase A `useCreatePost` accepts `selectedFile` but drops it. We change the signature to accept an optional `Blob`, upload it via `uploadImage("post-image", blob)` first, and pass the resulting URL into `createPostAction`.
 
-- [ ] **Step 1: Update `hooks/posts/useCreatePost.ts`**
+- [x] **Step 1: Update `hooks/posts/useCreatePost.ts`**
 
 Replace the `handleCreatePost` body:
 
@@ -1450,14 +1450,14 @@ const handleCreatePost = async (
 
 Remove the `eslint-disable @typescript-eslint/no-unused-vars` line above `selectedFile` — the parameter is now used.
 
-- [ ] **Step 2: Update `components/posts/new-post-form/NewPostForm.tsx`**
+- [x] **Step 2: Update `components/posts/new-post-form/NewPostForm.tsx`**
 
 In the submit handler, replace the `selectedFile` argument (a data URL) with `selectedBlob`:
 
 ```tsx
 const { selectedFile, setSelectedFile, selectedBlob, onSelectFile } = useSelectFile(3000, 3000);
 // ...
-const onCreate = handleSubmit(async (data) => {
+const onCreatePost = handleSubmit(async (data) => {
   await handleCreatePost(
     params.communityId as string,
     currentCommunity?.imageUrl,
@@ -1469,12 +1469,12 @@ const onCreate = handleSubmit(async (data) => {
 
 (Pass `selectedBlob` only — `selectedFile` is still used for the in-form preview but it isn't what goes on the wire.)
 
-- [ ] **Step 3: Green gate**
+- [x] **Step 3: Green gate**
 
 Run: `pnpm typecheck; pnpm test`
 Expected: PASS.
 
-- [ ] **Step 4: Commit**
+- [x] **Step 4: Commit**
 
 ```bash
 git add hooks/posts/useCreatePost.ts components/posts/new-post-form/NewPostForm.tsx
@@ -1490,7 +1490,7 @@ Co-Authored-By: Claude Opus 4.7 <noreply@anthropic.com>"
 **Files:**
 - Modify: `hooks/useUserProfile.ts`, `components/modal/profile/ProfileModal.tsx`
 
-- [ ] **Step 1: Rewrite `useUserProfile.updateImage`**
+- [x] **Step 1: Rewrite `useUserProfile.updateImage`**
 
 Replace the Phase A "coming soon" stub with the real upload:
 
@@ -1525,7 +1525,7 @@ const updateImage = async (blob: Blob) => {
 
 (Parameter type changes from `_selectedFile: string` to `blob: Blob` — callers updated in the next step.)
 
-- [ ] **Step 2: Update `components/modal/profile/ProfileModal.tsx`**
+- [x] **Step 2: Update `components/modal/profile/ProfileModal.tsx`**
 
 Pull `selectedBlob` from `useSelectFile`, pass it to `updateImage`:
 
@@ -1546,12 +1546,12 @@ const onUpdateProfile = async (data: EditProfileInput) => {
 };
 ```
 
-- [ ] **Step 3: Green gate**
+- [x] **Step 3: Green gate**
 
 Run: `pnpm typecheck; pnpm test`
 Expected: PASS.
 
-- [ ] **Step 4: Commit**
+- [x] **Step 4: Commit**
 
 ```bash
 git add hooks/useUserProfile.ts components/modal/profile/ProfileModal.tsx
