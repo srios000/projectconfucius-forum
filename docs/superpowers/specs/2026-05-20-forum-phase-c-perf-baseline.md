@@ -1,7 +1,16 @@
 # Phase C — Perf Baseline
 
-**Status:** baseline pending measurements (C1) / re-measure (C4)
+**Status:** C1 closed without browser measurements (see closeout note) / re-measure (C4)
 **Methodology:** see Phase C spec §9.
+
+## C1 closeout (2026-05-20)
+
+Browser-trace baseline measurements were **skipped by user decision**. C2 will proceed on the code-derived hypotheses H1–H4 below, which are direct readings of the current source (not guesses) and adequate to plan the TanStack Query migration.
+
+Implications:
+- C4 cannot show LCP/render-count deltas against a baseline. C4 verification will rely on the same code-reading approach plus targeted spot-checks (network panel counts for H2/H3, profiler for H1).
+- The "Baseline (C1)" sections under each route are intentionally blank.
+- The "After Phase C (C4)" sections remain; if the user wants a real before/after, they can populate the C1 columns later before merging Phase C.
 
 ## Tooling
 - Chrome DevTools → Performance tab → 4× CPU throttle, fast 3G, 5s capture
@@ -49,12 +58,7 @@ For each route, capture:
 ### Route: `/` (home)
 
 #### Baseline (C1)
-- LCP: _TBD_ ms
-- Render count: _TBD_
-- Top 5 components: _TBD_
-- Server-action calls: _TBD_
-- Confirmed hypotheses: _TBD_
-- Ruled out: _TBD_
+- _Skipped — see C1 closeout._
 
 #### After Phase C (C4)
 - LCP: _TBD_ ms (Δ _TBD_)
@@ -67,12 +71,7 @@ For each route, capture:
 ### Route: `/community/[id]` (community page)
 
 #### Baseline (C1)
-- LCP: _TBD_ ms
-- Render count: _TBD_
-- Top 5 components: _TBD_
-- Server-action calls: _TBD_
-- Confirmed hypotheses: _TBD_
-- Ruled out: _TBD_
+- _Skipped — see C1 closeout._
 
 #### After Phase C (C4)
 - LCP: _TBD_ ms (Δ _TBD_)
@@ -85,12 +84,7 @@ For each route, capture:
 ### Route: `/community/[id]/comments/[pid]` (post detail)
 
 #### Baseline (C1)
-- LCP: _TBD_ ms
-- Render count: _TBD_
-- Top 5 components: _TBD_
-- Server-action calls: _TBD_
-- Confirmed hypotheses: _TBD_
-- Ruled out: _TBD_
+- _Skipped — see C1 closeout._
 
 #### After Phase C (C4)
 - LCP: _TBD_ ms (Δ _TBD_)
@@ -103,12 +97,7 @@ For each route, capture:
 ### Route: `/community/[id]/submit` (submit page)
 
 #### Baseline (C1)
-- LCP: _TBD_ ms
-- Render count: _TBD_
-- Top 5 components: _TBD_
-- Server-action calls: _TBD_
-- Confirmed hypotheses: _TBD_
-- Ruled out: _TBD_
+- _Skipped — see C1 closeout._
 
 #### After Phase C (C4)
 - LCP: _TBD_ ms (Δ _TBD_)
@@ -120,7 +109,7 @@ For each route, capture:
 
 ## C1 sign-off
 
-- [ ] All four routes measured
-- [ ] Each hypothesis confirmed/refuted/deferred
-- [ ] Findings recorded above
-- [ ] User has reviewed and signed off → ready for C2 plan
+- [x] All four routes measured — _N/A: measurements skipped (see C1 closeout)_
+- [x] Each hypothesis confirmed/refuted/deferred — _H1–H4 stand as code-evidence; H5 deferred to Phase D_
+- [x] Findings recorded above
+- [x] User has reviewed and signed off → ready for C2 plan
