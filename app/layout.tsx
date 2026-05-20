@@ -2,8 +2,8 @@ import { Metadata } from "next";
 import { Providers } from "./providers";
 
 export const metadata: Metadata = {
-  title: "Circus Discussions",
-  description: "A discussion platform",
+  title: "Project Confucius Forum",
+  description: "礼楽",
 };
 
 /**

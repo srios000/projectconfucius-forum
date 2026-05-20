@@ -1,6 +1,7 @@
 import { useSession } from "@/lib/auth-client";
-import useSelectFile from "@/hooks/useSelectFile";
+import useImageCropFlow from "@/hooks/useImageCropFlow";
 import useUserProfile from "@/hooks/useUserProfile";
+import ImageCropModal from "@/components/modal/image-crop/ImageCropModal";
 import {
   Button,
   DialogBackdrop,
@@ -36,7 +37,8 @@ const ProfileModal: React.FC<ProfileModalProps> = ({ open, handleClose }) => {
   const { data: session } = useSession();
   const user = session?.user ?? null;
   const { updateImage, removeImage, updateName, loading } = useUserProfile();
-  const { selectedFile, selectedBlob, setSelectedFile, onSelectFile } = useSelectFile(300, 300);
+  const { selectedFile, selectedBlob, setSelectedFile, onSelectFile, cropModalProps } =
+    useImageCropFlow();
   const selectFileRef = useRef<HTMLInputElement>(null);
   const [deleteImage, setDeleteImage] = useState(false);
   const [isEditing, setIsEditing] = useState(false);
@@ -81,6 +83,7 @@ const ProfileModal: React.FC<ProfileModalProps> = ({ open, handleClose }) => {
   };
 
   return (
+    <>
     <DialogRoot
       open={open}
       onOpenChange={({ open }: { open: boolean }) => {
@@ -156,6 +159,8 @@ const ProfileModal: React.FC<ProfileModalProps> = ({ open, handleClose }) => {
         </DialogContent>
       </DialogPositioner>
     </DialogRoot>
+    <ImageCropModal {...cropModalProps} title="Crop profile image" />
+    </>
   );
 };
 export default ProfileModal;

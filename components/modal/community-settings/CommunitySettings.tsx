@@ -3,7 +3,8 @@ import useCommunityImage from "@/hooks/community/useCommunityImage";
 import useCommunityPrivacy from "@/hooks/community/useCommunityPrivacy";
 import useDeleteCommunity from "@/hooks/community/useDeleteCommunity";
 import useCustomToast from "@/hooks/useCustomToast";
-import useSelectFile from "@/hooks/useSelectFile";
+import useImageCropFlow from "@/hooks/useImageCropFlow";
+import ImageCropModal from "@/components/modal/image-crop/ImageCropModal";
 import {
   Box,
   DialogBackdrop,
@@ -42,7 +43,8 @@ const CommunitySettingsModal: React.FC<CommunitySettingsModalProps> = ({
   handleClose,
   communityData,
 }) => {
-  const { selectedFile, selectedBlob, setSelectedFile, onSelectFile } = useSelectFile(300, 300);
+  const { selectedFile, selectedBlob, setSelectedFile, onSelectFile, cropModalProps } =
+    useImageCropFlow();
   const selectFileRef = useRef<HTMLInputElement>(null);
   const [communityStateValue] = useAtom(communityStateAtom);
   const [deleteImage, setDeleteImage] = useState(false);
@@ -85,6 +87,7 @@ const CommunitySettingsModal: React.FC<CommunitySettingsModalProps> = ({
   };
 
   return (
+    <>
     <DialogRoot
       open={open}
       onOpenChange={({ open }: { open: boolean }) => {
@@ -159,6 +162,8 @@ const CommunitySettingsModal: React.FC<CommunitySettingsModalProps> = ({
         </DialogPositioner>
       </Portal>
     </DialogRoot>
+    <ImageCropModal {...cropModalProps} title="Crop community image" />
+    </>
   );
 };
 
