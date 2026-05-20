@@ -1198,7 +1198,7 @@ Co-Authored-By: Claude Opus 4.7 <noreply@anthropic.com>"
 - Create: `lib/upload/uploadImage.ts`
 - Test: `__tests__/upload/uploadImage.test.ts`
 
-- [ ] **Step 1: Write failing test `__tests__/upload/uploadImage.test.ts`**
+- [x] **Step 1: Write failing test `__tests__/upload/uploadImage.test.ts`**
 
 ```ts
 import { describe, it, expect, vi, beforeEach } from "vitest";
@@ -1298,12 +1298,12 @@ describe("uploadImage", () => {
 });
 ```
 
-- [ ] **Step 2: Run test — expect FAIL**
+- [x] **Step 2: Run test — expect FAIL**
 
 Run: `pnpm test __tests__/upload/uploadImage.test.ts`
 Expected: FAIL (module not found).
 
-- [ ] **Step 3: Write `lib/upload/uploadImage.ts`**
+- [x] **Step 3: Write `lib/upload/uploadImage.ts`**
 
 ```ts
 export type UploadSurface = "post-image" | "community-image" | "profile-image";
@@ -1364,12 +1364,12 @@ export async function uploadImage(
 }
 ```
 
-- [ ] **Step 4: Run test — expect PASS**
+- [x] **Step 4: Run test — expect PASS**
 
 Run: `pnpm test __tests__/upload/uploadImage.test.ts`
 Expected: PASS (all 4).
 
-- [ ] **Step 5: Commit**
+- [x] **Step 5: Commit**
 
 ```bash
 git add lib/upload/uploadImage.ts tests/upload/uploadImage.test.ts
