@@ -23,6 +23,7 @@ const useCommentList = (selectedPost: Post | null) => {
   });
 
   useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect -- mirror query data into local list to support optimistic insert via setComments
     if (query.data) setComments(query.data);
     if (query.error) {
       showToast({

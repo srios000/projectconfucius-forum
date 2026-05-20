@@ -2036,7 +2036,7 @@ pnpm grep -l "from \"@/atoms/directoryMenuAtom\"" .
 
 Record the file list. Each file is touched in this task.
 
-- [ ] **Step 2: Create `atoms/uiAtom.ts`**
+- [x] **Step 2: Create `atoms/uiAtom.ts`**
 
 ```ts
 // atoms/uiAtom.ts

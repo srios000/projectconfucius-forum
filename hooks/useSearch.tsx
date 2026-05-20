@@ -19,6 +19,7 @@ const useSearch = (searchTerm: string) => {
   useEffect(() => {
     const term = searchTerm.trim();
     if (!term) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect -- debounce timer reset on empty input
       setDebounced("");
       return;
     }

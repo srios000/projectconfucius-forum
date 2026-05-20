@@ -82,6 +82,7 @@ const usePostsFeed = ({
   );
 
   useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect -- reset paging state when scope changes; UI-state reset, not a fetch
     setNoMorePosts(false);
     setLastVisible(null);
     setPosts([]);
