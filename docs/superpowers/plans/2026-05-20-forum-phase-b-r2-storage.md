@@ -1567,7 +1567,7 @@ Co-Authored-By: Claude Opus 4.7 <noreply@anthropic.com>"
 **Files:**
 - Modify: `hooks/community/useCommunityImage.ts`, `components/modal/community-settings/CommunitySettings.tsx`
 
-- [ ] **Step 1: Rewrite `useCommunityImage.onUpdateImage`**
+- [x] **Step 1: Rewrite `useCommunityImage.onUpdateImage`**
 
 Replace the Phase A action-call body:
 
@@ -1608,7 +1608,7 @@ const onUpdateImage = async (blob: Blob) => {
 
 **Naming check before committing:** the existing `useCommunityImage` Jotai writes use `imageURL` (uppercase URL), but the Phase A `Community` type in `types/community.ts` declares `imageUrl` (lowercase). Use whichever the type declares — `imageUrl` in the new body above is correct if `Community.imageUrl` exists. Verify with `grep -n "imageURL\\|imageUrl" types/community.ts types/communitySnippet.ts` first; if the types declare `imageURL`, change the new body to match (and fix any tsc complaints surfaced by Task 11 Step 3's green gate either way).
 
-- [ ] **Step 2: Update `components/modal/community-settings/CommunitySettings.tsx`**
+- [x] **Step 2: Update `components/modal/community-settings/CommunitySettings.tsx`**
 
 Pull `selectedBlob` from `useSelectFile`; pass it to `updateImage`:
 
@@ -1635,12 +1635,12 @@ const handleSaveButtonClick = async () => {
 };
 ```
 
-- [ ] **Step 3: Green gate**
+- [x] **Step 3: Green gate**
 
 Run: `pnpm typecheck; pnpm test`
 Expected: PASS.
 
-- [ ] **Step 4: Commit**
+- [x] **Step 4: Commit**
 
 ```bash
 git add hooks/community/useCommunityImage.ts components/modal/community-settings/CommunitySettings.tsx
