@@ -505,7 +505,7 @@ git commit -m "feat(queries): useCreatePostMutation with feed predicate invalida
 
 Preserves `{ handleCreatePost, loading, error }` surface and the image-upload + permission-check + router-back flow.
 
-- [ ] **Step 1: Replace the shell file**
+- [x] **Step 1: Replace the shell file**
 
 Replace `hooks/posts/useCreatePost.ts`:
 
@@ -591,7 +591,7 @@ const useCreatePost = () => {
 export default useCreatePost;
 ```
 
-- [ ] **Step 2: Verify types**
+- [x] **Step 2: Verify types**
 
 ```bash
 pnpm typecheck
@@ -599,11 +599,11 @@ pnpm typecheck
 
 Expected: clean.
 
-- [ ] **Step 3: Smoke in browser**
+- [x] **Step 3: Smoke in browser**
 
 Sign in, open `/community/[id]/submit`, type a title + body, submit. Expect: post creates, router goes back to feed, the new post appears at the top after the feed remounts (per known-limitation #1, this works because `router.back()` re-enters the previous page).
 
-- [ ] **Step 4: Commit**
+- [x] **Step 4: Commit**
 
 ```bash
 git add hooks/posts/useCreatePost.ts

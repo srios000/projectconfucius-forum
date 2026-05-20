@@ -2,7 +2,7 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { useSession } from "@/lib/auth-client";
 import useCustomToast from "@/hooks/useCustomToast";
-import { createPostAction } from "@/app/actions/posts";
+import { useCreatePostMutation } from "@/lib/queries/posts/use-create-post";
 import useCommunityState from "../community/useCommunityState";
 import { checkCommunityPermission } from "@/lib/community/communityPermissions";
 import { uploadImage } from "@/lib/upload/uploadImage";
@@ -19,9 +19,10 @@ const useCreatePost = () => {
   const router = useRouter();
   const showToast = useCustomToast();
   const { data: session } = useSession();
-  const [loading, setLoading] = useState(false);
   const [error, setError] = useState(false);
   const { communityStateValue } = useCommunityState();
+  const createMutation = useCreatePostMutation();
+  const loading = createMutation.isPending;
 
   const handleCreatePost = async (
     communityId: string,
@@ -33,18 +34,19 @@ const useCreatePost = () => {
       window.location.assign("/api/auth/start");
       return;
     }
-    setLoading(true);
 
     const currentCommunity = communityStateValue.currentCommunity;
     if (currentCommunity?.id === communityId) {
-      const hasPermission = checkCommunityPermission(currentCommunity, communityStateValue.mySnippets);
+      const hasPermission = checkCommunityPermission(
+        currentCommunity,
+        communityStateValue.mySnippets,
+      );
       if (!hasPermission) {
         showToast({
           title: "Restricted Community",
           description: "You must be a member to post in this community.",
           status: "error",
         });
-        setLoading(false);
         return;
       }
     }
@@ -55,7 +57,12 @@ const useCreatePost = () => {
         const result = await uploadImage("post-image", selectedBlob);
         imageUrl = result.imageUrl;
       }
-      await createPostAction(communityId, communityImageURL, postData, imageUrl);
+      await createMutation.mutateAsync({
+        communityId,
+        communityImageUrl: communityImageURL,
+        postData,
+        imageUrl,
+      });
       router.back();
       showToast({
         title: "Post Created",
@@ -67,19 +74,14 @@ const useCreatePost = () => {
       setError(true);
       showToast({
         title: "Error Creating Post",
-        description: err instanceof Error ? err.message : "There was an error creating your post",
+        description:
+          err instanceof Error ? err.message : "There was an error creating your post",
         status: "error",
       });
-    } finally {
-      setLoading(false);
     }
   };
 
-  return {
-    handleCreatePost,
-    loading,
-    error,
-  };
+  return { handleCreatePost, loading, error };
 };
 
 export default useCreatePost;
