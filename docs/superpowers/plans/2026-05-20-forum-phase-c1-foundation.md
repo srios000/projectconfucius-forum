@@ -430,7 +430,7 @@ git commit -m "feat: mount QueryProvider in root provider tree"
 
 **Files:** none
 
-- [ ] **Step 1: Build verifies the wiring**
+- [x] **Step 1: Build verifies the wiring**
 
 Run:
 
@@ -440,7 +440,7 @@ pnpm build
 
 Expected: clean build. No type errors, no provider mount errors.
 
-- [ ] **Step 2: Start dev server and confirm app boots**
+- [x] **Step 2: Start dev server and confirm app boots**
 
 Run in a separate terminal:
 
@@ -455,7 +455,7 @@ Then in browser, open `http://localhost:3000`. Confirm:
 
 Stop the dev server (Ctrl+C) when confirmed.
 
-- [ ] **Step 3: No commit needed (verification only)**
+- [x] **Step 3: No commit needed (verification only)**
 
 If anything failed in Step 1 or Step 2, fix before continuing. Common issues:
 - Devtools button missing → check `NODE_ENV` (dev should expose it)
