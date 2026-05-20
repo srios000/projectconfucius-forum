@@ -1791,14 +1791,14 @@ Co-Authored-By: Claude Opus 4.7 <noreply@anthropic.com>"
 - Delete: `lib/user-profile/uploadProfileImage.ts`, `lib/community/updateCommunityImage.ts`
 - Modify: `app/actions/profile.ts`, `app/actions/community.ts`
 
-- [ ] **Step 1: Delete the stub files**
+- [x] **Step 1: Delete the stub files**
 
 Run:
 ```bash
 git rm lib/user-profile/uploadProfileImage.ts lib/community/updateCommunityImage.ts
 ```
 
-- [ ] **Step 2: Remove `profileImageAction` from `app/actions/profile.ts`**
+- [x] **Step 2: Remove `profileImageAction` from `app/actions/profile.ts`**
 
 Open `app/actions/profile.ts` and remove:
 - The line `import { uploadProfileImage } from "@/lib/user-profile/uploadProfileImage";`
@@ -1806,7 +1806,7 @@ Open `app/actions/profile.ts` and remove:
 
 Keep `profileNameAction` and `removeProfileImageAction` untouched.
 
-- [ ] **Step 3: Remove `updateCommunityImageAction` from `app/actions/community.ts`**
+- [x] **Step 3: Remove `updateCommunityImageAction` from `app/actions/community.ts`**
 
 Open `app/actions/community.ts` and remove:
 - The line `import { updateCommunityImage } from "@/lib/community/updateCommunityImage";`
@@ -1814,7 +1814,7 @@ Open `app/actions/community.ts` and remove:
 
 Keep `deleteCommunityImageAction` and everything else untouched.
 
-- [ ] **Step 4: Grep for dead imports**
+- [x] **Step 4: Grep for dead imports**
 
 Run:
 ```bash
@@ -1823,12 +1823,12 @@ grep -rn "updateCommunityImageAction\\|uploadProfileImage\\b\\|updateCommunityIm
 
 Expected: zero matches. Any survivor (likely in `hooks/community/useCommunityImage.ts` which already shed the import in Task 11 — verify) must be cleaned up before commit.
 
-- [ ] **Step 5: Green gate**
+- [x] **Step 5: Green gate**
 
 Run: `pnpm typecheck; pnpm test; pnpm lint`
 Expected: PASS.
 
-- [ ] **Step 6: Commit**
+- [x] **Step 6: Commit**
 
 ```bash
 git add app/actions/profile.ts app/actions/community.ts lib/user-profile/uploadProfileImage.ts lib/community/updateCommunityImage.ts

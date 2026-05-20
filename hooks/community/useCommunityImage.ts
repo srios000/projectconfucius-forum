@@ -4,7 +4,7 @@ import { useState } from "react";
 import useCustomToast from "../useCustomToast";
 import { Community } from "@/types/community";
 import { uploadImage } from "@/lib/upload/uploadImage";
-import { updateCommunityImageAction, deleteCommunityImageAction } from "@/app/actions/community";
+import { deleteCommunityImageAction } from "@/app/actions/community";
 
 /**
  * A custom hook that provides functionality for managing a community's profile image.
