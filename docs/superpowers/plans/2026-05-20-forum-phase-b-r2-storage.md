@@ -1658,7 +1658,7 @@ Co-Authored-By: Claude Opus 4.7 <noreply@anthropic.com>"
 
 All four functions follow the same pattern: fetch the imageUrl(s) first, do the DB delete, then fire-and-forget R2 deletes. Failures log but never throw.
 
-- [ ] **Step 1: Update `lib/posts/deletePost.ts`**
+- [x] **Step 1: Update `lib/posts/deletePost.ts`**
 
 ```ts
 import { db } from "@/lib/db";
@@ -1682,7 +1682,7 @@ export const deletePost = async (postId: string) => {
 };
 ```
 
-- [ ] **Step 2: Update `lib/community/deleteCommunity.ts`**
+- [x] **Step 2: Update `lib/community/deleteCommunity.ts`**
 
 ```ts
 import { db } from "@/lib/db";
@@ -1721,7 +1721,7 @@ export const deleteCommunity = async (communityData: Community) => {
 };
 ```
 
-- [ ] **Step 3: Update `lib/user-profile/deleteProfileImage.ts`**
+- [x] **Step 3: Update `lib/user-profile/deleteProfileImage.ts`**
 
 ```ts
 import { db } from "@/lib/db";
@@ -1745,7 +1745,7 @@ export const deleteProfileImage = async (userId: string) => {
 };
 ```
 
-- [ ] **Step 4: Update `lib/community/deleteCommunityImage.ts`**
+- [x] **Step 4: Update `lib/community/deleteCommunityImage.ts`**
 
 ```ts
 import { db } from "@/lib/db";
@@ -1769,12 +1769,12 @@ export const deleteCommunityImage = async (communityId: string) => {
 };
 ```
 
-- [ ] **Step 5: Green gate**
+- [x] **Step 5: Green gate**
 
 Run: `pnpm typecheck; pnpm test`
 Expected: PASS. (Phase A tests for `deletePost` etc. were minimal — if any existing test mocks `db.query.posts.findFirst` not being called, update it; otherwise everything passes.)
 
-- [ ] **Step 6: Commit**
+- [x] **Step 6: Commit**
 
 ```bash
 git add lib/posts/deletePost.ts lib/community/deleteCommunity.ts lib/user-profile/deleteProfileImage.ts lib/community/deleteCommunityImage.ts
