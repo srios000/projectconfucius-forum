@@ -13,6 +13,8 @@ import usePostState from "@/hooks/posts/usePostState";
 import usePostVote from "@/hooks/posts/usePostVote";
 import usePostVoteSync from "@/hooks/posts/usePostVoteSync";
 import RestrictedCommunityBanner from "@/components/community/RestrictedCommunityBanner";
+import { useCommunityDataQuery } from "@/lib/queries/community/use-community-data";
+import { usePostQuery } from "@/lib/queries/posts/use-post";
 import { Community } from "@/types/community";
 import { Post } from "@/types/post";
 import { Stack } from "@chakra-ui/react";
@@ -20,19 +22,14 @@ import { useAtom } from "jotai";
 import React, { useEffect } from "react";
 
 type PostPageProps = {
-  communityData: Community;
-  postData: Post | null;
+  communityId: string;
+  postId: string;
 };
 
-/**
- * The client-side page for viewing a single post and its associated comment thread.
- * Manages post-specific state including voting, deletion, and comment loading.
- * Enforces community-level viewing permissions.
- * @param communityData - The community context for the post.
- * @param postData - The post data fetched on the server.
- * @returns A page layout with the post item and its comments.
- */
-const PostPage: React.FC<PostPageProps> = ({ communityData, postData }) => {
+const PostPage: React.FC<PostPageProps> = ({ communityId, postId }) => {
+  const { data: communityData } = useCommunityDataQuery({ communityId });
+  const { data: postData } = usePostQuery({ postId });
+
   const { postStateValue, setPostStateValue } = usePostState();
   const { onVote } = usePostVote(postStateValue, setPostStateValue);
   const { onDeletePost } = usePostDeletion(setPostStateValue);
@@ -40,30 +37,35 @@ const PostPage: React.FC<PostPageProps> = ({ communityData, postData }) => {
 
   const [communityStateValue, setCommunityStateValue] =
     useAtom(communityStateAtom);
+  const fallbackCommunity = (communityData ?? {
+    id: communityId,
+  }) as Community;
   const currentCommunity =
-    communityStateValue.currentCommunity || communityData;
+    communityStateValue.currentCommunity ?? fallbackCommunity;
   const { isAdmin, canView, canPost, loading } =
     useCommunityPermissions(currentCommunity);
   const { data: session } = useSession();
   const user = session?.user ?? null;
 
   useEffect(() => {
-    setCommunityStateValue((prev) => ({
-      ...prev,
-      currentCommunity: communityData,
-    }));
+    if (communityData) {
+      setCommunityStateValue((prev) => ({
+        ...prev,
+        currentCommunity: communityData as Community,
+      }));
+    }
   }, [communityData, setCommunityStateValue]);
 
   useEffect(() => {
     if (postData) {
       setPostStateValue((prev) => ({
         ...prev,
-        selectedPost: postData,
+        selectedPost: postData as Post,
       }));
     }
   }, [postData, setPostStateValue]);
 
-  if (loading) {
+  if (loading || !communityData) {
     return (
       <PageContent>
         <PostLoader />
@@ -109,7 +111,7 @@ const PostPage: React.FC<PostPageProps> = ({ communityData, postData }) => {
         </Stack>
       </>
       <>
-        <About communityData={communityData} />
+        <About communityData={communityData as Community} />
       </>
     </PageContent>
   );
