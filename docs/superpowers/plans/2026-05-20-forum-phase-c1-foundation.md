@@ -264,7 +264,7 @@ git commit -m "feat: QueryClient factory (per-request server / singleton client)
 **Files:**
 - Create: `lib/queries/provider.tsx`
 
-- [ ] **Step 1: Write the provider**
+- [x] **Step 1: Write the provider**
 
 Create `lib/queries/provider.tsx`:
 
@@ -292,7 +292,7 @@ export function QueryProvider({ children }: { children: React.ReactNode }) {
 }
 ```
 
-- [ ] **Step 2: Typecheck**
+- [x] **Step 2: Typecheck**
 
 Run:
 
@@ -302,7 +302,7 @@ pnpm typecheck
 
 Expected: clean.
 
-- [ ] **Step 3: Commit**
+- [x] **Step 3: Commit**
 
 ```bash
 git add lib/queries/provider.tsx
