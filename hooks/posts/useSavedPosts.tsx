@@ -4,22 +4,26 @@ import { useSession } from "@/lib/auth-client";
 import { Post } from "@/types/post";
 import { SavedPost } from "@/types/savedPost";
 import useCustomToast from "../useCustomToast";
-import {
-  savePostAction,
-  unsavePostAction,
-} from "@/app/actions/posts";
 import { useSavedPostsQuery } from "@/lib/queries/posts/use-saved-posts";
-import { useQueryClient } from "@tanstack/react-query";
-import { keys } from "@/lib/queries/keys";
+import {
+  useSavePostMutation,
+  useUnsavePostMutation,
+} from "@/lib/queries/posts/use-saved-posts-mutation";
 
+/**
+ * A custom hook that manages the user's saved posts.
+ * It provides functionality for fetching saved posts, toggling the saved status of a post,
+ * and removing posts from the saved collection.
+ * @returns An object containing the saved posts state, loading state, and associated handlers.
+ */
 const useSavedPosts = () => {
   const { data: session } = useSession();
   const user = session?.user ?? null;
-  const userId = user?.id ?? "";
-  const queryClient = useQueryClient();
   const savedQuery = useSavedPostsQuery();
   const savedPosts: SavedPost[] = (savedQuery.data ?? []) as SavedPost[];
   const showToast = useCustomToast();
+  const saveMutation = useSavePostMutation();
+  const unsaveMutation = useUnsavePostMutation();
 
   const fetchSavedPosts = async () => {
     await savedQuery.refetch();
@@ -30,24 +34,15 @@ const useSavedPosts = () => {
       window.location.assign("/api/auth/start");
       return;
     }
+    const isSaved = savedPosts.find((item) => item.postId === post.id);
     try {
-      const isSaved = savedPosts.find((item) => item.postId === post.id);
       if (isSaved) {
-        queryClient.setQueryData<SavedPost[]>(
-          keys.posts.saved(userId),
-          (old = []) => old.filter((item) => item.postId !== post.id),
-        );
-        await unsavePostAction(post.id!);
+        await unsaveMutation.mutateAsync({ postId: post.id! });
         showToast({ title: "Post removed from saved", status: "success" });
       } else {
-        const newSavedPost = await savePostAction(post);
-        queryClient.setQueryData<SavedPost[]>(
-          keys.posts.saved(userId),
-          (old = []) => [...old, newSavedPost as SavedPost],
-        );
+        await saveMutation.mutateAsync(post);
         showToast({ title: "Post saved", status: "success" });
       }
-      await queryClient.invalidateQueries({ queryKey: keys.posts.saved(userId) });
     } catch (error: any) {
       console.log("onSavePost error", error);
       showToast({
@@ -55,18 +50,13 @@ const useSavedPosts = () => {
         description: error.message,
         status: "error",
       });
-      await queryClient.invalidateQueries({ queryKey: keys.posts.saved(userId) });
     }
   };
 
   const onRemoveSavedPost = async (postId: string) => {
     if (!user) return;
-    queryClient.setQueryData<SavedPost[]>(
-      keys.posts.saved(userId),
-      (old = []) => old.filter((item) => item.postId !== postId),
-    );
     try {
-      await unsavePostAction(postId);
+      await unsaveMutation.mutateAsync({ postId });
       showToast({ title: "Post removed from saved", status: "success" });
     } catch (error: any) {
       console.log("onRemoveSavedPost error", error);
@@ -75,8 +65,6 @@ const useSavedPosts = () => {
         description: error.message,
         status: "error",
       });
-    } finally {
-      await queryClient.invalidateQueries({ queryKey: keys.posts.saved(userId) });
     }
   };
 

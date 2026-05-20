@@ -964,7 +964,7 @@ git commit -m "feat(queries): useSavePostMutation + useUnsavePostMutation"
 
 The read half landed in C2 (`useSavedPostsQuery`). After this task the shell exposes the same surface (`savedPosts`, `onSavePost`, `onRemoveSavedPost`, `isPostSaved`, `fetchSavedPosts`, `loading`), but `onSavePost` / `onRemoveSavedPost` route through the two mutations from Task 7. The optimistic `setQueryData` calls and the post-action `invalidateQueries` calls in the shell go away; invalidation belongs to the mutation now.
 
-- [ ] **Step 1: Replace the shell file**
+- [x] **Step 1: Replace the shell file**
 
 Replace `hooks/posts/useSavedPosts.tsx`:
 
@@ -1049,7 +1049,7 @@ const useSavedPosts = () => {
 export default useSavedPosts;
 ```
 
-- [ ] **Step 2: Verify types**
+- [x] **Step 2: Verify types**
 
 ```bash
 pnpm typecheck
@@ -1057,11 +1057,11 @@ pnpm typecheck
 
 Expected: clean.
 
-- [ ] **Step 3: Smoke in browser**
+- [x] **Step 3: Smoke in browser**
 
 Sign in. From a community feed, click "save" on a post — toast appears; visit `/posts/saved` (or wherever the saved list lives) and the post appears. Click "unsave" — toast appears; the post disappears from the saved list. Expect one network round trip's delay before the UI reflects each change (per known-limitation #2).
 
-- [ ] **Step 4: Commit**
+- [x] **Step 4: Commit**
 
 ```bash
 git add hooks/posts/useSavedPosts.tsx
