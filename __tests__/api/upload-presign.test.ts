@@ -106,3 +106,33 @@ describe("POST /api/upload/community-image/presign", () => {
 });
 
 
+describe("POST /api/upload/profile-image/presign", () => {
+    it("401 unauthenticated", async () => {
+        getSession.mockResolvedValueOnce(null);
+        const res = await post(
+            "@/app/api/upload/profile-image/presign/route",
+            { contentType: "image/jpeg" },
+        );
+        expect(res.status).toBe(401);
+    });
+
+    it("400 disallowed content-type", async () => {
+        getSession.mockResolvedValueOnce({ user: { id: "a1", email: "a@a", name: "a" } });
+        const res = await post(
+            "@/app/api/upload/profile-image/presign/route",
+            { contentType: "image/webp" },
+        );
+        expect(res.status).toBe(400);
+    });
+
+    it("200 key uses session userId, ignoring any body.userId", async () => {
+        getSession.mockResolvedValueOnce({ user: { id: "a1", email: "a@a", name: "a" } });
+        const res = await post(
+            "@/app/api/upload/profile-image/presign/route",
+            { contentType: "image/jpeg", userId: "EVIL" },
+        );
+        const json = await res.json();
+        expect(res.status).toBe(200);
+        expect(json.key).toMatch(/^users\/local-a1\/[0-9a-f-]+\.jpg$/);
+    });
+});

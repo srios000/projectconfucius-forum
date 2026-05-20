@@ -900,7 +900,7 @@ Co-Authored-By: Claude Opus 4.7 <noreply@anthropic.com>"
 
 `userId` is taken from the session (never from the body). Any caller-supplied `userId` field is **ignored**.
 
-- [ ] **Step 1: Append profile-image suite to `__tests__/api/upload-presign.test.ts`**
+- [x] **Step 1: Append profile-image suite to `__tests__/api/upload-presign.test.ts`**
 
 ```ts
 describe("POST /api/upload/profile-image/presign", () => {
@@ -935,12 +935,12 @@ describe("POST /api/upload/profile-image/presign", () => {
 });
 ```
 
-- [ ] **Step 2: Run test — expect FAIL**
+- [x] **Step 2: Run test — expect FAIL**
 
 Run: `pnpm test __tests__/api/upload-presign.test.ts`
 Expected: FAIL on profile-image suite.
 
-- [ ] **Step 3: Write `app/api/upload/profile-image/presign/route.ts`**
+- [x] **Step 3: Write `app/api/upload/profile-image/presign/route.ts`**
 
 ```ts
 import { NextRequest, NextResponse } from "next/server";
@@ -986,12 +986,12 @@ export async function POST(req: NextRequest) {
 }
 ```
 
-- [ ] **Step 4: Run test — expect PASS**
+- [x] **Step 4: Run test — expect PASS**
 
 Run: `pnpm test __tests__/api/upload-presign.test.ts`
 Expected: PASS (profile-image suite green; previous suites still green).
 
-- [ ] **Step 5: Append profile-image suite to `__tests__/api/upload-confirm.test.ts`**
+- [x] **Step 5: Append profile-image suite to `__tests__/api/upload-confirm.test.ts`**
 
 ```ts
 const usersFindFirst = vi.fn();
@@ -1037,12 +1037,12 @@ describe("POST /api/upload/profile-image/confirm", () => {
 
 > Implementer note: this suite shares mocks with the community-image confirm suite. Refactor the existing `vi.mock("@/lib/db", …)` block at the top of the file to expose **both** `query.communities.findFirst` (named `findFirst`) and `query.users.findFirst` (named `usersFindFirst`), plus `update: () => ({ set: (v) => { updateSet(v); return { where: () => Promise.resolve() } } })` — `update()` returning the same chain is correct for both `communities` and `users` because Drizzle's `db.update(table)` is dispatched by argument; we don't need to discriminate in the mock.
 
-- [ ] **Step 6: Run test — expect FAIL**
+- [x] **Step 6: Run test — expect FAIL**
 
 Run: `pnpm test __tests__/api/upload-confirm.test.ts`
 Expected: FAIL on profile-image suite.
 
-- [ ] **Step 7: Write `app/api/upload/profile-image/confirm/route.ts`**
+- [x] **Step 7: Write `app/api/upload/profile-image/confirm/route.ts`**
 
 ```ts
 import { NextRequest, NextResponse } from "next/server";
@@ -1097,12 +1097,12 @@ export async function POST(req: NextRequest) {
 }
 ```
 
-- [ ] **Step 8: Run test — expect PASS**
+- [x] **Step 8: Run test — expect PASS**
 
 Run: `pnpm test __tests__/api/upload-confirm.test.ts`
 Expected: PASS (profile-image suite green; previous suites still green).
 
-- [ ] **Step 9: Commit**
+- [x] **Step 9: Commit**
 
 ```bash
 git add app/api/upload/profile-image tests/api/upload-presign.test.ts tests/api/upload-confirm.test.ts

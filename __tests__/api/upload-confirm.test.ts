@@ -2,12 +2,33 @@ import { describe, it, expect, vi, beforeEach } from "vitest";
 
 const getSession = vi.fn();
 vi.mock("@/lib/auth", () => ({ auth: { api: { getSession } } }));
+
+const isModerator = vi.fn();
+vi.mock("@/lib/auth/requireModerator", () => ({ isModerator }));
+
+const provisionLocalUser = vi.fn(async (i: { authUserId: string }) => ({ id: `local-${i.authUserId}` }));
+vi.mock("@/lib/auth/provision", () => ({ provisionLocalUser }));
+
+const findFirst = vi.fn();
+const usersFindFirst = vi.fn();
+const updateSet = vi.fn();
+vi.mock("@/lib/db", () => ({
+    db: {
+        query: {
+            communities: { findFirst },
+            users: { findFirst: usersFindFirst },
+        },
+        update: () => ({ set: (v: unknown) => { updateSet(v); return { where: () => Promise.resolve() }; } }),
+    },
+}));
+
 const forumObjectExists = vi.fn();
+const deleteForumObject = vi.fn();
 vi.mock("@/lib/storage/r2-forum", async () => {
     const actual = await vi.importActual<typeof import("@/lib/storage/r2-forum")>(
         "@/lib/storage/r2-forum",
     );
-    return { ...actual, forumObjectExists };
+    return { ...actual, forumObjectExists, deleteForumObject };
 });
 
 beforeEach(() => {
@@ -18,6 +39,11 @@ beforeEach(() => {
     vi.stubEnv("FORUM_R2_PUBLIC_URL", "https://litang.projectconfucius.id");
     getSession.mockReset();
     forumObjectExists.mockReset();
+    deleteForumObject.mockReset();
+    isModerator.mockReset();
+    findFirst.mockReset();
+    usersFindFirst.mockReset();
+    updateSet.mockReset();
 });
 
 async function post(url: string, body: unknown) {
@@ -52,27 +78,6 @@ describe("POST /api/upload/post-image/confirm", () => {
         const json = await res.json();
         expect(json.imageUrl).toBe("https://litang.projectconfucius.id/posts/x.jpg");
     });
-});
-
-const isModerator = vi.fn();
-vi.mock("@/lib/auth/requireModerator", () => ({ isModerator }));
-const provisionLocalUser = vi.fn(async (i: { authUserId: string }) => ({ id: `local-${i.authUserId}` }));
-vi.mock("@/lib/auth/provision", () => ({ provisionLocalUser }));
-
-const findFirst = vi.fn();
-const updateSet = vi.fn();
-const deleteForumObject = vi.fn();
-vi.mock("@/lib/db", () => ({
-    db: {
-        query: { communities: { findFirst } },
-        update: () => ({ set: (v: unknown) => { updateSet(v); return { where: () => Promise.resolve() }; } }),
-    },
-}));
-vi.mock("@/lib/storage/r2-forum", async () => {
-    const actual = await vi.importActual<typeof import("@/lib/storage/r2-forum")>(
-        "@/lib/storage/r2-forum",
-    );
-    return { ...actual, forumObjectExists, deleteForumObject };
 });
 
 describe("POST /api/upload/community-image/confirm", () => {
@@ -132,5 +137,37 @@ describe("POST /api/upload/community-image/confirm", () => {
             { key: "communities/cricket/abc.jpg", communityId: "cricket" },
         );
         expect(res.status).toBe(200);
+    });
+});
+
+describe("POST /api/upload/profile-image/confirm", () => {
+    it("200 updates row + deletes old key", async () => {
+        getSession.mockResolvedValueOnce({ user: { id: "a1", email: "a@a", name: "a" } });
+        forumObjectExists.mockResolvedValueOnce(true);
+        usersFindFirst.mockResolvedValueOnce({
+            imageUrl: "https://litang.projectconfucius.id/users/local-a1/old.jpg",
+        });
+        deleteForumObject.mockResolvedValueOnce(undefined);
+
+        const res = await post(
+            "@/app/api/upload/profile-image/confirm/route",
+            { key: "users/local-a1/abc.jpg" },
+        );
+        expect(res.status).toBe(200);
+        expect(updateSet).toHaveBeenCalledWith(
+            expect.objectContaining({
+                imageUrl: "https://litang.projectconfucius.id/users/local-a1/abc.jpg",
+            }),
+        );
+        expect(deleteForumObject).toHaveBeenCalledWith("users/local-a1/old.jpg");
+    });
+
+    it("403 if the key is under a different user", async () => {
+        getSession.mockResolvedValueOnce({ user: { id: "a1", email: "a@a", name: "a" } });
+        const res = await post(
+            "@/app/api/upload/profile-image/confirm/route",
+            { key: "users/local-OTHER/abc.jpg" },
+        );
+        expect(res.status).toBe(403);
     });
 });
