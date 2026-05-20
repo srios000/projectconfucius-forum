@@ -1359,7 +1359,7 @@ git commit -m "feat(queries): useCommunityAdminsQuery + delegating shell"
 
 Today this hook exposes two imperatively-called functions (`searchUsers`, `findUser`). After C2 there are two queries: `useAdminSearchUsersQuery(q)` (debounced search, enabled on non-empty term) and `useAdminFindUserQuery(email)` (single-shot lookup). The shell preserves the imperative `{ searchUsers, findUser }` surface for unchanged call sites.
 
-- [ ] **Step 1: Write the failing test**
+- [x] **Step 1: Write the failing test**
 
 Create `__tests__/lib/queries/admin/use-admin-search.test.ts`:
 
@@ -1393,7 +1393,7 @@ describe("useAdminSearchUsersQuery", () => {
 });
 ```
 
-- [ ] **Step 2: Run test to confirm it fails**
+- [x] **Step 2: Run test to confirm it fails**
 
 ```bash
 pnpm test __tests__/lib/queries/admin/use-admin-search.test.ts
@@ -1401,7 +1401,7 @@ pnpm test __tests__/lib/queries/admin/use-admin-search.test.ts
 
 Expected: FAIL — module not found.
 
-- [ ] **Step 3: Write the primitives**
+- [x] **Step 3: Write the primitives**
 
 Create `lib/queries/admin/use-admin-search.ts`:
 
@@ -1447,7 +1447,7 @@ export function useAdminFindUserQuery({
 }
 ```
 
-- [ ] **Step 4: Run test to verify it passes**
+- [x] **Step 4: Run test to verify it passes**
 
 ```bash
 pnpm test __tests__/lib/queries/admin/use-admin-search.test.ts
@@ -1455,7 +1455,7 @@ pnpm test __tests__/lib/queries/admin/use-admin-search.test.ts
 
 Expected: PASS.
 
-- [ ] **Step 5: Rewrite the shell**
+- [x] **Step 5: Rewrite the shell**
 
 Replace `hooks/admin/useAdminSearch.ts` — preserves the imperative `{ searchUsers, findUser }` surface by routing through the QueryClient:
 
@@ -1511,7 +1511,7 @@ const useAdminSearch = () => {
 export default useAdminSearch;
 ```
 
-- [ ] **Step 6: Verify types + commit**
+- [x] **Step 6: Verify types + commit**
 
 ```bash
 pnpm typecheck
