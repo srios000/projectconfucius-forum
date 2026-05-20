@@ -1,5 +1,5 @@
 /* eslint-disable react-hooks/rules-of-hooks */
-import { savedPostStateAtom } from "@/atoms/savedPostsAtom";
+import { uiAtom } from "@/atoms/uiAtom";
 import { useColorMode } from "@/components/ui/color-mode";
 import useCommunityState from "@/hooks/community/useCommunityState";
 import useCommunityPermissions from "@/hooks/community/useCommunityPermissions";
@@ -21,7 +21,7 @@ import { LuMoon, LuSun } from "react-icons/lu";
 const icons: React.FC = () => {
   const { onClick } = useCallCreatePost();
   const { colorMode, toggleColorMode } = useColorMode();
-  const setSavedPostState = useSetAtom(savedPostStateAtom);
+  const setUi = useSetAtom(uiAtom);
   const { communityStateValue } = useCommunityState();
   const { canPost } = useCommunityPermissions(
     communityStateValue.currentCommunity
@@ -60,7 +60,7 @@ const icons: React.FC = () => {
           variant="ghost"
           fontSize={22}
           onClick={() =>
-            setSavedPostState((prev) => ({ ...prev, isOpen: true }))
+            setUi((prev) => ({ ...prev, savedPostsModalOpen: true }))
           }
           mr={1.5}
           ml={1.5}

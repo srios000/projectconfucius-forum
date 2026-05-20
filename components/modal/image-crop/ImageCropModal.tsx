@@ -62,6 +62,7 @@ const ImageCropModal: React.FC<ImageCropModalProps> = ({
 
   useEffect(() => {
     if (!file) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect -- reset crop state when the modal's file prop clears
       setImgSrc("");
       setCrop(undefined);
       setCompletedCrop(undefined);

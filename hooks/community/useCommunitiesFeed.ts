@@ -1,8 +1,12 @@
+"use client";
+
 import useCustomToast from "@/hooks/useCustomToast";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
+import { useQueryClient } from "@tanstack/react-query";
 import { Community } from "@/types/community";
 import { getCommunitiesAction } from "@/app/actions/reads";
 import type { CommunityCursor } from "@/lib/community/getCommunities";
+import { keys } from "@/lib/queries/keys";
 
 type UseCommunitiesFeedProps = {
   limitValue?: number;
@@ -25,41 +29,46 @@ const useCommunitiesFeed = ({
   const [lastVisible, setLastVisible] = useState<CommunityCursor>(null);
   const [noMoreCommunities, setNoMoreCommunities] = useState(false);
   const showToast = useCustomToast();
+  const queryClient = useQueryClient();
 
-  const fetchCommunities = async (initial = false) => {
-    if (loading) return;
-    setLoading(true);
-    try {
-      if (!initial && (!lastVisible || !isPagination)) {
+  const fetchCommunities = useCallback(
+    async (initial = false) => {
+      if (loading) return;
+      setLoading(true);
+      try {
+        if (!initial && (!lastVisible || !isPagination)) {
+          setLoading(false);
+          return;
+        }
+        const cursor: CommunityCursor = initial ? null : lastVisible;
+        const { communities: fetched, newLastVisible } =
+          await queryClient.fetchQuery({
+            queryKey: keys.community.list({ limit: limitValue, cursor }),
+            queryFn: () => getCommunitiesAction(limitValue, cursor),
+          });
+
+        if (fetched.length < limitValue) setNoMoreCommunities(true);
+        if (newLastVisible) setLastVisible(newLastVisible);
+
+        setCommunities((prev) =>
+          initial ? (fetched as Community[]) : [...prev, ...(fetched as Community[])],
+        );
+      } catch (error) {
+        console.log("Error: fetchCommunities", error);
+        showToast({
+          title: "Could not Find Communities",
+          description: "There was an error getting communities",
+          status: "error",
+        });
+      } finally {
         setLoading(false);
-        return;
       }
-
-      const { communities: fetchedCommunities, newLastVisible } =
-        await getCommunitiesAction(limitValue, initial ? null : lastVisible);
-
-      if (fetchedCommunities.length < limitValue) setNoMoreCommunities(true);
-      if (newLastVisible) setLastVisible(newLastVisible);
-
-      setCommunities((prev) =>
-        initial
-          ? (fetchedCommunities as Community[])
-          : [...prev, ...(fetchedCommunities as Community[])]
-      );
-    } catch (error) {
-      console.log("Error: fetchCommunities", error);
-      showToast({
-        title: "Could not Find Communities",
-        description: "There was an error getting communities",
-        status: "error",
-      });
-    } finally {
-      setLoading(false);
-    }
-  };
+    },
+    [loading, lastVisible, isPagination, limitValue, queryClient, showToast],
+  );
 
   useEffect(() => {
-    // eslint-disable-next-line react-hooks/set-state-in-effect -- legacy on-mount fetch; TanStack Query migration tracked separately
+    // eslint-disable-next-line react-hooks/set-state-in-effect -- on-mount feed bootstrap via cached fetchQuery
     fetchCommunities(true);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);

@@ -1,54 +1,47 @@
-import { communityStateAtom } from "@/atoms/communitiesAtom";
+"use client";
+
+import { uiAtom } from "@/atoms/uiAtom";
 import { useAtomValue } from "jotai";
-import React, { useEffect } from "react";
+import { useCallback } from "react";
 import { useSession } from "@/lib/auth-client";
-import { Post, PostVote } from "@/types/post";
-import { getCommunityPostVotesAction } from "@/app/actions/posts";
+import { PostVote } from "@/types/post";
+import { useCommunityPostVotesQuery } from "@/lib/queries/posts/use-post-votes";
+import { useQueryClient } from "@tanstack/react-query";
+import { keys } from "@/lib/queries/keys";
 
-type SetPostState = React.Dispatch<
-  React.SetStateAction<{
-    selectedPost: Post | null;
-    posts: Post[];
-    postVotes: PostVote[];
-  }>
->;
-
-/**
- * A custom hook that synchronizes the local post vote cache with the authenticated user's votes for the current community.
- * It automatically fetches votes when the user or the current community changes.
- * @param setPostStateValue - A state setter function to update the global post state with fetched votes.
- * @returns This hook does not return any values; it performs synchronization as a side effect.
- */
-const usePostVoteSync = (setPostStateValue: SetPostState) => {
+const usePostVoteSync = () => {
   const { data: session } = useSession();
   const user = session?.user ?? null;
-  const currentCommunity = useAtomValue(communityStateAtom).currentCommunity;
+  const currentCommunity = useAtomValue(uiAtom).currentCommunity;
+  const communityId = currentCommunity?.id;
+  const queryClient = useQueryClient();
 
-  const getCommunityPostVotes = async (communityId: string) => {
-    if (!user) return;
-    const postVotes = await getCommunityPostVotesAction(communityId);
-    setPostStateValue((prev) => ({
-      ...prev,
-      postVotes: postVotes as PostVote[],
-    }));
-  };
+  const { data } = useCommunityPostVotesQuery({
+    communityId,
+    enabled: !!user && !!communityId,
+  });
 
-  useEffect(() => {
-    if (!user || !currentCommunity?.id) {
-      return;
-    }
-    getCommunityPostVotes(currentCommunity?.id);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [user, currentCommunity]);
+  const postVotes: PostVote[] = !user || !communityId ? [] : (data ?? []);
 
-  useEffect(() => {
-    if (!user) {
-      setPostStateValue((prev) => ({
-        ...prev,
-        postVotes: [],
-      }));
-    }
-  }, [user, setPostStateValue]);
+  const setPostVotes = useCallback(
+    (
+      updater:
+        | PostVote[]
+        | ((prev: PostVote[]) => PostVote[]),
+    ) => {
+      if (!communityId) return;
+      queryClient.setQueryData<PostVote[]>(
+        keys.posts.votes(communityId),
+        (old = []) =>
+          typeof updater === "function"
+            ? (updater as (p: PostVote[]) => PostVote[])(old)
+            : updater,
+      );
+    },
+    [queryClient, communityId],
+  );
+
+  return { postVotes, setPostVotes };
 };
 
 export default usePostVoteSync;

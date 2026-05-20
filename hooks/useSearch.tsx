@@ -1,7 +1,11 @@
-import { useState, useEffect } from "react";
+"use client";
+
+import { useEffect, useState } from "react";
 import { Community } from "@/types/community";
 import { Post } from "@/types/post";
-import { getSearchDataAction } from "@/app/actions/reads";
+import { useSearchQuery } from "@/lib/queries/search/use-search";
+
+const EMPTY = { communities: [] as Community[], posts: [] as Post[] };
 
 /**
  * A custom hook that handles search for communities and posts.
@@ -10,45 +14,25 @@ import { getSearchDataAction } from "@/app/actions/reads";
  * @returns An object containing the search results and a loading state indicator.
  */
 const useSearch = (searchTerm: string) => {
-  const [results, setResults] = useState<{
-    communities: Community[];
-    posts: Post[];
-  }>({
-    communities: [],
-    posts: [],
-  });
-  const [loading, setLoading] = useState(false);
+  const [debounced, setDebounced] = useState("");
 
   useEffect(() => {
     const term = searchTerm.trim();
     if (!term) {
-      // eslint-disable-next-line react-hooks/set-state-in-effect -- reset on empty-term prop change; TanStack Query migration tracked separately
-      setResults({ communities: [], posts: [] });
-      setLoading(false);
+      // eslint-disable-next-line react-hooks/set-state-in-effect -- debounce timer reset on empty input
+      setDebounced("");
       return;
     }
-
-    let cancelled = false;
-    setLoading(true);
-    const handle = setTimeout(async () => {
-      try {
-        const { communities, posts } = await getSearchDataAction(term);
-        if (!cancelled) setResults({ communities, posts });
-      } catch (error) {
-        console.error("Error fetching search data", error);
-        if (!cancelled) setResults({ communities: [], posts: [] });
-      } finally {
-        if (!cancelled) setLoading(false);
-      }
-    }, 250);
-
-    return () => {
-      cancelled = true;
-      clearTimeout(handle);
-    };
+    const handle = setTimeout(() => setDebounced(term), 250);
+    return () => clearTimeout(handle);
   }, [searchTerm]);
 
-  return { results, loading };
+  const query = useSearchQuery({ term: debounced });
+
+  return {
+    results: query.data ?? EMPTY,
+    loading: query.isFetching && debounced.length > 0,
+  };
 };
 
 export default useSearch;

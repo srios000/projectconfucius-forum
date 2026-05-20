@@ -1,6 +1,6 @@
 "use client";
 
-import { communityStateAtom } from "@/atoms/communitiesAtom";
+import { uiAtom } from "@/atoms/uiAtom";
 import About from "@/components/community/about/About";
 import PageContent from "@/components/layout/PageContent";
 import PostLoader from "@/components/loaders/post-loader/PostLoader";
@@ -8,62 +8,63 @@ import Comments from "@/components/posts/comments/Comments";
 import PostItem from "@/components/posts/post-item/PostItem";
 import { useSession } from "@/lib/auth-client";
 import useCommunityPermissions from "@/hooks/community/useCommunityPermissions";
+import useCommunityState from "@/hooks/community/useCommunityState";
 import usePostDeletion from "@/hooks/posts/usePostDeletion";
-import usePostState from "@/hooks/posts/usePostState";
 import usePostVote from "@/hooks/posts/usePostVote";
 import usePostVoteSync from "@/hooks/posts/usePostVoteSync";
 import RestrictedCommunityBanner from "@/components/community/RestrictedCommunityBanner";
+import { useCommunityDataQuery } from "@/lib/queries/community/use-community-data";
+import { usePostQuery } from "@/lib/queries/posts/use-post";
 import { Community } from "@/types/community";
 import { Post } from "@/types/post";
 import { Stack } from "@chakra-ui/react";
-import { useAtom } from "jotai";
-import React, { useEffect } from "react";
+import { useAtom, useAtomValue } from "jotai";
+import React, { useEffect, useState } from "react";
 
 type PostPageProps = {
-  communityData: Community;
-  postData: Post | null;
+  communityId: string;
+  postId: string;
 };
 
-/**
- * The client-side page for viewing a single post and its associated comment thread.
- * Manages post-specific state including voting, deletion, and comment loading.
- * Enforces community-level viewing permissions.
- * @param communityData - The community context for the post.
- * @param postData - The post data fetched on the server.
- * @returns A page layout with the post item and its comments.
- */
-const PostPage: React.FC<PostPageProps> = ({ communityData, postData }) => {
-  const { postStateValue, setPostStateValue } = usePostState();
-  const { onVote } = usePostVote(postStateValue, setPostStateValue);
-  const { onDeletePost } = usePostDeletion(setPostStateValue);
-  usePostVoteSync(setPostStateValue);
+const PostPage: React.FC<PostPageProps> = ({ communityId, postId }) => {
+  const { data: communityData } = useCommunityDataQuery({ communityId });
+  const { data: postData } = usePostQuery({ postId });
+  const selectedPost = useAtomValue(uiAtom).selectedPost;
+  const [, setUi] = useAtom(uiAtom);
 
-  const [communityStateValue, setCommunityStateValue] =
-    useAtom(communityStateAtom);
+  const [posts, setPosts] = useState<Post[]>([]);
+  const { postVotes, setPostVotes } = usePostVoteSync();
+  const { onVote } = usePostVote({ posts, setPosts, postVotes, setPostVotes });
+  const { onDeletePost } = usePostDeletion({ posts, setPosts });
+
+  const { communityStateValue, setCommunityStateValue } = useCommunityState();
+  const fallbackCommunity = (communityData ?? { id: communityId }) as Community;
   const currentCommunity =
-    communityStateValue.currentCommunity || communityData;
+    communityStateValue.currentCommunity ?? fallbackCommunity;
   const { isAdmin, canView, canPost, loading } =
     useCommunityPermissions(currentCommunity);
   const { data: session } = useSession();
   const user = session?.user ?? null;
 
   useEffect(() => {
-    setCommunityStateValue((prev) => ({
-      ...prev,
-      currentCommunity: communityData,
-    }));
+    if (communityData) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect -- mirror SSR-hydrated community into shared uiAtom
+      setCommunityStateValue((prev) => ({
+        ...prev,
+        currentCommunity: communityData as Community,
+      }));
+    }
   }, [communityData, setCommunityStateValue]);
 
   useEffect(() => {
     if (postData) {
-      setPostStateValue((prev) => ({
-        ...prev,
-        selectedPost: postData,
-      }));
+      // eslint-disable-next-line react-hooks/set-state-in-effect -- mirror SSR-hydrated post into shared uiAtom + local posts list
+      setUi((prev) => ({ ...prev, selectedPost: postData as Post }));
+      setPosts([postData as Post]);
     }
-  }, [postData, setPostStateValue]);
+  }, [postData, setUi]);
 
-  if (loading) {
+  if (loading || !communityData) {
     return (
       <PageContent>
         <PostLoader />
@@ -85,15 +86,14 @@ const PostPage: React.FC<PostPageProps> = ({ communityData, postData }) => {
     <PageContent>
       <>
         <Stack gap={4}>
-          {postStateValue.selectedPost && (
+          {selectedPost && (
             <PostItem
-              post={postStateValue.selectedPost}
+              post={selectedPost}
               onVote={onVote}
               onDeletePost={onDeletePost}
               userVoteValue={
-                postStateValue.postVotes.find(
-                  (item) => item.postId === postStateValue.selectedPost!.id
-                )?.voteValue
+                postVotes.find((item) => item.postId === selectedPost.id)
+                  ?.voteValue
               }
               userIsCreator={false}
               userIsAdmin={isAdmin}
@@ -102,14 +102,14 @@ const PostPage: React.FC<PostPageProps> = ({ communityData, postData }) => {
           )}
           <Comments
             user={user}
-            selectedPost={postStateValue.selectedPost}
-            communityId={postStateValue.selectedPost?.communityId as string}
+            selectedPost={selectedPost}
+            communityId={selectedPost?.communityId as string}
             isCommunityAdmin={isAdmin}
           />
         </Stack>
       </>
       <>
-        <About communityData={communityData} />
+        <About communityData={communityData as Community} />
       </>
     </PageContent>
   );

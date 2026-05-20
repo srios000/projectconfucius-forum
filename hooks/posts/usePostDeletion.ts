@@ -1,9 +1,11 @@
-import { postStateAtom } from "@/atoms/postsAtom";
-import { savedPostStateAtom } from "@/atoms/savedPostsAtom";
-import { Post, PostVote } from "@/types/post";
-import { useAtom, useSetAtom } from "jotai";
+import { Post } from "@/types/post";
 import React from "react";
-import { deletePostAction } from "@/app/actions/posts";
+import { useDeletePostMutation } from "@/lib/queries/posts/use-delete-post";
+
+type UsePostDeletionOpts = {
+  posts: Post[];
+  setPosts: React.Dispatch<React.SetStateAction<Post[]>>;
+};
 
 /**
  * A custom hook that provides functionality for deleting a post and its associated data.
@@ -11,43 +13,24 @@ import { deletePostAction } from "@/app/actions/posts";
  * @param setPostStateValue - A state setter function to update the global post state.
  * @returns An object containing the `onDeletePost` function and the current post state value.
  */
-const usePostDeletion = (
-  setPostStateValue: React.Dispatch<
-    React.SetStateAction<{
-      selectedPost: Post | null;
-      posts: Post[];
-      postVotes: PostVote[];
-    }>
-  >
-) => {
-  const [postStateValue] = useAtom(postStateAtom);
-  const setSavedPostState = useSetAtom(savedPostStateAtom);
+const usePostDeletion = ({ posts, setPosts }: UsePostDeletionOpts) => {
+  const deleteMutation = useDeletePostMutation();
 
   const onDeletePost = async (post: Post): Promise<boolean> => {
-    setPostStateValue((prev) => ({
-      ...prev,
-      posts: prev.posts.filter((item) => item.id !== post.id),
-    }));
-
-    setSavedPostState((prev) => ({
-      ...prev,
-      savedPosts: prev.savedPosts.filter((item) => item.postId !== post.id),
-    }));
+    const snapshot = posts;
+    setPosts((prev) => prev.filter((item) => item.id !== post.id));
 
     try {
-      await deletePostAction(post.id!);
+      await deleteMutation.mutateAsync({ postId: post.id! });
       return true;
     } catch (error) {
       console.log("Error deleting post", error);
-      setPostStateValue((prev) => ({
-        ...prev,
-        posts: [...prev.posts, post],
-      }));
+      setPosts(snapshot);
       return false;
     }
   };
 
-  return { onDeletePost, postStateValue };
+  return { onDeletePost };
 };
 
 export default usePostDeletion;

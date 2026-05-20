@@ -1,7 +1,5 @@
-import { communityStateAtom } from "@/atoms/communitiesAtom";
 import useCallCreatePost from "@/hooks/posts/useCallCreatePost";
 import { Button, Flex, Image, Stack, Text } from "@chakra-ui/react";
-import { useAtomValue } from "jotai";
 import React, { useState } from "react";
 import CreateCommunityModal from "../modal/create-community/CreateCommunityModal";
 
@@ -12,7 +10,6 @@ import CreateCommunityModal from "../modal/create-community/CreateCommunityModal
  */
 const PersonalHome: React.FC = () => {
   const [open, setOpen] = useState(false); // modal initially closed
-  const mySnippets = useAtomValue(communityStateAtom).mySnippets;
 
   const { onClick } = useCallCreatePost();
 

@@ -1,4 +1,4 @@
-import { defaultMenuItem } from "@/atoms/directoryMenuAtom";
+import { defaultMenuItem } from "@/atoms/uiAtom";
 import { useSession } from "@/lib/auth-client";
 import useDirectory from "@/hooks/useDirectory";
 import { Flex, Image, Text } from "@chakra-ui/react";

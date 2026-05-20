@@ -1,14 +1,14 @@
-import { savedPostStateAtom } from "@/atoms/savedPostsAtom";
+"use client";
+
 import { useSession } from "@/lib/auth-client";
 import { Post } from "@/types/post";
-import { useAtom } from "jotai";
-import { useState } from "react";
+import { SavedPost } from "@/types/savedPost";
 import useCustomToast from "../useCustomToast";
+import { useSavedPostsQuery } from "@/lib/queries/posts/use-saved-posts";
 import {
-  getSavedPostsAction,
-  savePostAction,
-  unsavePostAction,
-} from "@/app/actions/posts";
+  useSavePostMutation,
+  useUnsavePostMutation,
+} from "@/lib/queries/posts/use-saved-posts-mutation";
 
 /**
  * A custom hook that manages the user's saved posts.
@@ -19,29 +19,14 @@ import {
 const useSavedPosts = () => {
   const { data: session } = useSession();
   const user = session?.user ?? null;
-  const [savedPostState, setSavedPostState] = useAtom(savedPostStateAtom);
-  const [loading, setLoading] = useState(false);
+  const savedQuery = useSavedPostsQuery();
+  const savedPosts: SavedPost[] = (savedQuery.data ?? []) as SavedPost[];
   const showToast = useCustomToast();
+  const saveMutation = useSavePostMutation();
+  const unsaveMutation = useUnsavePostMutation();
 
   const fetchSavedPosts = async () => {
-    if (!user) return;
-    setLoading(true);
-    try {
-      const savedPosts = await getSavedPostsAction();
-
-      setSavedPostState((prev) => ({
-        ...prev,
-        savedPosts,
-      }));
-    } catch (error: any) {
-      console.log("fetchSavedPosts error", error);
-      showToast({
-        title: "Error fetching saved posts",
-        description: error.message,
-        status: "error",
-      });
-    }
-    setLoading(false);
+    await savedQuery.refetch();
   };
 
   const onSavePost = async (post: Post) => {
@@ -49,32 +34,14 @@ const useSavedPosts = () => {
       window.location.assign("/api/auth/start");
       return;
     }
-
+    const isSaved = savedPosts.find((item) => item.postId === post.id);
     try {
-      const isSaved = savedPostState.savedPosts.find(
-        (item) => item.postId === post.id
-      );
-
       if (isSaved) {
-        await unsavePostAction(post.id!);
-        setSavedPostState((prev) => ({
-          ...prev,
-          savedPosts: prev.savedPosts.filter((item) => item.postId !== post.id),
-        }));
-        showToast({
-          title: "Post removed from saved",
-          status: "success",
-        });
+        await unsaveMutation.mutateAsync({ postId: post.id! });
+        showToast({ title: "Post removed from saved", status: "success" });
       } else {
-        const newSavedPost = await savePostAction(post);
-        setSavedPostState((prev) => ({
-          ...prev,
-          savedPosts: [...prev.savedPosts, newSavedPost],
-        }));
-        showToast({
-          title: "Post saved",
-          status: "success",
-        });
+        await saveMutation.mutateAsync(post);
+        showToast({ title: "Post saved", status: "success" });
       }
     } catch (error: any) {
       console.log("onSavePost error", error);
@@ -89,15 +56,8 @@ const useSavedPosts = () => {
   const onRemoveSavedPost = async (postId: string) => {
     if (!user) return;
     try {
-      await unsavePostAction(postId);
-      setSavedPostState((prev) => ({
-        ...prev,
-        savedPosts: prev.savedPosts.filter((item) => item.postId !== postId),
-      }));
-      showToast({
-        title: "Post removed from saved",
-        status: "success",
-      });
+      await unsaveMutation.mutateAsync({ postId });
+      showToast({ title: "Post removed from saved", status: "success" });
     } catch (error: any) {
       console.log("onRemoveSavedPost error", error);
       showToast({
@@ -108,18 +68,16 @@ const useSavedPosts = () => {
     }
   };
 
-  const isPostSaved = (postId: string) => {
-    return !!savedPostState.savedPosts.find((item) => item.postId === postId);
-  };
+  const isPostSaved = (postId: string) =>
+    !!savedPosts.find((item) => item.postId === postId);
 
   return {
-    savedPostState,
-    setSavedPostState,
+    savedPosts,
     onSavePost,
     onRemoveSavedPost,
     isPostSaved,
     fetchSavedPosts,
-    loading,
+    loading: savedQuery.isLoading,
   };
 };
 

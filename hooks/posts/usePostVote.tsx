@@ -1,19 +1,22 @@
-/* eslint-disable react-hooks/exhaustive-deps */
+import { uiAtom } from "@/atoms/uiAtom";
 import { useSession } from "@/lib/auth-client";
 import useCustomToast from "../useCustomToast";
 import React from "react";
 import { Post, PostVote } from "@/types/post";
-import { voteAction, getPostVotesAction } from "@/app/actions/posts";
+import { getPostVotesAction } from "@/app/actions/posts";
 import { getPostAction, getCommunityDataAction } from "@/app/actions/reads";
 import useCommunityState from "../community/useCommunityState";
+import { useSetAtom } from "jotai";
+import { usePostVoteMutation } from "@/lib/queries/posts/use-post-vote";
 
-type SetPostState = React.Dispatch<
-  React.SetStateAction<{
-    selectedPost: Post | null;
-    posts: Post[];
-    postVotes: PostVote[];
-  }>
->;
+type UsePostVoteOpts = {
+  posts: Post[];
+  setPosts: React.Dispatch<React.SetStateAction<Post[]>>;
+  postVotes: PostVote[];
+  setPostVotes: (
+    updater: PostVote[] | ((prev: PostVote[]) => PostVote[]),
+  ) => void;
+};
 
 /**
  * A custom hook that manages the voting logic for posts.
@@ -23,24 +26,24 @@ type SetPostState = React.Dispatch<
  * @param setPostStateValue - A state setter function to update the global post state.
  * @returns An object containing functions for voting, loading votes, and fetching post data.
  */
-const usePostVote = (
-  postStateValue: {
-    selectedPost: Post | null;
-    posts: Post[];
-    postVotes: PostVote[];
-  },
-  setPostStateValue: SetPostState
-) => {
+const usePostVote = ({
+  posts,
+  setPosts,
+  postVotes,
+  setPostVotes,
+}: UsePostVoteOpts) => {
   const { data: session } = useSession();
   const user = session?.user ?? null;
   const showToast = useCustomToast();
   const { communityStateValue } = useCommunityState();
+  const setUi = useSetAtom(uiAtom);
+  const voteMutation = usePostVoteMutation();
 
   const onVote = async (
     event: React.MouseEvent<SVGElement, MouseEvent>,
     post: Post,
     vote: number,
-    communityId: string
+    communityId: string,
   ) => {
     event.stopPropagation();
 
@@ -49,9 +52,8 @@ const usePostVote = (
       return;
     }
 
-    // Check permissions
     const isMember = !!communityStateValue.mySnippets.find(
-      (snippet) => snippet.communityId === communityId
+      (snippet) => snippet.communityId === communityId,
     );
 
     if (!isMember) {
@@ -63,7 +65,7 @@ const usePostVote = (
         } catch (error) {
           console.log(
             "Error fetching community data for vote permission",
-            error
+            error,
           );
         }
       }
@@ -83,52 +85,42 @@ const usePostVote = (
     }
 
     try {
-      const existingVote = postStateValue.postVotes.find(
-        (v) => v.postId === post.id
-      );
+      const existingVote = postVotes.find((v) => v.postId === post.id);
 
-      const { voteChange, newVote, voteIdToDelete } = await voteAction(
-        post,
-        vote,
-        communityId,
-        existingVote
-      );
+      const { voteChange, newVote, voteIdToDelete } =
+        await voteMutation.mutateAsync({
+          post,
+          vote,
+          communityId,
+          existing: existingVote,
+        });
 
-      let updatedPostVotes = [...postStateValue.postVotes];
       const updatedPost = { ...post, voteStatus: post.voteStatus + voteChange };
-      const updatedPosts = [...postStateValue.posts];
 
-      if (voteIdToDelete) {
-        updatedPostVotes = updatedPostVotes.filter(
-          (v) => v.id !== voteIdToDelete
-        );
-      } else if (newVote) {
-        if (existingVote) {
-          const voteIndexPosition = postStateValue.postVotes.findIndex(
-            (v) => v.id === existingVote.id
-          );
-          updatedPostVotes[voteIndexPosition] = newVote;
-        } else {
-          updatedPostVotes = [...updatedPostVotes, newVote];
-        }
-      }
-
-      const postIndexPosition = postStateValue.posts.findIndex(
-        (item) => item.id === post.id
+      setPosts((prev) =>
+        prev.map((item) => (item.id === post.id ? updatedPost : item)),
       );
-      updatedPosts[postIndexPosition] = updatedPost;
-      setPostStateValue((prev) => ({
-        ...prev,
-        posts: updatedPosts,
-        postVotes: updatedPostVotes,
-      }));
 
-      if (postStateValue.selectedPost) {
-        setPostStateValue((prev) => ({
-          ...prev,
-          selectedPost: updatedPost,
-        }));
-      }
+      setPostVotes((prev) => {
+        let updated = [...prev];
+        if (voteIdToDelete) {
+          updated = updated.filter((v) => v.id !== voteIdToDelete);
+        } else if (newVote) {
+          if (existingVote) {
+            const idx = updated.findIndex((v) => v.id === existingVote.id);
+            if (idx >= 0) updated[idx] = newVote;
+          } else {
+            updated = [...updated, newVote];
+          }
+        }
+        return updated;
+      });
+
+      setUi((prev) =>
+        prev.selectedPost?.id === post.id
+          ? { ...prev, selectedPost: updatedPost }
+          : prev,
+      );
     } catch (error) {
       console.log("Error: onVote", error);
       showToast({
@@ -142,12 +134,8 @@ const usePostVote = (
   const getPostVotes = async (postIds: string[]) => {
     if (!user || !postIds.length) return;
     try {
-      const postVotes = await getPostVotesAction(postIds);
-
-      setPostStateValue((prev) => ({
-        ...prev,
-        postVotes: postVotes as PostVote[],
-      }));
+      const fetched = await getPostVotesAction(postIds);
+      setPostVotes(fetched as PostVote[]);
     } catch (error) {
       console.log("Error: getPostVotes", error);
       showToast({
@@ -162,10 +150,7 @@ const usePostVote = (
     try {
       const post = await getPostAction(postId);
       if (post) {
-        setPostStateValue((prev) => ({
-          ...prev,
-          selectedPost: post,
-        }));
+        setUi((prev) => ({ ...prev, selectedPost: post }));
         return post;
       }
       return null;
@@ -174,6 +159,8 @@ const usePostVote = (
       return null;
     }
   };
+
+  void posts;
 
   return { onVote, getPostVotes, getPost };
 };

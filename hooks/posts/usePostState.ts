@@ -1,15 +1,15 @@
-import { postStateAtom } from "@/atoms/postsAtom";
+import { uiAtom } from "@/atoms/uiAtom";
+import { Post } from "@/types/post";
 import { useAtom } from "jotai";
 
-/**
- * A custom hook that provides access to the global post state managed by Jotai.
- * It returns the current state value and a setter function for updating it.
- * @returns An object containing the post state value and its setter.
- */
 const usePostState = () => {
-  const [postStateValue, setPostStateValue] = useAtom(postStateAtom);
+  const [ui, setUi] = useAtom(uiAtom);
 
-  return { postStateValue, setPostStateValue };
+  const selectedPost: Post | null = ui.selectedPost;
+  const setSelectedPost = (post: Post | null) =>
+    setUi((prev) => ({ ...prev, selectedPost: post }));
+
+  return { selectedPost, setSelectedPost };
 };
 
 export default usePostState;

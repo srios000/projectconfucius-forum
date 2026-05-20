@@ -1844,7 +1844,7 @@ Co-Authored-By: Claude Opus 4.7 <noreply@anthropic.com>"
 **Files:**
 - Modify: `README.md`
 
-- [ ] **Step 1: README — add R2 setup section**
+- [x] **Step 1: README — add R2 setup section**
 
 In `README.md`, find the "Stack" / "Requirements" section that mentions Postgres + Better Auth (added in Phase A) and append (or replace any leftover Firebase Storage mention with):
 
@@ -1867,17 +1867,17 @@ never sees the R2 credentials.
 
 (If the README still mentions Firebase Storage anywhere — grep for it — remove that wording.)
 
-- [ ] **Step 2: Full green gate**
+- [x] **Step 2: Full green gate**
 
 Run: `pnpm test; pnpm typecheck; pnpm lint; pnpm build`
 Expected: all PASS.
 
-- [ ] **Step 3: No-firebase grep (sanity check)**
+- [x] **Step 3: No-firebase grep (sanity check)**
 
 Run: `grep -rn "firebase" --include='*.ts' --include='*.tsx' app components hooks lib atoms schema types`
 Expected: zero matches (already true since Phase A; this is just a regression check).
 
-- [ ] **Step 4: Manual smoke (ask the user)**
+- [x] **Step 4: Manual smoke (ask the user)**
 
 Give the user these manual checks against the real `project-confucius-forum` bucket:
 
@@ -1888,7 +1888,7 @@ Give the user these manual checks against the real `project-confucius-forum` buc
 5. Delete a post that has an image. Row gone, R2 object gone (best-effort — allow a few seconds).
 6. Profile modal → Delete Image. `users.imageUrl` cleared; the key disappears from R2.
 
-- [ ] **Step 5: Commit + finish**
+- [x] **Step 5: Commit + finish**
 
 ```bash
 git add README.md

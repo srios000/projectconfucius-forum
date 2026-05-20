@@ -1,8 +1,10 @@
+"use client";
+
 import { useCallback, useEffect, useState } from "react";
 import { Post } from "@/types/post";
 import useCustomToast from "@/hooks/useCustomToast";
 import { Comment } from "../../types/comment";
-import { getCommentsAction } from "@/app/actions/reads";
+import { useCommentsForPostQuery } from "@/lib/queries/comments/use-comments";
 
 /**
  * A custom hook that manages the retrieval and state of comments for a specific post.
@@ -13,37 +15,33 @@ import { getCommentsAction } from "@/app/actions/reads";
 const useCommentList = (selectedPost: Post | null) => {
   const showToast = useCustomToast();
   const [comments, setComments] = useState<Comment[]>([]);
-  const [commentFetchLoading, setCommentFetchLoading] = useState(true);
+  const postId = selectedPost?.id ?? "";
 
-  const loadComments = useCallback(async () => {
-    if (!selectedPost) return;
-    setCommentFetchLoading(true);
-    try {
-      const comments = await getCommentsAction(selectedPost.id!);
-      setComments(comments);
-    } catch (error: any) {
-      console.log("getPostComments error", error);
+  const query = useCommentsForPostQuery({
+    postId,
+    enabled: !!selectedPost,
+  });
+
+  useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect -- mirror query data into local list to support optimistic insert via setComments
+    if (query.data) setComments(query.data);
+    if (query.error) {
       showToast({
         title: "Error fetching comments",
         description: "There was an error fetching comments",
         status: "error",
       });
-    } finally {
-      setCommentFetchLoading(false);
     }
-  }, [selectedPost, showToast]);
+  }, [query.data, query.error, showToast]);
 
-  useEffect(() => {
-    if (selectedPost) {
-      // eslint-disable-next-line react-hooks/set-state-in-effect -- legacy effect-driven fetch; TanStack Query migration tracked separately
-      loadComments();
-    }
-  }, [selectedPost, loadComments]);
+  const loadComments = useCallback(async () => {
+    await query.refetch();
+  }, [query]);
 
   return {
     comments,
     setComments,
-    commentFetchLoading,
+    commentFetchLoading: query.isLoading,
     loadComments,
   };
 };

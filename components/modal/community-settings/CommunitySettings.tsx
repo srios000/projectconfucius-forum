@@ -1,4 +1,4 @@
-import { communityStateAtom } from "@/atoms/communitiesAtom";
+import { uiAtom } from "@/atoms/uiAtom";
 import useCommunityImage from "@/hooks/community/useCommunityImage";
 import useCommunityPrivacy from "@/hooks/community/useCommunityPrivacy";
 import useDeleteCommunity from "@/hooks/community/useDeleteCommunity";
@@ -46,7 +46,7 @@ const CommunitySettingsModal: React.FC<CommunitySettingsModalProps> = ({
   const { selectedFile, selectedBlob, setSelectedFile, onSelectFile, cropModalProps } =
     useImageCropFlow();
   const selectFileRef = useRef<HTMLInputElement>(null);
-  const [communityStateValue] = useAtom(communityStateAtom);
+  const [{ currentCommunity }] = useAtom(uiAtom);
   const [deleteImage, setDeleteImage] = useState(false);
   const [selectedPrivacyType, setSelectedPrivacyType] = useState("");
   const showToast = useCustomToast();
@@ -126,7 +126,7 @@ const CommunitySettingsModal: React.FC<CommunitySettingsModalProps> = ({
                       onSelectFile={onSelectFile}
                       selectFileRef={selectFileRef}
                       currentCommunity={
-                        communityStateValue.currentCommunity || null
+                        currentCommunity || null
                       }
                       deleteImage={deleteImage}
                       setDeleteImage={setDeleteImage}
@@ -135,7 +135,7 @@ const CommunitySettingsModal: React.FC<CommunitySettingsModalProps> = ({
                   <Tabs.Content value="privacy" p={5}>
                     <PrivacySettings
                       currentCommunity={
-                        communityStateValue.currentCommunity || null
+                        currentCommunity || null
                       }
                       selectedPrivacyType={selectedPrivacyType}
                       handlePrivacyTypeChange={handlePrivacyTypeChange}
@@ -144,7 +144,7 @@ const CommunitySettingsModal: React.FC<CommunitySettingsModalProps> = ({
                   <Tabs.Content value="admins" p={5}>
                     <AdminManager
                       communityData={
-                        communityStateValue.currentCommunity || communityData
+                        currentCommunity || communityData
                       }
                     />
                   </Tabs.Content>
