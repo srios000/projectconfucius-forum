@@ -200,7 +200,7 @@ git commit -m "feat: queryKey factory for Phase C TanStack migration"
 
 Background: Per TanStack Query docs for Next.js App Router, the QueryClient must be **per-request on the server** (or you get cross-request data leaks) and **a singleton on the client** (to survive React re-renders). `isServer` from `@tanstack/react-query` distinguishes the two.
 
-- [ ] **Step 1: Write the factory**
+- [x] **Step 1: Write the factory**
 
 Create `lib/queries/client.ts`:
 
@@ -240,7 +240,7 @@ export function getQueryClient(): QueryClient {
 }
 ```
 
-- [ ] **Step 2: Typecheck**
+- [x] **Step 2: Typecheck**
 
 Run:
 
@@ -250,7 +250,7 @@ pnpm typecheck
 
 Expected: clean.
 
-- [ ] **Step 3: Commit**
+- [x] **Step 3: Commit**
 
 ```bash
 git add lib/queries/client.ts
