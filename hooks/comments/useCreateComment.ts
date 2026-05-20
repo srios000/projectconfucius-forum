@@ -1,5 +1,5 @@
 import { Dispatch, SetStateAction, useState } from "react";
-import { postStateAtom } from "@/atoms/postsAtom";
+import { uiAtom } from "@/atoms/uiAtom";
 import { Post } from "@/types/post";
 import { useSetAtom } from "jotai";
 import useCustomToast from "@/hooks/useCustomToast";
@@ -21,7 +21,7 @@ const useCreateComment = (
   selectedPost: Post | null,
   setComments: Dispatch<SetStateAction<Comment[]>>
 ) => {
-  const setPostState = useSetAtom(postStateAtom);
+  const setUi = useSetAtom(uiAtom);
   const showToast = useCustomToast();
   const [createLoading, setCreateLoading] = useState(false);
   const { communityStateValue } = useCommunityState();
@@ -59,13 +59,17 @@ const useCreateComment = (
       );
 
       setComments((prev) => [newComment, ...prev]);
-      setPostState((prev) => ({
-        ...prev,
-        selectedPost: {
-          ...prev.selectedPost!,
-          numberOfComments: prev.selectedPost!.numberOfComments + 1,
-        },
-      }));
+      setUi((prev) =>
+        prev.selectedPost
+          ? {
+              ...prev,
+              selectedPost: {
+                ...prev.selectedPost,
+                numberOfComments: prev.selectedPost.numberOfComments + 1,
+              },
+            }
+          : prev,
+      );
     } catch (error: any) {
       console.log("onCreateComment error", error);
       showToast({

@@ -1,5 +1,5 @@
 import { Dispatch, SetStateAction, useState } from "react";
-import { postStateAtom } from "@/atoms/postsAtom";
+import { uiAtom } from "@/atoms/uiAtom";
 import { useSetAtom } from "jotai";
 import useCustomToast from "@/hooks/useCustomToast";
 import { Comment } from "../../types/comment";
@@ -16,7 +16,7 @@ const useDeleteComment = (
   comments: Comment[],
   setComments: Dispatch<SetStateAction<Comment[]>>
 ) => {
-  const setPostState = useSetAtom(postStateAtom);
+  const setUi = useSetAtom(uiAtom);
   const showToast = useCustomToast();
   const [deleteLoadingId, setDeleteLoadingId] = useState("");
 
@@ -40,14 +40,18 @@ const useDeleteComment = (
       setComments((prev) =>
         prev.filter((item) => !allIdsToDelete.includes(item.id))
       );
-      setPostState((prev) => ({
-        ...prev,
-        selectedPost: {
-          ...prev.selectedPost!,
-          numberOfComments:
-            prev.selectedPost!.numberOfComments - allIdsToDelete.length,
-        },
-      }));
+      setUi((prev) =>
+        prev.selectedPost
+          ? {
+              ...prev,
+              selectedPost: {
+                ...prev.selectedPost,
+                numberOfComments:
+                  prev.selectedPost.numberOfComments - allIdsToDelete.length,
+              },
+            }
+          : prev,
+      );
     } catch (error: any) {
       console.log("onDeleteComment error", error);
       showToast({

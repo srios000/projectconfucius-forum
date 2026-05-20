@@ -10,88 +10,68 @@ import { useSession } from "@/lib/auth-client";
 import useCommunityState from "@/hooks/community/useCommunityState";
 import usePostDeletion from "@/hooks/posts/usePostDeletion";
 import usePostSelection from "@/hooks/posts/usePostSelection";
-import usePostState from "@/hooks/posts/usePostState";
 import usePostVote from "@/hooks/posts/usePostVote";
-import usePostVoteSync from "@/hooks/posts/usePostVoteSync";
 import usePostsFeed from "@/hooks/posts/usePostsFeed";
-import useCustomToast from "@/hooks/useCustomToast";
 import { Button, Stack, Text } from "@chakra-ui/react";
-import { useEffect, useMemo } from "react";
+import { useEffect, useMemo, useState } from "react";
+import type { PostVote } from "@/types/post";
 
-/**
- * The main landing page of the application.
- * Displays a personalized feed of posts for authenticated users or a generic popular feed for guests.
- * Includes a sidebar with community recommendations and personal shortcuts.
- * @returns The home page component with infinite scrolling posts.
- */
 export default function HomePageClient() {
     const { data: session, isPending: loadingUser } = useSession();
     const user = session?.user ?? null;
     const { communityStateValue } = useCommunityState();
-    const { postStateValue, setPostStateValue } = usePostState();
-    const { onSelectPost } = usePostSelection(setPostStateValue);
-    const { onVote, getPostVotes } = usePostVote(
-        postStateValue,
-        setPostStateValue
-    );
-    const { onDeletePost } = usePostDeletion(setPostStateValue);
-    usePostVoteSync(setPostStateValue);
-    const showToast = useCustomToast();
+    const { onSelectPost } = usePostSelection();
 
     const communityIds = useMemo(
         () => communityStateValue.mySnippets.map((snippet) => snippet.communityId),
-        [communityStateValue.mySnippets]
+        [communityStateValue.mySnippets],
     );
 
-    const { loading, fetchPosts, noMorePosts } = usePostsFeed({
+    const { posts, setPosts, loading, fetchPosts, noMorePosts } = usePostsFeed({
         communityIds: user && communityIds.length > 0 ? communityIds : undefined,
         isGenericHome: !user || communityIds.length === 0,
     });
 
-    /**
-     * Loads the home feed for authenticated users.
-     */
+    const [postVotes, setPostVotes] = useState<PostVote[]>([]);
+    const { onVote, getPostVotes } = usePostVote({
+        posts,
+        setPosts,
+        postVotes,
+        setPostVotes,
+    });
+    const { onDeletePost } = usePostDeletion({ posts, setPosts });
+
     useEffect(() => {
         if (communityStateValue.snippetFetched) {
             fetchPosts(true);
         }
     }, [communityStateValue.snippetFetched, user, communityIds.length]);
 
-    /**
-     * Loads the home feed for unauthenticated users.
-     */
     useEffect(() => {
         if (!user && !loadingUser) {
             fetchPosts(true);
         }
     }, [user, loadingUser]);
 
-    /**
-     * Posts need to exist before trying to fetch votes for posts
-     */
     useEffect(() => {
-        if (user && postStateValue.posts.length) {
-            const postIds = postStateValue.posts.map((post) => post.id!);
+        if (user && posts.length) {
+            const postIds = posts.map((post) => post.id!);
             getPostVotes(postIds);
-
             return () => {
-                setPostStateValue((prev) => ({
-                    ...prev,
-                    postVotes: [],
-                }));
+                setPostVotes([]);
             };
         }
-    }, [user, postStateValue.posts]);
+    }, [user, posts]);
 
     return (
         <PageContent>
             <>
                 <CreatePostLink />
-                {loading && postStateValue.posts.length === 0 ? (
+                {loading && posts.length === 0 ? (
                     <PostLoader />
                 ) : (
                     <Stack gap={3}>
-                        {postStateValue.posts.map((post) => (
+                        {posts.map((post) => (
                             <PostItem
                                 key={post.id}
                                 post={post}
@@ -99,14 +79,13 @@ export default function HomePageClient() {
                                 onDeletePost={onDeletePost}
                                 onVote={onVote}
                                 userVoteValue={
-                                    postStateValue.postVotes.find(
-                                        (item) => item.postId === post.id
-                                    )?.voteValue
+                                    postVotes.find((item) => item.postId === post.id)
+                                        ?.voteValue
                                 }
                                 userIsCreator={false}
                                 userIsAdmin={
                                     !!communityStateValue.mySnippets.find(
-                                        (snippet) => snippet.communityId === post.communityId
+                                        (snippet) => snippet.communityId === post.communityId,
                                     )?.isModerator
                                 }
                                 showCommunityImage={true}
