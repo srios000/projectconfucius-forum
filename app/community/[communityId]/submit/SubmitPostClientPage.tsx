@@ -1,6 +1,5 @@
 "use client";
 
-import { communityStateAtom } from "@/atoms/communitiesAtom";
 import About from "@/components/community/about/About";
 import PageContent from "@/components/layout/PageContent";
 import AuthButtons from "@/components/navbar/right-content/AuthButtons";
@@ -9,9 +8,9 @@ import { useSession } from "@/lib/auth-client";
 import { useCommunityDataQuery } from "@/lib/queries/community/use-community-data";
 import { Community } from "@/types/community";
 import { Box, Stack, Text } from "@chakra-ui/react";
-import { useAtom } from "jotai";
 import React, { useEffect } from "react";
 import useCommunityPermissions from "@/hooks/community/useCommunityPermissions";
+import useCommunityState from "@/hooks/community/useCommunityState";
 import RestrictedCommunityBanner from "@/components/community/RestrictedCommunityBanner";
 import PostLoader from "@/components/loaders/post-loader/PostLoader";
 
@@ -23,8 +22,7 @@ const SubmitPostPage: React.FC<SubmitPostPageProps> = ({ communityId }) => {
   const { data: communityData } = useCommunityDataQuery({ communityId });
   const { data: session } = useSession();
   const user = session?.user ?? null;
-  const [communityStateValue, setCommunityStateValue] =
-    useAtom(communityStateAtom);
+  const { communityStateValue, setCommunityStateValue } = useCommunityState();
 
   useEffect(() => {
     if (communityData) {

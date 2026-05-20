@@ -1,8 +1,7 @@
-import { communityStateAtom } from "@/atoms/communitiesAtom";
 import CustomMenuButton from "@/components/ui/CustomMenuButton";
 import useDirectory from "@/hooks/useDirectory";
+import { useCommunitySnippetsQuery } from "@/lib/queries/community/use-community-snippets";
 import { Box, Text } from "@chakra-ui/react";
-import { useAtomValue } from "jotai";
 import { useRouter } from "next/navigation";
 import React from "react";
 import { BsFillPeopleFill } from "react-icons/bs";
@@ -25,7 +24,7 @@ type CommunitiesProps = {
  * @requires ./MenuListItem - menu item for each community
  */
 const Communities: React.FC<CommunitiesProps> = ({ handleCreateCommunity }) => {
-  const mySnippets = useAtomValue(communityStateAtom).mySnippets;
+  const mySnippets = useCommunitySnippetsQuery().data ?? [];
   const router = useRouter();
   const { toggleMenuOpen } = useDirectory();
 

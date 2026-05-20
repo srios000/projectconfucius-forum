@@ -1,21 +1,19 @@
 import { useState } from "react";
-import { communityStateAtom } from "@/atoms/communitiesAtom";
-import { Community } from "@/types/community";
+import { uiAtom } from "@/atoms/uiAtom";
+import { Community, CommunitySnippet } from "@/types/community";
 import { useSession } from "@/lib/auth-client";
 import { useSetAtom } from "jotai";
 import useCustomToast from "../useCustomToast";
 import { joinCommunityAction } from "@/app/actions/community";
+import { useQueryClient } from "@tanstack/react-query";
+import { keys } from "@/lib/queries/keys";
 
-/**
- * A custom hook that provides functionality for a user to join a community.
- * It delegates the join to a server action, updates the user's membership
- * snippets, and increments the community's member count in local Jotai state.
- * @returns An object containing the `joinCommunity` function, loading state, and error state.
- */
 const useJoinCommunity = () => {
   const { data: session } = useSession();
   const user = session?.user ?? null;
-  const setCommunityStateValue = useSetAtom(communityStateAtom);
+  const userId = user?.id ?? "";
+  const setUi = useSetAtom(uiAtom);
+  const queryClient = useQueryClient();
   const showToast = useCustomToast();
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
@@ -29,17 +27,28 @@ const useJoinCommunity = () => {
     try {
       const newSnippet = await joinCommunityAction(communityData);
 
-      setCommunityStateValue((prev) => ({
-        ...prev,
-        mySnippets: [...prev.mySnippets, newSnippet],
-        currentCommunity:
-          prev.currentCommunity?.id === communityData.id
-            ? {
+      if (userId) {
+        queryClient.setQueryData<CommunitySnippet[]>(
+          keys.community.snippets(userId),
+          (old = []) => [...old, newSnippet],
+        );
+      }
+
+      setUi((prev) =>
+        prev.currentCommunity?.id === communityData.id
+          ? {
+              ...prev,
+              currentCommunity: {
                 ...prev.currentCommunity,
                 numberOfMembers: prev.currentCommunity.numberOfMembers + 1,
-              }
-            : prev.currentCommunity,
-      }));
+              },
+            }
+          : prev,
+      );
+
+      void queryClient.invalidateQueries({
+        queryKey: keys.community.detail(communityData.id),
+      });
     } catch (error: any) {
       console.log("Error: joinCommunity", error);
       showToast({

@@ -1,29 +1,33 @@
-import { communityStateAtom } from "@/atoms/communitiesAtom";
+import { uiAtom } from "@/atoms/uiAtom";
 import { Community } from "@/types/community";
 import { useSetAtom } from "jotai";
 import useCustomToast from "../useCustomToast";
 import { updateCommunityPrivacyAction } from "@/app/actions/community";
+import { useQueryClient } from "@tanstack/react-query";
+import { keys } from "@/lib/queries/keys";
 
-/**
- * A custom hook that provides functionality for updating a community's privacy setting.
- * It handles the backend update and synchronizes the local Jotai state to reflect the change.
- * @param communityData - The community object whose privacy setting is being updated.
- * @returns An object containing the `updatePrivacyType` function.
- */
 const useCommunityPrivacy = (communityData: Community) => {
-  const setCommunityStateValue = useSetAtom(communityStateAtom);
+  const setUi = useSetAtom(uiAtom);
+  const queryClient = useQueryClient();
   const showToast = useCustomToast();
 
   const updatePrivacyType = async (privacyType: string) => {
     try {
       await updateCommunityPrivacyAction(communityData.id, privacyType);
-      setCommunityStateValue((prev) => ({
-        ...prev,
-        currentCommunity: {
-          ...prev.currentCommunity,
-          privacyType: privacyType,
-        } as Community,
-      }));
+      setUi((prev) =>
+        prev.currentCommunity?.id === communityData.id
+          ? {
+              ...prev,
+              currentCommunity: {
+                ...prev.currentCommunity,
+                privacyType,
+              } as Community,
+            }
+          : prev,
+      );
+      void queryClient.invalidateQueries({
+        queryKey: keys.community.detail(communityData.id),
+      });
     } catch (error) {
       console.log("Error: onUpdateCommunityPrivacyType", error);
       showToast({

@@ -1,6 +1,5 @@
 "use client";
 
-import { communityStateAtom } from "@/atoms/communitiesAtom";
 import { uiAtom } from "@/atoms/uiAtom";
 import About from "@/components/community/about/About";
 import PageContent from "@/components/layout/PageContent";
@@ -9,6 +8,7 @@ import Comments from "@/components/posts/comments/Comments";
 import PostItem from "@/components/posts/post-item/PostItem";
 import { useSession } from "@/lib/auth-client";
 import useCommunityPermissions from "@/hooks/community/useCommunityPermissions";
+import useCommunityState from "@/hooks/community/useCommunityState";
 import usePostDeletion from "@/hooks/posts/usePostDeletion";
 import usePostVote from "@/hooks/posts/usePostVote";
 import usePostVoteSync from "@/hooks/posts/usePostVoteSync";
@@ -37,8 +37,7 @@ const PostPage: React.FC<PostPageProps> = ({ communityId, postId }) => {
   const { onVote } = usePostVote({ posts, setPosts, postVotes, setPostVotes });
   const { onDeletePost } = usePostDeletion({ posts, setPosts });
 
-  const [communityStateValue, setCommunityStateValue] =
-    useAtom(communityStateAtom);
+  const { communityStateValue, setCommunityStateValue } = useCommunityState();
   const fallbackCommunity = (communityData ?? { id: communityId }) as Community;
   const currentCommunity =
     communityStateValue.currentCommunity ?? fallbackCommunity;
