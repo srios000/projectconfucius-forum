@@ -370,7 +370,7 @@ Co-Authored-By: Claude Opus 4.7 <noreply@anthropic.com>"
 - Create: `app/api/upload/post-image/presign/route.ts`, `app/api/upload/post-image/confirm/route.ts`
 - Test: `__tests__/api/upload-presign.test.ts` (post-image suite), `__tests__/api/upload-confirm.test.ts` (post-image suite)
 
-- [ ] **Step 1: Write failing test for presign (post-image suite) — `__tests__/api/upload-presign.test.ts`**
+- [x] **Step 1: Write failing test for presign (post-image suite) — `__tests__/api/upload-presign.test.ts`**
 
 ```ts
 import { describe, it, expect, vi, beforeEach } from "vitest";
@@ -434,12 +434,12 @@ describe("POST /api/upload/post-image/presign", () => {
 });
 ```
 
-- [ ] **Step 2: Run test — expect FAIL**
+- [x] **Step 2: Run test — expect FAIL**
 
 Run: `pnpm test __tests__/api/upload-presign.test.ts`
 Expected: FAIL (route does not exist).
 
-- [ ] **Step 3: Write `app/api/upload/post-image/presign/route.ts`**
+- [x] **Step 3: Write `app/api/upload/post-image/presign/route.ts`**
 
 ```ts
 import { NextRequest, NextResponse } from "next/server";
@@ -484,12 +484,12 @@ export async function POST(req: NextRequest) {
 }
 ```
 
-- [ ] **Step 4: Run test — expect PASS**
+- [x] **Step 4: Run test — expect PASS**
 
 Run: `pnpm test __tests__/api/upload-presign.test.ts`
 Expected: PASS (3 in the post-image suite).
 
-- [ ] **Step 5: Write failing test for confirm (post-image suite) — `__tests__/api/upload-confirm.test.ts`**
+- [x] **Step 5: Write failing test for confirm (post-image suite) — `__tests__/api/upload-confirm.test.ts`**
 
 ```ts
 import { describe, it, expect, vi, beforeEach } from "vitest";
@@ -549,12 +549,12 @@ describe("POST /api/upload/post-image/confirm", () => {
 });
 ```
 
-- [ ] **Step 6: Run test — expect FAIL**
+- [x] **Step 6: Run test — expect FAIL**
 
 Run: `pnpm test __tests__/api/upload-confirm.test.ts`
 Expected: FAIL (route does not exist).
 
-- [ ] **Step 7: Write `app/api/upload/post-image/confirm/route.ts`**
+- [x] **Step 7: Write `app/api/upload/post-image/confirm/route.ts`**
 
 ```ts
 import { NextRequest, NextResponse } from "next/server";
@@ -581,12 +581,12 @@ export async function POST(req: NextRequest) {
 }
 ```
 
-- [ ] **Step 8: Run test — expect PASS**
+- [x] **Step 8: Run test — expect PASS**
 
 Run: `pnpm test __tests__/api/upload-confirm.test.ts`
 Expected: PASS (3 in the post-image suite).
 
-- [ ] **Step 9: Commit**
+- [x] **Step 9: Commit**
 
 ```bash
 git add app/api/upload/post-image tests/api/upload-presign.test.ts tests/api/upload-confirm.test.ts
