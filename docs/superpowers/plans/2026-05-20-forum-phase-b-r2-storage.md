@@ -605,7 +605,7 @@ Co-Authored-By: Claude Opus 4.7 <noreply@anthropic.com>"
 
 The community-image confirm route is the **first** one that writes to the DB. It must (a) verify the caller is a moderator and (b) read the old `communities.imageUrl` to delete the old key after the update commits.
 
-- [ ] **Step 1: Append community-image suite to `__tests__/api/upload-presign.test.ts`**
+- [x] **Step 1: Append community-image suite to `__tests__/api/upload-presign.test.ts`**
 
 After the post-image `describe` block, add:
 
@@ -660,12 +660,12 @@ describe("POST /api/upload/community-image/presign", () => {
 
 (`provisionLocalUser` is mocked because the route resolves session `user.id` (auth id) to local user id; mocking it returns a deterministic local id without DB.)
 
-- [ ] **Step 2: Run test — expect FAIL**
+- [x] **Step 2: Run test — expect FAIL**
 
 Run: `pnpm test __tests__/api/upload-presign.test.ts`
 Expected: FAIL on the new community-image suite (route not found).
 
-- [ ] **Step 3: Write `app/api/upload/community-image/presign/route.ts`**
+- [x] **Step 3: Write `app/api/upload/community-image/presign/route.ts`**
 
 ```ts
 import { NextRequest, NextResponse } from "next/server";
@@ -721,12 +721,12 @@ export async function POST(req: NextRequest) {
 }
 ```
 
-- [ ] **Step 4: Run test — expect PASS**
+- [x] **Step 4: Run test — expect PASS**
 
 Run: `pnpm test __tests__/api/upload-presign.test.ts`
 Expected: PASS (community-image suite green, post-image still green).
 
-- [ ] **Step 5: Append community-image suite to `__tests__/api/upload-confirm.test.ts`**
+- [x] **Step 5: Append community-image suite to `__tests__/api/upload-confirm.test.ts`**
 
 ```ts
 const isModerator = vi.fn();
@@ -811,12 +811,12 @@ describe("POST /api/upload/community-image/confirm", () => {
 });
 ```
 
-- [ ] **Step 6: Run test — expect FAIL**
+- [x] **Step 6: Run test — expect FAIL**
 
 Run: `pnpm test __tests__/api/upload-confirm.test.ts`
 Expected: FAIL on the new community-image suite.
 
-- [ ] **Step 7: Write `app/api/upload/community-image/confirm/route.ts`**
+- [x] **Step 7: Write `app/api/upload/community-image/confirm/route.ts`**
 
 ```ts
 import { NextRequest, NextResponse } from "next/server";
@@ -876,12 +876,12 @@ export async function POST(req: NextRequest) {
 }
 ```
 
-- [ ] **Step 8: Run test — expect PASS**
+- [x] **Step 8: Run test — expect PASS**
 
 Run: `pnpm test __tests__/api/upload-confirm.test.ts`
 Expected: PASS (community-image suite green, post-image still green).
 
-- [ ] **Step 9: Commit**
+- [x] **Step 9: Commit**
 
 ```bash
 git add app/api/upload/community-image tests/api/upload-presign.test.ts tests/api/upload-confirm.test.ts

@@ -53,3 +53,84 @@ describe("POST /api/upload/post-image/confirm", () => {
         expect(json.imageUrl).toBe("https://litang.projectconfucius.id/posts/x.jpg");
     });
 });
+
+const isModerator = vi.fn();
+vi.mock("@/lib/auth/requireModerator", () => ({ isModerator }));
+const provisionLocalUser = vi.fn(async (i: { authUserId: string }) => ({ id: `local-${i.authUserId}` }));
+vi.mock("@/lib/auth/provision", () => ({ provisionLocalUser }));
+
+const findFirst = vi.fn();
+const updateSet = vi.fn();
+const deleteForumObject = vi.fn();
+vi.mock("@/lib/db", () => ({
+    db: {
+        query: { communities: { findFirst } },
+        update: () => ({ set: (v: unknown) => { updateSet(v); return { where: () => Promise.resolve() }; } }),
+    },
+}));
+vi.mock("@/lib/storage/r2-forum", async () => {
+    const actual = await vi.importActual<typeof import("@/lib/storage/r2-forum")>(
+        "@/lib/storage/r2-forum",
+    );
+    return { ...actual, forumObjectExists, deleteForumObject };
+});
+
+describe("POST /api/upload/community-image/confirm", () => {
+    it("403 not a moderator", async () => {
+        getSession.mockResolvedValueOnce({ user: { id: "a1", email: "a@a", name: "a" } });
+        isModerator.mockResolvedValueOnce(false);
+        const res = await post(
+            "@/app/api/upload/community-image/confirm/route",
+            { key: "communities/cricket/abc.jpg", communityId: "cricket" },
+        );
+        expect(res.status).toBe(403);
+    });
+
+    it("400 HeadObject misses", async () => {
+        getSession.mockResolvedValueOnce({ user: { id: "a1", email: "a@a", name: "a" } });
+        isModerator.mockResolvedValueOnce(true);
+        forumObjectExists.mockResolvedValueOnce(false);
+        const res = await post(
+            "@/app/api/upload/community-image/confirm/route",
+            { key: "communities/cricket/abc.jpg", communityId: "cricket" },
+        );
+        expect(res.status).toBe(400);
+    });
+
+    it("200 updates row + deletes old key", async () => {
+        getSession.mockResolvedValueOnce({ user: { id: "a1", email: "a@a", name: "a" } });
+        isModerator.mockResolvedValueOnce(true);
+        forumObjectExists.mockResolvedValueOnce(true);
+        findFirst.mockResolvedValueOnce({
+            imageUrl: "https://litang.projectconfucius.id/communities/cricket/old.jpg",
+        });
+        deleteForumObject.mockResolvedValueOnce(undefined);
+
+        const res = await post(
+            "@/app/api/upload/community-image/confirm/route",
+            { key: "communities/cricket/abc.jpg", communityId: "cricket" },
+        );
+        expect(res.status).toBe(200);
+        expect(updateSet).toHaveBeenCalledWith(
+            expect.objectContaining({
+                imageUrl: "https://litang.projectconfucius.id/communities/cricket/abc.jpg",
+            }),
+        );
+        expect(deleteForumObject).toHaveBeenCalledWith("communities/cricket/old.jpg");
+    });
+
+    it("200 even if old-key delete fails (best-effort)", async () => {
+        getSession.mockResolvedValueOnce({ user: { id: "a1", email: "a@a", name: "a" } });
+        isModerator.mockResolvedValueOnce(true);
+        forumObjectExists.mockResolvedValueOnce(true);
+        findFirst.mockResolvedValueOnce({
+            imageUrl: "https://litang.projectconfucius.id/communities/cricket/old.jpg",
+        });
+        deleteForumObject.mockRejectedValueOnce(new Error("R2 down"));
+        const res = await post(
+            "@/app/api/upload/community-image/confirm/route",
+            { key: "communities/cricket/abc.jpg", communityId: "cricket" },
+        );
+        expect(res.status).toBe(200);
+    });
+});

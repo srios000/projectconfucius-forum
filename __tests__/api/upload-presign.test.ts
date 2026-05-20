@@ -57,3 +57,52 @@ describe("POST /api/upload/post-image/presign", () => {
         expect(json.maxSize).toBe(10 * 1024 * 1024);
     });
 });
+
+const isModerator = vi.fn();
+vi.mock("@/lib/auth/requireModerator", () => ({ isModerator }));
+const provisionLocalUser = vi.fn(async (i: { authUserId: string }) => ({ id: `local-${i.authUserId}` }));
+vi.mock("@/lib/auth/provision", () => ({ provisionLocalUser }));
+
+describe("POST /api/upload/community-image/presign", () => {
+    it("401 unauthenticated", async () => {
+        getSession.mockResolvedValueOnce(null);
+        const res = await post(
+            "@/app/api/upload/community-image/presign/route",
+            { contentType: "image/jpeg", communityId: "cricket" },
+        );
+        expect(res.status).toBe(401);
+    });
+
+    it("400 disallowed content-type", async () => {
+        getSession.mockResolvedValueOnce({ user: { id: "a1", email: "a@a", name: "a" } });
+        const res = await post(
+            "@/app/api/upload/community-image/presign/route",
+            { contentType: "image/webp", communityId: "cricket" },
+        );
+        expect(res.status).toBe(400);
+    });
+
+    it("403 not a moderator", async () => {
+        getSession.mockResolvedValueOnce({ user: { id: "a1", email: "a@a", name: "a" } });
+        isModerator.mockResolvedValueOnce(false);
+        const res = await post(
+            "@/app/api/upload/community-image/presign/route",
+            { contentType: "image/jpeg", communityId: "cricket" },
+        );
+        expect(res.status).toBe(403);
+    });
+
+    it("200 happy path returns key under communities/<id>/", async () => {
+        getSession.mockResolvedValueOnce({ user: { id: "a1", email: "a@a", name: "a" } });
+        isModerator.mockResolvedValueOnce(true);
+        const res = await post(
+            "@/app/api/upload/community-image/presign/route",
+            { contentType: "image/jpeg", communityId: "cricket" },
+        );
+        expect(res.status).toBe(200);
+        const json = await res.json();
+        expect(json.key).toMatch(/^communities\/cricket\/[0-9a-f-]+\.jpg$/);
+    });
+});
+
+
