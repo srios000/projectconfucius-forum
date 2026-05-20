@@ -12,7 +12,7 @@
 
 **Conventions for the executor:**
 - Path alias `@/*` → repo root (e.g. `@/lib/storage/r2-forum` → `lib/storage/r2-forum.ts`).
-- Green gate (run after every task and at the end): `pnpm test; pnpm exec tsc --noEmit; pnpm lint; pnpm build`.
+- Green gate (run after every task and at the end): `pnpm test; pnpm typecheck; pnpm lint; pnpm build`.
 - Commit after every task with the message shown. Stage **explicit paths only** — the working tree contains pre-existing local modifications outside Phase B's scope; do **not** `git add -A`.
 - Branch: work happens on `feat/phase-b-r2-storage` (already created and current; the spec commit `c0cff8a` is its first commit).
 - Vitest does not auto-load `.env` (see `vitest.setup.ts`) — for tests that need R2 env vars, set them inline at the top of the test file with `process.env.FORUM_R2_* = "..."` before the `import` of the module under test, or use `vi.stubEnv` inside `beforeEach`.
@@ -91,7 +91,7 @@ FORUM_R2_PUBLIC_URL=https://litang.projectconfucius.id
 
 - [x] **Step 3: Sanity check — no source files reference R2 yet**
 
-Run: `pnpm exec tsc --noEmit`
+Run: `pnpm typecheck`
 Expected: PASS (no R2 imports anywhere yet — this is just to confirm the dep install didn't break anything).
 
 - [x] **Step 4: Commit**
@@ -1119,7 +1119,7 @@ Co-Authored-By: Claude Opus 4.7 <noreply@anthropic.com>"
 - Modify: `hooks/useSelectFile.tsx`
 - Modify (if it asserts the hook's return shape): `__tests__/hooks/useSelectFile.test.tsx`
 
-- [ ] **Step 1: Add `selectedBlob` to `hooks/useSelectFile.tsx`**
+- [x] **Step 1: Add `selectedBlob` to `hooks/useSelectFile.tsx`**
 
 Replace the body of the existing `onload` handler so it produces **both** a data URL (existing preview behavior) and a JPEG `Blob`:
 
@@ -1165,7 +1165,7 @@ return {
 
 (The setter wrapper clears the blob whenever the data URL is cleared, so `setSelectedFile("")` in `closeModal` correctly resets both.)
 
-- [ ] **Step 2: If the existing useSelectFile test asserts the return shape, extend it**
+- [x] **Step 2: If the existing useSelectFile test asserts the return shape, extend it**
 
 Run: `pnpm test __tests__/hooks/useSelectFile.test.tsx`
 
@@ -1176,12 +1176,12 @@ If it passes unchanged, skip the edit. If it fails because of the new return key
 expect(result.current.selectedBlob).toBeUndefined();
 ```
 
-- [ ] **Step 3: Green gate the hook**
+- [x] **Step 3: Green gate the hook**
 
-Run: `pnpm test __tests__/hooks/useSelectFile.test.tsx; pnpm exec tsc --noEmit`
+Run: `pnpm test __tests__/hooks/useSelectFile.test.tsx; pnpm typecheck`
 Expected: both PASS.
 
-- [ ] **Step 4: Commit**
+- [x] **Step 4: Commit**
 
 ```bash
 git add hooks/useSelectFile.tsx __tests__/hooks/useSelectFile.test.tsx
@@ -1471,7 +1471,7 @@ const onCreate = handleSubmit(async (data) => {
 
 - [ ] **Step 3: Green gate**
 
-Run: `pnpm exec tsc --noEmit; pnpm test`
+Run: `pnpm typecheck; pnpm test`
 Expected: PASS.
 
 - [ ] **Step 4: Commit**
@@ -1548,7 +1548,7 @@ const onUpdateProfile = async (data: EditProfileInput) => {
 
 - [ ] **Step 3: Green gate**
 
-Run: `pnpm exec tsc --noEmit; pnpm test`
+Run: `pnpm typecheck; pnpm test`
 Expected: PASS.
 
 - [ ] **Step 4: Commit**
@@ -1637,7 +1637,7 @@ const handleSaveButtonClick = async () => {
 
 - [ ] **Step 3: Green gate**
 
-Run: `pnpm exec tsc --noEmit; pnpm test`
+Run: `pnpm typecheck; pnpm test`
 Expected: PASS.
 
 - [ ] **Step 4: Commit**
@@ -1771,7 +1771,7 @@ export const deleteCommunityImage = async (communityId: string) => {
 
 - [ ] **Step 5: Green gate**
 
-Run: `pnpm exec tsc --noEmit; pnpm test`
+Run: `pnpm typecheck; pnpm test`
 Expected: PASS. (Phase A tests for `deletePost` etc. were minimal — if any existing test mocks `db.query.posts.findFirst` not being called, update it; otherwise everything passes.)
 
 - [ ] **Step 6: Commit**
@@ -1825,7 +1825,7 @@ Expected: zero matches. Any survivor (likely in `hooks/community/useCommunityIma
 
 - [ ] **Step 5: Green gate**
 
-Run: `pnpm exec tsc --noEmit; pnpm test; pnpm lint`
+Run: `pnpm typecheck; pnpm test; pnpm lint`
 Expected: PASS.
 
 - [ ] **Step 6: Commit**
@@ -1869,7 +1869,7 @@ never sees the R2 credentials.
 
 - [ ] **Step 2: Full green gate**
 
-Run: `pnpm test; pnpm exec tsc --noEmit; pnpm lint; pnpm build`
+Run: `pnpm test; pnpm typecheck; pnpm lint; pnpm build`
 Expected: all PASS.
 
 - [ ] **Step 3: No-firebase grep (sanity check)**

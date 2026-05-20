@@ -10,6 +10,7 @@ import useCustomToast from "./useCustomToast";
  */
 const useSelectFile = (maxHeight: number, maxWidth: number) => {
   const [selectedFile, setSelectedFile] = useState<string>();
+  const [selectedBlob, setSelectedBlob] = useState<Blob | undefined>();
   const showToast = useCustomToast();
 
   const onSelectFile = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -57,15 +58,27 @@ const useSelectFile = (maxHeight: number, maxWidth: number) => {
         canvas.width = image.width;
         canvas.height = image.height;
         ctx?.drawImage(image, 0, 0, image.width, image.height);
-        const resizedImage = canvas.toDataURL("image/jpeg", 1.0);
 
-        setSelectedFile(resizedImage); // set the selected file
+        const resizedImage = canvas.toDataURL("image/jpeg", 1.0);
+        setSelectedFile(resizedImage);
+
+        canvas.toBlob(
+          (blob) => {
+            if (blob) setSelectedBlob(blob);
+          },
+          "image/jpeg",
+          1.0,
+        );
       };
     }
   };
   return {
     selectedFile,
-    setSelectedFile,
+    selectedBlob,
+    setSelectedFile: (s: string | undefined) => {
+      setSelectedFile(s);
+      if (!s) setSelectedBlob(undefined);
+    },
     onSelectFile,
   };
 };
