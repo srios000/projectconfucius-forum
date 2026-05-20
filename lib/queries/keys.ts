@@ -1,15 +1,17 @@
-export type FeedArgs = {
+type FeedScope = {
     communityId?: string;
     communityIds?: string[];
     isGenericHome?: boolean;
 };
 
+
 export const keys = {
     posts: {
         all: ["posts"] as const,
-        feed: (a: FeedArgs) => ["posts", "feed", a] as const,
+        feed: (args: { scope: FeedScope; cursor: unknown }) =>
+            ["posts", "feed", args] as const,
         detail: (id: string) => ["posts", "detail", id] as const,
-        votes: (userId: string) => ["posts", "votes", userId] as const,
+        votes: (communityId: string) => ["posts", "votes", communityId] as const,
         saved: (userId: string) => ["posts", "saved", userId] as const,
     },
     community: {

@@ -182,7 +182,7 @@ git commit -m "test: add renderWithProviders helper with QueryClient + Jotai"
 
 Today `usePostsFeed` exposes `{ loading, fetchPosts, noMorePosts }` and writes accumulated `posts: Post[]` into `postStateAtom.posts`. The new shape splits responsibilities: the **query** holds the latest *page* keyed by cursor + scope; the **shell** keeps the legacy `fetchPosts` API by accumulating pages in component-local `useState` (per spec §12) and mirroring the accumulated array into `postStateAtom.posts` (transitional — the atom field dies in Task 15).
 
-- [ ] **Step 1: Write the failing test**
+- [x] **Step 1: Write the failing test**
 
 Create `__tests__/lib/queries/posts/use-posts-feed.test.ts`:
 
@@ -237,7 +237,7 @@ describe("usePostsFeedQuery", () => {
 
 Note: the wrapper pattern above keeps the test using the helper; if the project already has a `wrapper` accessor on `renderWithProviders`, adapt accordingly. The two assertions that matter are (a) `data.posts[0].id === "p1"` and (b) the cache holds an entry under the cursor-keyed key.
 
-- [ ] **Step 2: Run test to confirm it fails**
+- [x] **Step 2: Run test to confirm it fails**
 
 ```bash
 pnpm test __tests__/lib/queries/posts/use-posts-feed.test.ts
@@ -245,7 +245,7 @@ pnpm test __tests__/lib/queries/posts/use-posts-feed.test.ts
 
 Expected: FAIL — `Cannot find module '@/lib/queries/posts/use-posts-feed'`.
 
-- [ ] **Step 3: Update `lib/queries/keys.ts` to support paged feed key**
+- [x] **Step 3: Update `lib/queries/keys.ts` to support paged feed key**
 
 Open `lib/queries/keys.ts`. The `keys.posts.feed` factory must accept `{ scope, cursor }` so each page has its own cache slot. Replace the `feed` entry:
 
@@ -271,7 +271,7 @@ export const keys = {
 
 If `keys.posts.feed`'s old signature was different, update `__tests__/lib/queries/keys.test.ts` accordingly so its existing assertions still hold.
 
-- [ ] **Step 4: Write the query primitive**
+- [x] **Step 4: Write the query primitive**
 
 Create `lib/queries/posts/use-posts-feed.ts`:
 
@@ -315,7 +315,7 @@ export function usePostsFeedQuery({
 }
 ```
 
-- [ ] **Step 5: Run test to verify it passes**
+- [x] **Step 5: Run test to verify it passes**
 
 ```bash
 pnpm test __tests__/lib/queries/posts/use-posts-feed.test.ts
@@ -323,7 +323,7 @@ pnpm test __tests__/lib/queries/posts/use-posts-feed.test.ts
 
 Expected: PASS.
 
-- [ ] **Step 6: Rewrite the legacy shell**
+- [x] **Step 6: Rewrite the legacy shell**
 
 Replace `hooks/posts/usePostsFeed.ts` entirely with the shell — same exported call surface as before:
 
@@ -439,7 +439,7 @@ export default usePostsFeed;
 
 Note: this shell still uses `useEffect` to **reset paging state on scope change** — that's UI state, not a server fetch, and `react-hooks/set-state-in-effect` does not flag it (it's resetting client state in response to a prop change). The `// eslint-disable-next-line react-hooks/set-state-in-effect -- ... TanStack Query migration tracked separately` suppression that previously sat above this block **is removed**.
 
-- [ ] **Step 7: Verify lint suppression removal + types**
+- [x] **Step 7: Verify lint suppression removal + types**
 
 ```bash
 pnpm typecheck

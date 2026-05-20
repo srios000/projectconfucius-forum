@@ -3,8 +3,15 @@ import { keys } from "@/lib/queries/keys";
 
 describe("queryKey factory", () => {
     it("posts.feed produces stable tuple with args", () => {
-        const a = keys.posts.feed({ communityId: "c1", isGenericHome: false });
-        const b = keys.posts.feed({ communityId: "c1", isGenericHome: false });
+        const a = keys.posts.feed({
+            scope: { communityId: "c1", isGenericHome: false },
+            cursor: null
+        });
+        const b = keys.posts.feed({
+            scope: { communityId: "c1", isGenericHome: false },
+            cursor: null
+        });
+
         expect(a).toEqual(b);
         expect(a[0]).toBe("posts");
         expect(a[1]).toBe("feed");
