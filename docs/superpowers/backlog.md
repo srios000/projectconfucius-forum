@@ -30,3 +30,17 @@ spec but worth doing later. Each entry: what, why deferred, originating spec.
 - **Why deferred:** Phase C preserved the current hook API to keep the
   consumer diff minimal; `useInfiniteQuery` would touch every call site.
 - **From:** [Phase C spec §12](specs/2026-05-20-forum-phase-c-tanstack-query-design.md)
+
+## Community cover image (banner)
+- **What:** add a wide rectangular cover/banner image to communities,
+  alongside the existing circular logo. Likely surfaces: community header
+  on `/community/[id]`, community settings modal for upload/replace,
+  community card on discovery. Storage via existing Phase B R2 plumbing
+  (presign + confirm + cleanup); new key shape under
+  `community/{id}/cover-{ts}.jpg`. Schema change adds
+  `imageURLBanner` (or similar) to `community` table.
+- **Why deferred:** new feature, not part of the migration roadmap. Owns
+  its own spec → plan → green gate. Sequencing-wise, easiest after Phase C
+  lands so mutations slot cleanly into the new TanStack invalidation map
+  (`keys.community.detail(id)`).
+- **From:** ad-hoc 2026-05-20
