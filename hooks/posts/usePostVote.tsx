@@ -18,6 +18,14 @@ type UsePostVoteOpts = {
   ) => void;
 };
 
+/**
+ * A custom hook that manages the voting logic for posts.
+ * It handles permission checks for restricted communities, processes upvotes and downvotes,
+ * and synchronizes the local post state with the backend voting results.
+ * @param postStateValue - The current state of posts and their associated votes.
+ * @param setPostStateValue - A state setter function to update the global post state.
+ * @returns An object containing functions for voting, loading votes, and fetching post data.
+ */
 const usePostVote = ({
   posts,
   setPosts,
