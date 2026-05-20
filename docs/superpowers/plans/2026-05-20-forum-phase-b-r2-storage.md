@@ -31,11 +31,11 @@
 - `app/api/upload/community-image/confirm/route.ts`
 - `app/api/upload/profile-image/presign/route.ts`
 - `app/api/upload/profile-image/confirm/route.ts`
-- `tests/storage/r2-forum.test.ts`
-- `tests/api/upload-presign.test.ts`
-- `tests/api/upload-confirm.test.ts`
-- `tests/upload/uploadImage.test.ts`
-- `tests/auth/requireModerator.test.ts`
+- `__tests__/storage/r2-forum.test.ts`
+- `__tests__/api/upload-presign.test.ts`
+- `__tests__/api/upload-confirm.test.ts`
+- `__tests__/upload/uploadImage.test.ts`
+- `__tests__/auth/requireModerator.test.ts`
 
 **Modified:**
 - `hooks/useSelectFile.tsx` — add `selectedBlob` (Blob via `canvas.toBlob`)
@@ -109,9 +109,9 @@ Co-Authored-By: Claude Opus 4.7 <noreply@anthropic.com>"
 
 **Files:**
 - Create: `lib/storage/r2-forum.ts`
-- Test: `tests/storage/r2-forum.test.ts`
+- Test: `__tests__/storage/r2-forum.test.ts`
 
-- [ ] **Step 1: Write failing test `tests/storage/r2-forum.test.ts`**
+- [x] **Step 1: Write failing test `__tests__/storage/r2-forum.test.ts`**
 
 ```ts
 import { describe, it, expect, beforeEach, vi } from "vitest";
@@ -175,12 +175,12 @@ describe("r2-forum public URL round-trip", () => {
 });
 ```
 
-- [ ] **Step 2: Run test — expect FAIL**
+- [x] **Step 2: Run test — expect FAIL**
 
-Run: `pnpm test tests/storage/r2-forum.test.ts`
+Run: `pnpm test __tests__/storage/r2-forum.test.ts`
 Expected: FAIL (module does not exist).
 
-- [ ] **Step 3: Write `lib/storage/r2-forum.ts`**
+- [x] **Step 3: Write `lib/storage/r2-forum.ts`**
 
 ```ts
 import {
@@ -269,12 +269,12 @@ export async function deleteForumObject(key: string): Promise<void> {
 }
 ```
 
-- [ ] **Step 4: Run test — expect PASS**
+- [x] **Step 4: Run test — expect PASS**
 
-Run: `pnpm test tests/storage/r2-forum.test.ts`
+Run: `pnpm test __tests__/storage/r2-forum.test.ts`
 Expected: PASS (all 7).
 
-- [ ] **Step 5: Commit**
+- [x] **Step 5: Commit**
 
 ```bash
 git add lib/storage/r2-forum.ts tests/storage/r2-forum.test.ts
@@ -289,11 +289,11 @@ Co-Authored-By: Claude Opus 4.7 <noreply@anthropic.com>"
 
 **Files:**
 - Create: `lib/auth/requireModerator.ts`
-- Test: `tests/auth/requireModerator.test.ts`
+- Test: `__tests__/auth/requireModerator.test.ts`
 
 The community-image presign and confirm routes both need "is this user a moderator of communityId?". Extract once.
 
-- [ ] **Step 1: Write failing test `tests/auth/requireModerator.test.ts`**
+- [ ] **Step 1: Write failing test `__tests__/auth/requireModerator.test.ts`**
 
 ```ts
 import { describe, it, expect, vi, beforeEach } from "vitest";
@@ -325,7 +325,7 @@ describe("isModerator", () => {
 
 - [ ] **Step 2: Run test — expect FAIL**
 
-Run: `pnpm test tests/auth/requireModerator.test.ts`
+Run: `pnpm test __tests__/auth/requireModerator.test.ts`
 Expected: FAIL (module not found).
 
 - [ ] **Step 3: Write `lib/auth/requireModerator.ts`**
@@ -350,7 +350,7 @@ export async function isModerator(userId: string, communityId: string): Promise<
 
 - [ ] **Step 4: Run test — expect PASS**
 
-Run: `pnpm test tests/auth/requireModerator.test.ts`
+Run: `pnpm test __tests__/auth/requireModerator.test.ts`
 Expected: PASS.
 
 - [ ] **Step 5: Commit**
@@ -368,9 +368,9 @@ Co-Authored-By: Claude Opus 4.7 <noreply@anthropic.com>"
 
 **Files:**
 - Create: `app/api/upload/post-image/presign/route.ts`, `app/api/upload/post-image/confirm/route.ts`
-- Test: `tests/api/upload-presign.test.ts` (post-image suite), `tests/api/upload-confirm.test.ts` (post-image suite)
+- Test: `__tests__/api/upload-presign.test.ts` (post-image suite), `__tests__/api/upload-confirm.test.ts` (post-image suite)
 
-- [ ] **Step 1: Write failing test for presign (post-image suite) — `tests/api/upload-presign.test.ts`**
+- [ ] **Step 1: Write failing test for presign (post-image suite) — `__tests__/api/upload-presign.test.ts`**
 
 ```ts
 import { describe, it, expect, vi, beforeEach } from "vitest";
@@ -436,7 +436,7 @@ describe("POST /api/upload/post-image/presign", () => {
 
 - [ ] **Step 2: Run test — expect FAIL**
 
-Run: `pnpm test tests/api/upload-presign.test.ts`
+Run: `pnpm test __tests__/api/upload-presign.test.ts`
 Expected: FAIL (route does not exist).
 
 - [ ] **Step 3: Write `app/api/upload/post-image/presign/route.ts`**
@@ -486,10 +486,10 @@ export async function POST(req: NextRequest) {
 
 - [ ] **Step 4: Run test — expect PASS**
 
-Run: `pnpm test tests/api/upload-presign.test.ts`
+Run: `pnpm test __tests__/api/upload-presign.test.ts`
 Expected: PASS (3 in the post-image suite).
 
-- [ ] **Step 5: Write failing test for confirm (post-image suite) — `tests/api/upload-confirm.test.ts`**
+- [ ] **Step 5: Write failing test for confirm (post-image suite) — `__tests__/api/upload-confirm.test.ts`**
 
 ```ts
 import { describe, it, expect, vi, beforeEach } from "vitest";
@@ -551,7 +551,7 @@ describe("POST /api/upload/post-image/confirm", () => {
 
 - [ ] **Step 6: Run test — expect FAIL**
 
-Run: `pnpm test tests/api/upload-confirm.test.ts`
+Run: `pnpm test __tests__/api/upload-confirm.test.ts`
 Expected: FAIL (route does not exist).
 
 - [ ] **Step 7: Write `app/api/upload/post-image/confirm/route.ts`**
@@ -583,7 +583,7 @@ export async function POST(req: NextRequest) {
 
 - [ ] **Step 8: Run test — expect PASS**
 
-Run: `pnpm test tests/api/upload-confirm.test.ts`
+Run: `pnpm test __tests__/api/upload-confirm.test.ts`
 Expected: PASS (3 in the post-image suite).
 
 - [ ] **Step 9: Commit**
@@ -601,11 +601,11 @@ Co-Authored-By: Claude Opus 4.7 <noreply@anthropic.com>"
 
 **Files:**
 - Create: `app/api/upload/community-image/presign/route.ts`, `app/api/upload/community-image/confirm/route.ts`
-- Modify: `tests/api/upload-presign.test.ts` (add community-image suite), `tests/api/upload-confirm.test.ts` (add community-image suite)
+- Modify: `__tests__/api/upload-presign.test.ts` (add community-image suite), `__tests__/api/upload-confirm.test.ts` (add community-image suite)
 
 The community-image confirm route is the **first** one that writes to the DB. It must (a) verify the caller is a moderator and (b) read the old `communities.imageUrl` to delete the old key after the update commits.
 
-- [ ] **Step 1: Append community-image suite to `tests/api/upload-presign.test.ts`**
+- [ ] **Step 1: Append community-image suite to `__tests__/api/upload-presign.test.ts`**
 
 After the post-image `describe` block, add:
 
@@ -662,7 +662,7 @@ describe("POST /api/upload/community-image/presign", () => {
 
 - [ ] **Step 2: Run test — expect FAIL**
 
-Run: `pnpm test tests/api/upload-presign.test.ts`
+Run: `pnpm test __tests__/api/upload-presign.test.ts`
 Expected: FAIL on the new community-image suite (route not found).
 
 - [ ] **Step 3: Write `app/api/upload/community-image/presign/route.ts`**
@@ -723,10 +723,10 @@ export async function POST(req: NextRequest) {
 
 - [ ] **Step 4: Run test — expect PASS**
 
-Run: `pnpm test tests/api/upload-presign.test.ts`
+Run: `pnpm test __tests__/api/upload-presign.test.ts`
 Expected: PASS (community-image suite green, post-image still green).
 
-- [ ] **Step 5: Append community-image suite to `tests/api/upload-confirm.test.ts`**
+- [ ] **Step 5: Append community-image suite to `__tests__/api/upload-confirm.test.ts`**
 
 ```ts
 const isModerator = vi.fn();
@@ -813,7 +813,7 @@ describe("POST /api/upload/community-image/confirm", () => {
 
 - [ ] **Step 6: Run test — expect FAIL**
 
-Run: `pnpm test tests/api/upload-confirm.test.ts`
+Run: `pnpm test __tests__/api/upload-confirm.test.ts`
 Expected: FAIL on the new community-image suite.
 
 - [ ] **Step 7: Write `app/api/upload/community-image/confirm/route.ts`**
@@ -878,7 +878,7 @@ export async function POST(req: NextRequest) {
 
 - [ ] **Step 8: Run test — expect PASS**
 
-Run: `pnpm test tests/api/upload-confirm.test.ts`
+Run: `pnpm test __tests__/api/upload-confirm.test.ts`
 Expected: PASS (community-image suite green, post-image still green).
 
 - [ ] **Step 9: Commit**
@@ -896,11 +896,11 @@ Co-Authored-By: Claude Opus 4.7 <noreply@anthropic.com>"
 
 **Files:**
 - Create: `app/api/upload/profile-image/presign/route.ts`, `app/api/upload/profile-image/confirm/route.ts`
-- Modify: `tests/api/upload-presign.test.ts`, `tests/api/upload-confirm.test.ts` (profile-image suites)
+- Modify: `__tests__/api/upload-presign.test.ts`, `__tests__/api/upload-confirm.test.ts` (profile-image suites)
 
 `userId` is taken from the session (never from the body). Any caller-supplied `userId` field is **ignored**.
 
-- [ ] **Step 1: Append profile-image suite to `tests/api/upload-presign.test.ts`**
+- [ ] **Step 1: Append profile-image suite to `__tests__/api/upload-presign.test.ts`**
 
 ```ts
 describe("POST /api/upload/profile-image/presign", () => {
@@ -937,7 +937,7 @@ describe("POST /api/upload/profile-image/presign", () => {
 
 - [ ] **Step 2: Run test — expect FAIL**
 
-Run: `pnpm test tests/api/upload-presign.test.ts`
+Run: `pnpm test __tests__/api/upload-presign.test.ts`
 Expected: FAIL on profile-image suite.
 
 - [ ] **Step 3: Write `app/api/upload/profile-image/presign/route.ts`**
@@ -988,10 +988,10 @@ export async function POST(req: NextRequest) {
 
 - [ ] **Step 4: Run test — expect PASS**
 
-Run: `pnpm test tests/api/upload-presign.test.ts`
+Run: `pnpm test __tests__/api/upload-presign.test.ts`
 Expected: PASS (profile-image suite green; previous suites still green).
 
-- [ ] **Step 5: Append profile-image suite to `tests/api/upload-confirm.test.ts`**
+- [ ] **Step 5: Append profile-image suite to `__tests__/api/upload-confirm.test.ts`**
 
 ```ts
 const usersFindFirst = vi.fn();
@@ -1039,7 +1039,7 @@ describe("POST /api/upload/profile-image/confirm", () => {
 
 - [ ] **Step 6: Run test — expect FAIL**
 
-Run: `pnpm test tests/api/upload-confirm.test.ts`
+Run: `pnpm test __tests__/api/upload-confirm.test.ts`
 Expected: FAIL on profile-image suite.
 
 - [ ] **Step 7: Write `app/api/upload/profile-image/confirm/route.ts`**
@@ -1099,7 +1099,7 @@ export async function POST(req: NextRequest) {
 
 - [ ] **Step 8: Run test — expect PASS**
 
-Run: `pnpm test tests/api/upload-confirm.test.ts`
+Run: `pnpm test __tests__/api/upload-confirm.test.ts`
 Expected: PASS (profile-image suite green; previous suites still green).
 
 - [ ] **Step 9: Commit**
@@ -1196,9 +1196,9 @@ Co-Authored-By: Claude Opus 4.7 <noreply@anthropic.com>"
 
 **Files:**
 - Create: `lib/upload/uploadImage.ts`
-- Test: `tests/upload/uploadImage.test.ts`
+- Test: `__tests__/upload/uploadImage.test.ts`
 
-- [ ] **Step 1: Write failing test `tests/upload/uploadImage.test.ts`**
+- [ ] **Step 1: Write failing test `__tests__/upload/uploadImage.test.ts`**
 
 ```ts
 import { describe, it, expect, vi, beforeEach } from "vitest";
@@ -1300,7 +1300,7 @@ describe("uploadImage", () => {
 
 - [ ] **Step 2: Run test — expect FAIL**
 
-Run: `pnpm test tests/upload/uploadImage.test.ts`
+Run: `pnpm test __tests__/upload/uploadImage.test.ts`
 Expected: FAIL (module not found).
 
 - [ ] **Step 3: Write `lib/upload/uploadImage.ts`**
@@ -1366,7 +1366,7 @@ export async function uploadImage(
 
 - [ ] **Step 4: Run test — expect PASS**
 
-Run: `pnpm test tests/upload/uploadImage.test.ts`
+Run: `pnpm test __tests__/upload/uploadImage.test.ts`
 Expected: PASS (all 4).
 
 - [ ] **Step 5: Commit**
