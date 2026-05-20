@@ -1,9 +1,11 @@
+"use client";
+
 import { communityStateAtom } from "@/atoms/communitiesAtom";
 import { useSession } from "@/lib/auth-client";
 import { useSetAtom } from "jotai";
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import useCustomToast from "../useCustomToast";
-import { getCommunitySnippetsAction } from "@/app/actions/community";
+import { useCommunitySnippetsQuery } from "@/lib/queries/community/use-community-snippets";
 
 /**
  * A custom hook that fetches and manages the current user's community membership snippets.
@@ -14,31 +16,9 @@ export const useCommunitySnippets = () => {
   const { data: session } = useSession();
   const user = session?.user ?? null;
   const setCommunityStateValue = useSetAtom(communityStateAtom);
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState("");
   const showToast = useCustomToast();
 
-  const getMySnippets = async () => {
-    setLoading(true);
-    try {
-      const snippets = await getCommunitySnippetsAction();
-      setCommunityStateValue((prev) => ({
-        ...prev,
-        mySnippets: snippets,
-        snippetFetched: true,
-      }));
-    } catch (error: any) {
-      console.log("Error: getMySnippets", error);
-      setError(error.message);
-      showToast({
-        title: "Subscriptions not Found",
-        description: "There was an error fetching your subscriptions",
-        status: "error",
-      });
-    } finally {
-      setLoading(false);
-    }
-  };
+  const query = useCommunitySnippetsQuery();
 
   useEffect(() => {
     if (!user) {
@@ -49,10 +29,24 @@ export const useCommunitySnippets = () => {
       }));
       return;
     }
-    // eslint-disable-next-line react-hooks/set-state-in-effect -- legacy on-auth-change fetch; TanStack Query migration tracked separately
-    getMySnippets();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [user]);
+    if (query.data) {
+      setCommunityStateValue((prev) => ({
+        ...prev,
+        mySnippets: query.data,
+        snippetFetched: true,
+      }));
+    }
+    if (query.error) {
+      showToast({
+        title: "Subscriptions not Found",
+        description: "There was an error fetching your subscriptions",
+        status: "error",
+      });
+    }
+  }, [user, query.data, query.error, setCommunityStateValue, showToast]);
 
-  return { loading, error };
+  return {
+    loading: query.isLoading,
+    error: query.error ? String(query.error) : "",
+  };
 };

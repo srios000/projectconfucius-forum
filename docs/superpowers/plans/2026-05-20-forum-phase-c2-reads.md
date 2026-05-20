@@ -943,7 +943,7 @@ git commit -m "feat(queries): useCommunitiesQuery + delegating shell"
 
 There's no current client read hook for community-by-id (server components fetch and pass as prop). C2 adds the query so post-mutation invalidation in C3 can refresh community-detail consumers without a route reload.
 
-- [ ] **Step 1: Write the failing test**
+- [x] **Step 1: Write the failing test**
 
 Create `__tests__/lib/queries/community/use-community-data.test.ts`:
 
@@ -983,7 +983,7 @@ describe("useCommunityDataQuery", () => {
 
 If `renderWithProviders` only returns `render` output, adapt the wrapper: re-export a `Providers` component from the helper for use with `renderHook`'s `wrapper` option. Alternatively, simplify by calling `useCommunityDataQuery` inside a component rendered with `renderWithProviders` and asserting via DOM.
 
-- [ ] **Step 2: Run test to confirm it fails**
+- [x] **Step 2: Run test to confirm it fails**
 
 ```bash
 pnpm test __tests__/lib/queries/community/use-community-data.test.ts
@@ -991,7 +991,7 @@ pnpm test __tests__/lib/queries/community/use-community-data.test.ts
 
 Expected: FAIL — module not found.
 
-- [ ] **Step 3: Write the primitive**
+- [x] **Step 3: Write the primitive**
 
 Create `lib/queries/community/use-community-data.ts`:
 
@@ -1018,7 +1018,7 @@ export function useCommunityDataQuery({
 }
 ```
 
-- [ ] **Step 4: Run test to verify it passes**
+- [x] **Step 4: Run test to verify it passes**
 
 ```bash
 pnpm test __tests__/lib/queries/community/use-community-data.test.ts
@@ -1026,7 +1026,7 @@ pnpm test __tests__/lib/queries/community/use-community-data.test.ts
 
 Expected: PASS.
 
-- [ ] **Step 5: Commit**
+- [x] **Step 5: Commit**
 
 ```bash
 git add lib/queries/community/use-community-data.ts __tests__/lib/queries/community/use-community-data.test.ts
@@ -1041,7 +1041,7 @@ git commit -m "feat(queries): useCommunityDataQuery"
 - Create: `lib/queries/community/use-community-snippets.ts`
 - Modify (rewrite): `hooks/community/useCommunitySnippets.ts`
 
-- [ ] **Step 1: Write the primitive**
+- [x] **Step 1: Write the primitive**
 
 Create `lib/queries/community/use-community-snippets.ts`:
 
@@ -1064,7 +1064,7 @@ export function useCommunitySnippetsQuery() {
 }
 ```
 
-- [ ] **Step 2: Rewrite the shell**
+- [x] **Step 2: Rewrite the shell**
 
 Replace `hooks/community/useCommunitySnippets.ts`:
 
@@ -1120,7 +1120,7 @@ export const useCommunitySnippets = () => {
 
 The `// eslint-disable-next-line react-hooks/set-state-in-effect -- ... TanStack Query migration tracked separately` is removed. The remaining `useEffect` only mirrors auth state + query result into the dying atom; it carries no suppression because it isn't a fetch.
 
-- [ ] **Step 3: Verify types + smoke**
+- [x] **Step 3: Verify types + smoke**
 
 ```bash
 pnpm typecheck
@@ -1130,7 +1130,7 @@ Expected: clean.
 
 Smoke: sign in, navigate around — your community-snippet menu should populate.
 
-- [ ] **Step 4: Commit**
+- [x] **Step 4: Commit**
 
 ```bash
 git add lib/queries/community/use-community-snippets.ts hooks/community/useCommunitySnippets.ts
