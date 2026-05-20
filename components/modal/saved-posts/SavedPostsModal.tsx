@@ -1,4 +1,4 @@
-import { savedPostStateAtom } from "@/atoms/savedPostsAtom";
+import { uiAtom } from "@/atoms/uiAtom";
 import useSavedPosts from "@/hooks/posts/useSavedPosts";
 import {
   DialogBackdrop,
@@ -21,33 +21,20 @@ import React from "react";
 import { LuTrash } from "react-icons/lu";
 import { FaReddit } from "react-icons/fa";
 
-/**
- * Modal listing saved posts with quick navigation and remove controls.
- * Relies on saved post atom for visibility and content.
- * Allows users to view their saved posts and navigate to them or their communities.
- * @returns Dialog with list items linking to posts and communities.
- */
 const SavedPostsModal: React.FC = () => {
-  const [savedPostState, setSavedPostState] = useAtom(savedPostStateAtom);
-  const { onRemoveSavedPost } = useSavedPosts();
+  const [ui, setUi] = useAtom(uiAtom);
+  const { savedPosts, onRemoveSavedPost } = useSavedPosts();
+  const isOpen = ui.savedPostsModalOpen;
 
-  /**
-   * Closes the modal by toggling atom state.
-   */
   const handleClose = () => {
-    setSavedPostState((prev) => ({ ...prev, isOpen: false }));
+    setUi((prev) => ({ ...prev, savedPostsModalOpen: false }));
   };
 
-  /**
-   * Modal listing saved posts with quick navigation and remove controls.
-   * Relies on saved post atom for visibility and content.
-   * @returns Dialog with list items linking to posts and communities.
-   */
   return (
     <DialogRoot
-      open={savedPostState.isOpen}
+      open={isOpen}
       onOpenChange={(e: { open: boolean }) =>
-        setSavedPostState((prev) => ({ ...prev, isOpen: e.open }))
+        setUi((prev) => ({ ...prev, savedPostsModalOpen: e.open }))
       }
       size="lg"
     >
@@ -60,12 +47,12 @@ const SavedPostsModal: React.FC = () => {
           <DialogCloseTrigger />
           <DialogBody pb={6} rounded={"xl"}>
             <Stack gap={4}>
-              {savedPostState.savedPosts.length === 0 ? (
+              {savedPosts.length === 0 ? (
                 <Text color="gray.500" textAlign="center">
                   No saved posts yet.
                 </Text>
               ) : (
-                savedPostState.savedPosts.map((item) => (
+                savedPosts.map((item) => (
                   <Flex
                     key={item.id}
                     p={3}
