@@ -1076,7 +1076,7 @@ git commit -m "refactor(posts): route useSavedPosts mutations through useSave/Un
 
 Run the full posts-PR green gate. Fix any breakage before merging the branch.
 
-- [ ] **Step 1: Run tests**
+- [x] **Step 1: Run tests**
 
 ```bash
 pnpm test
@@ -1084,7 +1084,7 @@ pnpm test
 
 Expected: all green, including the four new mutation tests under `__tests__/lib/queries/posts/`.
 
-- [ ] **Step 2: Typecheck**
+- [x] **Step 2: Typecheck**
 
 ```bash
 pnpm typecheck
@@ -1092,7 +1092,7 @@ pnpm typecheck
 
 Expected: clean.
 
-- [ ] **Step 3: Lint**
+- [x] **Step 3: Lint**
 
 ```bash
 pnpm eslint
@@ -1100,7 +1100,7 @@ pnpm eslint
 
 Expected: clean. Confirm that no new `// eslint-disable-next-line react-hooks/set-state-in-effect` suppressions were added; the previous suppressions in the four touched shells (if any) are unchanged or removed.
 
-- [ ] **Step 4: Build**
+- [x] **Step 4: Build**
 
 ```bash
 pnpm build
