@@ -1,15 +1,13 @@
-/* eslint-disable react-hooks/exhaustive-deps */
 import { uiAtom } from "@/atoms/uiAtom";
 import { useSession } from "@/lib/auth-client";
 import useCustomToast from "../useCustomToast";
-import React, { useState } from "react";
+import React from "react";
 import { Post, PostVote } from "@/types/post";
-import { voteAction, getPostVotesAction } from "@/app/actions/posts";
+import { getPostVotesAction } from "@/app/actions/posts";
 import { getPostAction, getCommunityDataAction } from "@/app/actions/reads";
 import useCommunityState from "../community/useCommunityState";
 import { useSetAtom } from "jotai";
-import { useQueryClient } from "@tanstack/react-query";
-import { keys } from "@/lib/queries/keys";
+import { usePostVoteMutation } from "@/lib/queries/posts/use-post-vote";
 
 type UsePostVoteOpts = {
   posts: Post[];
@@ -31,7 +29,7 @@ const usePostVote = ({
   const showToast = useCustomToast();
   const { communityStateValue } = useCommunityState();
   const setUi = useSetAtom(uiAtom);
-  const queryClient = useQueryClient();
+  const voteMutation = usePostVoteMutation();
 
   const onVote = async (
     event: React.MouseEvent<SVGElement, MouseEvent>,
@@ -81,12 +79,13 @@ const usePostVote = ({
     try {
       const existingVote = postVotes.find((v) => v.postId === post.id);
 
-      const { voteChange, newVote, voteIdToDelete } = await voteAction(
-        post,
-        vote,
-        communityId,
-        existingVote,
-      );
+      const { voteChange, newVote, voteIdToDelete } =
+        await voteMutation.mutateAsync({
+          post,
+          vote,
+          communityId,
+          existing: existingVote,
+        });
 
       const updatedPost = { ...post, voteStatus: post.voteStatus + voteChange };
 
@@ -114,8 +113,6 @@ const usePostVote = ({
           ? { ...prev, selectedPost: updatedPost }
           : prev,
       );
-
-      void queryClient.invalidateQueries({ queryKey: keys.posts.detail(post.id!) });
     } catch (error) {
       console.log("Error: onVote", error);
       showToast({
@@ -155,7 +152,6 @@ const usePostVote = ({
     }
   };
 
-  // posts/setPosts are part of the API; reference them so eslint won't strip when refactored
   void posts;
 
   return { onVote, getPostVotes, getPost };

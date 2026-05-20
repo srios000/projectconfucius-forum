@@ -187,7 +187,7 @@ git commit -m "feat(queries): usePostVoteMutation with detail/feed/votes invalid
 
 The shell keeps its exported surface (`onVote`, `getPostVotes`, `getPost`) and caller-managed state (`posts/setPosts`, `postVotes/setPostVotes`). It delegates the action call + invalidations to the mutation; it still applies the returned `{ voteChange, newVote, voteIdToDelete }` to caller-supplied state. `useQueryClient` + manual `invalidateQueries(detail)` go away.
 
-- [ ] **Step 1: Replace the shell file**
+- [x] **Step 1: Replace the shell file**
 
 Replace `hooks/posts/usePostVote.tsx`:
 
@@ -355,7 +355,7 @@ const usePostVote = ({
 export default usePostVote;
 ```
 
-- [ ] **Step 2: Verify types**
+- [x] **Step 2: Verify types**
 
 ```bash
 pnpm typecheck
@@ -363,11 +363,11 @@ pnpm typecheck
 
 Expected: clean.
 
-- [ ] **Step 3: Smoke in browser**
+- [x] **Step 3: Smoke in browser**
 
 Sign in, open a community feed, upvote and downvote a post. Expect: vote count + colour update without page refresh; toggling existing vote works; no console errors. Open React Query Devtools (dev only) and confirm that on vote, `posts.detail(<id>)`, `posts.votes(<communityId>)`, and the `posts.feed.*` entries flip to "fetching/stale".
 
-- [ ] **Step 4: Commit**
+- [x] **Step 4: Commit**
 
 ```bash
 git add hooks/posts/usePostVote.tsx
