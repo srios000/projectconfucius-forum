@@ -293,7 +293,7 @@ Co-Authored-By: Claude Opus 4.7 <noreply@anthropic.com>"
 
 The community-image presign and confirm routes both need "is this user a moderator of communityId?". Extract once.
 
-- [ ] **Step 1: Write failing test `__tests__/auth/requireModerator.test.ts`**
+- [x] **Step 1: Write failing test `__tests__/auth/requireModerator.test.ts`**
 
 ```ts
 import { describe, it, expect, vi, beforeEach } from "vitest";
@@ -323,12 +323,12 @@ describe("isModerator", () => {
 });
 ```
 
-- [ ] **Step 2: Run test — expect FAIL**
+- [x] **Step 2: Run test — expect FAIL**
 
 Run: `pnpm test __tests__/auth/requireModerator.test.ts`
 Expected: FAIL (module not found).
 
-- [ ] **Step 3: Write `lib/auth/requireModerator.ts`**
+- [x] **Step 3: Write `lib/auth/requireModerator.ts`**
 
 ```ts
 import { db } from "@/lib/db";
@@ -348,12 +348,12 @@ export async function isModerator(userId: string, communityId: string): Promise<
 }
 ```
 
-- [ ] **Step 4: Run test — expect PASS**
+- [x] **Step 4: Run test — expect PASS**
 
 Run: `pnpm test __tests__/auth/requireModerator.test.ts`
 Expected: PASS.
 
-- [ ] **Step 5: Commit**
+- [x] **Step 5: Commit**
 
 ```bash
 git add lib/auth/requireModerator.ts tests/auth/requireModerator.test.ts
