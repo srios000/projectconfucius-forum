@@ -384,7 +384,7 @@ git commit -m "refactor(posts): route usePostVote through usePostVoteMutation"
 
 Wraps `createPostAction`. Invalidates `posts.feed.*` (predicate) on success. The shell still handles `uploadImage` (post image → R2) before the mutation runs, plus router-back and permission checking.
 
-- [ ] **Step 1: Write the failing test**
+- [x] **Step 1: Write the failing test**
 
 Create `__tests__/lib/queries/posts/use-create-post.test.tsx`:
 
@@ -441,7 +441,7 @@ describe("useCreatePostMutation", () => {
 });
 ```
 
-- [ ] **Step 2: Run test to confirm it fails**
+- [x] **Step 2: Run test to confirm it fails**
 
 ```bash
 pnpm test __tests__/lib/queries/posts/use-create-post.test.tsx
@@ -449,7 +449,7 @@ pnpm test __tests__/lib/queries/posts/use-create-post.test.tsx
 
 Expected: FAIL — module not found.
 
-- [ ] **Step 3: Write the primitive**
+- [x] **Step 3: Write the primitive**
 
 Create `lib/queries/posts/use-create-post.ts`:
 
@@ -481,7 +481,7 @@ export function useCreatePostMutation() {
 }
 ```
 
-- [ ] **Step 4: Run test to verify it passes**
+- [x] **Step 4: Run test to verify it passes**
 
 ```bash
 pnpm test __tests__/lib/queries/posts/use-create-post.test.tsx
@@ -489,7 +489,7 @@ pnpm test __tests__/lib/queries/posts/use-create-post.test.tsx
 
 Expected: PASS.
 
-- [ ] **Step 5: Commit**
+- [x] **Step 5: Commit**
 
 ```bash
 git add lib/queries/posts/use-create-post.ts __tests__/lib/queries/posts/use-create-post.test.tsx
