@@ -733,7 +733,7 @@ git commit -m "feat(queries): useSavedPostsQuery + read-side shell"
 
 There's no current hook fetching a single post on the client — `app/community/[communityId]/comments/[pid]/page.tsx` does an SSR fetch and passes the post as a prop. C2 lands the client query so C3 mutations have a target to invalidate and so post-detail refetches don't require a full route reload.
 
-- [ ] **Step 1: Write the primitive**
+- [x] **Step 1: Write the primitive**
 
 Create `lib/queries/posts/use-post.ts`:
 
@@ -759,7 +759,7 @@ export function usePostQuery({
 }
 ```
 
-- [ ] **Step 2: Verify types**
+- [x] **Step 2: Verify types**
 
 ```bash
 pnpm typecheck
@@ -767,7 +767,7 @@ pnpm typecheck
 
 Expected: clean (no consumers yet — wired in Task 13's HydrationBoundary task).
 
-- [ ] **Step 3: Commit**
+- [x] **Step 3: Commit**
 
 ```bash
 git add lib/queries/posts/use-post.ts
