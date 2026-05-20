@@ -1686,7 +1686,7 @@ git commit -m "feat(queries): useCommentsForPostQuery + delegating shell"
 
 The current hook implements a 250ms debounce inline. After C2 the debounce lives in the shell (debounce is UI concern, not server-state concern); the query is plain. Empty-term path: query is disabled.
 
-- [ ] **Step 1: Write the failing test**
+- [x] **Step 1: Write the failing test**
 
 Create `__tests__/lib/queries/search/use-search.test.ts`:
 
@@ -1734,7 +1734,7 @@ describe("useSearchQuery", () => {
 });
 ```
 
-- [ ] **Step 2: Run test to confirm it fails**
+- [x] **Step 2: Run test to confirm it fails**
 
 ```bash
 pnpm test __tests__/lib/queries/search/use-search.test.ts
@@ -1742,7 +1742,7 @@ pnpm test __tests__/lib/queries/search/use-search.test.ts
 
 Expected: FAIL — module not found.
 
-- [ ] **Step 3: Write the primitive**
+- [x] **Step 3: Write the primitive**
 
 Create `lib/queries/search/use-search.ts`:
 
@@ -1770,7 +1770,7 @@ export function useSearchQuery({
 }
 ```
 
-- [ ] **Step 4: Run test to verify it passes**
+- [x] **Step 4: Run test to verify it passes**
 
 ```bash
 pnpm test __tests__/lib/queries/search/use-search.test.ts
@@ -1778,7 +1778,7 @@ pnpm test __tests__/lib/queries/search/use-search.test.ts
 
 Expected: PASS.
 
-- [ ] **Step 5: Rewrite the shell**
+- [x] **Step 5: Rewrite the shell**
 
 Replace `hooks/useSearch.tsx`:
 
@@ -1818,7 +1818,7 @@ export default useSearch;
 
 The `// eslint-disable-next-line react-hooks/set-state-in-effect -- reset on empty-term prop change; TanStack Query migration tracked separately` is removed. The remaining `useEffect` is the debounce timer — it sets *UI* state (the debounced search term), and that's the canonical use of `set-state-in-effect` (no lint suppression needed since it's not a fetch).
 
-- [ ] **Step 6: Verify types + commit**
+- [x] **Step 6: Verify types + commit**
 
 ```bash
 pnpm typecheck
