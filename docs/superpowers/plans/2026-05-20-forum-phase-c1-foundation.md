@@ -32,7 +32,7 @@
 **Files:**
 - Modify: `package.json`
 
-- [ ] **Step 1: Install runtime dependencies**
+- [x] **Step 1: Install runtime dependencies**
 
 Run from `c:/Users/sinta/projects/projectconfucius-forum`:
 
@@ -42,7 +42,7 @@ pnpm add @tanstack/react-query@^5 @tanstack/react-query-devtools@^5
 
 Expected: both packages added to `dependencies` in `package.json` (devtools is published as a runtime dep but only imported in dev-gated code). `pnpm-lock.yaml` updates.
 
-- [ ] **Step 2: Verify install**
+- [x] **Step 2: Verify install**
 
 Run:
 
@@ -52,7 +52,7 @@ pnpm list @tanstack/react-query @tanstack/react-query-devtools
 
 Expected: both listed with v5.x.x version.
 
-- [ ] **Step 3: Verify nothing else broke**
+- [x] **Step 3: Verify nothing else broke**
 
 Run:
 
@@ -62,7 +62,7 @@ pnpm typecheck
 
 Expected: clean exit (no new TS errors — these are pure additions).
 
-- [ ] **Step 4: Commit**
+- [x] **Step 4: Commit**
 
 ```bash
 git add package.json pnpm-lock.yaml
