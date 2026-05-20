@@ -353,7 +353,7 @@ export function Providers({ children }: { children: React.ReactNode }) {
 }
 ```
 
-- [ ] **Step 1: Add QueryProvider import and wrap children**
+- [x] **Step 1: Add QueryProvider import and wrap children**
 
 Edit `app/providers.tsx` to import `QueryProvider` from `@/lib/queries/provider` and wrap the tree. Final file:
 
@@ -397,7 +397,7 @@ export function Providers({ children }: { children: React.ReactNode }) {
 
 Note: ordering rationale — Jotai wraps everything (UI atoms stable across full app); QueryProvider wraps Chakra so any component rendered under Chakra (which is everything) can use TanStack hooks.
 
-- [ ] **Step 2: Typecheck**
+- [x] **Step 2: Typecheck**
 
 Run:
 
@@ -407,7 +407,7 @@ pnpm typecheck
 
 Expected: clean.
 
-- [ ] **Step 3: Lint**
+- [x] **Step 3: Lint**
 
 Run:
 
@@ -417,7 +417,7 @@ pnpm lint
 
 Expected: clean (the existing `set-state-in-effect` suppression on line 22 is unrelated — it stays for now; killed in C4).
 
-- [ ] **Step 4: Commit**
+- [x] **Step 4: Commit**
 
 ```bash
 git add app/providers.tsx
