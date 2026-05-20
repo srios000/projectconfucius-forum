@@ -1147,7 +1147,7 @@ git commit -m "feat(queries): useCommunitySnippetsQuery + mirror shell"
 
 Today the hook exposes `{ members, loading, error, loadMembers }`. Members are fetched on demand (caller invokes `loadMembers(id)`). After C2 the query handles the fetch and the shell exposes the same on-demand surface via a parameterized hook.
 
-- [ ] **Step 1: Write the primitive**
+- [x] **Step 1: Write the primitive**
 
 Create `lib/queries/community/use-community-members.ts`:
 
@@ -1173,7 +1173,7 @@ export function useCommunityMembersQuery({
 }
 ```
 
-- [ ] **Step 2: Rewrite the shell**
+- [x] **Step 2: Rewrite the shell**
 
 Replace `hooks/community/useCommunityMembers.ts`:
 
@@ -1226,7 +1226,7 @@ export default useCommunityMembers;
 
 The hook's public surface is unchanged; the only behavioural difference is that repeat calls for the same `communityId` within `gcTime` hit the cache.
 
-- [ ] **Step 3: Verify types + commit**
+- [x] **Step 3: Verify types + commit**
 
 ```bash
 pnpm typecheck
