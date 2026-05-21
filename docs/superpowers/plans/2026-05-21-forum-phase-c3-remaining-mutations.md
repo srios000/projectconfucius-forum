@@ -2251,7 +2251,7 @@ git commit -m "refactor(community): route useRemoveCommunityMember through TanSt
 
 Two mutations sharing one file. Upload wraps the `uploadImage` helper for `community-image`; Delete wraps `deleteCommunityImageAction`. Both invalidate `keys.community.detail(id)` and `keys.community.snippets(userId)`. Upload returns the new `imageUrl` so the shell can refresh `currentCommunity` for callers reading from `uiAtom`.
 
-- [ ] **Step 1: Write the failing test**
+- [x] **Step 1: Write the failing test**
 
 Create `__tests__/lib/queries/community/use-community-image-mutation.test.tsx`:
 
@@ -2331,7 +2331,7 @@ describe("useDeleteCommunityImageMutation", () => {
 });
 ```
 
-- [ ] **Step 2: Run test to confirm it fails**
+- [x] **Step 2: Run test to confirm it fails**
 
 ```bash
 pnpm test __tests__/lib/queries/community/use-community-image-mutation.test.tsx
@@ -2339,7 +2339,7 @@ pnpm test __tests__/lib/queries/community/use-community-image-mutation.test.tsx
 
 Expected: FAIL — module not found.
 
-- [ ] **Step 3: Write the primitives**
+- [x] **Step 3: Write the primitives**
 
 Create `lib/queries/community/use-community-image-mutation.ts`:
 
@@ -2389,7 +2389,7 @@ export function useDeleteCommunityImageMutation() {
 }
 ```
 
-- [ ] **Step 4: Run test to verify it passes**
+- [x] **Step 4: Run test to verify it passes**
 
 ```bash
 pnpm test __tests__/lib/queries/community/use-community-image-mutation.test.tsx
@@ -2397,7 +2397,7 @@ pnpm test __tests__/lib/queries/community/use-community-image-mutation.test.tsx
 
 Expected: PASS.
 
-- [ ] **Step 5: Commit**
+- [x] **Step 5: Commit**
 
 ```bash
 git add lib/queries/community/use-community-image-mutation.ts __tests__/lib/queries/community/use-community-image-mutation.test.tsx
