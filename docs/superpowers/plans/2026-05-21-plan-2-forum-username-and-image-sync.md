@@ -576,7 +576,7 @@ git commit -m "feat: createPost writes real username (Plan 2)"
 - Modify: `__tests__/lib/comments.test.ts`
 - Modify: `__tests__/lib/queries/comments/use-create-comment-mutation.test.tsx`
 
-- [ ] **Step 1: Edit `types/comment.ts`**
+- [x] **Step 1: Edit `types/comment.ts`**
 
 Find `creatorDisplayText: string;` and change to:
 
@@ -584,7 +584,7 @@ Find `creatorDisplayText: string;` and change to:
 creatorDisplayText: string | null;
 ```
 
-- [ ] **Step 2: Update the failing comment tests**
+- [x] **Step 2: Update the failing comment tests**
 
 In `__tests__/lib/comments.test.ts`, any call shaped `createComment({ id, displayName: "..." }, ...)` becomes:
 
@@ -603,7 +603,7 @@ it("writes null creatorDisplayText when username is null", async () => {
 
 In `__tests__/lib/queries/comments/use-create-comment-mutation.test.tsx`, find the fixture `creatorDisplayText: "u"` (line 13). It already matches `string | null`; no change needed unless TS complains.
 
-- [ ] **Step 3: Run tests, verify failure**
+- [x] **Step 3: Run tests, verify failure**
 
 ```bash
 pnpm test __tests__/lib/comments.test.ts
@@ -611,7 +611,7 @@ pnpm test __tests__/lib/comments.test.ts
 
 Expected: FAIL — signature mismatch.
 
-- [ ] **Step 4: Edit `lib/comments/createComment.ts`**
+- [x] **Step 4: Edit `lib/comments/createComment.ts`**
 
 Rename the param and update the inserts:
 
@@ -679,7 +679,7 @@ export const createComment = async (
 
 > Update the JSDoc `@param author` accordingly.
 
-- [ ] **Step 5: Edit `app/actions/comments.ts`**
+- [x] **Step 5: Edit `app/actions/comments.ts`**
 
 Delete the `displayName()` helper. Update `createCommentAction`:
 
@@ -704,7 +704,7 @@ export async function createCommentAction(
 }
 ```
 
-- [ ] **Step 6: Run tests, verify pass**
+- [x] **Step 6: Run tests, verify pass**
 
 ```bash
 pnpm test __tests__/lib/comments.test.ts __tests__/lib/queries/comments
@@ -713,7 +713,7 @@ pnpm typecheck
 
 Expected: pass.
 
-- [ ] **Step 7: Commit**
+- [x] **Step 7: Commit**
 
 ```bash
 git add types/comment.ts lib/comments/createComment.ts app/actions/comments.ts __tests__/lib/comments.test.ts __tests__/lib/queries/comments/use-create-comment-mutation.test.tsx

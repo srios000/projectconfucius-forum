@@ -8,7 +8,7 @@ import { randomUUID } from "crypto";
  * Creates a comment on a post and increments the post's comment count.
  * Threading is limited to a maximum depth of 2; `depth` is derived from the
  * parent comment rather than passed in.
- * @param author - The comment creator: `{ id, displayName }` (local user id).
+ * @param author - The comment creator: `{ id, username }` (local user id).
  * @param communityId - The community the post belongs to.
  * @param postId - The post being commented on.
  * @param postTitle - The post title, cached for activity feeds.
@@ -18,7 +18,7 @@ import { randomUUID } from "crypto";
  * @throws Error if the maximum comment depth is exceeded.
  */
 export const createComment = async (
-  author: { id: string; displayName: string },
+  author: { id: string; username: string | null },
   communityId: string,
   postId: string,
   postTitle: string,
@@ -45,7 +45,7 @@ export const createComment = async (
   const newComment: Comment = {
     id,
     creatorId: author.id,
-    creatorDisplayText: author.displayName,
+    creatorDisplayText: author.username,
     communityId,
     postId,
     postTitle,
@@ -63,7 +63,7 @@ export const createComment = async (
       communityId,
       postTitle,
       creatorId: author.id,
-      creatorDisplayText: author.displayName,
+      creatorDisplayText: author.username,
       text: commentText,
       depth,
     });

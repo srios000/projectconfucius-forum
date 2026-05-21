@@ -17,8 +17,9 @@ export async function createCommentAction(
   parentId?: string
 ): Promise<Comment> {
   const { session, userId } = await requireUser();
+  const u = session.user as typeof session.user & { username?: string | null };
   return createComment(
-    { id: userId, displayName: displayName(session.user) },
+    { id: userId, username: u.username ?? null },
     communityId,
     postId,
     postTitle,
