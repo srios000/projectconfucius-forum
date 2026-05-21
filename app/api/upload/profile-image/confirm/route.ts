@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { auth } from "@/lib/auth";
 import { provisionLocalUser } from "@/lib/auth/provision";
+import { patchAuthUserImage } from "@/lib/auth/patchAuthUserImage";
 import { db } from "@/lib/db";
 import { users } from "@/lib/db/schema";
 import { eq } from "drizzle-orm";
@@ -41,6 +42,7 @@ export async function POST(req: NextRequest) {
     });
     const newUrl = getForumPublicUrl(key);
     await db.update(users).set({ imageUrl: newUrl, updatedAt: new Date() }).where(eq(users.id, local.id));
+    await patchAuthUserImage(req.headers, newUrl);
 
     const oldKey = parseForumObjectKey(existing?.imageUrl);
     if (oldKey && oldKey !== key) {

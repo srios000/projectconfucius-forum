@@ -31,6 +31,9 @@ vi.mock("@/lib/storage/r2-forum", async () => {
     return { ...actual, forumObjectExists, deleteForumObject };
 });
 
+const patchAuthUserImage = vi.fn();
+vi.mock("@/lib/auth/patchAuthUserImage", () => ({ patchAuthUserImage }));
+
 beforeEach(() => {
     vi.stubEnv("FORUM_R2_ACCOUNT_ID", "test-account");
     vi.stubEnv("FORUM_R2_ACCESS_KEY_ID", "test-key");
@@ -44,6 +47,7 @@ beforeEach(() => {
     findFirst.mockReset();
     usersFindFirst.mockReset();
     updateSet.mockReset();
+    patchAuthUserImage.mockReset();
 });
 
 async function post(url: string, body: unknown) {
@@ -143,6 +147,7 @@ describe("POST /api/upload/community-image/confirm", () => {
 describe("POST /api/upload/profile-image/confirm", () => {
     it("200 updates row + deletes old key", async () => {
         getSession.mockResolvedValueOnce({ user: { id: "a1", email: "a@a", name: "a" } });
+        patchAuthUserImage.mockResolvedValueOnce(undefined);
         forumObjectExists.mockResolvedValueOnce(true);
         usersFindFirst.mockResolvedValueOnce({
             imageUrl: "https://litang.projectconfucius.id/users/local-a1/old.jpg",
@@ -169,5 +174,21 @@ describe("POST /api/upload/profile-image/confirm", () => {
             { key: "users/local-OTHER/abc.jpg" },
         );
         expect(res.status).toBe(403);
+    });
+
+    it("PATCHes auth user image after successful confirm", async () => {
+        getSession.mockResolvedValueOnce({ user: { id: "a1", email: "a@a", name: "a" } });
+        patchAuthUserImage.mockResolvedValueOnce(undefined);
+        forumObjectExists.mockResolvedValueOnce(true);
+        usersFindFirst.mockResolvedValueOnce({ imageUrl: null });
+
+        const res = await post(
+            "@/app/api/upload/profile-image/confirm/route",
+            { key: "users/local-a1/abc.jpg" },
+        );
+        expect(res.status).toBe(200);
+        expect(patchAuthUserImage).toHaveBeenCalledTimes(1);
+        const [, image] = patchAuthUserImage.mock.calls[0];
+        expect(image).toMatch(/^https:\/\//);
     });
 });

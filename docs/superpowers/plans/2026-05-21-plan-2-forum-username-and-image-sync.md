@@ -979,7 +979,7 @@ git commit -m "feat: patchAuthUserImage helper (Plan 2)"
 - Modify: `app/actions/profile.ts`
 - Modify: `__tests__/api/upload-confirm.test.ts`
 
-- [ ] **Step 1: Update upload-confirm test**
+- [x] **Step 1: Update upload-confirm test**
 
 Open `__tests__/api/upload-confirm.test.ts`. Add a mock for `patchAuthUserImage` and an assertion:
 
@@ -1005,7 +1005,7 @@ it("PATCHes auth user image after successful confirm", async () => {
 
 > If the existing test file is structured per-route (post-image, community-image, profile-image), add the new test under the profile-image describe block; if the profile-image describe block doesn't exist yet, copy the post-image one and adapt.
 
-- [ ] **Step 2: Run tests, verify failure**
+- [x] **Step 2: Run tests, verify failure**
 
 ```bash
 pnpm test __tests__/api/upload-confirm.test.ts
@@ -1013,7 +1013,7 @@ pnpm test __tests__/api/upload-confirm.test.ts
 
 Expected: FAIL — `patchAuthUserImage` not called.
 
-- [ ] **Step 3: Edit `app/api/upload/profile-image/confirm/route.ts`**
+- [x] **Step 3: Edit `app/api/upload/profile-image/confirm/route.ts`**
 
 Add import:
 
@@ -1029,7 +1029,7 @@ await patchAuthUserImage(req.headers, newUrl);
 
 (Place it BEFORE the `oldKey` cleanup so a failure during cleanup doesn't block the auth push.)
 
-- [ ] **Step 4: Edit `app/actions/profile.ts:removeProfileImageAction`**
+- [x] **Step 4: Edit `app/actions/profile.ts:removeProfileImageAction`**
 
 Push to auth from the action layer (it has access to headers via `next/headers`):
 
@@ -1062,7 +1062,7 @@ export async function removeProfileImageAction() {
 }
 ```
 
-- [ ] **Step 5: Run tests, verify pass**
+- [x] **Step 5: Run tests, verify pass**
 
 ```bash
 pnpm test __tests__/api/upload-confirm.test.ts
@@ -1071,7 +1071,7 @@ pnpm typecheck
 
 Expected: pass.
 
-- [ ] **Step 6: Commit**
+- [x] **Step 6: Commit**
 
 ```bash
 git add app/api/upload/profile-image/confirm/route.ts app/actions/profile.ts __tests__/api/upload-confirm.test.ts

@@ -1,10 +1,12 @@
 "use server";
 
+import { headers as nextHeaders } from "next/headers";
 import { requireUser } from "@/lib/auth/session";
 import { db } from "@/lib/db";
 import { users } from "@/lib/db/schema";
 import { eq } from "drizzle-orm";
 import { deleteProfileImage } from "@/lib/user-profile/deleteProfileImage";
+import { patchAuthUserImage } from "@/lib/auth/patchAuthUserImage";
 
 export async function profileNameAction(name: string) {
   const { userId } = await requireUser();
@@ -18,5 +20,7 @@ export async function profileNameAction(name: string) {
 
 export async function removeProfileImageAction() {
   const { userId } = await requireUser();
-  return deleteProfileImage(userId);
+  const result = await deleteProfileImage(userId);
+  await patchAuthUserImage(await nextHeaders(), null);
+  return result;
 }
