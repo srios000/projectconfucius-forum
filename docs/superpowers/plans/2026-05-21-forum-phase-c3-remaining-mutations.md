@@ -1732,7 +1732,7 @@ git commit -m "feat(queries): useLeaveCommunityMutation with snippets + detail +
 
 Preserves `{ leaveCommunity, leaveLoading, leaveError }`. Drops `setQueryData` and `setUi` numberOfMembers decrement (refreshed via invalidation).
 
-- [ ] **Step 1: Replace the shell**
+- [x] **Step 1: Replace the shell**
 
 Replace `hooks/community/useLeaveCommunity.tsx`:
 
@@ -1777,7 +1777,7 @@ const useLeaveCommunity = () => {
 export default useLeaveCommunity;
 ```
 
-- [ ] **Step 2: Verify types**
+- [x] **Step 2: Verify types**
 
 ```bash
 pnpm typecheck
@@ -1785,11 +1785,11 @@ pnpm typecheck
 
 Expected: clean.
 
-- [ ] **Step 3: Smoke in browser**
+- [x] **Step 3: Smoke in browser**
 
 Sign in. Visit a community you belong to (but didn't create), click Leave. Expected: button flips to "Join" within one round trip; member count in the header decrements via `community.detail` invalidation.
 
-- [ ] **Step 4: Commit**
+- [x] **Step 4: Commit**
 
 ```bash
 git add hooks/community/useLeaveCommunity.tsx
