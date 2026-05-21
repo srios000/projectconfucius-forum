@@ -610,7 +610,7 @@ git commit -m "refactor(comments): route create/delete through TanStack mutation
 
 This replaces `hooks/admin/useAdminList.ts`'s `fetchQuery + useState` pattern with a subscriptive `useQuery`. Required so that `useAddAdminMutation`/`useRemoveAdminMutation` invalidation actually refreshes the mounted `AdminManager` view (parent spec §8 green gate: "no manual refetch calls in component code").
 
-- [ ] **Step 1: Write the query primitive**
+- [x] **Step 1: Write the query primitive**
 
 Create `lib/queries/admin/use-admin-list.ts`:
 
@@ -645,7 +645,7 @@ export function useCommunityAdminsListQuery({
 }
 ```
 
-- [ ] **Step 2: Verify types**
+- [x] **Step 2: Verify types**
 
 ```bash
 pnpm typecheck
@@ -653,7 +653,7 @@ pnpm typecheck
 
 Expected: clean.
 
-- [ ] **Step 3: Commit**
+- [x] **Step 3: Commit**
 
 ```bash
 git add lib/queries/admin/use-admin-list.ts
