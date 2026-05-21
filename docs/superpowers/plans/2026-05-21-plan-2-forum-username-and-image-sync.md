@@ -729,7 +729,7 @@ git commit -m "feat: createComment writes real username (Plan 2)"
 - Modify: `components/navbar/SearchModal.tsx`
 - Modify: `components/posts/comments/CommentItem.tsx`
 
-- [ ] **Step 1: Edit `components/posts/post-item/PostDetails.tsx`**
+- [x] **Step 1: Edit `components/posts/post-item/PostDetails.tsx`**
 
 Add at the top of the imports:
 
@@ -743,7 +743,7 @@ Replace line ~22:
 const topText: string = `By ${formatUserHandle(post.creatorUsername)} ${moment(...)}`;
 ```
 
-- [ ] **Step 2: Edit `components/navbar/SearchModal.tsx`**
+- [x] **Step 2: Edit `components/navbar/SearchModal.tsx`**
 
 Add import:
 
@@ -757,7 +757,7 @@ Replace line ~198 (where `{item.creatorUsername}` is rendered):
 {formatUserHandle(item.creatorUsername)}{" "}
 ```
 
-- [ ] **Step 3: Edit `components/posts/comments/CommentItem.tsx`**
+- [x] **Step 3: Edit `components/posts/comments/CommentItem.tsx`**
 
 Add import:
 
@@ -771,7 +771,7 @@ Replace line ~84:
 <Text fontWeight={700}>{formatUserHandle(comment.creatorDisplayText)}</Text>
 ```
 
-- [ ] **Step 4: Run typecheck + tests**
+- [x] **Step 4: Run typecheck + tests**
 
 ```bash
 pnpm typecheck

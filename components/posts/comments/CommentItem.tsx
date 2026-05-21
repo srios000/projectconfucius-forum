@@ -14,6 +14,7 @@ import { CgProfile } from "react-icons/cg";
 import { LuPencil, LuReply, LuTrash } from "react-icons/lu";
 import CommentInput from "./CommentInput";
 import ConfirmationDialog from "@/components/modal/ConfirmationDialog";
+import { formatUserHandle } from "@/lib/user-profile/formatUserHandle";
 
 /**
  * Props for the CommentItem component.
@@ -81,7 +82,7 @@ const CommentItem: React.FC<CommentItemProps> = ({
         </Box>
         <Stack gap={1} width="100%">
           <Stack direction="row" align="center" fontSize="8pt">
-            <Text fontWeight={700}>{comment.creatorDisplayText}</Text>
+            <Text fontWeight={700}>{formatUserHandle(comment.creatorDisplayText)}</Text>
             {loadingDelete && <Spinner size="sm" />}
           </Stack>
           <Text fontSize="11pt">{comment.text}</Text>

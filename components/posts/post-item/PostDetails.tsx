@@ -3,6 +3,7 @@ import { Stack, Image, Icon, Link, Text } from "@chakra-ui/react";
 import { IoPeopleCircleOutline } from "react-icons/io5";
 import moment from "moment";
 import { Post } from "@/types/post";
+import { formatUserHandle } from "@/lib/user-profile/formatUserHandle";
 
 type PostDetailsProps = {
   showCommunityImage?: boolean;
@@ -19,7 +20,7 @@ const PostDetails: React.FC<PostDetailsProps> = ({
   showCommunityImage,
   post,
 }) => {
-  const topText: string = `By ${post.creatorUsername} ${moment(
+  const topText: string = `By ${formatUserHandle(post.creatorUsername)} ${moment(
     new Date(post.createdAt)
   ).fromNow()}`;
 

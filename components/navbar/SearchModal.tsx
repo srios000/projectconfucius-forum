@@ -20,6 +20,7 @@ import useSearch from "@/hooks/useSearch";
 import { useRouter } from "next/navigation";
 import { Post } from "@/types/post";
 import moment from "moment";
+import { formatUserHandle } from "@/lib/user-profile/formatUserHandle";
 
 type SearchModalProps = {
   isOpen: boolean;
@@ -195,7 +196,7 @@ const SearchModal: React.FC<SearchModalProps> = ({ isOpen, onClose }) => {
                               <Text fontWeight={600}>{item.title}</Text>
                               <Text fontSize="xs" color="gray.500">
                                 {item.communityId} • Posted by u/
-                                {item.creatorUsername}{" "}
+                                {formatUserHandle(item.creatorUsername)}{" "}
                                 {moment(new Date(item.createdAt)).fromNow()}
                               </Text>
                             </Flex>
