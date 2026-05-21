@@ -4,8 +4,6 @@ import { requireUser } from "@/lib/auth/session";
 import { db } from "@/lib/db";
 import { users } from "@/lib/db/schema";
 import { eq } from "drizzle-orm";
-import { updateUserCommentsName } from "@/lib/user-profile/updateUserCommentsName";
-import { updateUserPostsName } from "@/lib/user-profile/updateUserPostsName";
 import { deleteProfileImage } from "@/lib/user-profile/deleteProfileImage";
 
 export async function profileNameAction(name: string) {
@@ -15,8 +13,6 @@ export async function profileNameAction(name: string) {
     .update(users)
     .set({ name: trimmed, updatedAt: new Date() })
     .where(eq(users.id, userId));
-  await updateUserCommentsName(userId, trimmed);
-  await updateUserPostsName(userId, trimmed);
   return { userId };
 }
 

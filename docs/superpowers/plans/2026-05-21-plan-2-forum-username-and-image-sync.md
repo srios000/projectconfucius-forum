@@ -796,7 +796,7 @@ git commit -m "feat: UI renders u/<username> via formatUserHandle (Plan 2)"
 - Delete: `lib/user-profile/updateUserCommentsName.ts`
 - Modify: `app/actions/profile.ts`
 
-- [ ] **Step 1: Check for stragglers**
+- [x] **Step 1: Check for stragglers**
 
 ```bash
 git grep -nE "updateUserPostsName|updateUserCommentsName"
@@ -804,7 +804,7 @@ git grep -nE "updateUserPostsName|updateUserCommentsName"
 
 Expected callers: only `app/actions/profile.ts`. If there are others, list them and stop — design assumed two callers only.
 
-- [ ] **Step 2: Edit `app/actions/profile.ts`**
+- [x] **Step 2: Edit `app/actions/profile.ts`**
 
 Remove the two imports and the two calls inside `profileNameAction`. After the edit the action looks like:
 
@@ -835,13 +835,13 @@ export async function removeProfileImageAction() {
 
 > `removeProfileImageAction` will be extended in Task 10. Leave it as-is here.
 
-- [ ] **Step 3: Delete the two rewriter files**
+- [x] **Step 3: Delete the two rewriter files**
 
 ```bash
 git rm lib/user-profile/updateUserPostsName.ts lib/user-profile/updateUserCommentsName.ts
 ```
 
-- [ ] **Step 4: Run all tests + typecheck**
+- [x] **Step 4: Run all tests + typecheck**
 
 ```bash
 pnpm test
@@ -850,7 +850,7 @@ pnpm typecheck
 
 Expected: pass. If any test imports the deleted modules, delete or update those tests — they're asserting behavior we've deliberately removed.
 
-- [ ] **Step 5: Commit**
+- [x] **Step 5: Commit**
 
 ```bash
 git add app/actions/profile.ts
@@ -865,7 +865,7 @@ git commit -m "refactor: drop name-fanout rewriters; renames no longer touch cac
 - Create: `lib/auth/patchAuthUserImage.ts`
 - Create: `__tests__/auth/patchAuthUserImage.test.ts`
 
-- [ ] **Step 1: Write the failing test**
+- [x] **Step 1: Write the failing test**
 
 Create `__tests__/auth/patchAuthUserImage.test.ts`:
 
@@ -915,7 +915,7 @@ describe("patchAuthUserImage", () => {
 });
 ```
 
-- [ ] **Step 2: Run the test, verify failure**
+- [x] **Step 2: Run the test, verify failure**
 
 ```bash
 pnpm test __tests__/auth/patchAuthUserImage.test.ts
