@@ -13,7 +13,7 @@ import usePostSelection from "@/hooks/posts/usePostSelection";
 import usePostVote from "@/hooks/posts/usePostVote";
 import { usePostsInfiniteQuery } from "@/lib/queries/posts/use-posts-infinite";
 import { useUserPostVotesQuery } from "@/lib/queries/posts/use-user-post-votes";
-import { Button, Stack, Text } from "@chakra-ui/react";
+import { Button } from "@/components/ui/button";
 import { useMemo } from "react";
 
 export default function HomePageClient() {
@@ -57,7 +57,7 @@ export default function HomePageClient() {
                 {loading && posts.length === 0 ? (
                     <PostLoader />
                 ) : (
-                    <Stack gap={3}>
+                    <div className="space-y-3">
                         {posts.map((post) => (
                             <PostItem
                                 key={post.id}
@@ -67,7 +67,7 @@ export default function HomePageClient() {
                                 onVote={onVote}
                                 isVotePending={isVotePending(post.id!)}
                                 userVoteValue={postVotes.find((v) => v.postId === post.id)?.voteValue}
-                                userIsCreator={false}
+                                userIsCreator={user?.id === post.creatorId}
                                 userIsAdmin={
                                     !!communityStateValue.mySnippets.find((s) => s.communityId === post.communityId)?.isModerator
                                 }
@@ -77,25 +77,24 @@ export default function HomePageClient() {
                         {feed.hasNextPage ? (
                             <Button
                                 onClick={() => feed.fetchNextPage()}
-                                loading={feed.isFetchingNextPage}
+                                disabled={feed.isFetchingNextPage}
                                 variant="outline"
-                                width="100%"
-                                my={4}
+                                className="w-full my-4"
                             >
-                                Load More
+                                {feed.isFetchingNextPage ? "Loading..." : "Load More"}
                             </Button>
                         ) : (
-                            <Text textAlign="center" p={2} fontSize="sm" color="gray.500">
+                            <div className="text-center p-2 text-sm text-muted-foreground">
                                 No more posts
-                            </Text>
+                            </div>
                         )}
-                    </Stack>
+                    </div>
                 )}
             </>
-            <Stack gap={2}>
+            <div className="space-y-2">
                 <Recommendations />
                 <PersonalHome />
-            </Stack>
+            </div>
         </PageContent>
     );
-}
+}

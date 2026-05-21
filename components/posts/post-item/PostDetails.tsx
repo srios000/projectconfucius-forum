@@ -1,75 +1,24 @@
-import React from "react";
-import { Stack, Image, Icon, Link, Text } from "@chakra-ui/react";
-import { IoPeopleCircleOutline } from "react-icons/io5";
-import moment from "moment";
 import { Post } from "@/types/post";
+import Link from "next/link";
+import moment from "moment";
 import { formatUserHandle } from "@/lib/user-profile/formatUserHandle";
 
-type PostDetailsProps = {
-  showCommunityImage?: boolean;
-  post: Post;
-};
+type Props = { post: Post; showCommunityImage?: boolean };
 
-/**
- * Renders the post meta line with community icon, author, and relative time.
- * @param showCommunityImage - Whether to show the community avatar/link.
- * @param post - Post data for metadata fields.
- * @returns Stack of metadata elements for a post card.
- */
-const PostDetails: React.FC<PostDetailsProps> = ({
-  showCommunityImage,
-  post,
-}) => {
-  const topText: string = `By ${formatUserHandle(post.creatorUsername)} ${moment(
-    new Date(post.createdAt)
-  ).fromNow()}`;
-
+export default function PostDetails({ post, showCommunityImage }: Props) {
   return (
-    <Stack
-      direction="row"
-      gap={0.5}
-      align="center"
-      fontSize="9pt"
-      borderRadius="full"
-      boxSize="18px"
-      mr={2}
-      width="100%"
-    >
+    <div className="text-[10.5px] text-muted-foreground flex items-center gap-1.5 mb-1">
       {showCommunityImage && (
-        <>
-          {post.communityImageUrl ? (
-            <Image
-              borderRadius="full"
-              boxSize="18px"
-              src={post.communityImageUrl}
-              mr={2}
-              alt="Community logo"
-              loading="lazy"
-              decoding="async"
-            />
-          ) : (
-            <Icon
-              as={IoPeopleCircleOutline}
-              mr={1}
-              fontSize="18pt"
-              color="red.500"
-            />
-          )}
-          <Link href={`/community/${post.communityId}`}>
-            <Text
-              fontWeight={700}
-              _hover={{ textDecoration: "underline" }}
-              pr={2}
-              onClick={(event) => event.stopPropagation()}
-            >
-              {post.communityId}
-            </Text>
-          </Link>
-        </>
+        <Link href={`/c/${post.communityId}`} className="inline-flex items-center gap-1.5">
+          <span
+            className="size-3.5 rounded-full inline-block"
+            style={{ background: "linear-gradient(135deg,hsl(var(--primary)),hsl(var(--primary-deep)))" }}
+          />
+          <span className="text-primary font-semibold">c/{post.communityId}</span>
+        </Link>
       )}
-      <Text fontWeight={500}>{topText}</Text>
-    </Stack>
+      <span>· {moment(post.createdAt).fromNow()} ·</span>
+      <span className="font-serif italic">{formatUserHandle(post.creatorUsername)}</span>
+    </div>
   );
-};
-
-export default PostDetails;
+}

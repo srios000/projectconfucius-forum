@@ -1,101 +1,56 @@
-import React from "react";
-import { Clipboard, Button, Icon, Stack, Text } from "@chakra-ui/react";
-import { FiShare2 } from "react-icons/fi";
-import { BsBookmark, BsBookmarkFill } from "react-icons/bs";
-import { LuTrash } from "react-icons/lu";
+"use client";
+import { MessageSquare, Share2, Bookmark, Trash2 } from "lucide-react";
 
-interface PostActionsProps {
-  handleDelete: (
-    event: React.MouseEvent<HTMLButtonElement, MouseEvent>
-  ) => Promise<void>;
+type Props = {
+  handleDelete: (e: React.MouseEvent<HTMLButtonElement>) => void;
   loadingDelete: boolean;
   userIsCreator: boolean;
-  userIsAdmin: boolean;
+  userIsAdmin?: boolean;
   postLink: string;
-  handleSave: (event: React.MouseEvent<HTMLButtonElement, MouseEvent>) => void;
+  handleSave: (e: React.MouseEvent<HTMLButtonElement>) => void;
   isSaved: boolean;
-  showToast: (options: any) => void;
+  showToast: (args: { title: string; description?: string; status: "success" | "error" | "warning" | "info" }) => void;
+};
+
+export default function PostActions({
+  handleDelete, loadingDelete, userIsCreator, userIsAdmin,
+  postLink, handleSave, isSaved, showToast,
+}: Props) {
+  return (
+    <div className="flex items-center gap-1 mt-2 text-[11px] text-muted-foreground font-semibold">
+      <button className="px-2 py-1 rounded hover:bg-muted hover:text-foreground inline-flex items-center gap-1.5 transition-colors">
+        <MessageSquare className="size-3.5" /> Comment
+      </button>
+      <button
+        onClick={(e) => {
+          e.stopPropagation();
+          navigator.clipboard.writeText(postLink);
+          showToast({ title: "Link copied", status: "success" });
+        }}
+        className="px-2 py-1 rounded hover:bg-muted hover:text-foreground inline-flex items-center gap-1.5 transition-colors"
+      >
+        <Share2 className="size-3.5" /> Share
+      </button>
+      <button
+        onClick={handleSave}
+        className={
+          "px-2 py-1 rounded hover:bg-muted inline-flex items-center gap-1.5 transition-colors " +
+          (isSaved ? "text-primary" : "hover:text-foreground")
+        }
+      >
+        <Bookmark className={"size-3.5 " + (isSaved ? "fill-current" : "")} />
+        {isSaved ? "Saved" : "Save"}
+      </button>
+      {(userIsCreator || userIsAdmin) && (
+        <button
+          disabled={loadingDelete}
+          onClick={handleDelete}
+          className="px-2 py-1 rounded hover:bg-destructive/10 hover:text-destructive inline-flex items-center gap-1.5 transition-colors"
+        >
+          <Trash2 className="size-3.5" /> Delete
+        </button>
+      )}
+    </div>
+  );
 }
 
-/**
- * Action bar for post cards with share, save, and delete controls.
- * @param handleDelete - Delete handler (stops propagation internally).
- * @param loadingDelete - Whether deletion is in progress.
- * @param userIsCreator - Flag to allow delete.
- * @param userIsAdmin - Flag to allow delete via moderation.
- * @param postLink - Canonical link used for sharing.
- * @param handleSave - Save/unsave handler.
- * @param isSaved - Whether the post is saved by the viewer.
- * @param showToast - Toast helper to display copy feedback.
- * @returns Button stack for post interactions.
- */
-const PostActions: React.FC<PostActionsProps> = ({
-  handleDelete,
-  loadingDelete,
-  userIsCreator,
-  userIsAdmin,
-  postLink,
-  handleSave,
-  isSaved,
-  showToast,
-}) => (
-  <Stack
-    ml={1}
-    mb={1}
-    color="gray.500"
-    fontWeight={600}
-    direction="row"
-    gap={1}
-    pb={2}
-  >
-    <Clipboard.Root
-      value={postLink}
-      onStatusChange={(details: any) => {
-        if (details.copied) {
-          showToast({
-            title: "Link Copied",
-            description: "Link to the post has been saved to your clipboard",
-            status: "info",
-          });
-        }
-      }}
-    >
-      <Button
-        as={Clipboard.Trigger as any}
-        variant={"action" as any}
-        height="32px"
-        onClick={(event: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
-          event.stopPropagation();
-        }}
-      >
-        <Icon as={FiShare2} mr={2} />
-        <Text fontSize="9pt">Share</Text>
-      </Button>
-    </Clipboard.Root>
-
-    <Button variant={"action" as any} height="32px" onClick={handleSave}>
-      <Icon
-        as={isSaved ? BsBookmarkFill : BsBookmark}
-        mr={2}
-        color={isSaved ? "brand.100" : "gray.500"}
-      />
-      <Text fontSize="9pt" color={isSaved ? "brand.100" : "gray.500"}>
-        {isSaved ? "Saved" : "Save"}
-      </Text>
-    </Button>
-
-    {(userIsCreator || userIsAdmin) && (
-      <Button
-        variant={"action" as any}
-        height="32px"
-        onClick={handleDelete}
-        loading={loadingDelete}
-      >
-        <Icon as={LuTrash} mr={2} />
-        <Text fontSize="9pt">Delete</Text>
-      </Button>
-    )}
-  </Stack>
-);
-
-export default PostActions;

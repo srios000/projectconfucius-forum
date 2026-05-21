@@ -1,58 +1,36 @@
-import React from "react";
-import { Text, Flex, Skeleton, Image } from "@chakra-ui/react";
+"use client";
+import Image from "next/image";
 import { Post } from "@/types/post";
+import { Skeleton } from "@/components/ui/skeleton";
 
-type PostBodyProps = {
+type Props = {
   post: Post;
   loadingImage: boolean;
-  setLoadingImage: (value: React.SetStateAction<boolean>) => void;
+  setLoadingImage: (v: boolean) => void;
 };
 
-/**
- * Renders the post body preview and optional image with skeleton fallback.
- * @param post - Post content to show.
- * @param loadingImage - Whether the image is still loading.
- * @param setLoadingImage - Setter triggered on image load.
- * @returns Text excerpt and image block.
- */
-const PostBody: React.FC<PostBodyProps> = ({
-  post,
-  loadingImage,
-  setLoadingImage,
-}) => {
+export default function PostBody({ post, loadingImage, setLoadingImage }: Props) {
   return (
     <>
-      <Text fontSize="12pt">{post.body.split(" ").slice(0, 30).join(" ")}</Text>
+      {post.body && (
+        <p className="text-[12.5px] text-muted-foreground leading-relaxed mt-1 line-clamp-3">
+          {post.body}
+        </p>
+      )}
       {post.imageUrl && (
-        <Flex
-          justify="center"
-          align="center"
-          position="relative"
-          mt={4}
-          width="100%"
-          minHeight={loadingImage ? "300px" : undefined}
-        >
+        <div className="mt-2 relative">
+          {loadingImage && <Skeleton className="h-48 w-full skel-jade rounded-lg" />}
           <Image
             src={post.imageUrl}
-            alt="Image for post"
-            maxHeight="450px"
-            maxWidth="100%"
-            borderRadius="10px"
-            loading="lazy"
-            decoding="async"
-            opacity={loadingImage ? 0 : 1}
-            transition="opacity 0.3s"
+            alt={post.title}
+            width={720}
+            height={480}
+            className="rounded-lg w-full h-auto"
             onLoad={() => setLoadingImage(false)}
-            onError={() => setLoadingImage(false)}
-            shadow="md"
+            style={{ display: loadingImage ? "none" : "block" }}
           />
-          {loadingImage && (
-            <Skeleton position="absolute" inset={0} borderRadius={10} />
-          )}
-        </Flex>
+        </div>
       )}
     </>
   );
-};
-
-export default PostBody;
+}

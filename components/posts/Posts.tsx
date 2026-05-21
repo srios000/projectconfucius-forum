@@ -6,7 +6,7 @@ import usePostDeletion from "@/hooks/posts/usePostDeletion";
 import { usePostsInfiniteQuery } from "@/lib/queries/posts/use-posts-infinite";
 import { useUserPostVotesQuery } from "@/lib/queries/posts/use-user-post-votes";
 import { useSession } from "@/lib/auth-client";
-import { Button, Stack, Text } from "@chakra-ui/react";
+import { Button } from "@/components/ui/button";
 import React, { useMemo } from "react";
 import PostLoader from "../loaders/post-loader/PostLoader";
 import PostItem from "./post-item/PostItem";
@@ -36,12 +36,12 @@ const Posts: React.FC<PostsProps> = ({ communityData }) => {
       {loading && posts.length === 0 ? (
         <PostLoader />
       ) : (
-        <Stack gap={3}>
+        <div className="space-y-3">
           {posts.map((item) => (
             <PostItem
               key={item.id}
               post={item}
-              userIsCreator={false}
+              userIsCreator={user?.id === item.creatorId}
               userIsAdmin={isAdmin}
               userVoteValue={postVotes.find((v) => v.postId === item.id)?.voteValue}
               onVote={onVote}
@@ -52,15 +52,20 @@ const Posts: React.FC<PostsProps> = ({ communityData }) => {
             />
           ))}
           {feed.hasNextPage ? (
-            <Button onClick={() => feed.fetchNextPage()} loading={feed.isFetchingNextPage} variant="outline" width="100%" my={4}>
-              Load More
+            <Button
+              onClick={() => feed.fetchNextPage()}
+              disabled={feed.isFetchingNextPage}
+              variant="outline"
+              className="w-full my-4"
+            >
+              {feed.isFetchingNextPage ? "Loading..." : "Load More"}
             </Button>
           ) : (
-            <Text textAlign="center" p={2} fontSize="sm" color="gray.500">No more posts</Text>
+            <div className="text-center p-2 text-sm text-muted-foreground">No more posts</div>
           )}
-        </Stack>
+        </div>
       )}
     </>
   );
 };
-export default Posts;
+export default Posts;
