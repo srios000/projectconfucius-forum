@@ -469,7 +469,7 @@ Rewrite the outer layout (`Layout`, `Navbar`, `Sidebar`, `PageContent`), introdu
 - Modify: `app/providers.tsx`
 - Keep (do not delete yet): `components/ui/color-mode.tsx` — still exports `useColorMode` / `useColorModeValue` used by inner Chakra components. We'll simplify it in Phase 8.
 
-- [ ] **Step 1: Replace `<ColorModeProvider>` with `<ThemeProvider>` from next-themes directly**
+- [x] **Step 1: Replace `<ColorModeProvider>` with `<ThemeProvider>` from next-themes directly**
 
 ```tsx
 "use client";
@@ -516,13 +516,13 @@ export function Providers({ children }: { children: React.ReactNode }) {
 - Modify: `components/layout/PageContent.tsx` (becomes thinner — sidebar handled at Layout)
 - Create: `components/layout/AppShell.tsx` (new outer shell — Navbar + sidebar + main grid)
 
-- [ ] **Step 1: Read the current `Layout.tsx` to understand what state it provides**
+- [x] **Step 1: Read the current `Layout.tsx` to understand what state it provides**
 
 ```powershell
 cat components/layout/Layout.tsx
 ```
 
-- [ ] **Step 2: Create `components/layout/AppShell.tsx`**
+- [x] **Step 2: Create `components/layout/AppShell.tsx`**
 
 ```tsx
 "use client";
@@ -561,7 +561,7 @@ export default function AppShell({
 }
 ```
 
-- [ ] **Step 3: Replace `Layout.tsx` to delegate to `AppShell`**
+- [x] **Step 3: Replace `Layout.tsx` to delegate to `AppShell`**
 
 ```tsx
 "use client";
@@ -572,7 +572,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
 }
 ```
 
-- [ ] **Step 4: Simplify `PageContent.tsx` to be a passthrough column (sidebar now owned by AppShell)**
+- [x] **Step 4: Simplify `PageContent.tsx` to be a passthrough column (sidebar now owned by AppShell)**
 
 ```tsx
 import { ReactElement } from "react";
@@ -591,7 +591,7 @@ export default function PageContent({ children }: Props) {
 - Create: `components/layout/SidebarHome.tsx` (home context)
 - Create: `components/layout/SidebarCommunity.tsx` (community context)
 
-- [ ] **Step 1: Create `Sidebar.tsx` — context router**
+- [x] **Step 1: Create `Sidebar.tsx` — context router**
 
 ```tsx
 "use client";
@@ -607,7 +607,7 @@ export default function Sidebar() {
 }
 ```
 
-- [ ] **Step 2: Create `SidebarHome.tsx`** — Your communities + Discover + community-quote card
+- [x] **Step 2: Create `SidebarHome.tsx`** — Your communities + Discover + community-quote card
 
 ```tsx
 "use client";
@@ -674,7 +674,7 @@ function CommunityQuoteCard() {
 
 If `useCommunitySnippetsQuery` doesn't exist under that name, grep `lib/queries/community/` to find the actual hook and use it. (The Phase C work added these hooks; pick the one that returns "communities the current user is a member of".)
 
-- [ ] **Step 3: Create `SidebarCommunity.tsx`** — About card + moderators + similar
+- [x] **Step 3: Create `SidebarCommunity.tsx`** — About card + moderators + similar
 
 ```tsx
 "use client";
@@ -718,7 +718,7 @@ export default function SidebarCommunity({ communityId }: { communityId: string 
 - Modify: `components/navbar/right-content/user-menu/UserMenuButton.tsx`
 - Modify: `components/navbar/right-content/user-menu/UserMenuList.tsx`
 
-- [ ] **Step 1: Rewrite `Navbar.tsx`**
+- [x] **Step 1: Rewrite `Navbar.tsx`**
 
 ```tsx
 "use client";
@@ -764,7 +764,7 @@ If `ComposerLauncher` isn't built yet (it's Phase 6), stub it:
 export function ComposerLauncher() { return null; }
 ```
 
-- [ ] **Step 2: Rewrite `RightContent.tsx`** to use shadcn primitives
+- [x] **Step 2: Rewrite `RightContent.tsx`** to use shadcn primitives
 
 ```tsx
 "use client";
@@ -784,7 +784,7 @@ export default function RightContent({
 }
 ```
 
-- [ ] **Step 3: Rewrite `AuthButtons.tsx`** → shadcn `<Button>`
+- [x] **Step 3: Rewrite `AuthButtons.tsx`** → shadcn `<Button>`
 
 ```tsx
 import Link from "next/link";
@@ -804,7 +804,7 @@ export default function AuthButtons() {
 }
 ```
 
-- [ ] **Step 4: Rewrite `UserMenu.tsx`** → shadcn `<DropdownMenu>` + page navigation for profile/saved (no more modals)
+- [x] **Step 4: Rewrite `UserMenu.tsx`** → shadcn `<DropdownMenu>` + page navigation for profile/saved (no more modals)
 
 ```tsx
 "use client";
@@ -851,13 +851,13 @@ export default function UserMenu({ user }: { user: SessionUser }) {
 
 The `/settings/profile` and `/saved` routes don't exist yet — they're Phase 7. The links will 404 until then; that's fine for the gate (no broken builds, just a missing route).
 
-- [ ] **Step 5: Delete the now-unused `UserMenuButton.tsx` and `UserMenuList.tsx`**
+- [x] **Step 5: Delete the now-unused `UserMenuButton.tsx` and `UserMenuList.tsx`**
 
 ```powershell
 Remove-Item components/navbar/right-content/user-menu/UserMenuButton.tsx, components/navbar/right-content/user-menu/UserMenuList.tsx, components/navbar/right-content/Icons.tsx, components/navbar/right-content/LogOutButton.tsx -Force
 ```
 
-- [ ] **Step 6: Rewrite `CustomMenuButton.tsx` if it's still referenced — check**
+- [x] **Step 6: Rewrite `CustomMenuButton.tsx` if it's still referenced — check**
 
 ```powershell
 pnpm exec rg "CustomMenuButton" --type ts --type tsx
@@ -871,7 +871,7 @@ If no matches: `Remove-Item components/ui/CustomMenuButton.tsx -Force`. Otherwis
 - Modify: `components/navbar/directory/Communities.tsx`
 - Modify: `components/navbar/directory/MenuListItem.tsx`
 
-- [ ] **Step 1: Rewrite `Directory.tsx`** as a shadcn DropdownMenu
+- [x] **Step 1: Rewrite `Directory.tsx`** as a shadcn DropdownMenu
 
 ```tsx
 "use client";
@@ -928,7 +928,7 @@ export default function Directory() {
 }
 ```
 
-- [ ] **Step 2: Rewrite `Communities.tsx`** to render shadcn `DropdownMenuItem`s
+- [x] **Step 2: Rewrite `Communities.tsx`** to render shadcn `DropdownMenuItem`s
 
 ```tsx
 "use client";
@@ -965,7 +965,7 @@ export default function Communities() {
 }
 ```
 
-- [ ] **Step 3: Delete `MenuListItem.tsx` (now unused)**
+- [x] **Step 3: Delete `MenuListItem.tsx` (now unused)**
 
 ```powershell
 Remove-Item components/navbar/directory/MenuListItem.tsx -Force
@@ -978,7 +978,7 @@ Remove-Item components/navbar/directory/MenuListItem.tsx -Force
 - Create: `components/navbar/SearchPalette.tsx`
 - Delete: `components/navbar/SearchInput.tsx`, `components/navbar/SearchModal.tsx`
 
-- [ ] **Step 1: Write `SearchTrigger.tsx`**
+- [x] **Step 1: Write `SearchTrigger.tsx`**
 
 ```tsx
 "use client";
@@ -1017,7 +1017,7 @@ export default function SearchTrigger() {
 }
 ```
 
-- [ ] **Step 2: Write `SearchPalette.tsx`** — shadcn CommandDialog
+- [x] **Step 2: Write `SearchPalette.tsx`** — shadcn CommandDialog
 
 ```tsx
 "use client";
@@ -1063,7 +1063,7 @@ export default function SearchPalette({
 
 If `useCommunitySearchQuery` doesn't yet exist, create a thin wrapper around whatever the Phase C search query is. Otherwise grep `lib/queries/community/` for the actual hook name and use it.
 
-- [ ] **Step 3: Delete the old search components**
+- [x] **Step 3: Delete the old search components**
 
 ```powershell
 Remove-Item components/navbar/SearchInput.tsx, components/navbar/SearchModal.tsx -Force
@@ -1075,7 +1075,7 @@ Remove-Item components/navbar/SearchInput.tsx, components/navbar/SearchModal.tsx
 - Modify: `components/navbar/Navbar.tsx` (add hamburger trigger for mobile)
 - Create: `components/layout/MobileSidebarSheet.tsx`
 
-- [ ] **Step 1: Write `MobileSidebarSheet.tsx`**
+- [x] **Step 1: Write `MobileSidebarSheet.tsx`**
 
 ```tsx
 "use client";
@@ -1107,7 +1107,7 @@ export default function MobileSidebarSheet() {
 }
 ```
 
-- [ ] **Step 2: Mount it in `Navbar.tsx`** — first slot before the logo
+- [x] **Step 2: Mount it in `Navbar.tsx`** — first slot before the logo
 
 Edit `Navbar.tsx`, add `<MobileSidebarSheet />` as the first child of the header `<div>`.
 
@@ -1118,7 +1118,7 @@ Edit `Navbar.tsx`, add `<MobileSidebarSheet />` as the first child of the header
 - Create: `app/c/[communityId]/layout.tsx` (will hold the `@modal` parallel slot in Phase 5)
 - Modify: `next.config.js` → migrate to `next.config.ts` with redirects
 
-- [ ] **Step 1: Migrate `next.config.js` to `next.config.ts` with redirects**
+- [x] **Step 1: Migrate `next.config.js` to `next.config.ts` with redirects**
 
 Delete the old:
 ```powershell
@@ -1155,7 +1155,7 @@ const config: NextConfig = {
 export default config;
 ```
 
-- [ ] **Step 2: Create `app/c/[communityId]/layout.tsx`**
+- [x] **Step 2: Create `app/c/[communityId]/layout.tsx`**
 
 ```tsx
 import { ReactNode } from "react";
@@ -1170,7 +1170,7 @@ export default function CommunityLayout({
 }
 ```
 
-- [ ] **Step 3: Create `app/c/[communityId]/page.tsx`** — temporarily reuse the existing community client
+- [x] **Step 3: Create `app/c/[communityId]/page.tsx`** — temporarily reuse the existing community client
 
 ```tsx
 import CommunityClientPage from "@/app/community/[communityId]/comments/CommunityClientPage";
@@ -1190,11 +1190,11 @@ Phase 4 will rewrite the community page properly. For now this just gets the rou
 **Files:**
 - Modify: `app/page.tsx`
 
-- [ ] **Step 1: Remove the temporary `<Button>` smoke test added in Task 1.8**
+- [x] **Step 1: Remove the temporary `<Button>` smoke test added in Task 1.8**
 
 (The home page will be rewritten in Phase 4 — for now just delete the smoke block.)
 
-- [ ] **Step 2: Run dev and verify**
+- [x] **Step 2: Run dev and verify**
 
 ```powershell
 pnpm dev
@@ -1203,13 +1203,13 @@ Visit `/`, `/c/<existing-community>`, `/community/<existing-community>` (should 
 
 ## Task 3.10: Phase 3 green-gate + commit
 
-- [ ] **Step 1: Green gate**
+- [x] **Step 1: Green gate**
 
 ```powershell
 pnpm test ; pnpm typecheck ; pnpm lint ; pnpm build
 ```
 
-- [ ] **Step 2: Commit**
+- [x] **Step 2: Commit**
 
 ```powershell
 git add -A

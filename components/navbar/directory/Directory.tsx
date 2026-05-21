@@ -1,106 +1,52 @@
-import useDirectory from "@/hooks/useDirectory";
-import { FiChevronDown, FiChevronUp } from "react-icons/fi";
+"use client";
+
 import {
-  Flex,
-  Icon,
-  Image,
-  MenuContent,
-  MenuPositioner,
-  MenuRoot,
-  MenuTrigger,
-  Stack,
-  Text,
-} from "@chakra-ui/react";
-import React, { useState } from "react";
+  DropdownMenu, DropdownMenuTrigger, DropdownMenuContent,
+  DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuItem,
+} from "@/components/ui/dropdown-menu";
+import { Button } from "@/components/ui/button";
+import { useActiveCommunity } from "@/hooks/community/useActiveCommunity";
 import Communities from "./Communities";
-import CreateCommunityModal from "@/components/modal/create-community/CreateCommunityModal";
+import { ChevronDown, Home } from "lucide-react";
+import Link from "next/link";
 
-/**
- * Component for displaying the directory menu.
- * It displays:
- *  - Button to create a community (opens community creation modal)
- *  - List of communities the user is subscribed to
- * The directory button itself is responsive:
- *  - Only icon is shown on mobile
- *  - Both icon and community name are shown on desktop
- * @requires ./Communities - community creation modal
- *
- * @returns {React.FC} - button to open the directory menu and the directory menu itself
- */
-const UserMenu: React.FC = () => {
-  const { directoryState, setDirectoryOpen } = useDirectory();
-  const [open, setOpen] = useState(false);
-
+export default function Directory() {
+  const { community } = useActiveCommunity();
   return (
-    <>
-      <CreateCommunityModal open={open} handleClose={() => setOpen(false)} />
-      <MenuRoot
-        open={directoryState.isOpen}
-        onOpenChange={({ open }: { open: boolean }) => setDirectoryOpen(open)}
-      >
-        <MenuTrigger
-          cursor="pointer"
-          padding="0px 6px"
-          borderRadius={"xl"}
-          mr={2}
-          ml={{ base: 0, md: 2 }}
-          _hover={{
-            outline: "1px solid",
-            outlineColor: { base: "gray.200", _dark: "gray.600" },
-          }}
-        >
-          <Flex
-            align="center"
-            justify="space-between"
-            width={{ base: "auto", lg: "200px" }}
-          >
-            <Flex align="center">
-              {/* if community is selected */}
-              {directoryState.selectedMenuItem.imageURL ? (
-                <Image
-                  src={directoryState.selectedMenuItem.imageURL}
-                  alt="Community logo"
-                  borderRadius="full"
-                  boxSize="34px"
-                  mr={2}
-                />
-              ) : (
-                <Icon
-                  fontSize={34}
-                  mr={{ base: 1, md: 2 }}
-                  as={directoryState.selectedMenuItem.icon}
-                  color={directoryState.selectedMenuItem.iconColor}
-                />
-              )}
-              <Flex display={{ base: "none", lg: "flex" }}>
-                <Text fontWeight={600} fontSize="10pt">
-                  {directoryState.selectedMenuItem.displayText}
-                </Text>
-              </Flex>
-            </Flex>
-            {directoryState.isOpen ? <FiChevronUp /> : <FiChevronDown />}
-          </Flex>
-        </MenuTrigger>
-        <MenuPositioner>
-          <MenuContent
-            borderRadius={"xl"}
-            mt={2}
-            shadow="lg"
-            minW="260px"
-            maxH="70vh"
-            overflowY="auto"
-            pt={2}
-          >
-            <Flex justifyContent="center">
-              <Stack gap={1} width="95%">
-                {/* Communities menu to open the community creation modal */}
-                <Communities handleCreateCommunity={() => setOpen(true)} />
-              </Stack>
-            </Flex>
-          </MenuContent>
-        </MenuPositioner>
-      </MenuRoot>
-    </>
+    <DropdownMenu>
+      <DropdownMenuTrigger asChild>
+        <Button variant="ghost" className="gap-2 px-2 hidden md:flex">
+          {community ? (
+            <>
+              <div
+                className="size-5 rounded-full"
+                style={{
+                  background: community.imageUrl
+                    ? `url(${community.imageUrl}) center/cover`
+                    : "linear-gradient(135deg,hsl(var(--primary)),hsl(var(--primary-deep)))",
+                }}
+              />
+              <span>c/{community.id}</span>
+            </>
+          ) : (
+            <>
+              <Home className="size-4" />
+              <span>Home</span>
+            </>
+          )}
+          <ChevronDown className="size-3.5 opacity-50" />
+        </Button>
+      </DropdownMenuTrigger>
+      <DropdownMenuContent align="start" className="w-72">
+        <DropdownMenuItem asChild>
+          <Link href="/" className="gap-2"><Home className="size-4" /> Home</Link>
+        </DropdownMenuItem>
+        <DropdownMenuSeparator />
+        <DropdownMenuLabel className="text-[10px] uppercase tracking-wider text-muted-foreground">
+          Your communities
+        </DropdownMenuLabel>
+        <Communities />
+      </DropdownMenuContent>
+    </DropdownMenu>
   );
-};
-export default UserMenu;
+}

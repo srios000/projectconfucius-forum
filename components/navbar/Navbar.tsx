@@ -1,64 +1,36 @@
-import { defaultMenuItem } from "@/atoms/uiAtom";
-import { useSession } from "@/lib/auth-client";
-import useDirectory from "@/hooks/useDirectory";
-import { Flex, Image, Text } from "@chakra-ui/react";
-import React from "react";
-import Directory from "./directory/Directory";
-import RightContent from "./right-content/RightContent";
-import SearchInput from "./SearchInput";
+"use client";
 
-/**
- * The primary navigation header for the application.
- * Contains the site logo, community directory (for logged-in users), search input, and user authentication controls.
- * @returns A sticky, responsive navbar component.
- */
-const Navbar: React.FC = () => {
+import Link from "next/link";
+import { useSession } from "@/lib/auth-client";
+import SearchTrigger from "./SearchTrigger";
+import RightContent from "./right-content/RightContent";
+import Directory from "./directory/Directory";
+import { ComposerLauncher } from "@/components/posts/composer/ComposerLauncher";
+import MobileSidebarSheet from "@/components/layout/MobileSidebarSheet";
+
+export default function Navbar() {
   const { data: session, isPending } = useSession();
-  const user = session?.user ?? null; // passed to child components
-  const { onSelectMenuItem } = useDirectory();
+  const user = session?.user ?? null;
 
   return (
-    <Flex
-      bg={{ base: "white", _dark: "gray.900" }}
-      height="62px"
-      padding="10px 12px"
-      justify={{ md: "space-between" }}
-      position="sticky"
-      top="4px"
-      zIndex="999"
-      // Rounded props
-      border="1px solid"
-      borderColor={{ base: "gray.300", _dark: "gray.700" }}
-      borderRadius="xl"
-      m={{ base: 1, md: 1.5 }}
-      shadow="lg"
-    >
-      <Flex
-        align="center"
-        width={{ base: "40px", md: "auto" }}
-        mr={{ base: 0, md: 2 }}
-        onClick={() => onSelectMenuItem(defaultMenuItem)}
-        cursor="pointer"
-      >
-        {/* Logo which is always visible */}
-        <Image src="/images/logo.svg" height="30px" alt="Website logo" ml={1} />
+    <header className="sticky top-1 z-50 mx-1.5 mt-1.5 rounded-2xl border border-border bg-card shadow-lg">
+      <div className="flex h-[62px] items-center gap-3 px-3">
+        <MobileSidebarSheet />
+        <Link href="/" className="flex items-center gap-2 shrink-0">
+          <div
+            className="size-7 rounded-lg relative shadow-[0_2px_6px_-2px_hsl(var(--primary)/0.5),inset_0_1px_0_rgba(255,255,255,0.2)]"
+            style={{ background: "linear-gradient(135deg, hsl(var(--primary)), hsl(var(--primary-deep)))" }}
+          >
+            <div className="absolute inset-[6px] border-[1.5px] border-white/85 rounded" />
+          </div>
+          <span className="hidden md:inline font-extrabold tracking-tight text-base">PCF</span>
+        </Link>
 
-        {/* Logo name not visible on mobile */}
-        <Text
-          display={{ base: "none", md: "unset" }}
-          fontSize="20pt"
-          fontWeight={800}
-          ml={2}
-        >
-          Circus
-        </Text>
-      </Flex>
-      {/* Community directory only visible when user is logged in */}
-      {user && <Directory />}
-      <SearchInput />
-      {/* Changes depending on whether user is authenticated or not */}
-      <RightContent user={user} loading={isPending} />
-    </Flex>
+        {user && <Directory />}
+        <SearchTrigger />
+        <ComposerLauncher />
+        <RightContent user={user} loading={isPending} />
+      </div>
+    </header>
   );
-};
-export default Navbar;
+}

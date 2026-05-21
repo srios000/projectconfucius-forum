@@ -137,7 +137,6 @@ const Communities: React.FC = () => {
         <Stack gap={2}>
           <PersonalHome />
         </Stack>
-        <></>
       </PageContent>
     </>
   );

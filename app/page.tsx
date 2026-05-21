@@ -4,7 +4,6 @@ import { getQueryClient } from "@/lib/queries/client";
 import { keys } from "@/lib/queries/keys";
 import { getPostsAction } from "@/app/actions/reads";
 import HomePageClient from "./HomePageClient";
-import { Button } from "@/components/ui/button";
 
 /**
  * The main landing page of the application.
@@ -25,9 +24,6 @@ export default async function Home() {
 
   return (
     <HydrationBoundary state={dehydrate(queryClient)}>
-      <div className="font-sans p-4">
-        <Button>PCF smoke test (Mountain Jade) — remove in phase 3</Button>
-      </div>
       <HomePageClient />
     </HydrationBoundary>
   );

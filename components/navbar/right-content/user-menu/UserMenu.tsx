@@ -1,61 +1,39 @@
-import ProfileModal from "@/components/modal/profile/ProfileModal";
-import { MenuPositioner, MenuRoot } from "@chakra-ui/react";
+"use client";
+import Link from "next/link";
 import { SessionUser } from "@/types/sessionUser";
-import React, { useState } from "react";
-import UserMenuButton from "./UserMenuButton";
-import UserMenuList from "./UserMenuList";
+import {
+  DropdownMenu, DropdownMenuTrigger, DropdownMenuContent,
+  DropdownMenuItem, DropdownMenuSeparator, DropdownMenuLabel,
+} from "@/components/ui/dropdown-menu";
+import { Button } from "@/components/ui/button";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { signOut } from "@/lib/auth-client";
 
-/**
- * @param user - session user currently logged in if any
- */
-type UserMenuProps = {
-  user?: SessionUser | null;
-};
-
-/**
- * User menu which has a button to show menu options.
- * Both the button and the options change depending on the authentication status of the user.
- * If the user is authenticated:
- *  - Menu button will display:
- *    - User icon
- *    - User name
- *  - Menu options will display:
- *    - Profile option
- *    - Log out option
- *
- * If the user is unauthenticated:
- *  - Menu button will display:
- *    - Generic user icon
- *    - Log in or sign up option
- * @param {User | null} user - user currently logged in if any
- *
- * @returns React user menu component
- *
- * @requires UserMenuButton - button which changes depending on the authentication status of the user
- * @requires UserMenuList - list of menu options which changes depending on the authentication status of the user
- */
-const UserMenu: React.FC<UserMenuProps> = ({ user }) => {
-  const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const [isProfileModalOpen, setProfileModalOpen] = useState(false);
-
+export default function UserMenu({ user }: { user: SessionUser }) {
+  const initials = (user.name ?? user.email ?? "?")
+    .split(/\s+/).map(s => s[0]).slice(0, 2).join("").toUpperCase();
   return (
-    <>
-      <ProfileModal
-        open={isProfileModalOpen}
-        handleClose={() => setProfileModalOpen(false)}
-      />
-
-      <MenuRoot
-        open={isMenuOpen}
-        onOpenChange={({ open }: { open: boolean }) => setIsMenuOpen(open)}
-      >
-        <UserMenuButton user={user} isMenuOpen={isMenuOpen} />
-        <MenuPositioner>
-          <UserMenuList user={user} setProfileModalOpen={setProfileModalOpen} />
-        </MenuPositioner>
-      </MenuRoot>
-    </>
+    <DropdownMenu>
+      <DropdownMenuTrigger asChild>
+        <Button variant="ghost" size="sm" className="gap-2">
+          <Avatar className="size-6">
+            {user.image && <AvatarImage src={user.image} alt="" />}
+            <AvatarFallback className="text-[10px]">{initials}</AvatarFallback>
+          </Avatar>
+          <span className="hidden md:inline max-w-[120px] truncate">{user.name ?? user.email}</span>
+        </Button>
+      </DropdownMenuTrigger>
+      <DropdownMenuContent align="end" className="w-52">
+        <DropdownMenuLabel className="font-normal">
+          <div className="font-semibold truncate">{user.name ?? "u/anon"}</div>
+          <div className="text-xs text-muted-foreground truncate">{user.email}</div>
+        </DropdownMenuLabel>
+        <DropdownMenuSeparator />
+        <DropdownMenuItem asChild><Link href="/settings/profile">Profile</Link></DropdownMenuItem>
+        <DropdownMenuItem asChild><Link href="/saved">Saved posts</Link></DropdownMenuItem>
+        <DropdownMenuSeparator />
+        <DropdownMenuItem onClick={() => signOut()}>Sign out</DropdownMenuItem>
+      </DropdownMenuContent>
+    </DropdownMenu>
   );
-};
-
-export default UserMenu;
+}
