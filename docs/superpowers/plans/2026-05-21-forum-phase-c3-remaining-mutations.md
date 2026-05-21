@@ -2413,7 +2413,7 @@ git commit -m "feat(queries): useUpload/DeleteCommunityImageMutation with detail
 
 Preserves `{ updateImage, deleteCommunityImage, uploadingImage }` surface. Drops the `setUi(currentCommunity.imageUrl)` and `setQueryData(snippets)` writes — invalidation refreshes both `community.detail` (which `currentCommunity` mirrors via the SSR-hydrated `useEffect` in PostClientPage / detail page) and `community.snippets`. The mirror to `uiAtom.currentCommunity` was a UI optimism layer; without it there's a one-round-trip delay before the header image refreshes, identical to other community fields after C3.
 
-- [ ] **Step 1: Replace the shell**
+- [x] **Step 1: Replace the shell**
 
 Replace `hooks/community/useCommunityImage.ts`:
 
@@ -2472,7 +2472,7 @@ const useCommunityImage = (communityData: Community) => {
 export default useCommunityImage;
 ```
 
-- [ ] **Step 2: Verify types**
+- [x] **Step 2: Verify types**
 
 ```bash
 pnpm typecheck
@@ -2480,11 +2480,11 @@ pnpm typecheck
 
 Expected: clean.
 
-- [ ] **Step 3: Smoke in browser**
+- [x] **Step 3: Smoke in browser**
 
 Sign in as a community admin. Open Community Settings → Update Image, crop and submit. Expected: image upload succeeds; after one round trip the new image appears in the community header. Delete the image — same one-round-trip refresh.
 
-- [ ] **Step 4: Commit**
+- [x] **Step 4: Commit**
 
 ```bash
 git add hooks/community/useCommunityImage.ts
