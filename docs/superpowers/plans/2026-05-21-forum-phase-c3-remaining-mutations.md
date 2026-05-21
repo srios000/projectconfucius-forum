@@ -248,7 +248,7 @@ git commit -m "feat(queries): useCreateCommentMutation with comments + post-deta
 
 Wraps `deleteCommentAction`. Server cascades descendant deletion; we no longer compute descendants client-side (that was optimistic UI). On success: invalidate `keys.comments.forPost(postId)` and `keys.posts.detail(postId)`.
 
-- [ ] **Step 1: Write the failing test**
+- [x] **Step 1: Write the failing test**
 
 Create `__tests__/lib/queries/comments/use-delete-comment-mutation.test.tsx`:
 
@@ -294,7 +294,7 @@ describe("useDeleteCommentMutation", () => {
 });
 ```
 
-- [ ] **Step 2: Run test to confirm it fails**
+- [x] **Step 2: Run test to confirm it fails**
 
 ```bash
 pnpm test __tests__/lib/queries/comments/use-delete-comment-mutation.test.tsx
@@ -302,7 +302,7 @@ pnpm test __tests__/lib/queries/comments/use-delete-comment-mutation.test.tsx
 
 Expected: FAIL — module not found.
 
-- [ ] **Step 3: Write the primitive**
+- [x] **Step 3: Write the primitive**
 
 Create `lib/queries/comments/use-delete-comment-mutation.ts`:
 
@@ -328,7 +328,7 @@ export function useDeleteCommentMutation() {
 }
 ```
 
-- [ ] **Step 4: Run test to verify it passes**
+- [x] **Step 4: Run test to verify it passes**
 
 ```bash
 pnpm test __tests__/lib/queries/comments/use-delete-comment-mutation.test.tsx
@@ -336,7 +336,7 @@ pnpm test __tests__/lib/queries/comments/use-delete-comment-mutation.test.tsx
 
 Expected: PASS.
 
-- [ ] **Step 5: Commit**
+- [x] **Step 5: Commit**
 
 ```bash
 git add lib/queries/comments/use-delete-comment-mutation.ts __tests__/lib/queries/comments/use-delete-comment-mutation.test.tsx
