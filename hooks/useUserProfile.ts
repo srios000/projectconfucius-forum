@@ -1,17 +1,23 @@
 import { useSession } from "@/lib/auth-client";
-import { profileNameAction, removeProfileImageAction } from "@/app/actions/profile";
 import { useRouter } from "next/navigation";
-import { useState } from "react";
 import useCustomToast from "./useCustomToast";
-import { uploadImage } from "@/lib/upload/uploadImage";
+import {
+  useUploadProfileImageMutation,
+  useRemoveProfileImageMutation,
+  useUpdateProfileNameMutation,
+} from "@/lib/queries/profile/use-profile-mutations";
 
+/**
+ * Shell over the three profile mutations. Preserves the
+ * `{ updateImage, removeImage, updateName, loading }` surface used by
+ * ProfileModal. router.refresh() is retained because profile data is read
+ * from server components today; the mutation invalidation hits
+ * keys.profile(userId), which is forward-compatible plumbing for when a
+ * useProfileQuery consumer lands.
+ */
 /**
  * A custom hook that provides functionality for managing the authenticated user's profile.
  * Name changes propagate to the user's posts/comments via a server action.
- *
- * Phase A: profile image upload is deferred to Phase B — `updateImage` is a
- * no-op that surfaces a toast; `removeImage` clears the stored image. The
- * functions are kept exported so callers compile unchanged.
  * @returns An object containing functions for profile updates and associated loading states.
  */
 const useUserProfile = () => {
@@ -19,13 +25,17 @@ const useUserProfile = () => {
   const user = session?.user ?? null;
   const router = useRouter();
   const showToast = useCustomToast();
-  const [loading, setLoading] = useState(false);
+  const uploadMutation = useUploadProfileImageMutation();
+  const removeMutation = useRemoveProfileImageMutation();
+  const nameMutation = useUpdateProfileNameMutation();
+
+  const loading =
+    uploadMutation.isPending || removeMutation.isPending || nameMutation.isPending;
 
   const updateImage = async (blob: Blob) => {
     if (!user) return false;
     try {
-      setLoading(true);
-      await uploadImage("profile-image", blob);
+      await uploadMutation.mutateAsync({ blob });
       router.refresh();
       showToast({
         title: "Profile updated",
@@ -41,15 +51,13 @@ const useUserProfile = () => {
         status: "error",
       });
       return false;
-    } finally {
-      setLoading(false);
     }
   };
 
   const removeImage = async () => {
     if (!user) return false;
     try {
-      await removeProfileImageAction();
+      await removeMutation.mutateAsync();
       router.refresh();
       showToast({
         title: "Profile updated",
@@ -71,8 +79,7 @@ const useUserProfile = () => {
   const updateName = async (userName: string) => {
     if (!user) return false;
     try {
-      setLoading(true);
-      await profileNameAction(userName);
+      await nameMutation.mutateAsync({ name: userName });
       router.refresh();
       return true;
     } catch (error) {
@@ -83,17 +90,10 @@ const useUserProfile = () => {
         status: "error",
       });
       return false;
-    } finally {
-      setLoading(false);
     }
   };
 
-  return {
-    updateImage,
-    removeImage,
-    updateName,
-    loading,
-  };
+  return { updateImage, removeImage, updateName, loading };
 };
 
 export default useUserProfile;

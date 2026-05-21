@@ -2688,7 +2688,7 @@ git commit -m "feat(queries): useUpload/Remove ProfileImage + UpdateProfileName 
 
 Preserves `{ updateImage, removeImage, updateName, loading }` surface used by `ProfileModal.tsx`. `router.refresh()` calls stay (profile data lives in server components today; the TanStack invalidation is forward-compatible plumbing — see Known Limitation #5).
 
-- [ ] **Step 1: Replace the shell**
+- [x] **Step 1: Replace the shell**
 
 Replace `hooks/useUserProfile.ts`:
 
@@ -2789,7 +2789,7 @@ const useUserProfile = () => {
 export default useUserProfile;
 ```
 
-- [ ] **Step 2: Verify types**
+- [x] **Step 2: Verify types**
 
 ```bash
 pnpm typecheck
@@ -2797,11 +2797,11 @@ pnpm typecheck
 
 Expected: clean.
 
-- [ ] **Step 3: Smoke in browser**
+- [x] **Step 3: Smoke in browser**
 
 Sign in. Open Profile modal. Update display name — toast appears; refresh and the name persists. Update profile image (crop + submit) — toast appears; image renders in the header after `router.refresh()`. Remove the image — toast appears; default avatar returns.
 
-- [ ] **Step 4: Commit**
+- [x] **Step 4: Commit**
 
 ```bash
 git add hooks/useUserProfile.ts
