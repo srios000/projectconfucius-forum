@@ -1543,7 +1543,7 @@ git commit -m "feat(queries): useJoinCommunityMutation with snippets + detail + 
 
 Preserves `{ joinCommunity, joinLoading, joinError }` surface. Auth gate and toast stay. The `setQueryData` write on snippets and the manual `invalidateQueries(detail)` go away; the mutation owns both. The optimistic `setUi(currentCommunity.numberOfMembers++)` also goes away — invalidating `community.detail` refreshes the value canonically.
 
-- [ ] **Step 1: Replace the shell**
+- [x] **Step 1: Replace the shell**
 
 Replace `hooks/community/useJoinCommunity.tsx`:
 
@@ -1589,7 +1589,7 @@ const useJoinCommunity = () => {
 export default useJoinCommunity;
 ```
 
-- [ ] **Step 2: Verify types**
+- [x] **Step 2: Verify types**
 
 ```bash
 pnpm typecheck
@@ -1597,11 +1597,11 @@ pnpm typecheck
 
 Expected: clean.
 
-- [ ] **Step 3: Smoke in browser**
+- [x] **Step 3: Smoke in browser**
 
 Sign in. Visit a community you don't belong to, click Join. Expected: button flips to "Joined" within one round trip; member count in the header increments via `community.detail` invalidation (one network round trip — no optimistic UI). Navigate to a different community then back — member count remains correct. Devtools shows `community.snippets.<userId>`, `community.detail.<id>`, `community.members.<id>` invalidated.
 
-- [ ] **Step 4: Commit**
+- [x] **Step 4: Commit**
 
 ```bash
 git add hooks/community/useJoinCommunity.tsx
