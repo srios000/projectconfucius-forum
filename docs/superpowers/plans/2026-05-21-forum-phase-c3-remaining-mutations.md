@@ -1968,7 +1968,7 @@ git commit -m "refactor(community): route useCommunityPrivacy through useCommuni
 
 Replaces `hooks/community/useCommunityMembers.ts`'s `fetchQuery + useState` pattern. Required so `useRemoveCommunityMemberMutation` invalidation actually refreshes the mounted modal.
 
-- [ ] **Step 1: Write the query primitive**
+- [x] **Step 1: Write the query primitive**
 
 Create `lib/queries/community/use-community-members-list.ts`:
 
@@ -1995,7 +1995,7 @@ export function useCommunityMembersListQuery({
 }
 ```
 
-- [ ] **Step 2: Verify types**
+- [x] **Step 2: Verify types**
 
 ```bash
 pnpm typecheck
@@ -2003,7 +2003,7 @@ pnpm typecheck
 
 Expected: clean.
 
-- [ ] **Step 3: Commit**
+- [x] **Step 3: Commit**
 
 ```bash
 git add lib/queries/community/use-community-members-list.ts
