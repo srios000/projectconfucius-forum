@@ -1,7 +1,7 @@
 import { useState } from "react";
-import { uiAtom } from "@/atoms/uiAtom";
+import { useQueryClient } from "@tanstack/react-query";
+import { keys } from "@/lib/queries/keys";
 import { Post } from "@/types/post";
-import { useSetAtom } from "jotai";
 import useCustomToast from "@/hooks/useCustomToast";
 import useCommunityState from "../community/useCommunityState";
 import { checkCommunityPermission } from "@/lib/community/communityPermissions";
@@ -24,7 +24,7 @@ import { useCreateCommentMutation } from "@/lib/queries/comments/use-create-comm
  * @returns An object containing the `onCreateComment` function and a loading state indicator.
  */
 const useCreateComment = (selectedPost: Post | null) => {
-  const setUi = useSetAtom(uiAtom);
+  const qc = useQueryClient();
   const showToast = useCustomToast();
   const [createLoading, setCreateLoading] = useState(false);
   const { communityStateValue } = useCommunityState();
@@ -59,16 +59,8 @@ const useCreateComment = (selectedPost: Post | null) => {
         commentText,
         parentId,
       });
-      setUi((prev) =>
-        prev.selectedPost
-          ? {
-            ...prev,
-            selectedPost: {
-              ...prev.selectedPost,
-              numberOfComments: prev.selectedPost.numberOfComments + 1,
-            },
-          }
-          : prev,
+      qc.setQueryData<Post>(keys.posts.detail(selectedPost.id!), (old) =>
+        old ? { ...old, numberOfComments: old.numberOfComments + 1 } : old,
       );
     } catch (error: any) {
       console.log("onCreateComment error", error);

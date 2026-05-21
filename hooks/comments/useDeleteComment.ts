@@ -1,5 +1,6 @@
-import { uiAtom } from "@/atoms/uiAtom";
-import { useSetAtom } from "jotai";
+import { useQueryClient } from "@tanstack/react-query";
+import { keys } from "@/lib/queries/keys";
+import type { Post } from "@/types/post";
 import { useState } from "react";
 import useCustomToast from "@/hooks/useCustomToast";
 import { Comment } from "../../types/comment";
@@ -18,7 +19,7 @@ import { useDeleteCommentMutation } from "@/lib/queries/comments/use-delete-comm
  * @returns An object containing the `onDeleteComment` function and the ID of the comment currently being deleted.
  */
 const useDeleteComment = () => {
-  const setUi = useSetAtom(uiAtom);
+  const qc = useQueryClient();
   const showToast = useCustomToast();
   const [deleteLoadingId, setDeleteLoadingId] = useState("");
   const mutation = useDeleteCommentMutation();
@@ -27,16 +28,8 @@ const useDeleteComment = () => {
     setDeleteLoadingId(comment.id);
     try {
       await mutation.mutateAsync({ commentId: comment.id, postId: comment.postId });
-      setUi((prev) =>
-        prev.selectedPost
-          ? {
-            ...prev,
-            selectedPost: {
-              ...prev.selectedPost,
-              numberOfComments: Math.max(0, prev.selectedPost.numberOfComments - 1),
-            },
-          }
-          : prev,
+      qc.setQueryData<Post>(keys.posts.detail(comment.postId), (old) =>
+        old ? { ...old, numberOfComments: Math.max(0, old.numberOfComments - 1) } : old,
       );
     } catch (error: any) {
       console.log("onDeleteComment error", error);

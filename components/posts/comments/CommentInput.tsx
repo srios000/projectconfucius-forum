@@ -4,7 +4,7 @@ import { Flex, Textarea, Button, Text, Stack, Icon, Box } from "@chakra-ui/react
 import { LuSend, LuTrash } from "react-icons/lu";
 import { SessionUser } from "@/types/sessionUser";
 import React, { useState } from "react";
-import { useForm } from "react-hook-form";
+import { useForm, useWatch } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import {
   commentSchema,
@@ -27,14 +27,14 @@ const CommentInput: React.FC<CommentInputProps> = ({
     register,
     handleSubmit,
     reset,
-    watch,
+    control,
     formState: { errors, isValid },
   } = useForm<CommentInputType>({
     resolver: zodResolver(commentSchema),
     mode: "onChange",
   });
 
-  const commentText = watch("text");
+  const commentText = useWatch({ control, name: "text" });
 
   const onSubmit = (data: CommentInputType) => {
     console.log("Submitting comment:", data.text);

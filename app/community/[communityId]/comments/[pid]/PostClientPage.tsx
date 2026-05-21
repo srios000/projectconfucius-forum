@@ -1,6 +1,5 @@
 "use client";
 
-import { uiAtom } from "@/atoms/uiAtom";
 import About from "@/components/community/about/About";
 import PageContent from "@/components/layout/PageContent";
 import PostLoader from "@/components/loaders/post-loader/PostLoader";
@@ -18,7 +17,6 @@ import { usePostQuery } from "@/lib/queries/posts/use-post";
 import { Community } from "@/types/community";
 import { Post } from "@/types/post";
 import { Stack } from "@chakra-ui/react";
-import { useAtom } from "jotai";
 import React, { useEffect } from "react";
 
 type PostPageProps = { communityId: string; postId: string };
@@ -26,7 +24,6 @@ type PostPageProps = { communityId: string; postId: string };
 const PostPage: React.FC<PostPageProps> = ({ communityId, postId }) => {
   const { data: communityData } = useCommunityDataQuery({ communityId });
   const { data: postData } = usePostQuery({ postId });
-  const [, setUi] = useAtom(uiAtom);
 
   const { postVotes } = usePostVoteSync();
   const { onVote, isVotePending } = usePostVote();
@@ -39,6 +36,7 @@ const PostPage: React.FC<PostPageProps> = ({ communityId, postId }) => {
   const { data: session } = useSession();
   const user = session?.user ?? null;
 
+  // currentCommunity mirror still present — removed in Commit 5.
   useEffect(() => {
     if (communityData) {
       setCommunityStateValue((prev) => ({
@@ -48,28 +46,11 @@ const PostPage: React.FC<PostPageProps> = ({ communityId, postId }) => {
     }
   }, [communityData, setCommunityStateValue]);
 
-  useEffect(() => {
-    if (postData) {
-      setUi((prev) => ({ ...prev, selectedPost: postData as Post }));
-    }
-  }, [postData, setUi]);
-
   if (loading || !communityData) {
-    return (
-      <PageContent>
-        <PostLoader />
-        <></>
-      </PageContent>
-    );
+    return (<PageContent><PostLoader /><></></PageContent>);
   }
-
   if (!canView) {
-    return (
-      <PageContent>
-        <RestrictedCommunityBanner />
-        <></>
-      </PageContent>
-    );
+    return (<PageContent><RestrictedCommunityBanner /><></></PageContent>);
   }
 
   const post = (postData ?? null) as Post | null;

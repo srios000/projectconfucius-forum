@@ -129,6 +129,7 @@ const ImageCropModal: React.FC<ImageCropModalProps> = ({
                   keepSelection
                   minWidth={50}
                 >
+                  {/* eslint-disable-next-line @next/next/no-img-element */}
                   <img
                     ref={imgRef}
                     src={imgSrc}

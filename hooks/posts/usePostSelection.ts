@@ -1,14 +1,14 @@
-import { uiAtom } from "@/atoms/uiAtom";
 import { Post } from "@/types/post";
-import { useSetAtom } from "jotai";
+import { keys } from "@/lib/queries/keys";
+import { useQueryClient } from "@tanstack/react-query";
 import { useRouter } from "next/navigation";
 
 const usePostSelection = () => {
-  const setUi = useSetAtom(uiAtom);
+  const qc = useQueryClient();
   const router = useRouter();
 
   const onSelectPost = (post: Post) => {
-    setUi((prev) => ({ ...prev, selectedPost: post }));
+    qc.setQueryData(keys.posts.detail(post.id!), post);
     router.push(`/community/${post.communityId}/comments/${post.id}`);
   };
 

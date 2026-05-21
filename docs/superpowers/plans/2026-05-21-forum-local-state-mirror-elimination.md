@@ -1537,7 +1537,7 @@ eliminated."
 - Modify: `hooks/posts/usePostSelection.ts`
 - Test: `__tests__/hooks/posts/usePostSelection.test.tsx` (new)
 
-- [ ] **Step 1: Write the failing test**
+- [x] **Step 1: Write the failing test**
 
 ```tsx
 // __tests__/hooks/posts/usePostSelection.test.tsx
@@ -1574,12 +1574,12 @@ describe("usePostSelection", () => {
 });
 ```
 
-- [ ] **Step 2: Run test to verify it fails**
+- [x] **Step 2: Run test to verify it fails**
 
 Run: `pnpm test __tests__/hooks/posts/usePostSelection.test.tsx`
 Expected: FAIL — current implementation writes the atom, not the query cache.
 
-- [ ] **Step 3: Rewrite `hooks/posts/usePostSelection.ts`**
+- [x] **Step 3: Rewrite `hooks/posts/usePostSelection.ts`**
 
 ```ts
 import { Post } from "@/types/post";
@@ -1602,7 +1602,7 @@ const usePostSelection = () => {
 export default usePostSelection;
 ```
 
-- [ ] **Step 4: Run test to verify it passes**
+- [x] **Step 4: Run test to verify it passes**
 
 Run: `pnpm test __tests__/hooks/posts/usePostSelection.test.tsx`
 Expected: PASS.
@@ -1613,7 +1613,7 @@ Expected: PASS.
 - Modify: `hooks/comments/useCreateComment.ts`
 - Modify: `hooks/comments/useDeleteComment.ts`
 
-- [ ] **Step 1: Replace the atom-write block in `useCreateComment.ts`**
+- [x] **Step 1: Replace the atom-write block in `useCreateComment.ts`**
 
 In [`hooks/comments/useCreateComment.ts`](../../../hooks/comments/useCreateComment.ts), delete the `setUi((prev) => ...)` block at lines 62-71 and replace with:
 
@@ -1633,7 +1633,7 @@ qc.setQueryData<Post>(keys.posts.detail(selectedPost.id!), (old) =>
 
 Remove the `import { uiAtom } from "@/atoms/uiAtom";` and `import { useSetAtom } from "jotai";` lines (no longer used).
 
-- [ ] **Step 2: Replace the atom-write block in `useDeleteComment.ts`**
+- [x] **Step 2: Replace the atom-write block in `useDeleteComment.ts`**
 
 In [`hooks/comments/useDeleteComment.ts`](../../../hooks/comments/useDeleteComment.ts), delete the `setUi((prev) => ...)` block at lines 30-40 and replace with:
 
@@ -1654,12 +1654,12 @@ qc.setQueryData<Post>(keys.posts.detail(comment.postId), (old) =>
 
 Remove the `import { uiAtom } from "@/atoms/uiAtom";` and `import { useSetAtom } from "jotai";` lines.
 
-- [ ] **Step 3: Verify typecheck**
+- [x] **Step 3: Verify typecheck**
 
 Run: `pnpm typecheck`
 Expected: PASS.
 
-- [ ] **Step 4: Write a test for the count bump**
+- [x] **Step 4: Write a test for the count bump**
 
 ```tsx
 // __tests__/hooks/comments/useCreateComment.test.tsx (new)
@@ -1707,7 +1707,7 @@ describe("useCreateComment", () => {
 
 Repeat the symmetric structure for `useDeleteComment.test.tsx` (mock `useDeleteCommentMutation`, assert `numberOfComments` drops from 3 to 2 after `deleteComment({ id, postId: "p1" } as any)`).
 
-- [ ] **Step 5: Run tests**
+- [x] **Step 5: Run tests**
 
 Run: `pnpm test __tests__/hooks/comments/`
 Expected: PASS for the two new files plus the existing comment-mutation tests.
@@ -1717,7 +1717,7 @@ Expected: PASS for the two new files plus the existing comment-mutation tests.
 **Files:**
 - Modify: `app/community/[communityId]/comments/[pid]/PostClientPage.tsx`
 
-- [ ] **Step 1: Replace the file (final shape)**
+- [x] **Step 1: Replace the file (final shape)**
 
 ```tsx
 "use client";
@@ -1811,7 +1811,7 @@ const PostPage: React.FC<PostPageProps> = ({ communityId, postId }) => {
 export default PostPage;
 ```
 
-- [ ] **Step 2: Verify typecheck**
+- [x] **Step 2: Verify typecheck**
 
 Run: `pnpm typecheck`
 Expected: PASS.
@@ -1822,7 +1822,7 @@ Expected: PASS.
 - Modify: any file that reads `uiAtom.selectedPost` outside `usePostState.ts` (to be deleted next).
 - Modify: any file that writes `uiAtom.selectedPost`.
 
-- [ ] **Step 1: Find all references**
+- [x] **Step 1: Find all references**
 
 Run: `grep -rn "selectedPost" --include="*.ts" --include="*.tsx" app/ components/ hooks/ atoms/ lib/`
 
@@ -1839,7 +1839,7 @@ Expected matches (verify each):
 | `hooks/posts/usePostVote.tsx` | Already trimmed in Task 3.1 — no remaining `selectedPost`/`setUi` reads |
 | Any other readers (Icons.tsx, etc.) | Replace with direct prop or query read as appropriate |
 
-- [ ] **Step 2: For each non-matched read site found**
+- [x] **Step 2: For each non-matched read site found**
 
 If a remaining reader is found, replace with either:
 - a) Read from `usePostQuery({ postId })` if the postId is in scope (route param or prop).
@@ -1853,12 +1853,12 @@ The grep result is the authoritative list; if a site needs deeper analysis the t
 - Modify: `atoms/uiAtom.ts`
 - Delete: `hooks/posts/usePostState.ts`
 
-- [ ] **Step 1: Confirm no remaining `uiAtom.selectedPost` reads**
+- [x] **Step 1: Confirm no remaining `uiAtom.selectedPost` reads**
 
 Run: `grep -rn "selectedPost" --include="*.ts" --include="*.tsx" app/ components/ hooks/ lib/ | grep -v "selectedPost:" | grep -v "atoms/uiAtom" | grep -v "PostClientPage" | grep -v "Comments.tsx" | grep -v "CommentItem" | grep -v "useCreateComment\|useDeleteComment"`
 Expected: No matches. (The remaining hits are either field declarations, props, or already-handled sites.)
 
-- [ ] **Step 2: Edit `atoms/uiAtom.ts`**
+- [x] **Step 2: Edit `atoms/uiAtom.ts`**
 
 ```ts
 import { atom } from "jotai";
@@ -1895,20 +1895,20 @@ export const uiAtom = atom<UiState>(defaultUiState);
 
 (Removed: `import { Post } from "@/types/post";`, the `selectedPost: Post | null` field, the `selectedPost: null` default.)
 
-- [ ] **Step 3: Delete `hooks/posts/usePostState.ts`**
+- [x] **Step 3: Delete `hooks/posts/usePostState.ts`**
 
 ```bash
 rm hooks/posts/usePostState.ts
 ```
 
-- [ ] **Step 4: Run the full green gate**
+- [x] **Step 4: Run the full green gate**
 
-Run: `pnpm test && pnpm typecheck && pnpm eslint && pnpm build`
+Run: `pnpm test; pnpm typecheck; pnpm eslint; pnpm build`
 Expected: all green.
 
 ### Task 4.6: Commit selectedPost deletion
 
-- [ ] **Step 1: Commit**
+- [x] **Step 1: Commit**
 
 ```bash
 git add -A

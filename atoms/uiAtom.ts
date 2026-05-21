@@ -1,7 +1,6 @@
 import { atom } from "jotai";
 import { TiHome } from "react-icons/ti";
 import { Community } from "@/types/community";
-import { Post } from "@/types/post";
 import { DirectoryMenuItem } from "@/types/directoryMenu";
 
 interface DirectoryMenuState {
@@ -10,7 +9,6 @@ interface DirectoryMenuState {
 }
 
 export interface UiState {
-  selectedPost: Post | null;
   currentCommunity: Community | null;
   directoryMenu: DirectoryMenuState;
   savedPostsModalOpen: boolean;
@@ -24,7 +22,6 @@ export const defaultMenuItem: DirectoryMenuItem = {
 };
 
 const defaultUiState: UiState = {
-  selectedPost: null,
   currentCommunity: null,
   directoryMenu: { isOpen: false, selectedMenuItem: defaultMenuItem },
   savedPostsModalOpen: false,

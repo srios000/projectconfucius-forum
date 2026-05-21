@@ -3,7 +3,7 @@ import useCustomToast from "@/hooks/useCustomToast";
 import useSavedPosts from "@/hooks/posts/useSavedPosts";
 import { Flex, Stack } from "@chakra-ui/react";
 import { useRouter } from "next/navigation";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import PostItemError from "../../ui/ErrorMessage";
 import VoteSection from "./VoteSection";
 import PostDetails from "./PostDetails";
@@ -115,10 +115,13 @@ const PostItem: React.FC<PostItemProps> = ({
     }
   };
 
-  const getPostLink = () => {
-    const baseUrl = `${window.location.protocol}//${window.location.host}`;
-    return `${baseUrl}/community/${post.communityId}/comments/${post.id}`;
-  };
+  const [postLink, setPostLink] = useState(
+    `/community/${post.communityId}/comments/${post.id}`
+  );
+
+  useEffect(() => {
+    setPostLink(`${window.location.origin}/community/${post.communityId}/comments/${post.id}`);
+  }, [post.communityId, post.id]);
 
   const handleSave = async (
     event: React.MouseEvent<HTMLButtonElement, MouseEvent>
@@ -177,7 +180,7 @@ const PostItem: React.FC<PostItemProps> = ({
           loadingDelete={loadingDelete}
           userIsCreator={userIsCreator}
           userIsAdmin={userIsAdmin}
-          postLink={getPostLink()}
+          postLink={postLink}
           handleSave={handleSave}
           isSaved={isSaved}
           showToast={showToast}
