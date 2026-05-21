@@ -171,7 +171,7 @@ git commit -m "feat: add formatUserHandle helper (Plan 2)"
 - Modify: `lib/auth/provision.ts`
 - Modify: `__tests__/auth/provision.test.ts`
 
-- [ ] **Step 1: Extend the failing tests**
+- [x] **Step 1: Extend the failing tests**
 
 Replace the body of `__tests__/auth/provision.test.ts` with:
 
@@ -287,7 +287,7 @@ describe("provisionLocalUser", () => {
 });
 ```
 
-- [ ] **Step 2: Run tests, verify failure**
+- [x] **Step 2: Run tests, verify failure**
 
 ```bash
 pnpm test __tests__/auth/provision.test.ts
@@ -295,7 +295,7 @@ pnpm test __tests__/auth/provision.test.ts
 
 Expected: FAIL (current `provisionLocalUser` rejects `username`/`image` typed args; doesn't write the new fields).
 
-- [ ] **Step 3: Update `lib/auth/provision.ts`**
+- [x] **Step 3: Update `lib/auth/provision.ts`**
 
 Replace the file with:
 
@@ -367,7 +367,7 @@ export async function provisionLocalUser(input: {
 }
 ```
 
-- [ ] **Step 4: Run tests, verify pass**
+- [x] **Step 4: Run tests, verify pass**
 
 ```bash
 pnpm test __tests__/auth/provision.test.ts
@@ -375,7 +375,7 @@ pnpm test __tests__/auth/provision.test.ts
 
 Expected: 6 passed.
 
-- [ ] **Step 5: Commit**
+- [x] **Step 5: Commit**
 
 ```bash
 git add lib/auth/provision.ts __tests__/auth/provision.test.ts
