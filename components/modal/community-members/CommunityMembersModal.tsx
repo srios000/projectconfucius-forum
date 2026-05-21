@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import {
   Box,
   DialogBackdrop,
@@ -19,7 +19,7 @@ import {
   Text,
 } from "@chakra-ui/react";
 import { CommunityMember } from "@/types/communityMember";
-import useCommunityMembers from "@/hooks/community/useCommunityMembers";
+import { useCommunityMembersListQuery } from "@/lib/queries/community/use-community-members-list";
 import { LuTrash } from "react-icons/lu";
 import { useAtomValue } from "jotai";
 import { uiAtom } from "@/atoms/uiAtom";
@@ -46,23 +46,21 @@ const CommunityMembersModal: React.FC<CommunityMembersModalProps> = ({
   onClose,
   communityId,
 }) => {
-  const { members, loading, error, loadMembers } = useCommunityMembers();
+  const membersQuery = useCommunityMembersListQuery({
+    communityId,
+    enabled: isOpen,
+  });
+  const members = membersQuery.data ?? [];
+  const loading = membersQuery.isLoading;
+  const error = membersQuery.error;
   const memberCount = members?.length ?? 0;
   const currentCommunity = useAtomValue(uiAtom).currentCommunity;
   const { isAdmin } = useCommunityPermissions(currentCommunity ?? undefined);
   const { removeMember, loading: removeLoading } = useRemoveCommunityMember();
   const [memberToRemove, setMemberToRemove] = useState<string | null>(null);
 
-  useEffect(() => {
-    if (!isOpen) return;
-    loadMembers(communityId);
-  }, [isOpen, communityId, loadMembers]);
-
   const handleRemoveMember = async (memberId: string) => {
-    const success = await removeMember(communityId, memberId);
-    if (success) {
-      loadMembers(communityId);
-    }
+    await removeMember(communityId, memberId);
   };
 
   const confirmRemoveMember = async () => {

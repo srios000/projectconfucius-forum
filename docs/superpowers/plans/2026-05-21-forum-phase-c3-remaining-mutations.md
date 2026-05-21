@@ -2124,7 +2124,7 @@ git commit -m "feat(queries): useRemoveCommunityMemberMutation with members + sn
 - Delete: `hooks/community/useCommunityMembers.ts`
 - Modify: `components/modal/community-members/CommunityMembersModal.tsx`
 
-- [ ] **Step 1: Replace `hooks/community/useRemoveCommunityMember.ts`**
+- [x] **Step 1: Replace `hooks/community/useRemoveCommunityMember.ts`**
 
 Replace with:
 
@@ -2166,13 +2166,13 @@ const useRemoveCommunityMember = () => {
 export default useRemoveCommunityMember;
 ```
 
-- [ ] **Step 2: Delete `hooks/community/useCommunityMembers.ts`**
+- [x] **Step 2: Delete `hooks/community/useCommunityMembers.ts`**
 
 ```bash
 rm hooks/community/useCommunityMembers.ts
 ```
 
-- [ ] **Step 3: Update `components/modal/community-members/CommunityMembersModal.tsx`**
+- [x] **Step 3: Update `components/modal/community-members/CommunityMembersModal.tsx`**
 
 Three changes:
 
@@ -2213,7 +2213,7 @@ The `removeMember` mutation already invalidates `keys.community.members(communit
 
 The error fallback rendering at the bottom of `renderContent` (around line 87) needs no change — `error` is truthy/falsy either way, so `{error ? "Failed to load subscribers." : "No subscribers found."}` still works whether `error` is the previous `string | null` or the query's `Error | null`.
 
-- [ ] **Step 4: Verify types**
+- [x] **Step 4: Verify types**
 
 ```bash
 pnpm typecheck
@@ -2221,7 +2221,7 @@ pnpm typecheck
 
 Expected: clean.
 
-- [ ] **Step 5: Run community tests**
+- [x] **Step 5: Run community tests**
 
 ```bash
 pnpm test __tests__/lib/queries/community
@@ -2229,11 +2229,11 @@ pnpm test __tests__/lib/queries/community
 
 Expected: PASS — all new mutation tests.
 
-- [ ] **Step 6: Smoke in browser**
+- [x] **Step 6: Smoke in browser**
 
 Sign in as a community admin. Open Community Members modal. Expected: members list loads automatically. Click remove on a member, confirm the dialog. Expected: member disappears from the list within one round trip (no manual `loadMembers` call). Devtools shows `community.members.<id>` and `community.snippets.<memberId>` invalidated.
 
-- [ ] **Step 7: Commit**
+- [x] **Step 7: Commit**
 
 ```bash
 git add hooks/community/useRemoveCommunityMember.ts components/modal/community-members/CommunityMembersModal.tsx

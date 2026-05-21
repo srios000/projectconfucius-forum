@@ -1,7 +1,10 @@
-import { useState } from "react";
 import useCustomToast from "../useCustomToast";
-import { removeCommunityMemberAction } from "@/app/actions/community";
+import { useRemoveCommunityMemberMutation } from "@/lib/queries/community/use-remove-community-member-mutation";
 
+/**
+ * Shell over useRemoveCommunityMemberMutation. Preserves the `{ removeMember,
+ * loading }` surface and the success/failure toasts.
+ */
 /**
  * A custom hook that provides functionality for an administrator to remove a member from a community.
  * It handles the backend removal logic and provides feedback via toast notifications.
@@ -9,12 +12,11 @@ import { removeCommunityMemberAction } from "@/app/actions/community";
  */
 const useRemoveCommunityMember = () => {
   const showToast = useCustomToast();
-  const [loading, setLoading] = useState(false);
+  const mutation = useRemoveCommunityMemberMutation();
 
   const removeMember = async (communityId: string, memberId: string) => {
-    setLoading(true);
     try {
-      await removeCommunityMemberAction(communityId, memberId);
+      await mutation.mutateAsync({ communityId, memberId });
       showToast({
         title: "User removed",
         description: "The user has been removed from the community.",
@@ -29,12 +31,10 @@ const useRemoveCommunityMember = () => {
         status: "error",
       });
       return false;
-    } finally {
-      setLoading(false);
     }
   };
 
-  return { removeMember, loading };
+  return { removeMember, loading: mutation.isPending };
 };
 
 export default useRemoveCommunityMember;
