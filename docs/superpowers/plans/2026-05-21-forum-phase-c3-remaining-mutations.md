@@ -2858,9 +2858,9 @@ Expected: clean.
 Run through each manually. These cover the full C3 invalidation contract for the four remaining groups:
 
 **Comments:**
-- [ ] Post a top-level comment on a post you can comment on → appears within one round trip; post header `numberOfComments` increments
-- [ ] Reply to an existing comment → appears as a child
-- [ ] Delete a comment with replies → all descendants disappear (server cascades); count decrements
+- [x] Post a top-level comment on a post you can comment on → appears within one round trip; post header `numberOfComments` increments
+- [x] Reply to an existing comment → appears as a child
+- [x] Delete a comment with replies → all descendants disappear (server cascades); count decrements
 
 **Admin:**
 - [ ] Open `AdminManager` for a community you admin → list loads automatically
@@ -2868,10 +2868,10 @@ Run through each manually. These cover the full C3 invalidation contract for the
 - [ ] Remove an admin → list updates within one round trip
 
 **Community:**
-- [ ] Create a new community → `router.push` lands on the community page; community visible in lists
-- [ ] Join a community → button flips; member count refreshes (one round trip)
-- [ ] Leave a community → button flips; member count decrements
-- [ ] Change community privacy → header badge updates after a round trip
+- [x] Create a new community → `router.push` lands on the community page; community visible in lists
+- [x] Join a community → button flips; member count refreshes (one round trip)
+- [x] Leave a community → button flips; member count decrements
+- [x] Change community privacy → header badge updates after a round trip
 - [ ] Update community image → header image refreshes after a round trip
 - [ ] Delete community image → header reverts to default after a round trip
 - [ ] Remove a member from `CommunityMembersModal` → member disappears without a manual reload

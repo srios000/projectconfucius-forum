@@ -12,6 +12,7 @@ import {
   DialogPositioner,
   DialogRoot,
   DialogTitle,
+  Portal,
   Stack,
 } from "@chakra-ui/react";
 import React, { useEffect, useRef, useState } from "react";
@@ -108,9 +109,10 @@ const ImageCropModal: React.FC<ImageCropModalProps> = ({
         if (!open) onCancel();
       }}
     >
-      <DialogBackdrop bg="rgba(0, 0, 0, 0.5)" backdropFilter="blur(6px)" />
-      <DialogPositioner>
-        <DialogContent borderRadius={10} maxW="520px">
+      <Portal>
+        <DialogBackdrop bg="rgba(0, 0, 0, 0.5)" backdropFilter="blur(6px)" />
+        <DialogPositioner>
+          <DialogContent borderRadius={10} maxW="520px">
           <DialogHeader padding={3} textAlign="center">
             <DialogTitle>{title}</DialogTitle>
           </DialogHeader>
@@ -158,8 +160,9 @@ const ImageCropModal: React.FC<ImageCropModalProps> = ({
               </Button>
             </Stack>
           </DialogFooter>
-        </DialogContent>
-      </DialogPositioner>
+          </DialogContent>
+        </DialogPositioner>
+      </Portal>
     </DialogRoot>
   );
 };
