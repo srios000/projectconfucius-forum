@@ -46,7 +46,7 @@ AGENTS.md
 graphify-out
 GEMINI.md
 AGENTS.md
+.superpowers/
 
 .env*
-
 !.env.example
