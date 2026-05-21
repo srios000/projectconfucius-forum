@@ -923,7 +923,7 @@ pnpm test __tests__/auth/patchAuthUserImage.test.ts
 
 Expected: FAIL — module not found.
 
-- [ ] **Step 3: Create the helper**
+- [x] **Step 3: Create the helper**
 
 `lib/auth/patchAuthUserImage.ts`:
 
@@ -955,7 +955,7 @@ export async function patchAuthUserImage(
 }
 ```
 
-- [ ] **Step 4: Run the test, verify pass**
+- [x] **Step 4: Run the test, verify pass**
 
 ```bash
 pnpm test __tests__/auth/patchAuthUserImage.test.ts
@@ -963,7 +963,7 @@ pnpm test __tests__/auth/patchAuthUserImage.test.ts
 
 Expected: 4 passed.
 
-- [ ] **Step 5: Commit**
+- [x] **Step 5: Commit**
 
 ```bash
 git add lib/auth/patchAuthUserImage.ts __tests__/auth/patchAuthUserImage.test.ts
