@@ -16,7 +16,7 @@ import {
   Text,
 } from "@chakra-ui/react";
 import React, { FC } from "react";
-import { useForm } from "react-hook-form";
+import { useForm, useWatch } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { BsFillEyeFill, BsFillPersonFill } from "react-icons/bs";
 import { HiLockClosed } from "react-icons/hi";
@@ -67,7 +67,7 @@ const CreateCommunityModal: React.FC<CreateCommunityModalProps> = ({
   const {
     register,
     handleSubmit,
-    watch,
+    control,
     setValue,
     formState: { errors },
   } = useForm<CreateCommunityInput>({
@@ -79,8 +79,8 @@ const CreateCommunityModal: React.FC<CreateCommunityModalProps> = ({
     mode: "onChange",
   });
 
-  const communityName = watch("name");
-  const communityType = watch("type");
+  const communityName = useWatch({ control, name: "name" });
+  const communityType = useWatch({ control, name: "type" });
   const charRemaining = 21 - (communityName?.length || 0);
 
   const onSubmit = async (data: CreateCommunityInput) => {

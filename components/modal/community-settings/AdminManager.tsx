@@ -13,10 +13,10 @@ import {
   Stack,
   Text,
 } from "@chakra-ui/react";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import { AdminUser } from "@/types/adminUser";
 import ConfirmationDialog from "@/components/modal/ConfirmationDialog";
-import { useForm } from "react-hook-form";
+import { useForm, useWatch } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { addAdminSchema, AddAdminInput } from "@/schema/admin";
 
@@ -32,7 +32,7 @@ type AdminManagerProps = {
  */
 const AdminManager: React.FC<AdminManagerProps> = ({ communityData }) => {
   const adminsQuery = useCommunityAdminsListQuery({ communityId: communityData.id });
-  const admins = adminsQuery.data ?? [];
+  const admins = useMemo(() => adminsQuery.data ?? [], [adminsQuery.data]);
   const loading = adminsQuery.isLoading;
   const { searchUsers, findUser } = useAdminSearch();
   const { handleAddAdmin } = useAddAdmin();
@@ -41,7 +41,7 @@ const AdminManager: React.FC<AdminManagerProps> = ({ communityData }) => {
   const {
     register,
     handleSubmit,
-    watch,
+    control,
     setValue,
     formState: { errors },
     reset,
@@ -50,7 +50,7 @@ const AdminManager: React.FC<AdminManagerProps> = ({ communityData }) => {
     defaultValues: { email: "" },
   });
 
-  const emailValue = watch("email");
+  const emailValue = useWatch({ control, name: "email" });
 
   const [addingAdmin, setAddingAdmin] = useState(false);
   const [searchResults, setSearchResults] = useState<AdminUser[]>([]);

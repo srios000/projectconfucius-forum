@@ -53,7 +53,6 @@ const PostPage: React.FC<PostPageProps> = ({ communityId, postId }) => {
 
   useEffect(() => {
     if (communityData) {
-      // eslint-disable-next-line react-hooks/set-state-in-effect -- mirror SSR-hydrated community into shared uiAtom
       setCommunityStateValue((prev) => ({
         ...prev,
         currentCommunity: communityData as Community,
@@ -63,8 +62,8 @@ const PostPage: React.FC<PostPageProps> = ({ communityId, postId }) => {
 
   useEffect(() => {
     if (postData) {
-      // eslint-disable-next-line react-hooks/set-state-in-effect -- mirror SSR-hydrated post into shared uiAtom + local posts list
       setUi((prev) => ({ ...prev, selectedPost: postData as Post }));
+      // eslint-disable-next-line react-hooks/set-state-in-effect -- mirror SSR-hydrated post into local posts list for vote/delete handlers
       setPosts([postData as Post]);
     }
   }, [postData, setUi]);

@@ -45,12 +45,14 @@ export default function HomePageClient() {
         if (communityStateValue.snippetFetched) {
             fetchPosts(true);
         }
+        // eslint-disable-next-line react-hooks/exhaustive-deps -- trigger initial fetch on snippet-fetched/user changes only; fetchPosts identity is not the trigger
     }, [communityStateValue.snippetFetched, user, communityIds.length]);
 
     useEffect(() => {
         if (!user && !loadingUser) {
             fetchPosts(true);
         }
+        // eslint-disable-next-line react-hooks/exhaustive-deps -- signed-out bootstrap fetch; depends only on user/loading transitions
     }, [user, loadingUser]);
 
     useEffect(() => {
@@ -61,6 +63,7 @@ export default function HomePageClient() {
                 setPostVotes([]);
             };
         }
+        // eslint-disable-next-line react-hooks/exhaustive-deps -- refresh votes when the posts list changes; getPostVotes identity is not the trigger
     }, [user, posts]);
 
     return (
