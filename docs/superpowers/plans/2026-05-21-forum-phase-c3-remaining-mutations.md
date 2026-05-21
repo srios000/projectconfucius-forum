@@ -2020,7 +2020,7 @@ git commit -m "feat(queries): useCommunityMembersListQuery (subscriptive read)"
 
 Wraps `removeCommunityMemberAction`. Invalidates `keys.community.members(id)` and `keys.community.snippets(memberId)` (the removed user's snippet list — drops the community they were just kicked from).
 
-- [ ] **Step 1: Write the failing test**
+- [x] **Step 1: Write the failing test**
 
 Create `__tests__/lib/queries/community/use-remove-community-member-mutation.test.tsx`:
 
@@ -2066,7 +2066,7 @@ describe("useRemoveCommunityMemberMutation", () => {
 });
 ```
 
-- [ ] **Step 2: Run test to confirm it fails**
+- [x] **Step 2: Run test to confirm it fails**
 
 ```bash
 pnpm test __tests__/lib/queries/community/use-remove-community-member-mutation.test.tsx
@@ -2074,7 +2074,7 @@ pnpm test __tests__/lib/queries/community/use-remove-community-member-mutation.t
 
 Expected: FAIL — module not found.
 
-- [ ] **Step 3: Write the primitive**
+- [x] **Step 3: Write the primitive**
 
 Create `lib/queries/community/use-remove-community-member-mutation.ts`:
 
@@ -2100,7 +2100,7 @@ export function useRemoveCommunityMemberMutation() {
 }
 ```
 
-- [ ] **Step 4: Run test to verify it passes**
+- [x] **Step 4: Run test to verify it passes**
 
 ```bash
 pnpm test __tests__/lib/queries/community/use-remove-community-member-mutation.test.tsx
@@ -2108,7 +2108,7 @@ pnpm test __tests__/lib/queries/community/use-remove-community-member-mutation.t
 
 Expected: PASS.
 
-- [ ] **Step 5: Commit**
+- [x] **Step 5: Commit**
 
 ```bash
 git add lib/queries/community/use-remove-community-member-mutation.ts __tests__/lib/queries/community/use-remove-community-member-mutation.test.tsx
