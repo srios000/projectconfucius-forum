@@ -1002,7 +1002,7 @@ Expected: PASS (the two mutation tests).
 
 Sign in as a community admin. Open Community Settings → Admin Manager. Expect: admin list loads. Add a new admin by email — they appear in the list within one round trip (no page refresh). Remove an admin — they disappear. Confirm React Query Devtools shows `community.admins.<id>` invalidating after each mutation.
 
-- [] **Step 8: Commit**
+- [x] **Step 8: Commit**
 
 ```bash
 git add hooks/admin/useAddAdmin.ts hooks/admin/useRemoveAdmin.ts components/modal/community-settings/AdminManager.tsx
@@ -1022,7 +1022,7 @@ git commit -m "refactor(admin): route add/remove admin through TanStack mutation
 
 Wraps `createCommunityAction`. Invalidates `keys.community.list.*` (predicate) and `keys.community.snippets(userId)`.
 
-- [ ] **Step 1: Write the failing test**
+- [x] **Step 1: Write the failing test**
 
 Create `__tests__/lib/queries/community/use-create-community-mutation.test.tsx`:
 
@@ -1074,7 +1074,7 @@ describe("useCreateCommunityMutation", () => {
 });
 ```
 
-- [ ] **Step 2: Run test to confirm it fails**
+- [x] **Step 2: Run test to confirm it fails**
 
 ```bash
 pnpm test __tests__/lib/queries/community/use-create-community-mutation.test.tsx
@@ -1082,7 +1082,7 @@ pnpm test __tests__/lib/queries/community/use-create-community-mutation.test.tsx
 
 Expected: FAIL — module not found.
 
-- [ ] **Step 3: Write the primitive**
+- [x] **Step 3: Write the primitive**
 
 Create `lib/queries/community/use-create-community-mutation.ts`:
 
@@ -1115,7 +1115,7 @@ export function useCreateCommunityMutation() {
 }
 ```
 
-- [ ] **Step 4: Run test to verify it passes**
+- [x] **Step 4: Run test to verify it passes**
 
 ```bash
 pnpm test __tests__/lib/queries/community/use-create-community-mutation.test.tsx
@@ -1123,7 +1123,7 @@ pnpm test __tests__/lib/queries/community/use-create-community-mutation.test.tsx
 
 Expected: PASS.
 
-- [ ] **Step 5: Commit**
+- [x] **Step 5: Commit**
 
 ```bash
 git add lib/queries/community/use-create-community-mutation.ts __tests__/lib/queries/community/use-create-community-mutation.test.tsx
