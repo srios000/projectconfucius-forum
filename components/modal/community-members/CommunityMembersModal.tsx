@@ -21,9 +21,8 @@ import {
 import { CommunityMember } from "@/types/communityMember";
 import { useCommunityMembersListQuery } from "@/lib/queries/community/use-community-members-list";
 import { LuTrash } from "react-icons/lu";
-import { useAtomValue } from "jotai";
-import { uiAtom } from "@/atoms/uiAtom";
 import useCommunityPermissions from "@/hooks/community/useCommunityPermissions";
+import { useCommunityDataQuery } from "@/lib/queries/community/use-community-data";
 import useRemoveCommunityMember from "@/hooks/community/useRemoveCommunityMember";
 import ConfirmationDialog from "@/components/modal/ConfirmationDialog";
 
@@ -54,8 +53,8 @@ const CommunityMembersModal: React.FC<CommunityMembersModalProps> = ({
   const loading = membersQuery.isLoading;
   const error = membersQuery.error;
   const memberCount = members?.length ?? 0;
-  const currentCommunity = useAtomValue(uiAtom).currentCommunity;
-  const { isAdmin } = useCommunityPermissions(currentCommunity ?? undefined);
+  const { data: communityDataForPerms } = useCommunityDataQuery({ communityId });
+  const { isAdmin } = useCommunityPermissions(communityDataForPerms ?? undefined);
   const { removeMember, loading: removeLoading } = useRemoveCommunityMember();
   const [memberToRemove, setMemberToRemove] = useState<string | null>(null);
 

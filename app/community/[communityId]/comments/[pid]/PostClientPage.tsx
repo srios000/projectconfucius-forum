@@ -7,7 +7,6 @@ import Comments from "@/components/posts/comments/Comments";
 import PostItem from "@/components/posts/post-item/PostItem";
 import { useSession } from "@/lib/auth-client";
 import useCommunityPermissions from "@/hooks/community/useCommunityPermissions";
-import useCommunityState from "@/hooks/community/useCommunityState";
 import usePostDeletion from "@/hooks/posts/usePostDeletion";
 import usePostVote from "@/hooks/posts/usePostVote";
 import usePostVoteSync from "@/hooks/posts/usePostVoteSync";
@@ -17,41 +16,23 @@ import { usePostQuery } from "@/lib/queries/posts/use-post";
 import { Community } from "@/types/community";
 import { Post } from "@/types/post";
 import { Stack } from "@chakra-ui/react";
-import React, { useEffect } from "react";
+import React from "react";
 
 type PostPageProps = { communityId: string; postId: string };
 
 const PostPage: React.FC<PostPageProps> = ({ communityId, postId }) => {
   const { data: communityData } = useCommunityDataQuery({ communityId });
   const { data: postData } = usePostQuery({ postId });
-
   const { postVotes } = usePostVoteSync();
   const { onVote, isVotePending } = usePostVote();
   const { onDeletePost } = usePostDeletion();
-
-  const { communityStateValue, setCommunityStateValue } = useCommunityState();
-  const fallbackCommunity = (communityData ?? { id: communityId }) as Community;
-  const currentCommunity = communityStateValue.currentCommunity ?? fallbackCommunity;
+  const currentCommunity = (communityData ?? { id: communityId }) as Community;
   const { isAdmin, canView, canPost, loading } = useCommunityPermissions(currentCommunity);
   const { data: session } = useSession();
   const user = session?.user ?? null;
 
-  // currentCommunity mirror still present — removed in Commit 5.
-  useEffect(() => {
-    if (communityData) {
-      setCommunityStateValue((prev) => ({
-        ...prev,
-        currentCommunity: communityData as Community,
-      }));
-    }
-  }, [communityData, setCommunityStateValue]);
-
-  if (loading || !communityData) {
-    return (<PageContent><PostLoader /><></></PageContent>);
-  }
-  if (!canView) {
-    return (<PageContent><RestrictedCommunityBanner /><></></PageContent>);
-  }
+  if (loading || !communityData) return (<PageContent><PostLoader /><></></PageContent>);
+  if (!canView) return (<PageContent><RestrictedCommunityBanner /><></></PageContent>);
 
   const post = (postData ?? null) as Post | null;
 

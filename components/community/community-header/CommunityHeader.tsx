@@ -69,7 +69,7 @@ const CommunityHeader: React.FC<HeaderProps> = ({ communityData }) => {
         <Flex width="95%" maxWidth="1200px" align="center">
           {/* using state instead of fetching from db as no refresh of the page is required */}
           <CommunityIcon
-            imageURL={communityStateValue.currentCommunity?.imageUrl}
+            imageURL={communityData.imageUrl}
           />
 
           <Flex padding="10px 16px" width="100%">

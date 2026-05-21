@@ -1,4 +1,3 @@
-import { uiAtom } from "@/atoms/uiAtom";
 import useCommunityImage from "@/hooks/community/useCommunityImage";
 import useCommunityPrivacy from "@/hooks/community/useCommunityPrivacy";
 import useDeleteCommunity from "@/hooks/community/useDeleteCommunity";
@@ -18,7 +17,6 @@ import {
   Portal,
   Tabs,
 } from "@chakra-ui/react";
-import { useAtom } from "jotai";
 import React, { useRef, useState } from "react";
 import {
   AdminManager,
@@ -46,7 +44,6 @@ const CommunitySettingsModal: React.FC<CommunitySettingsModalProps> = ({
   const { selectedFile, selectedBlob, setSelectedFile, onSelectFile, cropModalProps } =
     useImageCropFlow();
   const selectFileRef = useRef<HTMLInputElement>(null);
-  const [{ currentCommunity }] = useAtom(uiAtom);
   const [deleteImage, setDeleteImage] = useState(false);
   const [selectedPrivacyType, setSelectedPrivacyType] = useState("");
   const showToast = useCustomToast();
@@ -125,27 +122,21 @@ const CommunitySettingsModal: React.FC<CommunitySettingsModalProps> = ({
                       selectedFile={selectedFile || ""}
                       onSelectFile={onSelectFile}
                       selectFileRef={selectFileRef}
-                      currentCommunity={
-                        currentCommunity || null
-                      }
+                      currentCommunity={communityData}
                       deleteImage={deleteImage}
                       setDeleteImage={setDeleteImage}
                     />
                   </Tabs.Content>
                   <Tabs.Content value="privacy" p={5}>
                     <PrivacySettings
-                      currentCommunity={
-                        currentCommunity || null
-                      }
+                      currentCommunity={communityData}
                       selectedPrivacyType={selectedPrivacyType}
                       handlePrivacyTypeChange={handlePrivacyTypeChange}
                     />
                   </Tabs.Content>
                   <Tabs.Content value="admins" p={5}>
                     <AdminManager
-                      communityData={
-                        currentCommunity || communityData
-                      }
+                      communityData={communityData}
                     />
                   </Tabs.Content>
                   <Tabs.Content value="danger" p={5}>

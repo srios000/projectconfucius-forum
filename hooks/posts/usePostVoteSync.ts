@@ -1,7 +1,6 @@
 "use client";
 
-import { uiAtom } from "@/atoms/uiAtom";
-import { useAtomValue } from "jotai";
+import { useActiveCommunity } from "@/hooks/community/useActiveCommunity";
 import { useSession } from "@/lib/auth-client";
 import type { PostVote } from "@/types/post";
 import { useCommunityPostVotesQuery } from "@/lib/queries/posts/use-post-votes";
@@ -9,8 +8,7 @@ import { useCommunityPostVotesQuery } from "@/lib/queries/posts/use-post-votes";
 const usePostVoteSync = () => {
   const { data: session } = useSession();
   const user = session?.user ?? null;
-  const currentCommunity = useAtomValue(uiAtom).currentCommunity;
-  const communityId = currentCommunity?.id;
+  const { communityId } = useActiveCommunity();
 
   const { data } = useCommunityPostVotesQuery({
     communityId,

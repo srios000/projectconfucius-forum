@@ -8,9 +8,8 @@ import { useSession } from "@/lib/auth-client";
 import { useCommunityDataQuery } from "@/lib/queries/community/use-community-data";
 import { Community } from "@/types/community";
 import { Box, Stack, Text } from "@chakra-ui/react";
-import React, { useEffect } from "react";
+import React from "react";
 import useCommunityPermissions from "@/hooks/community/useCommunityPermissions";
-import useCommunityState from "@/hooks/community/useCommunityState";
 import RestrictedCommunityBanner from "@/components/community/RestrictedCommunityBanner";
 import PostLoader from "@/components/loaders/post-loader/PostLoader";
 
@@ -22,22 +21,7 @@ const SubmitPostPage: React.FC<SubmitPostPageProps> = ({ communityId }) => {
   const { data: communityData } = useCommunityDataQuery({ communityId });
   const { data: session } = useSession();
   const user = session?.user ?? null;
-  const { communityStateValue, setCommunityStateValue } = useCommunityState();
-
-  useEffect(() => {
-    if (communityData) {
-      setCommunityStateValue((prev) => ({
-        ...prev,
-        currentCommunity: communityData as Community,
-      }));
-    }
-  }, [communityData, setCommunityStateValue]);
-
-  const fallbackCommunity = (communityData ?? {
-    id: communityId,
-  }) as Community;
-  const currentCommunity =
-    communityStateValue.currentCommunity ?? fallbackCommunity;
+  const currentCommunity = (communityData ?? { id: communityId }) as Community;
   const { canPost, loading } = useCommunityPermissions(currentCommunity);
 
   if (loading || !communityData) {

@@ -1931,7 +1931,7 @@ postData -> selectedPost removed."
 - Create: `hooks/community/useActiveCommunity.ts`
 - Test: `__tests__/hooks/community/useActiveCommunity.test.tsx` (new)
 
-- [ ] **Step 1: Write the failing test**
+- [x] **Step 1: Write the failing test**
 
 ```tsx
 // __tests__/hooks/community/useActiveCommunity.test.tsx
@@ -1974,12 +1974,12 @@ describe("useActiveCommunity", () => {
 });
 ```
 
-- [ ] **Step 2: Run test to verify it fails**
+- [x] **Step 2: Run test to verify it fails**
 
 Run: `pnpm test __tests__/hooks/community/useActiveCommunity.test.tsx`
 Expected: FAIL — import error.
 
-- [ ] **Step 3: Implement the hook**
+- [x] **Step 3: Implement the hook**
 
 ```ts
 // hooks/community/useActiveCommunity.ts
@@ -2003,7 +2003,7 @@ export function useActiveCommunity() {
 }
 ```
 
-- [ ] **Step 4: Run test to verify it passes**
+- [x] **Step 4: Run test to verify it passes**
 
 Run: `pnpm test __tests__/hooks/community/useActiveCommunity.test.tsx`
 Expected: PASS (2/2).
@@ -2013,7 +2013,7 @@ Expected: PASS (2/2).
 **Files:**
 - Modify: `hooks/community/useCommunityState.ts`
 
-- [ ] **Step 1: Replace the file**
+- [x] **Step 1: Replace the file**
 
 ```ts
 "use client";
@@ -2044,7 +2044,7 @@ export default useCommunityState;
 
 (Removed: `currentCommunity` field, `setCommunityStateValue`, `uiAtom` import, `useQueryClient`, `useSession`, all atom write paths.)
 
-- [ ] **Step 2: Verify typecheck — expect many errors**
+- [x] **Step 2: Verify typecheck — expect many errors**
 
 Run: `pnpm typecheck`
 Expected: FAIL — consumers reading `communityStateValue.currentCommunity` or `setCommunityStateValue` no longer compile. The next tasks fix each one.
@@ -2055,7 +2055,7 @@ Expected: FAIL — consumers reading `communityStateValue.currentCommunity` or `
 - Modify: `app/community/[communityId]/comments/[pid]/PostClientPage.tsx`
 - Modify: `app/community/[communityId]/comments/CommunityClientPage.tsx`
 
-- [ ] **Step 1: Replace `PostClientPage.tsx`**
+- [x] **Step 1: Replace `PostClientPage.tsx`**
 
 ```tsx
 "use client";

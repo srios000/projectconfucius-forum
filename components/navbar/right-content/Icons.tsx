@@ -1,7 +1,7 @@
 /* eslint-disable react-hooks/rules-of-hooks */
 import { uiAtom } from "@/atoms/uiAtom";
 import { useColorMode } from "@/components/ui/color-mode";
-import useCommunityState from "@/hooks/community/useCommunityState";
+import { useActiveCommunity } from "@/hooks/community/useActiveCommunity";
 import useCommunityPermissions from "@/hooks/community/useCommunityPermissions";
 import useCallCreatePost from "@/hooks/posts/useCallCreatePost";
 import useCustomToast from "@/hooks/useCustomToast";
@@ -22,14 +22,12 @@ const icons: React.FC = () => {
   const { onClick } = useCallCreatePost();
   const { colorMode, toggleColorMode } = useColorMode();
   const setUi = useSetAtom(uiAtom);
-  const { communityStateValue } = useCommunityState();
-  const { canPost } = useCommunityPermissions(
-    communityStateValue.currentCommunity
-  );
+  const { community: currentCommunity } = useActiveCommunity();
+  const { canPost } = useCommunityPermissions(currentCommunity);
   const showToast = useCustomToast();
 
   const handleCreatePostClick = () => {
-    if (communityStateValue.currentCommunity && !canPost) {
+    if (currentCommunity && !canPost) {
       showToast({
         title: "Restricted Community",
         description: "You must be a member to post in this community.",

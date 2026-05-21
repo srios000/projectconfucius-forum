@@ -1,17 +1,21 @@
 import { useSession } from "@/lib/auth-client";
 import useCustomToast from "../useCustomToast";
 import React from "react";
-import { Post, PostVote } from "@/types/post";
+import { Post } from "@/types/post";
 import { getCommunityDataAction } from "@/app/actions/reads";
-import useCommunityState from "../community/useCommunityState";
+import { useCommunitySnippetsQuery } from "@/lib/queries/community/use-community-snippets";
 import { usePostVoteMutation } from "@/lib/queries/posts/use-post-vote";
-import { useMutationState } from "@tanstack/react-query";
+import { useMutationState, useQueryClient } from "@tanstack/react-query";
+import { keys } from "@/lib/queries/keys";
+import type { Community } from "@/types/community";
 
 const usePostVote = () => {
   const { data: session } = useSession();
   const user = session?.user ?? null;
   const showToast = useCustomToast();
-  const { communityStateValue } = useCommunityState();
+  const qc = useQueryClient();
+  const snippets = useCommunitySnippetsQuery();
+  const mySnippets = snippets.data ?? [];
   const voteMutation = usePostVoteMutation();
 
   const pendingVars = useMutationState<{ postId: string }>({
@@ -31,12 +35,18 @@ const usePostVote = () => {
       window.location.assign("/api/auth/start");
       return;
     }
-    const isMember = !!communityStateValue.mySnippets.find((s) => s.communityId === communityId);
+    const isMember = !!mySnippets.find((s) => s.communityId === communityId);
     if (!isMember) {
-      let community = communityStateValue.currentCommunity;
-      if (!community || community.id !== communityId) {
-        try { community = (await getCommunityDataAction(communityId)) ?? undefined; }
-        catch (error) { console.log("Error fetching community data for vote permission", error); }
+      let community = qc.getQueryData<Community>(keys.community.detail(communityId));
+      if (!community) {
+        try {
+          community = (await qc.fetchQuery({
+            queryKey: keys.community.detail(communityId),
+            queryFn: () => getCommunityDataAction(communityId),
+          })) ?? undefined;
+        } catch (error) {
+          console.log("Error fetching community data for vote permission", error);
+        }
       }
       if (community && (community.privacyType === "restricted" || community.privacyType === "private")) {
         showToast({

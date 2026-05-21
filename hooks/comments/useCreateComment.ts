@@ -3,43 +3,30 @@ import { useQueryClient } from "@tanstack/react-query";
 import { keys } from "@/lib/queries/keys";
 import { Post } from "@/types/post";
 import useCustomToast from "@/hooks/useCustomToast";
-import useCommunityState from "../community/useCommunityState";
+import { useCommunitySnippetsQuery } from "@/lib/queries/community/use-community-snippets";
 import { checkCommunityPermission } from "@/lib/community/communityPermissions";
 import { useCreateCommentMutation } from "@/lib/queries/comments/use-create-comment-mutation";
+import { getCommunityDataAction } from "@/app/actions/reads";
+import type { Community } from "@/types/community";
 
-/**
- * Shell over useCreateCommentMutation. Preserves the public `createComment` /
- * `createLoading` surface. Permission gating, toasts, and bumping the
- * selectedPost comment count in uiAtom stay here. The numberOfComments bump
- * is a best-effort UI mirror for the post header; the canonical count
- * refreshes via posts.detail invalidation.
- */
-/**
- * A custom hook that provides functionality for creating new comments and replies.
- * It handles permission checks for restricted communities and updates the local
- * post state to reflect the new comment count. Comment depth is derived
- * server-side from the parent.
- * @param selectedPost - The post being commented on.
- * @param setComments - A state setter function to update the local comments list.
- * @returns An object containing the `onCreateComment` function and a loading state indicator.
- */
 const useCreateComment = (selectedPost: Post | null) => {
   const qc = useQueryClient();
   const showToast = useCustomToast();
   const [createLoading, setCreateLoading] = useState(false);
-  const { communityStateValue } = useCommunityState();
+  const snippets = useCommunitySnippetsQuery();
   const mutation = useCreateCommentMutation();
 
   const onCreateComment = async (commentText: string, parentId?: string) => {
     if (!selectedPost) return;
     setCreateLoading(true);
 
-    const currentCommunity = communityStateValue.currentCommunity;
-    if (currentCommunity?.id === selectedPost.communityId) {
-      const hasPermission = checkCommunityPermission(
-        currentCommunity,
-        communityStateValue.mySnippets,
-      );
+    const cachedCommunity = qc.getQueryData<Community>(keys.community.detail(selectedPost.communityId));
+    const community = cachedCommunity ?? (await qc.fetchQuery({
+      queryKey: keys.community.detail(selectedPost.communityId),
+      queryFn: () => getCommunityDataAction(selectedPost.communityId),
+    }));
+    if (community) {
+      const hasPermission = checkCommunityPermission(community as Community, snippets.data ?? []);
       if (!hasPermission) {
         showToast({
           title: "Restricted Community",

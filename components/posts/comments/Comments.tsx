@@ -3,8 +3,8 @@ import { Comment } from "@/types/comment";
 import useCommentList from "@/hooks/comments/useCommentList";
 import useCreateComment from "@/hooks/comments/useCreateComment";
 import useDeleteComment from "@/hooks/comments/useDeleteComment";
-import useCommunityState from "@/hooks/community/useCommunityState";
 import useCommunityPermissions from "@/hooks/community/useCommunityPermissions";
+import { useCommunityDataQuery } from "@/lib/queries/community/use-community-data";
 import {
   Box,
   Flex,
@@ -45,10 +45,8 @@ const Comments: React.FC<CommentsProps> = ({
   const { comments, commentFetchLoading } = useCommentList(selectedPost);
   const { createComment, createLoading } = useCreateComment(selectedPost);
   const { deleteComment, deleteLoadingId } = useDeleteComment();
-  const { communityStateValue } = useCommunityState();
-  const { canComment } = useCommunityPermissions(
-    communityStateValue.currentCommunity
-  );
+  const { data: communityData } = useCommunityDataQuery({ communityId });
+  const { canComment } = useCommunityPermissions(communityData ?? undefined);
 
   const handleCreateComment = async (text: string) => {
     await createComment(text);

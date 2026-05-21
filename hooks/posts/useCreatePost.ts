@@ -3,24 +3,21 @@ import { useRouter } from "next/navigation";
 import { useSession } from "@/lib/auth-client";
 import useCustomToast from "@/hooks/useCustomToast";
 import { useCreatePostMutation } from "@/lib/queries/posts/use-create-post";
-import useCommunityState from "../community/useCommunityState";
+import { useCommunitySnippetsQuery } from "@/lib/queries/community/use-community-snippets";
 import { checkCommunityPermission } from "@/lib/community/communityPermissions";
 import { uploadImage } from "@/lib/upload/uploadImage";
+import { useQueryClient } from "@tanstack/react-query";
+import { keys } from "@/lib/queries/keys";
+import { getCommunityDataAction } from "@/app/actions/reads";
+import type { Community } from "@/types/community";
 
-/**
- * A custom hook that provides functionality for creating a new post.
- * It handles permission checks for restricted communities and provides feedback via toasts.
- *
- * Phase A: image upload is deferred to Phase B — `selectedFile` is accepted for
- * signature stability but not persisted (the create action stores no image yet).
- * @returns An object containing the `handleCreatePost` function, loading state, and error state.
- */
 const useCreatePost = () => {
   const router = useRouter();
   const showToast = useCustomToast();
   const { data: session } = useSession();
   const [error, setError] = useState(false);
-  const { communityStateValue } = useCommunityState();
+  const qc = useQueryClient();
+  const snippets = useCommunitySnippetsQuery();
   const createMutation = useCreatePostMutation();
   const loading = createMutation.isPending;
 
@@ -35,11 +32,15 @@ const useCreatePost = () => {
       return;
     }
 
-    const currentCommunity = communityStateValue.currentCommunity;
-    if (currentCommunity?.id === communityId) {
+    const cachedCommunity = qc.getQueryData<Community>(keys.community.detail(communityId));
+    const currentCommunity = cachedCommunity ?? (await qc.fetchQuery({
+      queryKey: keys.community.detail(communityId),
+      queryFn: () => getCommunityDataAction(communityId),
+    }));
+    if (currentCommunity) {
       const hasPermission = checkCommunityPermission(
-        currentCommunity,
-        communityStateValue.mySnippets,
+        currentCommunity as Community,
+        snippets.data ?? [],
       );
       if (!hasPermission) {
         showToast({

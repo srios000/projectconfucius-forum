@@ -1,5 +1,5 @@
-/* eslint-disable react-hooks/exhaustive-deps */
 import { defaultMenuItem, uiAtom } from "@/atoms/uiAtom";
+import { useActiveCommunity } from "@/hooks/community/useActiveCommunity";
 import { DirectoryMenuItem } from "@/types/directoryMenu";
 import { useAtom } from "jotai";
 import { useRouter, usePathname } from "next/navigation";
@@ -8,7 +8,8 @@ import { IoPeopleCircleOutline } from "react-icons/io5";
 
 const useDirectory = () => {
   const [ui, setUi] = useAtom(uiAtom);
-  const { directoryMenu, currentCommunity } = ui;
+  const { directoryMenu } = ui;
+  const { community: currentCommunity } = useActiveCommunity();
   const router = useRouter();
   const pathname = usePathname();
 

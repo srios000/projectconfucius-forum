@@ -4,22 +4,15 @@ import React from "react";
 import { BsLink45Deg } from "react-icons/bs";
 import { IoIosCreate } from "react-icons/io";
 import { IoImageOutline } from "react-icons/io5";
-import useCommunityState from "@/hooks/community/useCommunityState";
+import { useActiveCommunity } from "@/hooks/community/useActiveCommunity";
 import useCommunityPermissions from "@/hooks/community/useCommunityPermissions";
 
-/**
- * A call-to-action bar that provides a shortcut to the post creation page.
- * Automatically handles authentication checks and community-specific posting permissions.
- * @returns A styled input-like component that triggers navigation or the auth modal.
- */
 const CreatePostLink: React.FC = () => {
-  const { onClick } = useCallCreatePost(); // hook for creating a new post
-  const { communityStateValue } = useCommunityState();
-  const { canPost } = useCommunityPermissions(
-    communityStateValue.currentCommunity
-  );
+  const { onClick } = useCallCreatePost();
+  const { community: currentCommunity } = useActiveCommunity();
+  const { canPost } = useCommunityPermissions(currentCommunity);
 
-  if (communityStateValue.currentCommunity && !canPost) {
+  if (currentCommunity && !canPost) {
     return null;
   }
 
