@@ -1908,7 +1908,7 @@ git commit -m "feat(queries): useCommunityPrivacyMutation with community.detail 
 
 Preserves `{ updatePrivacyType }`. Drops the `setUi` optimistic mirror (refreshed via invalidation) and the manual `invalidateQueries` call (mutation owns it now).
 
-- [ ] **Step 1: Replace the shell**
+- [x] **Step 1: Replace the shell**
 
 Replace `hooks/community/useCommunityPrivacy.ts`:
 
@@ -1940,7 +1940,7 @@ const useCommunityPrivacy = (communityData: Community) => {
 export default useCommunityPrivacy;
 ```
 
-- [ ] **Step 2: Verify types**
+- [x] **Step 2: Verify types**
 
 ```bash
 pnpm typecheck
@@ -1948,11 +1948,11 @@ pnpm typecheck
 
 Expected: clean.
 
-- [ ] **Step 3: Smoke in browser**
+- [x] **Step 3: Smoke in browser**
 
 Sign in as a community admin. Open Community Settings → change privacy from public → restricted. Expected: setting persists; refreshing the community header shows the new badge within one round trip (via `community.detail` invalidation).
 
-- [ ] **Step 4: Commit**
+- [x] **Step 4: Commit**
 
 ```bash
 git add hooks/community/useCommunityPrivacy.ts
