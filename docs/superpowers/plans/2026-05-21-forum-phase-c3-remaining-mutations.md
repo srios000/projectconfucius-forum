@@ -878,7 +878,7 @@ git commit -m "feat(queries): useRemoveAdminMutation with community.admins inval
 
 The shells trim their `updateAdmins` setter argument; `AdminManager.tsx` switches from `useAdminList` to direct `useCommunityAdminsListQuery` usage.
 
-- [ ] **Step 1: Replace `hooks/admin/useAddAdmin.ts`**
+- [x] **Step 1: Replace `hooks/admin/useAddAdmin.ts`**
 
 Replace with:
 
@@ -907,7 +907,7 @@ const useAddAdmin = () => {
 export default useAddAdmin;
 ```
 
-- [ ] **Step 2: Replace `hooks/admin/useRemoveAdmin.ts`**
+- [x] **Step 2: Replace `hooks/admin/useRemoveAdmin.ts`**
 
 Replace with:
 
@@ -935,13 +935,13 @@ const useRemoveAdmin = () => {
 export default useRemoveAdmin;
 ```
 
-- [ ] **Step 3: Delete `hooks/admin/useAdminList.ts`**
+- [x] **Step 3: Delete `hooks/admin/useAdminList.ts`**
 
 ```bash
 rm hooks/admin/useAdminList.ts
 ```
 
-- [ ] **Step 4: Update `components/modal/community-settings/AdminManager.tsx`**
+- [x] **Step 4: Update `components/modal/community-settings/AdminManager.tsx`**
 
 Three changes:
 
@@ -982,7 +982,7 @@ Delete the entire `useEffect(() => { loadAdmins(communityData.id).catch(...) }, 
 
 If the file imports `Spinner` or other Chakra primitives that become unused after the trim, leave them — they're harmless. If error-handling toast wording referenced the setter ("Could not fetch admins"), keep the toast and tie it to `adminsQuery.error` if you like — or drop the dedicated toast (the query is silent on error in this primitive; consumers can render a fallback). Recommended: drop the dedicated error toast; the empty list is sufficient signal.
 
-- [ ] **Step 5: Verify types**
+- [x] **Step 5: Verify types**
 
 ```bash
 pnpm typecheck
@@ -990,7 +990,7 @@ pnpm typecheck
 
 Expected: clean.
 
-- [ ] **Step 6: Run admin tests**
+- [x] **Step 6: Run admin tests**
 
 ```bash
 pnpm test __tests__/lib/queries/admin
@@ -998,11 +998,11 @@ pnpm test __tests__/lib/queries/admin
 
 Expected: PASS (the two mutation tests).
 
-- [ ] **Step 7: Smoke in browser**
+- [x] **Step 7: Smoke in browser**
 
 Sign in as a community admin. Open Community Settings → Admin Manager. Expect: admin list loads. Add a new admin by email — they appear in the list within one round trip (no page refresh). Remove an admin — they disappear. Confirm React Query Devtools shows `community.admins.<id>` invalidating after each mutation.
 
-- [ ] **Step 8: Commit**
+- [] **Step 8: Commit**
 
 ```bash
 git add hooks/admin/useAddAdmin.ts hooks/admin/useRemoveAdmin.ts components/modal/community-settings/AdminManager.tsx

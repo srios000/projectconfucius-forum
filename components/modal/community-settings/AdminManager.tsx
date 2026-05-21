@@ -1,7 +1,7 @@
 import { Community } from "@/types/community";
 import useCustomToast from "@/hooks/useCustomToast";
 import useAddAdmin from "@/hooks/admin/useAddAdmin";
-import useAdminList from "@/hooks/admin/useAdminList";
+import { useCommunityAdminsListQuery } from "@/lib/queries/admin/use-admin-list";
 import useAdminSearch from "@/hooks/admin/useAdminSearch";
 import useRemoveAdmin from "@/hooks/admin/useRemoveAdmin";
 import {
@@ -31,7 +31,9 @@ type AdminManagerProps = {
  * @returns Form and list UI for managing admin users.
  */
 const AdminManager: React.FC<AdminManagerProps> = ({ communityData }) => {
-  const { admins, setAdmins, loading, loadAdmins } = useAdminList();
+  const adminsQuery = useCommunityAdminsListQuery({ communityId: communityData.id });
+  const admins = adminsQuery.data ?? [];
+  const loading = adminsQuery.isLoading;
   const { searchUsers, findUser } = useAdminSearch();
   const { handleAddAdmin } = useAddAdmin();
   const { handleRemoveAdmin } = useRemoveAdmin();
@@ -56,16 +58,6 @@ const AdminManager: React.FC<AdminManagerProps> = ({ communityData }) => {
   const showToast = useCustomToast();
   const [adminToRemove, setAdminToRemove] = useState<string | null>(null);
   const [removingAdmin, setRemovingAdmin] = useState(false);
-
-  useEffect(() => {
-    loadAdmins(communityData.id).catch(() => {
-      showToast({
-        title: "Error",
-        description: "Could not fetch admins",
-        status: "error",
-      });
-    });
-  }, [communityData, loadAdmins, showToast]);
 
   const onAddAdmin = async (data: AddAdminInput) => {
     setAddingAdmin(true);
@@ -94,13 +86,8 @@ const AdminManager: React.FC<AdminManagerProps> = ({ communityData }) => {
         return;
       }
 
-      // 3. Add admin (updates Firestore + local + global state)
-      await handleAddAdmin(
-        communityData.id,
-        newUser,
-        communityData.imageUrl,
-        setAdmins
-      );
+      // 3. Add admin
+      await handleAddAdmin(communityData.id, newUser.uid);
 
       reset();
 
@@ -126,7 +113,7 @@ const AdminManager: React.FC<AdminManagerProps> = ({ communityData }) => {
     setRemovingAdmin(true);
     try {
       // Remove admin (updates Firestore + local + global state)
-      await handleRemoveAdmin(communityData.id, adminToRemove, setAdmins);
+      await handleRemoveAdmin(communityData.id, adminToRemove);
 
       showToast({
         title: "Admin removed",
