@@ -2863,19 +2863,19 @@ Run through each manually. These cover the full C3 invalidation contract for the
 - [x] Delete a comment with replies → all descendants disappear (server cascades); count decrements
 
 **Admin:**
-- [ ] Open `AdminManager` for a community you admin → list loads automatically
-- [ ] Add an admin by email → list updates within one round trip
-- [ ] Remove an admin → list updates within one round trip
+- [x] Open `AdminManager` for a community you admin → list loads automatically
+- [x] Add an admin by email → list updates within one round trip
+- [x] Remove an admin → list updates within one round trip
 
 **Community:**
 - [x] Create a new community → `router.push` lands on the community page; community visible in lists
 - [x] Join a community → button flips; member count refreshes (one round trip)
 - [x] Leave a community → button flips; member count decrements
 - [x] Change community privacy → header badge updates after a round trip
-- [ ] Update community image → header image refreshes after a round trip
-- [ ] Delete community image → header reverts to default after a round trip
-- [ ] Remove a member from `CommunityMembersModal` → member disappears without a manual reload
-- [ ] Delete a community (as creator) → success toast; `router.push("/")`; community URL 404s
+- [x] Update community image → header image refreshes after a round trip
+- [x] Delete community image → header reverts to default after a round trip
+- [x] Remove a member from `CommunityMembersModal` → member disappears without a manual reload
+- [x] Delete a community (as creator) → success toast; `router.push("/")`; community URL 404s
 
 **Profile:**
 - [ ] Update display name in profile modal → persists after `router.refresh()`
