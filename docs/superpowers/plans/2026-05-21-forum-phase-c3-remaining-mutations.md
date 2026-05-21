@@ -773,7 +773,7 @@ git commit -m "feat(queries): useAddAdminMutation with community.admins invalida
 
 Wraps `removeAdminAction`. Invalidates `keys.community.admins(communityId)`.
 
-- [ ] **Step 1: Write the failing test**
+- [x] **Step 1: Write the failing test**
 
 Create `__tests__/lib/queries/admin/use-remove-admin-mutation.test.tsx`:
 
@@ -818,7 +818,7 @@ describe("useRemoveAdminMutation", () => {
 });
 ```
 
-- [ ] **Step 2: Run test to confirm it fails**
+- [x] **Step 2: Run test to confirm it fails**
 
 ```bash
 pnpm test __tests__/lib/queries/admin/use-remove-admin-mutation.test.tsx
@@ -826,7 +826,7 @@ pnpm test __tests__/lib/queries/admin/use-remove-admin-mutation.test.tsx
 
 Expected: FAIL — module not found.
 
-- [ ] **Step 3: Write the primitive**
+- [x] **Step 3: Write the primitive**
 
 Create `lib/queries/admin/use-remove-admin-mutation.ts`:
 
@@ -851,7 +851,7 @@ export function useRemoveAdminMutation() {
 }
 ```
 
-- [ ] **Step 4: Run test to verify it passes**
+- [x] **Step 4: Run test to verify it passes**
 
 ```bash
 pnpm test __tests__/lib/queries/admin/use-remove-admin-mutation.test.tsx
@@ -859,7 +859,7 @@ pnpm test __tests__/lib/queries/admin/use-remove-admin-mutation.test.tsx
 
 Expected: PASS.
 
-- [ ] **Step 5: Commit**
+- [x] **Step 5: Commit**
 
 ```bash
 git add lib/queries/admin/use-remove-admin-mutation.ts __tests__/lib/queries/admin/use-remove-admin-mutation.test.tsx
