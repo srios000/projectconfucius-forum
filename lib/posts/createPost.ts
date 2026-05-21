@@ -13,7 +13,7 @@ import { randomUUID } from "crypto";
  * @returns A promise that resolves to the unique identifier of the newly created post.
  */
 export const createPost = async (
-  author: { id: string; username: string },
+  author: { id: string; username: string | null },
   communityId: string,
   communityImageUrl: string | undefined,
   postData: { title: string; body: string },
@@ -33,4 +33,4 @@ export const createPost = async (
     voteStatus: 0,
   });
   return id;
-};  
+};

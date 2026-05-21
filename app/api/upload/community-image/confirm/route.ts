@@ -24,10 +24,13 @@ export async function POST(req: NextRequest) {
         return NextResponse.json({ message: "Invalid key" }, { status: 400 });
     }
 
+    const u = session.user as typeof session.user & { username?: string | null; image?: string | null };
     const local = await provisionLocalUser({
         authUserId: session.user.id,
         email: session.user.email,
         name: session.user.name ?? session.user.email,
+        username: u.username ?? null,
+        image: u.image ?? null,
     });
     if (!(await isModerator(local.id, communityId))) {
         return NextResponse.json({ message: "Forbidden" }, { status: 403 });

@@ -12,10 +12,6 @@ import { unsavePost } from "@/lib/posts/unsavePost";
 import type { Post, PostVote } from "@/types/post";
 import type { SavedPost } from "@/types/savedPost";
 
-function displayName(user: { name?: string | null; email: string }) {
-  return user.name?.trim() || user.email.split("@")[0];
-}
-
 export async function voteAction(
   post: Post,
   vote: number,
@@ -33,8 +29,9 @@ export async function createPostAction(
   imageUrl?: string
 ) {
   const { session, userId } = await requireUser();
+  const u = session.user as typeof session.user & { username?: string | null };
   return createPost(
-    { id: userId, username: displayName(session.user) },
+    { id: userId, username: u.username ?? null },
     communityId,
     communityImageUrl,
     postData,

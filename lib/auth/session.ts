@@ -8,14 +8,16 @@ export const getAppSession = cache(async () => {
     return auth.api.getSession({ headers: await headers() });
 });
 
-/** Server-side: require an authenticated user, ensure a local row exists. */
 export const requireUser = cache(async () => {
     const session = await getAppSession();
     if (!session?.user) redirect("/api/auth/start");
+    const u = session.user as typeof session.user & { username?: string | null; image?: string | null };
     const local = await provisionLocalUser({
-        authUserId: session.user.id,
-        email: session.user.email,
-        name: session.user.name ?? session.user.email,
+        authUserId: u.id,
+        email: u.email,
+        name: u.name ?? u.email,
+        username: u.username ?? null,
+        image: u.image ?? null,
     });
     return { session, userId: local.id };
 });

@@ -16,10 +16,13 @@ export async function POST(req: NextRequest) {
     if (!session?.user?.id) {
         return NextResponse.json({ message: "Unauthorized" }, { status: 401 });
     }
+    const u = session.user as typeof session.user & { username?: string | null; image?: string | null };
     const local = await provisionLocalUser({
         authUserId: session.user.id,
         email: session.user.email,
         name: session.user.name ?? session.user.email,
+        username: u.username ?? null,
+        image: u.image ?? null,
     });
 
     const body = (await req.json()) as { key?: string };

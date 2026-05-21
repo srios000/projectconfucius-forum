@@ -6,7 +6,7 @@ export type Post = {
   id?: string;
   communityId: string;
   creatorId: string;
-  creatorUsername: string;
+  creatorUsername: string | null;
   title: string;
   body: string;
   numberOfComments: number;

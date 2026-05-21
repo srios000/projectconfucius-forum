@@ -390,7 +390,7 @@ git commit -m "feat: provisionLocalUser syncs username + image from auth session
 - Modify: `lib/auth/session.ts`
 - Modify: `app/api/upload/profile-image/confirm/route.ts`
 
-- [ ] **Step 1: Edit `lib/auth/session.ts`**
+- [x] **Step 1: Edit `lib/auth/session.ts`**
 
 ```ts
 import { cache } from "react";
@@ -420,7 +420,7 @@ export const requireUser = cache(async () => {
 
 > If Better Auth's typed `session.user` already exposes `username` and `image`, drop the `as` cast and reference them directly. Check with `pnpm typecheck` after editing — adjust if needed.
 
-- [ ] **Step 2: Edit `app/api/upload/profile-image/confirm/route.ts` provision call**
+- [x] **Step 2: Edit `app/api/upload/profile-image/confirm/route.ts` provision call**
 
 Replace lines 19-23 (the existing `provisionLocalUser({...})` call) with:
 
@@ -435,7 +435,7 @@ const local = await provisionLocalUser({
 });
 ```
 
-- [ ] **Step 3: Run typecheck + relevant tests**
+- [x] **Step 3: Run typecheck + relevant tests**
 
 ```bash
 pnpm typecheck
@@ -444,7 +444,7 @@ pnpm test __tests__/auth __tests__/api/upload-confirm.test.ts
 
 Expected: typecheck passes; upload-confirm tests still pass (the mock in that test ignores extra args). If a test fails because the mock asserts the exact provision input, update the mock to include the new fields.
 
-- [ ] **Step 4: Commit**
+- [x] **Step 4: Commit**
 
 ```bash
 git add lib/auth/session.ts app/api/upload/profile-image/confirm/route.ts
@@ -461,7 +461,7 @@ git commit -m "feat: forward session username + image into provisioning (Plan 2)
 - Modify: `app/actions/posts.ts`
 - Modify: `__tests__/lib/posts.test.ts`
 
-- [ ] **Step 1: Edit `types/post.ts`**
+- [x] **Step 1: Edit `types/post.ts`**
 
 Find `creatorUsername: string;` and change to:
 
@@ -469,7 +469,7 @@ Find `creatorUsername: string;` and change to:
 creatorUsername: string | null;
 ```
 
-- [ ] **Step 2: Update the failing post tests**
+- [x] **Step 2: Update the failing post tests**
 
 Open `__tests__/lib/posts.test.ts`. For any test that calls `createPost(...)`, update the `author` arg from `{ id, displayName: "..." }` (or however it's shaped) to:
 
@@ -489,7 +489,7 @@ it("writes null creatorUsername when username is null", async () => {
 
 > If the existing test file shape diverges, follow its style — the key assertion is that `createPost`'s `author.username` is written to `creatorUsername` verbatim.
 
-- [ ] **Step 3: Run tests, verify failure**
+- [x] **Step 3: Run tests, verify failure**
 
 ```bash
 pnpm test __tests__/lib/posts.test.ts
@@ -497,7 +497,7 @@ pnpm test __tests__/lib/posts.test.ts
 
 Expected: FAIL — `createPost` still expects `author.username` but signature is the old `{ id, username: string }`.
 
-- [ ] **Step 4: Edit `lib/posts/createPost.ts`**
+- [x] **Step 4: Edit `lib/posts/createPost.ts`**
 
 Change the signature:
 
@@ -549,7 +549,7 @@ export async function createPostAction(
 }
 ```
 
-- [ ] **Step 6: Run tests, verify pass**
+- [x] **Step 6: Run tests, verify pass**
 
 ```bash
 pnpm test __tests__/lib/posts.test.ts
@@ -558,7 +558,7 @@ pnpm typecheck
 
 Expected: posts tests pass; typecheck passes.
 
-- [ ] **Step 7: Commit**
+- [x] **Step 7: Commit**
 
 ```bash
 git add types/post.ts lib/posts/createPost.ts app/actions/posts.ts __tests__/lib/posts.test.ts

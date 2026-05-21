@@ -23,10 +23,13 @@ export async function POST(req: NextRequest) {
             { status: 400 },
         );
     }
+    const u = session.user as typeof session.user & { username?: string | null; image?: string | null };
     const local = await provisionLocalUser({
         authUserId: session.user.id,
         email: session.user.email,
         name: session.user.name ?? session.user.email,
+        username: u.username ?? null,
+        image: u.image ?? null,
     });
     const ext = extFromContentType(contentType)!;
     const fileId = crypto.randomUUID();
