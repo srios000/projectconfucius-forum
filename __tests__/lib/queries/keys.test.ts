@@ -37,3 +37,19 @@ describe("queryKey factory", () => {
         expect(keys.community.all).toEqual(["community"]);
     });
 });
+
+
+describe("keys.posts.infiniteFeed", () => {
+    it("returns ['posts','feed', scope] and matches feed predicate", () => {
+        const k = keys.posts.infiniteFeed({ communityId: "c1" });
+        expect(k[0]).toBe("posts");
+        expect(k[1]).toBe("feed");
+        expect(k[2]).toEqual({ communityId: "c1" });
+    });
+
+    it("two calls with the same scope shape produce equal keys", () => {
+        const a = keys.posts.infiniteFeed({ communityIds: ["c1", "c2"] });
+        const b = keys.posts.infiniteFeed({ communityIds: ["c1", "c2"] });
+        expect(JSON.stringify(a)).toBe(JSON.stringify(b));
+    });
+});

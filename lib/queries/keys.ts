@@ -10,8 +10,10 @@ export const keys = {
         all: ["posts"] as const,
         feed: (args: { scope: FeedScope; cursor: unknown }) =>
             ["posts", "feed", args] as const,
+        infiniteFeed: (scope: FeedScope) => ["posts", "feed", scope] as const,
         detail: (id: string) => ["posts", "detail", id] as const,
         votes: (communityId: string) => ["posts", "votes", communityId] as const,
+        userVotes: (postIds: string[]) => ["posts", "user-votes", [...postIds].sort().join(",")] as const,
         saved: (userId: string) => ["posts", "saved", userId] as const,
     },
     community: {
