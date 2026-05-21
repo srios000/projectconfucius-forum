@@ -71,7 +71,7 @@ const useDirectory = () => {
         directoryMenu: { ...prev.directoryMenu, selectedMenuItem: defaultMenuItem },
       }));
     }
-  }, [currentCommunity, pathname]);
+  }, [currentCommunity, pathname, setUi]);
 
   return {
     directoryState: directoryMenu,

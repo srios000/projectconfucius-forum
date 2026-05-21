@@ -2406,19 +2406,19 @@ atom. uiAtom is now genuinely client-only UI state."
 - Modify: `app/community/[communityId]/comments/[pid]/PostClientPage.tsx`
 - Modify: `components/posts/Posts.tsx`
 
-- [ ] **Step 1: Find orphan disables**
+- [x] **Step 1: Find orphan disables**
 
 Run: `grep -rn "eslint-disable" app/ components/ hooks/ --include="*.ts" --include="*.tsx"`
 
 For each match, verify whether the line below it still triggers the named rule. After the refactor most should be unnecessary.
 
-- [ ] **Step 2: Run lint to confirm**
+- [x] **Step 2: Run lint to confirm**
 
 Run: `pnpm eslint`
 
 Any "Unused eslint-disable directive" warning indicates a line to delete. Delete those lines.
 
-- [ ] **Step 3: Re-run lint**
+- [x] **Step 3: Re-run lint**
 
 Run: `pnpm eslint`
 Expected: no "Unused eslint-disable directive" warnings.
@@ -2428,7 +2428,7 @@ Expected: no "Unused eslint-disable directive" warnings.
 **Files:**
 - Modify: `components/modal/image-crop/ImageCropModal.tsx`
 
-- [ ] **Step 1: Replace the `<img>` with a documented disable**
+- [x] **Step 1: Replace the `<img>` with a documented disable**
 
 The image source here is a data URL from `FileReader.readAsDataURL`. `next/image` requires either a configured domain or `unoptimized`. Since this is a transient in-browser crop preview (never served from the network), the right answer is `unoptimized` OR a targeted disable with reason. Choose the disable for minimum risk:
 
@@ -2445,7 +2445,7 @@ Replace [`ImageCropModal.tsx:132-138`](../../../components/modal/image-crop/Imag
 />
 ```
 
-- [ ] **Step 2: Run lint**
+- [x] **Step 2: Run lint**
 
 Run: `pnpm eslint components/modal/image-crop/ImageCropModal.tsx`
 Expected: no warnings from this file.
@@ -2455,7 +2455,7 @@ Expected: no warnings from this file.
 **Files:**
 - Modify: `components/posts/comments/CommentInput.tsx`
 
-- [ ] **Step 1: Apply the same pattern already used in `AdminManager.tsx` and `CreateCommunityModal.tsx`**
+- [x] **Step 1: Apply the same pattern already used in `AdminManager.tsx` and `CreateCommunityModal.tsx`**
 
 ```tsx
 // BEFORE
@@ -2471,14 +2471,14 @@ const { register, handleSubmit, reset, control, formState: { errors, isValid } }
 const commentText = useWatch({ control, name: "text" });
 ```
 
-- [ ] **Step 2: Run lint**
+- [x] **Step 2: Run lint**
 
 Run: `pnpm eslint components/posts/comments/CommentInput.tsx`
 Expected: no "incompatible-library" warnings.
 
 ### Task 6.4: Final green gate + commit
 
-- [ ] **Step 1: Run the full gate**
+- [x] **Step 1: Run the full gate**
 
 Run: `pnpm test && pnpm typecheck && pnpm eslint && pnpm build`
 Expected: all green. `pnpm eslint` reports zero problems (or only the irrelevant per-route warnings unrelated to this refactor).
