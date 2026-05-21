@@ -2818,7 +2818,7 @@ git commit -m "refactor(profile): route useUserProfile through profile mutations
 
 Run the full mutations-PR green gate. Fix any breakage before merging the branch.
 
-- [ ] **Step 1: Run all tests**
+- [x] **Step 1: Run all tests**
 
 ```bash
 pnpm test
@@ -2826,7 +2826,7 @@ pnpm test
 
 Expected: all green, including the 12 new mutation tests under `__tests__/lib/queries/{comments,admin,community,profile}/`.
 
-- [ ] **Step 2: Typecheck**
+- [x] **Step 2: Typecheck**
 
 ```bash
 pnpm typecheck
@@ -2834,7 +2834,7 @@ pnpm typecheck
 
 Expected: clean.
 
-- [ ] **Step 3: Lint**
+- [x] **Step 3: Lint**
 
 ```bash
 pnpm eslint
@@ -2845,7 +2845,7 @@ Expected: clean. Specifically confirm:
 - The previous suppression on `hooks/comments/useCommentList.ts:26` is **gone** (the mirror was removed in Task 3).
 - Remaining suppressions are: `app/providers.tsx:23` (unrelated), `hooks/useSearch.tsx:22` (debounce reset), `hooks/community/useCommunitiesFeed.ts:71` and `hooks/posts/usePostsFeed.ts:85` (paging/UI-state resets — feed shells), `components/modal/image-crop/ImageCropModal.tsx:65` (modal reset), `app/community/[communityId]/comments/[pid]/PostClientPage.tsx:56,66` (SSR hydration mirrors). These are all legitimate non-fetch resets that survive into C4.
 
-- [ ] **Step 4: Build**
+- [x] **Step 4: Build**
 
 ```bash
 pnpm build
