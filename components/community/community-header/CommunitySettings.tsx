@@ -1,6 +1,6 @@
 import React from "react";
 import { useRouter } from "next/navigation";
-import { IconButton, Icon } from "@chakra-ui/react";
+import { Button } from "@/components/ui/button";
 import useCommunityPermissions from "@/hooks/community/useCommunityPermissions";
 import { FiSettings } from "react-icons/fi";
 import { Community } from "@/types/community";
@@ -9,11 +9,6 @@ type CommunitySettingsProps = {
   communityData: Community;
 };
 
-/**
- * Settings gear shown to community admins.
- * @param communityData - Community used for permission checks and modal context.
- * @returns Icon button that navigates to the community settings page.
- */
 const CommunitySettings: React.FC<CommunitySettingsProps> = ({
   communityData,
 }) => {
@@ -23,18 +18,19 @@ const CommunitySettings: React.FC<CommunitySettingsProps> = ({
   return (
     <>
       {isAdmin && (
-        <IconButton
-          aria-label="View community settings"
+        <Button
           variant="ghost"
-          fontSize={20}
+          size="icon"
+          className="size-10 text-xl"
           onClick={() => router.push(`/c/${communityData.id}/settings`)}
+          title="View community settings"
         >
-          <Icon as={FiSettings} />
-        </IconButton>
+          <FiSettings className="size-5" />
+          <span className="sr-only">View community settings</span>
+        </Button>
       )}
     </>
   );
 };
 
 export default CommunitySettings;
-

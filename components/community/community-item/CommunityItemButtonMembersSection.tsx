@@ -1,7 +1,7 @@
 import React from "react";
 import { Community } from "@/types/community";
-import { Stack, Flex, Icon, Button } from "@chakra-ui/react";
 import { BsFillPeopleFill } from "react-icons/bs";
+import { Button } from "@/components/ui/button";
 
 type CommunityItemButtonMembersSectionProps = {
   community: Community;
@@ -9,42 +9,28 @@ type CommunityItemButtonMembersSectionProps = {
   isJoined: boolean;
 };
 
-/**
- * Shows member count and a subscribe/unsubscribe button for a community list row.
- * @param community - Community data including member count.
- * @param onJoinOrLeaveCommunity - Handler for join/leave clicks.
- * @param isJoined - Membership flag to toggle variant and label.
- * @returns Row with count icon and action button.
- */
 const CommunityItemButtonMembersSection: React.FC<
   CommunityItemButtonMembersSectionProps
 > = ({ community, onJoinOrLeaveCommunity, isJoined }) => {
   return (
-    <Stack direction="row" align="center" justifyContent="space-between">
-      <Flex
-        fontSize={18}
-        color={{ base: "gray.500", _dark: "gray.400" }}
-        justify="center"
-        align="center"
-        mr={2}
-      >
-        <Icon as={BsFillPeopleFill} mr={1} />
-        {community.numberOfMembers}
-      </Flex>
+    <div className="flex flex-row items-center justify-between w-full md:w-auto gap-3 shrink-0">
+      <div className="flex items-center text-lg text-muted-foreground mr-2 gap-1">
+        <BsFillPeopleFill className="size-4" />
+        <span className="text-sm font-medium">{community.numberOfMembers}</span>
+      </div>
       <Button
-        height="30px"
-        width="130px"
-        fontSize="10pt"
-        variant={isJoined ? "outline" : "solid"}
-        onClick={(event) => {
+        variant={isJoined ? "outline" : "default"}
+        size="sm"
+        className="h-[30px] w-[130px] text-xs font-semibold"
+        onClick={(event: React.MouseEvent<HTMLButtonElement>) => {
           event.preventDefault();
-          event.stopPropagation(); // stop the event from bubbling up
+          event.stopPropagation();
           onJoinOrLeaveCommunity(community, isJoined);
         }}
       >
         {isJoined ? "Unsubscribe" : "Subscribe"}
       </Button>
-    </Stack>
+    </div>
   );
 };
 

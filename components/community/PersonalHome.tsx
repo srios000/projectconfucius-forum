@@ -1,7 +1,7 @@
 import useCallCreatePost from "@/hooks/posts/useCallCreatePost";
-import { Button, Flex, Image, Stack, Text } from "@chakra-ui/react";
 import React, { useState } from "react";
 import CreateCommunityModal from "../modal/create-community/CreateCommunityModal";
+import { Button } from "@/components/ui/button";
 
 /**
  * A sidebar card that provides quick actions for the user's personal home feed.
@@ -16,54 +16,38 @@ const PersonalHome: React.FC = () => {
   return (
     <>
       <CreateCommunityModal open={open} handleClose={() => setOpen(false)} />
-      <Flex
-        direction="column"
-        bg={{ base: "white", _dark: "gray.800" }}
-        borderRadius={10}
-        cursor="pointer"
-        border="1px solid"
-        borderColor={{ base: "gray.300", _dark: "gray.700" }}
-        position="sticky"
-        shadow="md"
-      >
-        <Flex
-          align="flex-end"
-          color="white"
-          p="6px 10px"
-          bg="blue.500"
-          height="34px"
-          borderRadius="10px 10px 0px 0px"
-          fontWeight={600}
-          bgImage="url(/images/banners/small.jpg)"
-          backgroundSize="cover"
-        ></Flex>
-        <Flex direction="column" p="12px">
-          <Flex align="center" mb={2}>
-            <Image
+      <div className="flex flex-col bg-card rounded-xl border border-border sticky shadow-md overflow-hidden">
+        <div
+          className="h-[34px] rounded-t-xl bg-cover bg-center bg-blue-500"
+          style={{ backgroundImage: "url(/images/banners/small.jpg)" }}
+        />
+        <div className="flex flex-col p-3">
+          <div className="flex items-center mb-2">
+            <img
               src="/images/logo.svg"
-              height="50px"
+              className="h-[50px] mr-2"
               alt="Website logo"
-              mr={2}
             />
-            <Text fontWeight={600}>Home</Text>
-          </Flex>
-          <Stack gap={3}>
-            <Text fontSize="9pt">
+            <span className="font-semibold text-sm">Home</span>
+          </div>
+          <div className="flex flex-col gap-3">
+            <p className="text-xs text-muted-foreground">
               Home page personalized based on your subscribed communities.
-            </Text>
-            <Button height="30px" onClick={onClick}>
+            </p>
+            <Button size="sm" onClick={onClick} className="h-8">
               Create Post
             </Button>
             <Button
               variant="outline"
-              height="30px"
+              size="sm"
               onClick={() => setOpen(true)}
+              className="h-8"
             >
               Create Community
             </Button>
-          </Stack>
-        </Flex>
-      </Flex>
+          </div>
+        </div>
+      </div>
     </>
   );
 };

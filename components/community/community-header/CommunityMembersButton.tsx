@@ -1,6 +1,6 @@
 import React from "react";
 import { useRouter } from "next/navigation";
-import { IconButton, Icon } from "@chakra-ui/react";
+import { Button } from "@/components/ui/button";
 import { FiUsers } from "react-icons/fi";
 
 type CommunityMembersButtonProps = {
@@ -8,12 +8,6 @@ type CommunityMembersButtonProps = {
   isJoined: boolean;
 };
 
-/**
- * Button that navigates to the community members page for subscribers.
- * @param communityId - Community whose members should be listed.
- * @param isJoined - Whether the current user is a member; hides button otherwise.
- * @returns Icon button.
- */
 const CommunityMembersButton: React.FC<CommunityMembersButtonProps> = ({
   communityId,
   isJoined,
@@ -25,16 +19,17 @@ const CommunityMembersButton: React.FC<CommunityMembersButtonProps> = ({
   }
 
   return (
-    <IconButton
-      aria-label="View community members"
+    <Button
       variant="ghost"
-      fontSize={20}
+      size="icon"
+      className="size-10 text-xl"
       onClick={() => router.push(`/c/${communityId}/members`)}
+      title="View community members"
     >
-      <Icon as={FiUsers} />
-    </IconButton>
+      <FiUsers className="size-5" />
+      <span className="sr-only">View community members</span>
+    </Button>
   );
 };
 
 export default CommunityMembersButton;
-

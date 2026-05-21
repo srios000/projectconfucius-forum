@@ -1,32 +1,15 @@
 import { Community } from "@/types/community";
-import { Flex, Stack } from "@chakra-ui/react";
 import { useRouter } from "next/navigation";
 import React from "react";
 import CommunityItemNameIconSection from "./CommunityItemNameIconSection";
 import CommunityItemButtonMembersSection from "./CommunityItemButtonMembersSection";
 
-/**
- * @param {Community} community - community object
- * @param {boolean} isJoined - whether the user is joined to the community
- * @param {(community: Community, isJoined: boolean) => void} onJoinOrLeaveCommunity - function to join or leave a community
- */
 interface CommunityItemProps {
   community: Community;
   isJoined: boolean;
   onJoinOrLeaveCommunity: (community: Community, isJoined: boolean) => void;
 }
 
-/**
- * Card displaying a community (name and logo) with the subscribe button and the number of members.
- * The card is clickable and will redirect to the community page.
- * If the screen size is mobile, the name and logo will be on top of the subscribe button and the number of members.
- * If the screen size is desktop, the name and logo will be on the left side of the card and the subscribe button and the number of members will be on the right side.
- * @param {Community} community - community object
- * @param {boolean} isJoined - whether the user is joined to the community
- * @param {(community: Community, isJoined: boolean) => void} onJoinOrLeaveCommunity - function to join or leave a community
- *
- * @returns {React.FC} - the community item component
- */
 const CommunityItem: React.FC<CommunityItemProps> = ({
   community,
   isJoined,
@@ -35,37 +18,21 @@ const CommunityItem: React.FC<CommunityItemProps> = ({
   const router = useRouter();
 
   return (
-    <Flex
-      align="center"
-      fontSize="10pt"
-      borderColor={{ base: "white", _dark: "gray.700" }}
-      borderWidth="1px"
-      p="14px 12px"
-      borderRadius={10}
-      bg={{ base: "white", _dark: "gray.800" }}
-      _hover={{
-        borderColor: { base: "gray.400", _dark: "gray.600" },
-        boxShadow: "sm",
-      }}
-      cursor="pointer"
+    <div
       onClick={() => {
-        router.push(`/community/${community.id}`);
+        router.push(`/c/${community.id}`);
       }}
-      shadow="md"
+      className="flex items-center text-[10pt] border border-border p-3.5 rounded-xl bg-card hover:border-border/80 cursor-pointer shadow-md transition-shadow hover:shadow-sm"
     >
-      <Stack
-        direction={{ base: "column", md: "row" }}
-        flexGrow={1}
-        align="left"
-      >
+      <div className="flex flex-col md:flex-row flex-grow items-start md:items-center justify-between gap-3 w-full">
         <CommunityItemNameIconSection community={community} />
         <CommunityItemButtonMembersSection
           community={community}
           onJoinOrLeaveCommunity={onJoinOrLeaveCommunity}
           isJoined={isJoined}
         />
-      </Stack>
-    </Flex>
+      </div>
+    </div>
   );
 };
 

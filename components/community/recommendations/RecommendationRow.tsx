@@ -1,8 +1,8 @@
 import React from "react";
 import { Community } from "@/types/community";
-import { Flex, Icon, Image, Text, Button } from "@chakra-ui/react";
 import Link from "next/link";
 import { IoPeopleCircleOutline } from "react-icons/io5";
+import { Button } from "@/components/ui/button";
 
 type RecommendationRowProps = {
   item: Community;
@@ -11,14 +11,6 @@ type RecommendationRowProps = {
   onJoinOrLeaveCommunity: (community: Community, isJoined: boolean) => void;
 };
 
-/**
- * Single recommendation row showing rank, avatar, and join/leave action.
- * @param item - Community to render.
- * @param index - Position in the recommendation list for ranking.
- * @param isJoined - Whether the viewer is subscribed.
- * @param onJoinOrLeaveCommunity - Callback to toggle membership.
- * @returns Link-wrapped row with action button.
- */
 const RecommendationRow: React.FC<RecommendationRowProps> = ({
   item,
   index,
@@ -26,57 +18,35 @@ const RecommendationRow: React.FC<RecommendationRowProps> = ({
   onJoinOrLeaveCommunity,
 }) => {
   return (
-    <Link key={item.id} href={`/community/${item.id}`}>
-      <Flex
-        align="center"
-        justify="space-between"
-        fontSize="10pt"
-        p="10px 12px"
-      >
-        <Flex align="center" gap={2} minWidth={0} flex={1} mr={2}>
-          <Text flexShrink={0} width="20px">
-            {index + 1}
-          </Text>
+    <Link key={item.id} href={`/c/${item.id}`}>
+      <div className="flex items-center justify-between text-[10pt] p-2.5 hover:bg-muted/50 transition-colors">
+        <div className="flex items-center gap-2 min-w-0 flex-1 mr-2">
+          <span className="shrink-0 w-5 text-muted-foreground">{index + 1}</span>
           {item.imageUrl ? (
-            <Image
+            <img
               src={item.imageUrl}
-              borderRadius="full"
-              boxSize="28px"
+              className="rounded-full size-7 shrink-0 object-cover"
               alt="Community Icon"
-              flexShrink={0}
             />
           ) : (
-            <Icon
-              as={IoPeopleCircleOutline}
-              fontSize={34}
-              color="red.500"
-              flexShrink={0}
-            />
+            <IoPeopleCircleOutline className="text-[34px] text-primary shrink-0" />
           )}
-          <Text
-            fontWeight={600}
-            fontSize="10pt"
-            overflow="hidden"
-            textOverflow="ellipsis"
-            whiteSpace="nowrap"
-          >
-            {item.id}
-          </Text>
-        </Flex>
+          <span className="font-semibold text-[10pt] overflow-hidden text-ellipsis whitespace-nowrap">
+            c/{item.id}
+          </span>
+        </div>
         <Button
-          height="24px"
-          fontSize="8pt"
-          px={4}
-          variant={isJoined ? "outline" : "solid"}
-          flexShrink={0}
-          onClick={(event) => {
+          variant={isJoined ? "outline" : "default"}
+          size="sm"
+          className="h-6 text-[8pt] px-3 shrink-0 font-semibold"
+          onClick={(event: React.MouseEvent<HTMLButtonElement>) => {
             event.preventDefault();
             onJoinOrLeaveCommunity(item, isJoined);
           }}
         >
           {isJoined ? "Unsubscribe" : "Subscribe"}
         </Button>
-      </Flex>
+      </div>
     </Link>
   );
 };

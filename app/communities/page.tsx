@@ -7,9 +7,9 @@ import CommunityLoader from "@/components/loaders/CommunityLoader";
 import useCommunitiesFeed from "@/hooks/community/useCommunitiesFeed";
 import useCommunityState from "@/hooks/community/useCommunityState";
 import useCommunityMembershipActions from "@/hooks/community/useCommunityMembershipActions";
-import { Box, Button, Heading, Stack, Text } from "@chakra-ui/react";
 import React, { useMemo } from "react";
 import { Community } from "@/types/community";
+import { Button } from "@/components/ui/button";
 
 /**
  * A page that displays a comprehensive list of all communities.
@@ -48,97 +48,92 @@ const Communities: React.FC = () => {
     }, [communities, communityStateValue.mySnippets]);
 
   return (
-    <>
-      <PageContent>
-        <>
-          <Stack direction="column" borderRadius={10} gap={3}>
-            {loading && communities.length === 0 ? (
-              <Stack mt={2} p={3}>
-                {Array(5)
-                  .fill(0)
-                  .map((_, index) => (
-                    <CommunityLoader key={index} />
+    <PageContent>
+      <div className="flex flex-col gap-3">
+        {loading && communities.length === 0 ? (
+          <div className="flex flex-col gap-2 mt-2 p-3">
+            {Array(5)
+              .fill(0)
+              .map((_, index) => (
+                <CommunityLoader key={index} />
+              ))}
+          </div>
+        ) : (
+          <div className="flex flex-col gap-5">
+            {adminCommunities.length > 0 && (
+              <div>
+                <h2 className="text-base font-bold mb-2 px-2">
+                  Moderating
+                </h2>
+                <div className="flex flex-col gap-2">
+                  {adminCommunities.map((community) => (
+                    <CommunityItem
+                      key={community.id}
+                      community={community}
+                      isJoined={true}
+                      onJoinOrLeaveCommunity={onJoinOrLeaveCommunity}
+                    />
                   ))}
-              </Stack>
-            ) : (
-              <Stack gap={5}>
-                {adminCommunities.length > 0 && (
-                  <Box>
-                    <Heading fontSize="md" mb={2} px={2}>
-                      Moderating
-                    </Heading>
-                    <Stack gap={2}>
-                      {adminCommunities.map((community) => (
-                        <CommunityItem
-                          key={community.id}
-                          community={community}
-                          isJoined={true}
-                          onJoinOrLeaveCommunity={onJoinOrLeaveCommunity}
-                        />
-                      ))}
-                    </Stack>
-                  </Box>
-                )}
-
-                {subscribedCommunities.length > 0 && (
-                  <Box>
-                    <Heading fontSize="md" mb={2} px={2}>
-                      My Communities
-                    </Heading>
-                    <Stack gap={2}>
-                      {subscribedCommunities.map((community) => (
-                        <CommunityItem
-                          key={community.id}
-                          community={community}
-                          isJoined={true}
-                          onJoinOrLeaveCommunity={onJoinOrLeaveCommunity}
-                        />
-                      ))}
-                    </Stack>
-                  </Box>
-                )}
-
-                {notSubscribedCommunities.length > 0 && (
-                  <Box>
-                    <Heading fontSize="md" mb={2} px={2}>
-                      Discover Communities
-                    </Heading>
-                    <Stack gap={2}>
-                      {notSubscribedCommunities.map((community) => (
-                        <CommunityItem
-                          key={community.id}
-                          community={community}
-                          isJoined={false}
-                          onJoinOrLeaveCommunity={onJoinOrLeaveCommunity}
-                        />
-                      ))}
-                    </Stack>
-                  </Box>
-                )}
-              </Stack>
+                </div>
+              </div>
             )}
-            {!noMoreCommunities ? (
-              <Button
-                onClick={() => fetchCommunities(false)}
-                loading={loading}
-                variant="outline"
-                width="100%"
-                my={4}
-              >
-                Load More
-              </Button>
-            ) : (
-              <Text textAlign="center" p={2} fontSize="sm" color="gray.500">
-                No more communities
-              </Text>
+
+            {subscribedCommunities.length > 0 && (
+              <div>
+                <h2 className="text-base font-bold mb-2 px-2">
+                  My Communities
+                </h2>
+                <div className="flex flex-col gap-2">
+                  {subscribedCommunities.map((community) => (
+                    <CommunityItem
+                      key={community.id}
+                      community={community}
+                      isJoined={true}
+                      onJoinOrLeaveCommunity={onJoinOrLeaveCommunity}
+                    />
+                  ))}
+                </div>
+              </div>
             )}
-          </Stack>
-        </>
-        <Stack gap={2}>
-          <PersonalHome />
-        </Stack>
-      </PageContent>
-    </>
+
+            {notSubscribedCommunities.length > 0 && (
+              <div>
+                <h2 className="text-base font-bold mb-2 px-2">
+                  Discover Communities
+                </h2>
+                <div className="flex flex-col gap-2">
+                  {notSubscribedCommunities.map((community) => (
+                    <CommunityItem
+                      key={community.id}
+                      community={community}
+                      isJoined={false}
+                      onJoinOrLeaveCommunity={onJoinOrLeaveCommunity}
+                    />
+                  ))}
+                </div>
+              </div>
+            )}
+          </div>
+        )}
+        {!noMoreCommunities ? (
+          <Button
+            onClick={() => fetchCommunities(false)}
+            disabled={loading}
+            variant="outline"
+            className="w-full my-4 h-9"
+          >
+            {loading ? "Loading..." : "Load More"}
+          </Button>
+        ) : (
+          <p className="text-center p-2 text-sm text-muted-foreground">
+            No more communities
+          </p>
+        )}
+      </div>
+      <div className="flex flex-col gap-2">
+        <PersonalHome />
+      </div>
+    </PageContent>
   );
 };
 export default Communities;

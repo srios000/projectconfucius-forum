@@ -1,5 +1,5 @@
-import { toaster } from "@/components/ui/toaster";
 import { useCallback } from "react";
+import { toast } from "sonner";
 
 interface CustomToastOptions {
   title: string;
@@ -8,21 +8,24 @@ interface CustomToastOptions {
 }
 
 /**
- * A custom hook that provides a simplified interface for displaying Chakra UI toasts.
- * It centralizes toast configuration such as duration and closability to ensure a consistent user experience.
+ * A custom hook that provides a simplified interface for displaying sonner toasts.
+ * Wraps sonner toast functions to preserve the legacy Chakra toast signature.
  * @returns A function that can be called with title, description, and status to trigger a toast notification.
  */
 const useCustomToast = () => {
   const showToast = useCallback(
     ({ title, description, status }: CustomToastOptions) => {
       try {
-        toaster.create({
-          title,
-          description,
-          type: status,
-          closable: true,
-          duration: 5000,
-        });
+        const message = description ? `${title}: ${description}` : title;
+        if (status === "success") {
+          toast.success(message);
+        } else if (status === "error") {
+          toast.error(message);
+        } else if (status === "warning") {
+          toast.warning(message);
+        } else {
+          toast.info(message);
+        }
       } catch (error) {
         console.error("Toast error:", error);
       }

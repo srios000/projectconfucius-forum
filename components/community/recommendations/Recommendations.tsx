@@ -1,22 +1,16 @@
 import useCommunitiesFeed from "@/hooks/community/useCommunitiesFeed";
 import useCommunityState from "@/hooks/community/useCommunityState";
 import useCommunityMembershipActions from "@/hooks/community/useCommunityMembershipActions";
-import {
-  Box,
-  Button,
-  Flex,
-  Skeleton,
-  SkeletonCircle,
-  Stack,
-} from "@chakra-ui/react";
 import { useRouter } from "next/navigation";
 import React from "react";
 import RecommendationRow from "./RecommendationRow";
 import SuggestionsHeader from "./SuggestionsHeader";
+import { Button } from "@/components/ui/button";
+import { Skeleton } from "@/components/ui/skeleton";
 
 /**
  * Displays the top 5 communities with the most members.
- * @returns {React.FC} - the recommendations component.
+ * @returns - the recommendations component.
  */
 const Recommendations: React.FC = () => {
   const { communityStateValue } = useCommunityState();
@@ -25,29 +19,21 @@ const Recommendations: React.FC = () => {
   const router = useRouter();
 
   return (
-    <Flex
-      direction="column"
-      position="relative"
-      bg={{ base: "white", _dark: "gray.800" }}
-      borderRadius="lg"
-      border="1px solid"
-      borderColor={{ base: "gray.300", _dark: "gray.700" }}
-      shadow="md"
-    >
+    <div className="flex flex-col relative bg-card rounded-xl border border-border shadow-md overflow-hidden">
       <SuggestionsHeader />
 
-      <Flex direction="column">
+      <div className="flex flex-col">
         {loading ? (
-          <Stack mt={2} p={3}>
+          <div className="flex flex-col gap-3 mt-2 p-3">
             {Array(5)
               .fill(0)
               .map((_, index) => (
-                <Flex justify="space-between" align="center" key={index}>
-                  <SkeletonCircle size="10" />
-                  <Skeleton height="10px" width="70%" />
-                </Flex>
+                <div className="flex justify-between items-center" key={index}>
+                  <Skeleton className="size-8 rounded-full" />
+                  <Skeleton className="h-2.5 w-[70%]" />
+                </div>
               ))}
-          </Stack>
+          </div>
         ) : (
           <>
             {communities.map((item, index) => {
@@ -66,19 +52,19 @@ const Recommendations: React.FC = () => {
             })}
           </>
         )}
-        <Box p="10px 20px">
+        <div className="p-2.5 px-5">
           <Button
-            height="30px"
-            width="100%"
+            variant="outline"
+            className="h-8 w-full text-xs font-semibold"
             onClick={() => {
               router.push(`/communities`);
             }}
           >
             View All
           </Button>
-        </Box>
-      </Flex>
-    </Flex>
+        </div>
+      </div>
+    </div>
   );
 };
 export default Recommendations;

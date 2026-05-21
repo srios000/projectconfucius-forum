@@ -1,18 +1,13 @@
 import React from "react";
 import { useRouter } from "next/navigation";
 import { Community } from "@/types/community";
-import { Button } from "@chakra-ui/react";
+import { Button } from "@/components/ui/button";
 import useCommunityPermissions from "@/hooks/community/useCommunityPermissions";
 
 type AdminSectionAboutProps = {
   communityData: Community;
 };
 
-/**
- * Shows a community settings entry point when the viewer is an admin.
- * @param communityData - Community used to derive permissions and pass into the modal.
- * @returns Button and modal wiring for admin settings.
- */
 const AdminSectionAbout: React.FC<AdminSectionAboutProps> = ({
   communityData,
 }) => {
@@ -23,8 +18,8 @@ const AdminSectionAbout: React.FC<AdminSectionAboutProps> = ({
     <>
       {isAdmin && (
         <Button
-          width="100%"
-          variant={"outline"}
+          variant="outline"
+          className="w-full h-8"
           onClick={() => router.push(`/c/${communityData.id}/settings`)}
         >
           Community Settings
@@ -35,4 +30,3 @@ const AdminSectionAbout: React.FC<AdminSectionAboutProps> = ({
 };
 
 export default AdminSectionAbout;
-

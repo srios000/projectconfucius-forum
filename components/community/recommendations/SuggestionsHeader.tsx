@@ -1,20 +1,16 @@
 import React from "react";
-import { Flex } from "@chakra-ui/react";
 
 const SuggestionsHeader: React.FC = () => {
   return (
-    <Flex
-      align="flex-end"
-      color="white"
-      p="6px 10px"
-      height="70px"
-      borderTopRadius="lg"
-      fontWeight={700}
-      bgImage="linear-gradient(to bottom, rgba(139, 0, 0, 0), rgba(139, 0, 0, 0.75)), url('/images/banners/large.png')"
-      backgroundSize="cover"
+    <div
+      className="flex items-end text-white p-2.5 h-[70px] rounded-t-lg font-bold bg-cover bg-center"
+      style={{
+        backgroundImage:
+          "linear-gradient(to bottom, rgba(28, 104, 94, 0), rgba(28, 104, 94, 0.85)), url('/images/banners/large.png')",
+      }}
     >
       Top Communities
-    </Flex>
+    </div>
   );
 };
 

@@ -1,13 +1,6 @@
-import { Button, Flex, Image, Stack } from "@chakra-ui/react";
 import React, { useRef } from "react";
+import { Button } from "@/components/ui/button";
 
-/**
- * Interface for the ImageUpload component properties.
- * @param selectedFile - Data URL of the currently selected image.
- * @param onSelectImage - Callback triggered when a file is chosen.
- * @param setSelectedTab - Callback to switch between form tabs.
- * @param setSelectedFile - Callback to clear or update the selected file.
- */
 type ImageUploadProps = {
   selectedFile?: string;
   onSelectImage: (event: React.ChangeEvent<HTMLInputElement>) => void;
@@ -27,73 +20,53 @@ const ImageUpload: React.FC<ImageUploadProps> = ({
   setSelectedTab,
   setSelectedFile,
 }) => {
-  // Button -> selectedFileRef -> input
   const selectedFileRef = useRef<HTMLInputElement>(null);
 
   return (
-    <Flex justify="center" direction="column" align="center" width="100%">
+    <div className="flex flex-col justify-center items-center w-full">
       {selectedFile ? (
-        // If the image is uploaded
         <>
-          <Image
+          <img
             src={selectedFile}
             alt="Uploaded image for post"
-            maxWidth="90%"
-            maxHeight="400px"
-            borderRadius={10}
-            shadow="md"
+            className="max-w-[90%] max-h-[400px] rounded-xl shadow-md object-contain"
           />
-          <Stack direction="row" mt={4} justify="center" gap={4} width="100%">
+          <div className="flex flex-row mt-4 justify-center gap-4 w-full">
             <Button
               onClick={() => setSelectedTab("Post")}
-              shadow="md"
-              flex={1}
-              maxW="200px"
+              className="flex-1 max-w-[200px] shadow-md h-9"
             >
               Back to Post
             </Button>
             <Button
               variant="outline"
-              onClick={() => setSelectedFile("")} // clearing image state removed uploaded image
-              flex={1}
-              maxW="200px"
-              shadow="md"
+              onClick={() => setSelectedFile("")}
+              className="flex-1 max-w-[200px] shadow-md h-9"
             >
               Remove Content
             </Button>
-          </Stack>
+          </div>
         </>
       ) : (
-        // if the image is not uploaded
-        <Flex
-          justify="center"
-          align="center"
-          p={20}
-          border="1px dashed"
-          borderColor="red.200"
-          width="100%"
-          borderRadius={10}
-        >
-          {/* Upload button */}
+        <div className="flex justify-center items-center p-20 border border-dashed border-border/80 w-full rounded-xl">
           <Button
-            shadow="md"
+            className="shadow-md h-9"
             onClick={() => {
               selectedFileRef.current?.click();
             }}
           >
             Upload Content
           </Button>
-          {/* Hidden input */}
           <input
             type="file"
             accept="image/png,image/gif,image/jpeg"
             ref={selectedFileRef}
-            hidden
+            className="hidden"
             onChange={onSelectImage}
           />
-        </Flex>
+        </div>
       )}
-    </Flex>
+    </div>
   );
 };
 export default ImageUpload;

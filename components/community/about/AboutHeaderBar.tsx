@@ -1,30 +1,17 @@
 import React from "react";
-import { Flex, Text, Icon } from "@chakra-ui/react";
 import { HiOutlineDotsHorizontal } from "react-icons/hi";
 
 interface AboutHeaderBarProps {
   communityName: string;
 }
 
-/**
- * Header strip for the community about card.
- * @param communityName - Community id to display.
- * @returns Banner with title and action icon placeholder.
- */
 const AboutHeaderBar: React.FC<AboutHeaderBarProps> = ({ communityName }) => (
-  <Flex
-    justify="space-between"
-    align="center"
-    bg={{ base: "red.500", _dark: "red.600" }}
-    color="white"
-    p={3}
-    borderRadius="10px 10px 0px 0px"
-  >
-    <Text fontSize="10pt" fontWeight={700}>
-      About {communityName}
-    </Text>
-    <Icon as={HiOutlineDotsHorizontal} />
-  </Flex>
+  <div className="flex justify-between items-center bg-primary text-primary-foreground p-3 rounded-t-xl">
+    <span className="text-[10pt] font-bold">
+      About c/{communityName}
+    </span>
+    <HiOutlineDotsHorizontal className="size-4" />
+  </div>
 );
 
 export default AboutHeaderBar;

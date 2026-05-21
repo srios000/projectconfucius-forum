@@ -1,4 +1,4 @@
-import { Button, Flex, Stack, Text } from "@chakra-ui/react";
+import { Button } from "@/components/ui/button";
 import Link from "next/link";
 import React from "react";
 
@@ -10,32 +10,19 @@ import React from "react";
  */
 const PageNotFound: React.FC = () => {
   return (
-    <Flex
-      direction="column"
-      justifyContent="center"
-      alignItems="center"
-      minHeight="60vh"
-    >
-      <Text
-        fontSize="2xl"
-        fontWeight="bold"
-        color={{ base: "gray.600", _dark: "gray.400" }}
-      >
+    <div className="flex flex-col justify-center items-center min-h-[60vh] p-4 text-center">
+      <h1 className="text-2xl font-bold text-muted-foreground">
         Sorry, this page does not exist!
-      </Text>
-      <Stack direction="row" gap={4} mt={4}>
-        <Link href="/">
-          <Button mt={4} width="150px">
-            Home
-          </Button>
-        </Link>
-        <Link href="/communities">
-          <Button mt={4} width="150px">
-            All Communities
-          </Button>
-        </Link>
-      </Stack>
-    </Flex>
+      </h1>
+      <div className="flex flex-row gap-4 mt-6">
+        <Button asChild className="w-[150px]">
+          <Link href="/">Home</Link>
+        </Button>
+        <Button asChild variant="outline" className="w-[150px]">
+          <Link href="/communities">All Communities</Link>
+        </Button>
+      </div>
+    </div>
   );
 };
 

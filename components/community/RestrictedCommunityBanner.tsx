@@ -1,4 +1,3 @@
-import { Flex, Icon, Text } from "@chakra-ui/react";
 import React from "react";
 import { FaLock } from "react-icons/fa";
 
@@ -18,22 +17,11 @@ const RestrictedCommunityBanner: React.FC<RestrictedCommunityBannerProps> = ({
   description = "Posts are only shown to subscribers.",
 }) => {
   return (
-    <Flex
-      direction="column"
-      justify="center"
-      align="center"
-      border="1px solid"
-      borderColor={{ base: "gray.300", _dark: "gray.600" }}
-      borderRadius={"xl"}
-      p={10}
-      bg={{ base: "white", _dark: "gray.800" }}
-    >
-      <Icon as={FaLock} fontSize={50} color="gray.400" mb={4} />
-      <Text fontWeight={600} fontSize="lg">
-        {title}
-      </Text>
-      <Text color="gray.500">{description}</Text>
-    </Flex>
+    <div className="flex flex-col justify-center items-center border border-border rounded-xl p-10 bg-card">
+      <FaLock className="text-[50px] text-muted-foreground/60 mb-4" />
+      <span className="font-semibold text-lg">{title}</span>
+      <p className="text-muted-foreground mt-1 text-sm">{description}</p>
+    </div>
   );
 };
 

@@ -1,5 +1,5 @@
 import React from "react";
-import { Button } from "@chakra-ui/react";
+import { Button } from "@/components/ui/button";
 
 type JoinOrLeaveButtonProps = {
   isJoined: boolean;
@@ -21,16 +21,12 @@ const JoinOrLeaveButton: React.FC<JoinOrLeaveButtonProps> = ({
 }) => {
   return (
     <Button
-      variant={isJoined ? "outline" : "solid"}
-      height="40px"
-      pr={{ base: 2, md: 6 }}
-      pl={{ base: 2, md: 6 }}
+      variant={isJoined ? "outline" : "default"}
+      disabled={isLoading}
       onClick={onClick}
-      shadow="md"
-      width="120px"
-      loading={isLoading}
+      className="h-10 px-2 md:px-6 shadow-md w-[120px] font-semibold text-xs"
     >
-      {isJoined ? "Unsubscribe" : "Subscribe"}
+      {isLoading ? "Working..." : isJoined ? "Unsubscribe" : "Subscribe"}
     </Button>
   );
 };

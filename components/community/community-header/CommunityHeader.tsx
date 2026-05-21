@@ -1,5 +1,4 @@
 import { Community } from "@/types/community";
-import { Box, Flex } from "@chakra-ui/react";
 import React, { useState } from "react";
 import useCommunityState from "@/hooks/community/useCommunityState";
 import useCommunityMembershipActions from "@/hooks/community/useCommunityMembershipActions";
@@ -11,27 +10,10 @@ import CommunityMembersButton from "./CommunityMembersButton";
 import ConfirmationDialog from "@/components/modal/ConfirmationDialog";
 import { useSession } from "@/lib/auth-client";
 
-/**
- * @param {communityData} - data required to be displayed
- */
 type HeaderProps = {
   communityData: Community;
 };
 
-/**
- * Displays a community header which is responsive.
- * Community header contains:
- *  - Community logo
- *  - Community name
- *  - Subscribe and unsubscribe button
- * @param {communityData} - data required to be displayed
- *
- * @returns {React.FC<HeaderProps>} - Header component
- *
- * @requires CommunityIcon - Displays the community icon.
- * @requires CommunityName - Displays the name of the community.
- * @requires JoinOrLeaveButton - Displays the subscribe and unsubscribe button.
- */
 const CommunityHeader: React.FC<HeaderProps> = ({ communityData }) => {
   const { communityStateValue } = useCommunityState();
   const { onJoinOrLeaveCommunity, loading } = useCommunityMembershipActions();
@@ -59,28 +41,14 @@ const CommunityHeader: React.FC<HeaderProps> = ({ communityData }) => {
   };
 
   return (
-    <Flex direction="column" width="100%" height="120px">
-      <Box height="30%" bg="red.500" />
-      <Flex
-        justify="center"
-        bg={{ base: "white", _dark: "gray.800" }}
-        flexGrow={1}
-      >
-        <Flex width="95%" maxWidth="1200px" align="center">
-          {/* using state instead of fetching from db as no refresh of the page is required */}
-          <CommunityIcon
-            imageURL={communityData.imageUrl}
-          />
-
-          <Flex padding="10px 16px" width="100%">
+    <div className="flex flex-col w-full h-[120px]">
+      <div className="h-[30%] bg-primary" />
+      <div className="flex justify-center bg-card flex-grow shadow-sm">
+        <div className="flex w-[95%] max-w-[1200px] items-center">
+          <CommunityIcon imageURL={communityData.imageUrl} />
+          <div className="flex p-2.5 w-full items-center">
             <CommunityName id={communityData.id} />
-            <Flex
-              direction="row"
-              flexGrow={1}
-              align="center"
-              justify="end"
-              gap={2}
-            >
+            <div className="flex flex-row flex-grow items-center justify-end gap-2">
               <CommunityMembersButton
                 communityId={communityData.id}
                 isJoined={isJoined}
@@ -91,20 +59,20 @@ const CommunityHeader: React.FC<HeaderProps> = ({ communityData }) => {
                 onClick={handleJoinOrLeave}
                 isLoading={loading || isGlobalLoading}
               />
-            </Flex>
-          </Flex>
-        </Flex>
-      </Flex>
+            </div>
+          </div>
+        </div>
+      </div>
       <ConfirmationDialog
         open={leaveConfirmationOpen}
         onClose={() => setLeaveConfirmationOpen(false)}
         onConfirm={onConfirmLeave}
         title="Unsubscribe from Community"
-        body={`Are you sure you want to unsubscribe from r/${communityData.id}?`}
+        body={`Are you sure you want to unsubscribe from c/${communityData.id}?`}
         confirmButtonText="Unsubscribe"
         isLoading={loading}
       />
-    </Flex>
+    </div>
   );
 };
 export default CommunityHeader;
