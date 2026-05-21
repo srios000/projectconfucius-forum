@@ -1,7 +1,7 @@
-import { Button, Icon, Image, Stack, Text } from "@chakra-ui/react";
 import { SessionUser } from "@/types/sessionUser";
 import React, { RefObject } from "react";
 import { MdAccountCircle } from "react-icons/md";
+import { Button } from "@/components/ui/button";
 
 type UserImageSectionProps = {
   user: SessionUser | null | undefined;
@@ -13,17 +13,6 @@ type UserImageSectionProps = {
   deleteImage: boolean;
 };
 
-/**
- * Avatar block for the profile modal with upload and delete controls.
- * @param user - Current Firebase user for existing photo and name.
- * @param selectedFile - Pending upload preview.
- * @param isEditing - Toggles visibility of upload/delete buttons.
- * @param selectFileRef - Ref to the hidden file input.
- * @param onSelectFile - Handler when a file is chosen.
- * @param setDeleteImage - Setter to mark deletion intent.
- * @param deleteImage - Whether delete is in progress or requested.
- * @returns Image preview and editing controls.
- */
 const UserImageSection: React.FC<UserImageSectionProps> = ({
   user,
   selectedFile,
@@ -34,29 +23,29 @@ const UserImageSection: React.FC<UserImageSectionProps> = ({
   deleteImage,
 }) => {
   return (
-    <>
-      <Stack direction="column" align="center" justify="center" p={2}>
+    <div className="flex flex-col items-center justify-center p-2 space-y-4">
+      <div className="flex flex-col items-center gap-3">
         {user?.image || selectedFile ? (
-          <Image
+          // eslint-disable-next-line @next/next/no-img-element
+          <img
             src={selectedFile || (user?.image as string)}
             alt="User Photo"
-            height="120px"
-            borderRadius="full"
-            shadow="md"
+            className="size-[120px] rounded-full object-cover shadow-md"
           />
         ) : (
-          <Icon fontSize={120} mr={1} color="gray.300" as={MdAccountCircle} />
+          <MdAccountCircle className="size-[120px] text-muted-foreground/45" />
         )}
-        <Text fontSize="xl" color={{ base: "gray.700", _dark: "gray.200" }}>
+        <span className="text-xl font-bold text-foreground">
           {user?.name}
-        </Text>
-      </Stack>
+        </span>
+      </div>
 
       {isEditing && (
-        <Stack gap={1} direction="row" flexGrow={1}>
+        <div className="flex gap-2 w-full max-w-[300px]">
           <Button
-            flex={1}
-            height={34}
+            type="button"
+            className="flex-1"
+            size="sm"
             onClick={() => selectFileRef.current?.click()}
           >
             {user?.image ? "Change Image" : "Add Image"}
@@ -65,24 +54,25 @@ const UserImageSection: React.FC<UserImageSectionProps> = ({
             id="file-upload"
             type="file"
             accept="image/png,image/gif,image/jpeg"
-            hidden
+            className="hidden"
             ref={selectFileRef}
             onChange={onSelectFile}
           />
           {user?.image && (
             <Button
-              flex={1}
-              height={34}
+              type="button"
+              className="flex-1"
               variant="outline"
+              size="sm"
               onClick={() => setDeleteImage(true)}
               disabled={deleteImage}
             >
               Delete Image
             </Button>
           )}
-        </Stack>
+        </div>
       )}
-    </>
+    </div>
   );
 };
 

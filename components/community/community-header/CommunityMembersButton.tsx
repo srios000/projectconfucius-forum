@@ -1,6 +1,6 @@
-import React, { useState } from "react";
+import React from "react";
+import { useRouter } from "next/navigation";
 import { IconButton, Icon } from "@chakra-ui/react";
-import CommunityMembersModal from "../../modal/community-members/CommunityMembersModal";
 import { FiUsers } from "react-icons/fi";
 
 type CommunityMembersButtonProps = {
@@ -9,38 +9,32 @@ type CommunityMembersButtonProps = {
 };
 
 /**
- * Button that opens the community members modal for subscribers.
+ * Button that navigates to the community members page for subscribers.
  * @param communityId - Community whose members should be listed.
  * @param isJoined - Whether the current user is a member; hides button otherwise.
- * @returns Icon button and modal wiring.
+ * @returns Icon button.
  */
 const CommunityMembersButton: React.FC<CommunityMembersButtonProps> = ({
   communityId,
   isJoined,
 }) => {
-  const [isModalOpen, setModalOpen] = useState(false);
+  const router = useRouter();
 
   if (!isJoined) {
     return null;
   }
 
   return (
-    <>
-      <CommunityMembersModal
-        isOpen={isModalOpen}
-        onClose={() => setModalOpen(false)}
-        communityId={communityId}
-      />
-      <IconButton
-        aria-label="Toggle color mode"
-        variant="ghost"
-        fontSize={20}
-        onClick={() => setModalOpen(true)}
-      >
-        <Icon as={FiUsers} />
-      </IconButton>
-    </>
+    <IconButton
+      aria-label="View community members"
+      variant="ghost"
+      fontSize={20}
+      onClick={() => router.push(`/c/${communityId}/members`)}
+    >
+      <Icon as={FiUsers} />
+    </IconButton>
   );
 };
 
 export default CommunityMembersButton;
+

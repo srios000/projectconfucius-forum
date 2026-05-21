@@ -1,9 +1,9 @@
-import ProfileModal from "@/components/modal/profile/ProfileModal";
 import AuthButtons from "@/components/navbar/right-content/AuthButtons";
 import { Flex, Textarea, Button, Text, Stack, Icon, Box } from "@chakra-ui/react";
 import { LuSend, LuTrash } from "react-icons/lu";
 import { SessionUser } from "@/types/sessionUser";
 import React, { useState } from "react";
+import { useRouter } from "next/navigation";
 import { useForm, useWatch } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import {
@@ -22,7 +22,7 @@ const CommentInput: React.FC<CommentInputProps> = ({
   createLoading,
   onCreateComment,
 }) => {
-  const [isProfileModalOpen, setProfileModalOpen] = useState(false);
+  const router = useRouter();
   const {
     register,
     handleSubmit,
@@ -46,10 +46,6 @@ const CommentInput: React.FC<CommentInputProps> = ({
     <Flex direction="column" position="relative">
       {user ? (
         <Box width="100%">
-          <ProfileModal
-            handleClose={() => setProfileModalOpen(false)}
-            open={isProfileModalOpen}
-          />
           <Stack direction="row" align="center" gap={1} mb={2}>
             <Text color={{ base: "gray.600", _dark: "gray.400" }}>
               Comment as
@@ -62,7 +58,7 @@ const CommentInput: React.FC<CommentInputProps> = ({
                 textDecoration: "underline",
                 color: { base: "red.500", _dark: "red.400" },
               }}
-              onClick={() => setProfileModalOpen(true)}
+              onClick={() => router.push("/settings/profile")}
             >
               {user?.email?.split("@")[0]}
             </Text>

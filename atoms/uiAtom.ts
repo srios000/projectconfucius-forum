@@ -9,7 +9,6 @@ interface DirectoryMenuState {
 
 export interface UiState {
   directoryMenu: DirectoryMenuState;
-  savedPostsModalOpen: boolean;
 }
 
 export const defaultMenuItem: DirectoryMenuItem = {
@@ -21,7 +20,6 @@ export const defaultMenuItem: DirectoryMenuItem = {
 
 const defaultUiState: UiState = {
   directoryMenu: { isOpen: false, selectedMenuItem: defaultMenuItem },
-  savedPostsModalOpen: false,
 };
 
 export const uiAtom = atom<UiState>(defaultUiState);

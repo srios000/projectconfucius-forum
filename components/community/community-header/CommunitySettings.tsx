@@ -1,8 +1,8 @@
-import React, { useState } from "react";
+import React from "react";
+import { useRouter } from "next/navigation";
 import { IconButton, Icon } from "@chakra-ui/react";
 import useCommunityPermissions from "@/hooks/community/useCommunityPermissions";
 import { FiSettings } from "react-icons/fi";
-import CommunitySettingsModal from "../../modal/community-settings/CommunitySettings";
 import { Community } from "@/types/community";
 
 type CommunitySettingsProps = {
@@ -12,36 +12,29 @@ type CommunitySettingsProps = {
 /**
  * Settings gear shown to community admins.
  * @param communityData - Community used for permission checks and modal context.
- * @returns Icon button that opens the community settings modal.
+ * @returns Icon button that navigates to the community settings page.
  */
 const CommunitySettings: React.FC<CommunitySettingsProps> = ({
   communityData,
 }) => {
-  const [isCommunitySettingsModalOpen, setCommunitySettingsModalOpen] =
-    useState(false);
+  const router = useRouter();
   const { isAdmin } = useCommunityPermissions(communityData);
 
   return (
     <>
       {isAdmin && (
-        <>
-          <CommunitySettingsModal
-            open={isCommunitySettingsModalOpen}
-            handleClose={() => setCommunitySettingsModalOpen(false)}
-            communityData={communityData}
-          />
-          <IconButton
-            aria-label="Toggle color mode"
-            variant="ghost"
-            fontSize={20}
-            onClick={() => setCommunitySettingsModalOpen(true)}
-          >
-            <Icon as={FiSettings} />
-          </IconButton>
-        </>
+        <IconButton
+          aria-label="View community settings"
+          variant="ghost"
+          fontSize={20}
+          onClick={() => router.push(`/c/${communityData.id}/settings`)}
+        >
+          <Icon as={FiSettings} />
+        </IconButton>
       )}
     </>
   );
 };
 
 export default CommunitySettings;
+

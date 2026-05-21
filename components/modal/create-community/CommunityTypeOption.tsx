@@ -1,5 +1,4 @@
 import React, { FC } from "react";
-import { CheckboxCard, Icon, Flex, VStack } from "@chakra-ui/react";
 import type { IconType } from "react-icons";
 
 type CommunityTypeOptionProps = {
@@ -11,53 +10,40 @@ type CommunityTypeOptionProps = {
   onChange: (value: string) => void;
 };
 
-/**
- * Single selectable option for community privacy type.
- * @param name - Value representing the type.
- * @param icon - Icon to display.
- * @param label - Human-readable label.
- * @param description - Short description of permissions.
- * @param isChecked - Whether this option is active.
- * @param onChange - Callback when the option is chosen.
- * @returns Checkbox-styled card for selection.
- */
 const CommunityTypeOption: FC<CommunityTypeOptionProps> = ({
   name,
-  icon,
+  icon: Icon,
   label,
   description,
   isChecked,
   onChange,
 }) => {
   return (
-    <CheckboxCard.Root
-      value={name}
-      checked={isChecked}
-      onCheckedChange={() => onChange(name)}
-      colorPalette="red"
-      borderRadius="xl"
-      cursor="pointer"
+    <div
+      onClick={() => onChange(name)}
+      className={
+        "flex items-center justify-between border rounded-xl p-3 cursor-pointer transition-all " +
+        (isChecked
+          ? "border-primary bg-primary-mute/50 text-foreground"
+          : "border-border hover:bg-muted/40 text-muted-foreground")
+      }
     >
-      <CheckboxCard.HiddenInput />
-      <CheckboxCard.Control>
-        <CheckboxCard.Content>
-          <Flex align="center" gap={3}>
-            <Icon
-              as={icon}
-              fontSize="24px"
-              color={{ base: "gray.500", _dark: "gray.400" }}
-            />
-            <VStack align="start" gap={0}>
-              <CheckboxCard.Label fontSize="10pt">{label}</CheckboxCard.Label>
-              <CheckboxCard.Description fontSize="8pt">
-                {description}
-              </CheckboxCard.Description>
-            </VStack>
-          </Flex>
-        </CheckboxCard.Content>
-        <CheckboxCard.Indicator />
-      </CheckboxCard.Control>
-    </CheckboxCard.Root>
+      <div className="flex items-center gap-3">
+        <Icon className="size-5 text-muted-foreground shrink-0" />
+        <div className="flex flex-col text-left">
+          <span className="text-[12.5px] font-semibold text-foreground leading-tight">{label}</span>
+          <span className="text-[11px] text-muted-foreground mt-0.5">{description}</span>
+        </div>
+      </div>
+      <div
+        className={
+          "size-4 rounded-full border flex items-center justify-center transition-colors shrink-0 " +
+          (isChecked ? "border-primary bg-primary" : "border-border")
+        }
+      >
+        {isChecked && <div className="size-1.5 rounded-full bg-white" />}
+      </div>
+    </div>
   );
 };
 

@@ -1,5 +1,4 @@
 import React from "react";
-import { VStack } from "@chakra-ui/react";
 import CommunityTypeOption from "./CommunityTypeOption";
 
 interface CommunityTypeOptionsProps {
@@ -13,21 +12,13 @@ interface CommunityTypeOptionsProps {
   onCommunityTypeChange: (value: string) => void;
 }
 
-/**
- * Renders radio-like options for selecting community privacy.
- * @param options - Available types with labels and descriptions.
- * @param communityType - Currently selected type.
- * @param onCommunityTypeChange - Handler to update the selection.
- * @returns Vertical stack of selectable options.
- */
 const CommunityTypeOptions: React.FC<CommunityTypeOptionsProps> = ({
   options,
   communityType,
   onCommunityTypeChange,
 }) => {
   return (
-    // add top margin to increase gap between the title and options
-    <VStack mt={6} gap={3} align="stretch">
+    <div className="mt-2.5 space-y-2">
       {options.map((option) => (
         <CommunityTypeOption
           key={option.name}
@@ -39,7 +30,7 @@ const CommunityTypeOptions: React.FC<CommunityTypeOptionsProps> = ({
           onChange={onCommunityTypeChange}
         />
       ))}
-    </VStack>
+    </div>
   );
 };
 

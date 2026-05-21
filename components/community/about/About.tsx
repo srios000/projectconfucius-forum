@@ -2,8 +2,7 @@ import { Community } from "@/types/community";
 import useCommunityState from "@/hooks/community/useCommunityState";
 import { Box, Button, Flex, Stack } from "@chakra-ui/react";
 import { useRouter } from "next/navigation";
-import React, { useState } from "react";
-import CommunityMembersModal from "../../modal/community-members/CommunityMembersModal";
+import React from "react";
 import AboutCommunity from "./AboutCommunity";
 import AboutHeaderBar from "./AboutHeaderBar";
 import AdminSectionAbout from "./AdminSectionAbout";
@@ -37,7 +36,6 @@ const About: React.FC<AboutProps> = ({ communityData }) => {
   const isJoined = !!communityStateValue.mySnippets.find(
     (item) => item.communityId === communityData.id
   );
-  const [isMembersModalOpen, setMembersModalOpen] = useState(false);
   const { canView, canPost } = useCommunityPermissions(communityData);
 
   if (!canView) {
@@ -56,20 +54,13 @@ const About: React.FC<AboutProps> = ({ communityData }) => {
         bg={{ base: "white", _dark: "gray.800" }}
         borderRadius="0px 0px 10px 10px"
       >
-        {isJoined && (
-          <CommunityMembersModal
-            isOpen={isMembersModalOpen}
-            onClose={() => setMembersModalOpen(false)}
-            communityId={communityData.id}
-          />
-        )}
         <Stack>
           <AboutCommunity communityData={communityData} />
           {canPost && (
             <Button
               width="100%"
               onClick={() => {
-                router.push(`/community/${communityData.id}/submit`);
+                router.push(`/c/${communityData.id}`);
               }}
             >
               Create Post
@@ -79,7 +70,9 @@ const About: React.FC<AboutProps> = ({ communityData }) => {
             <Button
               width="100%"
               variant="outline"
-              onClick={() => setMembersModalOpen(true)}
+              onClick={() => {
+                router.push(`/c/${communityData.id}/members`);
+              }}
             >
               View Subscribers
             </Button>
@@ -91,3 +84,4 @@ const About: React.FC<AboutProps> = ({ communityData }) => {
   );
 };
 export default About;
+

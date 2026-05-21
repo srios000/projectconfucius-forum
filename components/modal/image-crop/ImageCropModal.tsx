@@ -1,20 +1,5 @@
 "use client";
 
-import {
-  Box,
-  Button,
-  DialogBackdrop,
-  DialogBody,
-  DialogCloseTrigger,
-  DialogContent,
-  DialogFooter,
-  DialogHeader,
-  DialogPositioner,
-  DialogRoot,
-  DialogTitle,
-  Portal,
-  Stack,
-} from "@chakra-ui/react";
 import React, { useEffect, useRef, useState } from "react";
 import ReactCrop, {
   centerCrop,
@@ -26,6 +11,10 @@ import ReactCrop, {
 import "react-image-crop/dist/ReactCrop.css";
 import { cropToBlob } from "@/lib/image/cropToBlob";
 import useCustomToast from "@/hooks/useCustomToast";
+import {
+  Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter, DialogClose
+} from "@/components/ui/dialog";
+import { Button } from "@/components/ui/button";
 
 type ImageCropModalProps = {
   open: boolean;
@@ -103,68 +92,54 @@ const ImageCropModal: React.FC<ImageCropModalProps> = ({
   };
 
   return (
-    <DialogRoot
-      open={open}
-      onOpenChange={({ open }) => {
-        if (!open) onCancel();
-      }}
-    >
-      <Portal>
-        <DialogBackdrop bg="rgba(0, 0, 0, 0.5)" backdropFilter="blur(6px)" />
-        <DialogPositioner>
-          <DialogContent borderRadius={10} maxW="520px">
-          <DialogHeader padding={3} textAlign="center">
-            <DialogTitle>{title}</DialogTitle>
-          </DialogHeader>
-          <DialogCloseTrigger position="absolute" top={2} right={2} />
-          <DialogBody padding={4}>
-            {imgSrc ? (
-              <Box display="flex" justifyContent="center">
-                <ReactCrop
-                  crop={crop}
-                  onChange={(c) => setCrop(c)}
-                  onComplete={(c) => setCompletedCrop(c)}
-                  aspect={1}
-                  circularCrop={circular}
-                  keepSelection
-                  minWidth={50}
-                >
-                  {/* eslint-disable-next-line @next/next/no-img-element -- in-browser FileReader data URL preview; next/image adds no value here */}
-                  <img
-                    ref={imgRef}
-                    src={imgSrc}
-                    alt="Crop source"
-                    onLoad={onImageLoad}
-                    style={{ maxHeight: "60vh", maxWidth: "100%" }}
-                  />
-                </ReactCrop>
-              </Box>
-            ) : (
-              <Box textAlign="center" color="gray.500" py={8}>
-                Loading image…
-              </Box>
-            )}
-          </DialogBody>
-          <DialogFooter bg={{ base: "gray.100", _dark: "gray.700" }} borderRadius="0px 0px 10px 10px">
-            <Stack direction="row" width="100%" gap={2}>
-              <Button variant="outline" height="30px" flex={1} onClick={onCancel} disabled={busy}>
-                Cancel
-              </Button>
-              <Button
-                height="30px"
-                flex={1}
-                onClick={handleApply}
-                disabled={!completedCrop || completedCrop.width === 0}
-                loading={busy}
-              >
-                Apply
-              </Button>
-            </Stack>
-          </DialogFooter>
-          </DialogContent>
-        </DialogPositioner>
-      </Portal>
-    </DialogRoot>
+    <Dialog open={open} onOpenChange={(v) => !v && onCancel()}>
+      <DialogContent className="max-w-[520px] p-0 overflow-hidden" onClick={(e) => e.stopPropagation()}>
+        <DialogHeader className="px-5 pt-5 pb-3 border-b border-border">
+          <DialogTitle className="text-center font-serif text-lg">{title}</DialogTitle>
+        </DialogHeader>
+        <div className="p-5 flex justify-center min-h-[200px]">
+          {imgSrc ? (
+            <ReactCrop
+              crop={crop}
+              onChange={(c) => setCrop(c)}
+              onComplete={(c) => setCompletedCrop(c)}
+              aspect={1}
+              circularCrop={circular}
+              keepSelection
+              minWidth={50}
+            >
+              {/* eslint-disable-next-line @next/next/no-img-element -- in-browser FileReader data URL preview; next/image adds no value here */}
+              <img
+                ref={imgRef}
+                src={imgSrc}
+                alt="Crop source"
+                onLoad={onImageLoad}
+                style={{ maxHeight: "55vh", maxWidth: "100%" }}
+              />
+            </ReactCrop>
+          ) : (
+            <div className="text-center text-muted-foreground flex items-center justify-center py-8">
+              Loading image…
+            </div>
+          )}
+        </div>
+        <DialogFooter className="px-5 py-3.5 bg-muted/30 border-t border-border flex gap-3">
+          <DialogClose asChild>
+            <Button variant="outline" size="sm" className="flex-1" onClick={(e) => { e.stopPropagation(); onCancel(); }} disabled={busy}>
+              Cancel
+            </Button>
+          </DialogClose>
+          <Button
+            size="sm"
+            className="flex-1"
+            onClick={(e) => { e.stopPropagation(); handleApply(); }}
+            disabled={!completedCrop || completedCrop.width === 0 || busy}
+          >
+            {busy ? "Applying…" : "Apply"}
+          </Button>
+        </DialogFooter>
+      </DialogContent>
+    </Dialog>
   );
 };
 

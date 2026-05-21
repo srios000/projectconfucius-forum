@@ -1,8 +1,8 @@
-import React, { useState } from "react";
+import React from "react";
+import { useRouter } from "next/navigation";
 import { Community } from "@/types/community";
 import { Button } from "@chakra-ui/react";
 import useCommunityPermissions from "@/hooks/community/useCommunityPermissions";
-import CommunitySettingsModal from "@/components/modal/community-settings/CommunitySettings";
 
 type AdminSectionAboutProps = {
   communityData: Community;
@@ -16,30 +16,23 @@ type AdminSectionAboutProps = {
 const AdminSectionAbout: React.FC<AdminSectionAboutProps> = ({
   communityData,
 }) => {
-  const [isCommunitySettingsModalOpen, setCommunitySettingsModalOpen] =
-    useState(false);
+  const router = useRouter();
   const { isAdmin } = useCommunityPermissions(communityData);
 
   return (
     <>
       {isAdmin && (
-        <>
-          <CommunitySettingsModal
-            open={isCommunitySettingsModalOpen}
-            handleClose={() => setCommunitySettingsModalOpen(false)}
-            communityData={communityData}
-          />
-          <Button
-            width="100%"
-            variant={"outline"}
-            onClick={() => setCommunitySettingsModalOpen(true)}
-          >
-            Community Settings
-          </Button>
-        </>
+        <Button
+          width="100%"
+          variant={"outline"}
+          onClick={() => router.push(`/c/${communityData.id}/settings`)}
+        >
+          Community Settings
+        </Button>
       )}
     </>
   );
 };
 
 export default AdminSectionAbout;
+
