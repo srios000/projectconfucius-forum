@@ -18,12 +18,10 @@ export default async function Home() {
   // const session = await auth();
   // const isGenericHome = !session?.user;
 
-  await queryClient.prefetchQuery({
-    queryKey: keys.posts.feed({
-      scope: { isGenericHome: true },
-      cursor: null,
-    }),
+  await queryClient.prefetchInfiniteQuery({
+    queryKey: keys.posts.infiniteFeed({ isGenericHome: true }),
     queryFn: () => getPostsAction(undefined, undefined, true, null),
+    initialPageParam: null,
   });
 
   return (

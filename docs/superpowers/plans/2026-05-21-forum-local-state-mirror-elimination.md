@@ -853,7 +853,7 @@ Expected: PASS (3/3).
 Run: `pnpm test && pnpm typecheck && pnpm eslint && pnpm build`
 Expected: all green. (Build matters now — mutations are wired even though consumers haven't migrated yet.)
 
-- [ ] **Step 2: Commit**
+- [x] **Step 2: Commit**
 
 ```bash
 git add lib/queries/posts/use-post-vote.ts \
@@ -879,7 +879,7 @@ when consumers cut over)."
 - Modify: `hooks/posts/usePostVote.tsx`
 - Test: `__tests__/hooks/posts/usePostVote.test.tsx` (new)
 
-- [ ] **Step 1: Write the failing test**
+- [x] **Step 1: Write the failing test**
 
 ```tsx
 // __tests__/hooks/posts/usePostVote.test.tsx
@@ -948,12 +948,12 @@ describe("usePostVote (shell)", () => {
 });
 ```
 
-- [ ] **Step 2: Run test to verify it fails**
+- [x] **Step 2: Run test to verify it fails**
 
 Run: `pnpm test __tests__/hooks/posts/usePostVote.test.tsx`
 Expected: FAIL — current `usePostVote` requires `{posts, setPosts, postVotes, setPostVotes}` args; calling with no args will throw at destructure.
 
-- [ ] **Step 3: Rewrite `hooks/posts/usePostVote.tsx`**
+- [x] **Step 3: Rewrite `hooks/posts/usePostVote.tsx`**
 
 ```tsx
 import { useSession } from "@/lib/auth-client";
@@ -1024,7 +1024,7 @@ const usePostVote = () => {
 export default usePostVote;
 ```
 
-- [ ] **Step 4: Run tests to verify they pass**
+- [x] **Step 4: Run tests to verify they pass**
 
 Run: `pnpm test __tests__/hooks/posts/usePostVote.test.tsx`
 Expected: PASS (2/2).
@@ -1035,7 +1035,7 @@ Expected: PASS (2/2).
 - Modify: `hooks/posts/usePostDeletion.ts`
 - Test: `__tests__/hooks/posts/usePostDeletion.test.tsx` (new)
 
-- [ ] **Step 1: Write the failing test**
+- [x] **Step 1: Write the failing test**
 
 ```tsx
 // __tests__/hooks/posts/usePostDeletion.test.tsx
@@ -1086,12 +1086,12 @@ describe("usePostDeletion (shell)", () => {
 });
 ```
 
-- [ ] **Step 2: Run test to verify it fails**
+- [x] **Step 2: Run test to verify it fails**
 
 Run: `pnpm test __tests__/hooks/posts/usePostDeletion.test.tsx`
 Expected: FAIL — current `usePostDeletion` requires `{posts, setPosts}` args.
 
-- [ ] **Step 3: Rewrite `hooks/posts/usePostDeletion.ts`**
+- [x] **Step 3: Rewrite `hooks/posts/usePostDeletion.ts`**
 
 ```ts
 import { Post } from "@/types/post";
@@ -1114,7 +1114,7 @@ const usePostDeletion = () => {
 export default usePostDeletion;
 ```
 
-- [ ] **Step 4: Run test to verify it passes**
+- [x] **Step 4: Run test to verify it passes**
 
 Run: `pnpm test __tests__/hooks/posts/usePostDeletion.test.tsx`
 Expected: PASS.
@@ -1124,7 +1124,7 @@ Expected: PASS.
 **Files:**
 - Modify: `app/HomePageClient.tsx`
 
-- [ ] **Step 1: Rewrite the component**
+- [x] **Step 1: Rewrite the component**
 
 ```tsx
 "use client";
@@ -1230,7 +1230,7 @@ export default function HomePageClient() {
 }
 ```
 
-- [ ] **Step 2: Verify typecheck**
+- [x] **Step 2: Verify typecheck**
 
 Run: `pnpm typecheck`
 Expected: PASS (no errors related to HomePageClient).
@@ -1240,7 +1240,7 @@ Expected: PASS (no errors related to HomePageClient).
 **Files:**
 - Modify: `components/posts/Posts.tsx`
 
-- [ ] **Step 1: Rewrite the component**
+- [x] **Step 1: Rewrite the component**
 
 ```tsx
 import { Community } from "@/types/community";
@@ -1313,7 +1313,7 @@ export default Posts;
 
 (Note: the `/* eslint-disable react-hooks/exhaustive-deps */` directive at the top of the original is no longer needed — gone with the `useEffect`.)
 
-- [ ] **Step 2: Verify typecheck**
+- [x] **Step 2: Verify typecheck**
 
 Run: `pnpm typecheck`
 Expected: PASS.
@@ -1323,7 +1323,7 @@ Expected: PASS.
 **Files:**
 - Modify: `app/community/[communityId]/comments/[pid]/PostClientPage.tsx`
 
-- [ ] **Step 1: Rewrite the component (keep selectedPost atom mirror for now — removed in Commit 4)**
+- [x] **Step 1: Rewrite the component (keep selectedPost atom mirror for now — removed in Commit 4)**
 
 ```tsx
 "use client";
@@ -1436,7 +1436,7 @@ const PostPage: React.FC<PostPageProps> = ({ communityId, postId }) => {
 export default PostPage;
 ```
 
-- [ ] **Step 2: Verify typecheck**
+- [x] **Step 2: Verify typecheck**
 
 Run: `pnpm typecheck`
 Expected: PASS.
@@ -1446,7 +1446,7 @@ Expected: PASS.
 **Files:**
 - Modify: `hooks/posts/usePostVoteSync.ts`
 
-- [ ] **Step 1: Replace `hooks/posts/usePostVoteSync.ts`**
+- [x] **Step 1: Replace `hooks/posts/usePostVoteSync.ts`**
 
 ```ts
 "use client";
@@ -1475,7 +1475,7 @@ const usePostVoteSync = () => {
 export default usePostVoteSync;
 ```
 
-- [ ] **Step 2: Verify typecheck**
+- [x] **Step 2: Verify typecheck**
 
 Run: `pnpm typecheck`
 Expected: PASS — `PostClientPage` already only destructures `postVotes` per Task 3.5.
@@ -1488,12 +1488,12 @@ Expected: PASS — `PostClientPage` already only destructures `postVotes` per Ta
 - Delete: `lib/queries/posts/use-posts-feed.ts` (legacy non-infinite read primitive — no remaining caller)
 - Delete: `__tests__/lib/queries/posts/use-posts-feed.test.tsx`
 
-- [ ] **Step 1: Confirm no callers remain**
+- [x] **Step 1: Confirm no callers remain**
 
 Run: `grep -rn "from.*usePostsFeed\|usePostsFeedQuery\|keys\.posts\.feed[^a-zA-Z]" --include="*.ts" --include="*.tsx" app/ components/ hooks/ lib/`
 Expected: No matches outside `hooks/posts/usePostsFeed.ts` itself.
 
-- [ ] **Step 2: Delete files**
+- [x] **Step 2: Delete files**
 
 ```bash
 rm hooks/posts/usePostsFeed.ts
@@ -1501,18 +1501,18 @@ rm lib/queries/posts/use-posts-feed.ts
 rm __tests__/lib/queries/posts/use-posts-feed.test.tsx
 ```
 
-- [ ] **Step 3: Remove `feed:` from `lib/queries/keys.ts`**
+- [x] **Step 3: Remove `feed:` from `lib/queries/keys.ts`**
 
 Delete the `feed: (args: { scope: FeedScope; cursor: unknown }) => ["posts", "feed", args] as const,` line from the `posts` block. (`infiniteFeed` stays.)
 
-- [ ] **Step 4: Verify the full green gate**
+- [x] **Step 4: Verify the full green gate**
 
-Run: `pnpm test && pnpm typecheck && pnpm eslint && pnpm build`
+Run: `pnpm test; pnpm typecheck; pnpm eslint; pnpm build`
 Expected: all green.
 
 ### Task 3.8: Commit consumer migration
 
-- [ ] **Step 1: Commit**
+- [x] **Step 1: Commit**
 
 ```bash
 git add -A

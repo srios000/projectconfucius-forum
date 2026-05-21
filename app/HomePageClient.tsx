@@ -11,10 +11,10 @@ import useCommunityState from "@/hooks/community/useCommunityState";
 import usePostDeletion from "@/hooks/posts/usePostDeletion";
 import usePostSelection from "@/hooks/posts/usePostSelection";
 import usePostVote from "@/hooks/posts/usePostVote";
-import usePostsFeed from "@/hooks/posts/usePostsFeed";
+import { usePostsInfiniteQuery } from "@/lib/queries/posts/use-posts-infinite";
+import { useUserPostVotesQuery } from "@/lib/queries/posts/use-user-post-votes";
 import { Button, Stack, Text } from "@chakra-ui/react";
-import { useEffect, useMemo, useState } from "react";
-import type { PostVote } from "@/types/post";
+import { useMemo } from "react";
 
 export default function HomePageClient() {
     const { data: session, isPending: loadingUser } = useSession();
@@ -23,48 +23,32 @@ export default function HomePageClient() {
     const { onSelectPost } = usePostSelection();
 
     const communityIds = useMemo(
-        () => communityStateValue.mySnippets.map((snippet) => snippet.communityId),
+        () => communityStateValue.mySnippets.map((s) => s.communityId),
         [communityStateValue.mySnippets],
     );
+    const hasSubs = !!user && communityIds.length > 0;
 
-    const { posts, setPosts, loading, fetchPosts, noMorePosts } = usePostsFeed({
-        communityIds: user && communityIds.length > 0 ? communityIds : undefined,
-        isGenericHome: !user || communityIds.length === 0,
+    const feed = usePostsInfiniteQuery({
+        scope: {
+            communityIds: hasSubs ? communityIds : undefined,
+            isGenericHome: !user || communityIds.length === 0,
+        },
+        enabled: user ? communityStateValue.snippetFetched : !loadingUser,
     });
 
-    const [postVotes, setPostVotes] = useState<PostVote[]>([]);
-    const { onVote, getPostVotes, isVotePending } = usePostVote({
-        posts,
-        setPosts,
-        postVotes,
-        setPostVotes,
-    });
-    const { onDeletePost } = usePostDeletion({ posts, setPosts });
+    const posts = useMemo(
+        () => feed.data?.pages.flatMap((p) => p.posts) ?? [],
+        [feed.data],
+    );
 
-    useEffect(() => {
-        if (communityStateValue.snippetFetched) {
-            fetchPosts(true);
-        }
-        // eslint-disable-next-line react-hooks/exhaustive-deps -- trigger initial fetch on snippet-fetched/user changes only; fetchPosts identity is not the trigger
-    }, [communityStateValue.snippetFetched, user, communityIds.length]);
+    const postIds = useMemo(() => posts.map((p) => p.id!), [posts]);
+    const votes = useUserPostVotesQuery({ postIds, enabled: !!user });
+    const postVotes = votes.data ?? [];
 
-    useEffect(() => {
-        if (!user && !loadingUser) {
-            fetchPosts(true);
-        }
-        // eslint-disable-next-line react-hooks/exhaustive-deps -- signed-out bootstrap fetch; depends only on user/loading transitions
-    }, [user, loadingUser]);
+    const { onVote, isVotePending } = usePostVote();
+    const { onDeletePost } = usePostDeletion();
 
-    useEffect(() => {
-        if (user && posts.length) {
-            const postIds = posts.map((post) => post.id!);
-            getPostVotes(postIds);
-            return () => {
-                setPostVotes([]);
-            };
-        }
-        // eslint-disable-next-line react-hooks/exhaustive-deps -- refresh votes when the posts list changes; getPostVotes identity is not the trigger
-    }, [user, posts]);
+    const loading = feed.isLoading || feed.isFetching;
 
     return (
         <PageContent>
@@ -82,23 +66,18 @@ export default function HomePageClient() {
                                 onDeletePost={onDeletePost}
                                 onVote={onVote}
                                 isVotePending={isVotePending(post.id!)}
-                                userVoteValue={
-                                    postVotes.find((item) => item.postId === post.id)
-                                        ?.voteValue
-                                }
+                                userVoteValue={postVotes.find((v) => v.postId === post.id)?.voteValue}
                                 userIsCreator={false}
                                 userIsAdmin={
-                                    !!communityStateValue.mySnippets.find(
-                                        (snippet) => snippet.communityId === post.communityId,
-                                    )?.isModerator
+                                    !!communityStateValue.mySnippets.find((s) => s.communityId === post.communityId)?.isModerator
                                 }
                                 showCommunityImage={true}
                             />
                         ))}
-                        {!noMorePosts ? (
+                        {feed.hasNextPage ? (
                             <Button
-                                onClick={() => fetchPosts(false)}
-                                loading={loading}
+                                onClick={() => feed.fetchNextPage()}
+                                loading={feed.isFetchingNextPage}
                                 variant="outline"
                                 width="100%"
                                 my={4}

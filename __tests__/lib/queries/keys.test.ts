@@ -2,15 +2,9 @@ import { describe, it, expect } from "vitest";
 import { keys } from "@/lib/queries/keys";
 
 describe("queryKey factory", () => {
-    it("posts.feed produces stable tuple with args", () => {
-        const a = keys.posts.feed({
-            scope: { communityId: "c1", isGenericHome: false },
-            cursor: null
-        });
-        const b = keys.posts.feed({
-            scope: { communityId: "c1", isGenericHome: false },
-            cursor: null
-        });
+    it("posts.infiniteFeed produces stable tuple with args", () => {
+        const a = keys.posts.infiniteFeed({ communityId: "c1", isGenericHome: false });
+        const b = keys.posts.infiniteFeed({ communityId: "c1", isGenericHome: false });
 
         expect(a).toEqual(b);
         expect(a[0]).toBe("posts");

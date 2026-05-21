@@ -30,10 +30,6 @@ describe("usePostVoteMutation", () => {
         });
         const spy = vi.spyOn(client, "invalidateQueries");
         client.setQueryData(keys.posts.detail("p1"), { id: "p1", title: "before" });
-        client.setQueryData(
-            keys.posts.feed({ scope: { communityId: "c1" }, cursor: null }),
-            { posts: [], newLastVisible: null },
-        );
         client.setQueryData(keys.posts.votes("c1"), []);
 
         const { result } = renderHook(() => usePostVoteMutation(), { wrapper: wrap(client) });

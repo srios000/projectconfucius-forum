@@ -32,12 +32,10 @@ export default async function Page({
         queryKey: keys.community.detail(communityId),
         queryFn: () => getCommunityDataAction(communityId),
       }),
-      queryClient.prefetchQuery({
-        queryKey: keys.posts.feed({
-          scope: { communityId },
-          cursor: null,
-        }),
+      queryClient.prefetchInfiniteQuery({
+        queryKey: keys.posts.infiniteFeed({ communityId }),
         queryFn: () => getPostsAction(communityId, undefined, false, null),
+        initialPageParam: null,
       }),
     ]);
 

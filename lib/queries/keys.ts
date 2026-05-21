@@ -8,8 +8,6 @@ type FeedScope = {
 export const keys = {
     posts: {
         all: ["posts"] as const,
-        feed: (args: { scope: FeedScope; cursor: unknown }) =>
-            ["posts", "feed", args] as const,
         infiniteFeed: (scope: FeedScope) => ["posts", "feed", scope] as const,
         detail: (id: string) => ["posts", "detail", id] as const,
         votes: (communityId: string) => ["posts", "votes", communityId] as const,
