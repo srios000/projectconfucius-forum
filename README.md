@@ -1,4 +1,4 @@
-# Circus Discussions
+# Projectconfucius Forum (PCF)
 
 **A community discussion forum.** Circus handles communities, threaded posts and comments, voting, saved posts, and admin controls. This repository is a fork adapted for Project Confucius — migrating authentication to Better Auth, the database to Postgres with Drizzle, and delegating sign-in to a central auth app at `login.projectconfucius.id`.
 

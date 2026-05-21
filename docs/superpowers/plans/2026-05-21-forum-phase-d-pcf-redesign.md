@@ -32,13 +32,13 @@ git log --oneline -1
 ```
 Expected: on `main`, working tree clean, last commit `fbef5d2 docs(forum): add migration roadmap…`.
 
-- [ ] **Step 2: Cut the feature branch**
+- [x] **Step 2: Cut the feature branch**
 
 ```powershell
 git checkout -b feat/phase-d-pcf-redesign
 ```
 
-- [ ] **Step 3: Confirm**
+- [x] **Step 3: Confirm**
 
 ```powershell
 git branch --show-current
@@ -57,13 +57,13 @@ Install Tailwind v4 + shadcn + the new deps, drop Mountain Jade tokens into `glo
 - Create: `postcss.config.mjs`
 - Modify: `package.json`
 
-- [ ] **Step 1: Install Tailwind v4 + PostCSS**
+- [x] **Step 1: Install Tailwind v4 + PostCSS**
 
 ```powershell
 pnpm add -D tailwindcss@^4 @tailwindcss/postcss@^4
 ```
 
-- [ ] **Step 2: Create `postcss.config.mjs`**
+- [x] **Step 2: Create `postcss.config.mjs`**
 
 ```js
 export default {
@@ -73,7 +73,7 @@ export default {
 };
 ```
 
-- [ ] **Step 3: Verify install**
+- [x] **Step 3: Verify install**
 
 ```powershell
 pnpm list tailwindcss @tailwindcss/postcss
@@ -86,7 +86,7 @@ Expected: both at v4.x.
 - Create: `components.json`
 - Modify: `tsconfig.json` if shadcn needs path alias updates (it shouldn't — `@/*` already configured).
 
-- [ ] **Step 1: Run shadcn init**
+- [x] **Step 1: Run shadcn init**
 
 ```powershell
 pnpm dlx shadcn@latest init
@@ -100,14 +100,14 @@ Answer the prompts:
 - Utils path: `lib/utils`
 - RSC: **Yes**
 
-- [ ] **Step 2: Confirm the generated `components.json`**
+- [x] **Step 2: Confirm the generated `components.json`**
 
 ```powershell
 cat components.json
 ```
 Expected: aliases point to `@/components`, `@/components/ui`, `@/lib/utils`, `@/hooks`.
 
-- [ ] **Step 3: Verify `lib/utils.ts` was created**
+- [x] **Step 3: Verify `lib/utils.ts` was created**
 
 If not, create it:
 ```ts
@@ -128,7 +128,7 @@ pnpm add clsx tailwind-merge class-variance-authority
 **Files:**
 - Modify or create: `app/globals.css`
 
-- [ ] **Step 1: Replace or write `app/globals.css`**
+- [x] **Step 1: Replace or write `app/globals.css`**
 
 ```css
 @import "tailwindcss";
@@ -221,7 +221,7 @@ pnpm add clsx tailwind-merge class-variance-authority
 .new-post-glow { animation: new-post-glow 3000ms ease-out forwards; }
 ```
 
-- [ ] **Step 2: Import `globals.css` in `app/layout.tsx`**
+- [x] **Step 2: Import `globals.css` in `app/layout.tsx`**
 
 Add the import line at the top of `app/layout.tsx`:
 ```ts
@@ -234,7 +234,7 @@ import "./globals.css";
 **Files:**
 - Modify: `app/layout.tsx`
 
-- [ ] **Step 1: Add font imports and apply to `<html>`**
+- [x] **Step 1: Add font imports and apply to `<html>`**
 
 ```tsx
 import "./globals.css";
@@ -280,13 +280,13 @@ export default function RootLayout({
 
 ## Task 1.5: Install motion, sonner, lucide-react, cmdk
 
-- [ ] **Step 1: Install**
+- [x] **Step 1: Install**
 
 ```powershell
 pnpm add motion sonner lucide-react cmdk
 ```
 
-- [ ] **Step 2: Verify**
+- [x] **Step 2: Verify**
 
 ```powershell
 pnpm list motion sonner lucide-react cmdk
@@ -298,7 +298,7 @@ Expected: all four installed.
 **Files:**
 - Modify: `app/providers.tsx`
 
-- [ ] **Step 1: Add Sonner Toaster alongside the existing Chakra Toaster (both run)**
+- [x] **Step 1: Add Sonner Toaster alongside the existing Chakra Toaster (both run)**
 
 Edit `app/providers.tsx` to import and mount `<Toaster />` from sonner above the existing one:
 
@@ -349,7 +349,7 @@ export function Providers({ children }: { children: React.ReactNode }) {
 **Files:**
 - Modify: `package.json`, `README.md`
 
-- [ ] **Step 1: Edit `package.json` `name` field**
+- [x] **Step 1: Edit `package.json` `name` field**
 
 Change:
 ```json
@@ -360,7 +360,7 @@ to:
 "name": "projectconfucius-forum",
 ```
 
-- [ ] **Step 2: Update `README.md` title**
+- [x] **Step 2: Update `README.md` title**
 
 Replace the first heading with `# projectconfucius forum (PCF)`.
 
@@ -372,14 +372,14 @@ Replace the first heading with `# projectconfucius forum (PCF)`.
 - Add: shadcn `<Button>` primitive (via CLI).
 - Modify: `app/page.tsx` (add a temporary button at the top).
 
-- [ ] **Step 1: Add the shadcn Button primitive only (other primitives are Phase 2)**
+- [x] **Step 1: Add the shadcn Button primitive only (other primitives are Phase 2)**
 
 ```powershell
 pnpm dlx shadcn@latest add button
 ```
 Confirms creation of `components/ui/button.tsx`.
 
-- [ ] **Step 2: Mount a temporary smoke-test button at the top of `app/page.tsx`**
+- [x] **Step 2: Mount a temporary smoke-test button at the top of `app/page.tsx`**
 
 Add (above the existing JSX root):
 ```tsx
@@ -390,25 +390,25 @@ import { Button } from "@/components/ui/button";
 </div>
 ```
 
-- [ ] **Step 3: Run dev and visually verify**
+- [x] **Step 3: Run dev and visually verify**
 
 ```powershell
 pnpm dev
 ```
 Open `http://localhost:3000`. Expected: button visible at top with jade `#2A8C82` background. Existing Chakra components below render unchanged.
 
-- [ ] **Step 4: Stop dev (Ctrl-C). Leave the smoke button in place — it's removed in Phase 3 when `app/page.tsx` is rewritten.**
+- [x] **Step 4: Stop dev (Ctrl-C). Leave the smoke button in place — it's removed in Phase 3 when `app/page.tsx` is rewritten.**
 
 ## Task 1.9: Phase 1 green-gate + commit
 
-- [ ] **Step 1: Run green gate**
+- [x] **Step 1: Run green gate**
 
 ```powershell
 pnpm test ; pnpm typecheck ; pnpm lint ; pnpm build
 ```
 Expected: all four pass.
 
-- [ ] **Step 2: Stage and commit**
+- [x] **Step 2: Stage and commit**
 
 ```powershell
 git add -A

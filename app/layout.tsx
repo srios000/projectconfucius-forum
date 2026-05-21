@@ -1,5 +1,23 @@
+import "./globals.css";
 import { Metadata } from "next";
 import { Providers } from "./providers";
+import { Geist } from "next/font/google";
+import { Inter, Source_Serif_4 } from "next/font/google";
+import { cn } from "@/lib/utils";
+
+const geist = Geist({ subsets: ['latin'], variable: '--font-sans' });
+
+const inter = Inter({
+  subsets: ["latin"],
+  variable: "--font-inter",
+  display: "swap",
+});
+
+const serif = Source_Serif_4({
+  subsets: ["latin"],
+  variable: "--font-serif-source",
+  display: "swap",
+});
 
 export const metadata: Metadata = {
   title: "Project Confucius Forum",
@@ -18,7 +36,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en" suppressHydrationWarning>
+    <html lang="en" suppressHydrationWarning className={cn("font-sans", geist.variable, inter.variable, serif.variable)}>
       <body>
         <Providers>{children}</Providers>
       </body>

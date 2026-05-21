@@ -3,10 +3,11 @@
 import { theme } from "@/chakra/theme";
 import Layout from "@/components/layout/Layout";
 import { ColorModeProvider } from "@/components/ui/color-mode";
-import { Toaster } from "@/components/ui/toaster";
+import { Toaster as ChakraToaster } from "@/components/ui/toaster";
 import { QueryProvider } from "@/lib/queries/provider";
 import { ChakraProvider } from "@chakra-ui/react";
 import { Provider as JotaiProvider } from "jotai";
+import { Toaster as SonnerToaster } from "sonner";
 import { useEffect, useState } from "react";
 import EmotionRegistry from "./emotion-registry";
 
@@ -32,7 +33,8 @@ export function Providers({ children }: { children: React.ReactNode }) {
             <ColorModeProvider>
               <Layout>{children}</Layout>
             </ColorModeProvider>
-            {mounted && <Toaster />}
+            {mounted && <ChakraToaster />}
+            <SonnerToaster richColors closeButton position="bottom-right" theme="system" />
           </ChakraProvider>
         </EmotionRegistry>
       </QueryProvider>
