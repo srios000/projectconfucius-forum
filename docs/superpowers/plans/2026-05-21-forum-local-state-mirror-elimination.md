@@ -542,7 +542,7 @@ remain. Sets up the optimistic mutation refactor in the next commit."
 - Modify: `lib/queries/posts/use-post-vote.ts`
 - Modify: `__tests__/lib/queries/posts/use-post-vote.test.tsx`
 
-- [ ] **Step 1: Write the failing optimistic test (append)**
+- [x] **Step 1: Write the failing optimistic test (append)**
 
 ```tsx
 // __tests__/lib/queries/posts/use-post-vote.test.tsx (append)
@@ -614,12 +614,12 @@ describe("usePostVoteMutation — optimistic", () => {
 });
 ```
 
-- [ ] **Step 2: Run test to verify it fails**
+- [x] **Step 2: Run test to verify it fails**
 
 Run: `pnpm test __tests__/lib/queries/posts/use-post-vote.test.tsx`
 Expected: FAIL — optimistic detail not updated mid-flight; rollback assertion fails.
 
-- [ ] **Step 3: Rewrite `lib/queries/posts/use-post-vote.ts`**
+- [x] **Step 3: Rewrite `lib/queries/posts/use-post-vote.ts`**
 
 ```ts
 "use client";
@@ -715,7 +715,7 @@ export function usePostVoteMutation() {
 }
 ```
 
-- [ ] **Step 4: Run all post-vote tests**
+- [x] **Step 4: Run all post-vote tests**
 
 Run: `pnpm test __tests__/lib/queries/posts/use-post-vote.test.tsx`
 Expected: PASS (3/3 — original invalidation test plus 2 new optimistic tests).
@@ -726,7 +726,7 @@ Expected: PASS (3/3 — original invalidation test plus 2 new optimistic tests).
 - Modify: `lib/queries/posts/use-delete-post.ts`
 - Modify: `__tests__/lib/queries/posts/use-delete-post.test.tsx`
 
-- [ ] **Step 1: Write the failing optimistic test (append)**
+- [x] **Step 1: Write the failing optimistic test (append)**
 
 ```tsx
 // __tests__/lib/queries/posts/use-delete-post.test.tsx (append)
@@ -783,12 +783,12 @@ describe("useDeletePostMutation — optimistic", () => {
 });
 ```
 
-- [ ] **Step 2: Run test to verify it fails**
+- [x] **Step 2: Run test to verify it fails**
 
 Run: `pnpm test __tests__/lib/queries/posts/use-delete-post.test.tsx`
 Expected: FAIL — optimistic removal and rollback both fail.
 
-- [ ] **Step 3: Rewrite `lib/queries/posts/use-delete-post.ts`**
+- [x] **Step 3: Rewrite `lib/queries/posts/use-delete-post.ts`**
 
 ```ts
 "use client";
@@ -841,14 +841,14 @@ export function useDeletePostMutation() {
 }
 ```
 
-- [ ] **Step 4: Run all delete-post tests**
+- [x] **Step 4: Run all delete-post tests**
 
 Run: `pnpm test __tests__/lib/queries/posts/use-delete-post.test.tsx`
 Expected: PASS (3/3).
 
 ### Task 2.3: Commit optimistic mutations
 
-- [ ] **Step 1: Verify green gate**
+- [x] **Step 1: Verify green gate**
 
 Run: `pnpm test && pnpm typecheck && pnpm eslint && pnpm build`
 Expected: all green. (Build matters now — mutations are wired even though consumers haven't migrated yet.)

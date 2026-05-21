@@ -41,3 +41,59 @@ describe("useDeletePostMutation", () => {
         ).toBe(true);
     });
 });
+
+import type { InfiniteData } from "@tanstack/react-query";
+import type { Post } from "@/types/post";
+
+type FeedPage = { posts: Post[]; newLastVisible: unknown };
+
+describe("useDeletePostMutation — optimistic", () => {
+    it("optimistically removes the post from every feed page", async () => {
+        const client = new QueryClient({ defaultOptions: { queries: { retry: false, gcTime: Infinity } } });
+        const p1 = { id: "p1", communityId: "c1", title: "1", voteStatus: 0 } as Post;
+        const p2 = { id: "p2", communityId: "c1", title: "2", voteStatus: 0 } as Post;
+
+        client.setQueryData<InfiniteData<FeedPage>>(keys.posts.infiniteFeed({ communityId: "c1" }), {
+            pages: [{ posts: [p1, p2], newLastVisible: null }],
+            pageParams: [null],
+        });
+
+        let resolveAction: (v: any) => void = () => { };
+        (deletePostAction as any).mockImplementationOnce(
+            () => new Promise((res) => { resolveAction = res; }),
+        );
+
+        const { result } = renderHook(() => useDeletePostMutation(), { wrapper: wrap(client) });
+
+        act(() => { result.current.mutate({ postId: "p1" }); });
+
+        await waitFor(() => {
+            const feed = client.getQueryData<InfiniteData<FeedPage>>(keys.posts.infiniteFeed({ communityId: "c1" }));
+            expect(feed!.pages[0].posts.map((p) => p.id)).toEqual(["p2"]);
+        });
+
+        resolveAction(undefined);
+        await waitFor(() => expect(result.current.isPending).toBe(false));
+    });
+
+    it("rolls back the feed on error", async () => {
+        const client = new QueryClient({ defaultOptions: { queries: { retry: false, gcTime: Infinity } } });
+        const p1 = { id: "p1", communityId: "c1", title: "1", voteStatus: 0 } as Post;
+
+        client.setQueryData<InfiniteData<FeedPage>>(keys.posts.infiniteFeed({ communityId: "c1" }), {
+            pages: [{ posts: [p1], newLastVisible: null }],
+            pageParams: [null],
+        });
+
+        (deletePostAction as any).mockRejectedValueOnce(new Error("nope"));
+
+        const { result } = renderHook(() => useDeletePostMutation(), { wrapper: wrap(client) });
+
+        await act(async () => {
+            try { await result.current.mutateAsync({ postId: "p1" }); } catch { }
+        });
+
+        const feed = client.getQueryData<InfiniteData<FeedPage>>(keys.posts.infiniteFeed({ communityId: "c1" }));
+        expect(feed!.pages[0].posts.map((p) => p.id)).toEqual(["p1"]);
+    });
+});
