@@ -1422,7 +1422,7 @@ git commit -m "refactor(community): route useDeleteCommunity through useDeleteCo
 
 Wraps `joinCommunityAction`. Invalidates `keys.community.snippets(userId)`, `keys.community.detail(id)`, `keys.community.members(id)`. No `setQueryData` — invalidation drives the refresh.
 
-- [ ] **Step 1: Write the failing test**
+- [x] **Step 1: Write the failing test**
 
 Create `__tests__/lib/queries/community/use-join-community-mutation.test.tsx`:
 
@@ -1479,7 +1479,7 @@ describe("useJoinCommunityMutation", () => {
 });
 ```
 
-- [ ] **Step 2: Run test to confirm it fails**
+- [x] **Step 2: Run test to confirm it fails**
 
 ```bash
 pnpm test __tests__/lib/queries/community/use-join-community-mutation.test.tsx
@@ -1487,7 +1487,7 @@ pnpm test __tests__/lib/queries/community/use-join-community-mutation.test.tsx
 
 Expected: FAIL — module not found.
 
-- [ ] **Step 3: Write the primitive**
+- [x] **Step 3: Write the primitive**
 
 Create `lib/queries/community/use-join-community-mutation.ts`:
 
@@ -1519,7 +1519,7 @@ export function useJoinCommunityMutation() {
 }
 ```
 
-- [ ] **Step 4: Run test to verify it passes**
+- [x] **Step 4: Run test to verify it passes**
 
 ```bash
 pnpm test __tests__/lib/queries/community/use-join-community-mutation.test.tsx
@@ -1527,7 +1527,7 @@ pnpm test __tests__/lib/queries/community/use-join-community-mutation.test.tsx
 
 Expected: PASS.
 
-- [ ] **Step 5: Commit**
+- [x] **Step 5: Commit**
 
 ```bash
 git add lib/queries/community/use-join-community-mutation.ts __tests__/lib/queries/community/use-join-community-mutation.test.tsx
