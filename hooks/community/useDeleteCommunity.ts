@@ -1,9 +1,11 @@
-import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { Community } from "@/types/community";
 import useCustomToast from "../useCustomToast";
-import { deleteCommunityAction } from "@/app/actions/community";
+import { useDeleteCommunityMutation } from "@/lib/queries/community/use-delete-community-mutation";
 
+/**
+ * Shell over useDeleteCommunityMutation. Preserves `{ deleteCommunity, loading }`.
+ */
 /**
  * A custom hook that provides functionality for deleting a community and all its associated data.
  * It handles the cascading deletion process and provides feedback via toasts and navigation.
@@ -13,19 +15,16 @@ import { deleteCommunityAction } from "@/app/actions/community";
 const useDeleteCommunity = (communityData: Community) => {
   const router = useRouter();
   const showToast = useCustomToast();
-  const [loading, setLoading] = useState(false);
+  const mutation = useDeleteCommunityMutation();
 
   const onDeleteCommunity = async () => {
-    setLoading(true);
     try {
-      await deleteCommunityAction(communityData);
-
+      await mutation.mutateAsync({ communityData });
       showToast({
         title: "Community Deleted",
         description: "Community has been deleted successfully",
         status: "success",
       });
-
       router.push("/");
     } catch (error) {
       console.log("Error: deleteCommunity", error);
@@ -34,12 +33,10 @@ const useDeleteCommunity = (communityData: Community) => {
         description: "There was an error deleting the community",
         status: "error",
       });
-    } finally {
-      setLoading(false);
     }
   };
 
-  return { deleteCommunity: onDeleteCommunity, loading };
+  return { deleteCommunity: onDeleteCommunity, loading: mutation.isPending };
 };
 
 export default useDeleteCommunity;

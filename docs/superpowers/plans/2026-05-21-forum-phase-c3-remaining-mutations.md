@@ -1350,7 +1350,7 @@ git commit -m "feat(queries): useDeleteCommunityMutation with list + detail + sn
 
 Preserves `{ deleteCommunity, loading }` surface. Router push and toasts stay.
 
-- [ ] **Step 1: Replace the shell**
+- [x] **Step 1: Replace the shell**
 
 Replace `hooks/community/useDeleteCommunity.ts`:
 
@@ -1393,7 +1393,7 @@ const useDeleteCommunity = (communityData: Community) => {
 export default useDeleteCommunity;
 ```
 
-- [ ] **Step 2: Verify types**
+- [x] **Step 2: Verify types**
 
 ```bash
 pnpm typecheck
@@ -1401,11 +1401,11 @@ pnpm typecheck
 
 Expected: clean.
 
-- [ ] **Step 3: Smoke in browser**
+- [x] **Step 3: Smoke in browser**
 
 Sign in as the creator of a test community. Open community settings, delete it. Expected: success toast appears, router navigates to `/`. Visiting the deleted community URL returns 404. Devtools shows `community.list.*`, `community.detail.<id>`, `community.snippets.<userId>` invalidated.
 
-- [ ] **Step 4: Commit**
+- [x] **Step 4: Commit**
 
 ```bash
 git add hooks/community/useDeleteCommunity.ts
