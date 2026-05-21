@@ -107,7 +107,7 @@ git commit -m "feat: add users.username; nullable post/comment display caches (P
 - Create: `lib/user-profile/formatUserHandle.ts`
 - Create: `__tests__/lib/user-profile/formatUserHandle.test.ts`
 
-- [ ] **Step 1: Write the failing test**
+- [x] **Step 1: Write the failing test**
 
 Create `__tests__/lib/user-profile/formatUserHandle.test.ts`:
 
@@ -130,15 +130,15 @@ describe("formatUserHandle", () => {
 });
 ```
 
-- [ ] **Step 2: Run the test and verify it fails**
+- [x] **Step 2: Run the test and verify it fails**
 
 ```bash
-pnpm vitest run __tests__/lib/user-profile/formatUserHandle.test.ts
+pnpm test __tests__/lib/user-profile/formatUserHandle.test.ts
 ```
 
 Expected: FAIL — module not found.
 
-- [ ] **Step 3: Create the helper**
+- [x] **Step 3: Create the helper**
 
 Create `lib/user-profile/formatUserHandle.ts`:
 
@@ -148,15 +148,15 @@ export function formatUserHandle(username: string | null | undefined): string {
 }
 ```
 
-- [ ] **Step 4: Run the test and verify it passes**
+- [x] **Step 4: Run the test and verify it passes**
 
 ```bash
-pnpm vitest run __tests__/lib/user-profile/formatUserHandle.test.ts
+pnpm test __tests__/lib/user-profile/formatUserHandle.test.ts
 ```
 
 Expected: 3 passed.
 
-- [ ] **Step 5: Commit**
+- [x] **Step 5: Commit**
 
 ```bash
 git add lib/user-profile/formatUserHandle.ts __tests__/lib/user-profile/formatUserHandle.test.ts
@@ -290,7 +290,7 @@ describe("provisionLocalUser", () => {
 - [ ] **Step 2: Run tests, verify failure**
 
 ```bash
-pnpm vitest run __tests__/auth/provision.test.ts
+pnpm test __tests__/auth/provision.test.ts
 ```
 
 Expected: FAIL (current `provisionLocalUser` rejects `username`/`image` typed args; doesn't write the new fields).
@@ -370,7 +370,7 @@ export async function provisionLocalUser(input: {
 - [ ] **Step 4: Run tests, verify pass**
 
 ```bash
-pnpm vitest run __tests__/auth/provision.test.ts
+pnpm test __tests__/auth/provision.test.ts
 ```
 
 Expected: 6 passed.
@@ -439,7 +439,7 @@ const local = await provisionLocalUser({
 
 ```bash
 pnpm typecheck
-pnpm vitest run __tests__/auth __tests__/api/upload-confirm.test.ts
+pnpm test __tests__/auth __tests__/api/upload-confirm.test.ts
 ```
 
 Expected: typecheck passes; upload-confirm tests still pass (the mock in that test ignores extra args). If a test fails because the mock asserts the exact provision input, update the mock to include the new fields.
@@ -492,7 +492,7 @@ it("writes null creatorUsername when username is null", async () => {
 - [ ] **Step 3: Run tests, verify failure**
 
 ```bash
-pnpm vitest run __tests__/lib/posts.test.ts
+pnpm test __tests__/lib/posts.test.ts
 ```
 
 Expected: FAIL — `createPost` still expects `author.username` but signature is the old `{ id, username: string }`.
@@ -552,7 +552,7 @@ export async function createPostAction(
 - [ ] **Step 6: Run tests, verify pass**
 
 ```bash
-pnpm vitest run __tests__/lib/posts.test.ts
+pnpm test __tests__/lib/posts.test.ts
 pnpm typecheck
 ```
 
@@ -606,7 +606,7 @@ In `__tests__/lib/queries/comments/use-create-comment-mutation.test.tsx`, find t
 - [ ] **Step 3: Run tests, verify failure**
 
 ```bash
-pnpm vitest run __tests__/lib/comments.test.ts
+pnpm test __tests__/lib/comments.test.ts
 ```
 
 Expected: FAIL — signature mismatch.
@@ -707,7 +707,7 @@ export async function createCommentAction(
 - [ ] **Step 6: Run tests, verify pass**
 
 ```bash
-pnpm vitest run __tests__/lib/comments.test.ts __tests__/lib/queries/comments
+pnpm test __tests__/lib/comments.test.ts __tests__/lib/queries/comments
 pnpm typecheck
 ```
 
@@ -918,7 +918,7 @@ describe("patchAuthUserImage", () => {
 - [ ] **Step 2: Run the test, verify failure**
 
 ```bash
-pnpm vitest run __tests__/auth/patchAuthUserImage.test.ts
+pnpm test __tests__/auth/patchAuthUserImage.test.ts
 ```
 
 Expected: FAIL — module not found.
@@ -958,7 +958,7 @@ export async function patchAuthUserImage(
 - [ ] **Step 4: Run the test, verify pass**
 
 ```bash
-pnpm vitest run __tests__/auth/patchAuthUserImage.test.ts
+pnpm test __tests__/auth/patchAuthUserImage.test.ts
 ```
 
 Expected: 4 passed.
@@ -1008,7 +1008,7 @@ it("PATCHes auth user image after successful confirm", async () => {
 - [ ] **Step 2: Run tests, verify failure**
 
 ```bash
-pnpm vitest run __tests__/api/upload-confirm.test.ts
+pnpm test __tests__/api/upload-confirm.test.ts
 ```
 
 Expected: FAIL — `patchAuthUserImage` not called.
@@ -1065,7 +1065,7 @@ export async function removeProfileImageAction() {
 - [ ] **Step 5: Run tests, verify pass**
 
 ```bash
-pnpm vitest run __tests__/api/upload-confirm.test.ts
+pnpm test __tests__/api/upload-confirm.test.ts
 pnpm typecheck
 ```
 
