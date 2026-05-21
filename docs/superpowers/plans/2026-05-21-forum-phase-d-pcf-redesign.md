@@ -423,14 +423,14 @@ Add the shadcn primitives we'll need. No app code touched. Each primitive render
 
 ## Task 2.1: Add all shadcn primitives in one batch
 
-- [ ] **Step 1: Run the bulk add**
+- [x] **Step 1: Run the bulk add**
 
 ```powershell
 pnpm dlx shadcn@latest add input textarea label separator skeleton dialog dropdown-menu tabs popover scroll-area sheet avatar badge tooltip command form select
 ```
 Expected: each command creates the corresponding file under `components/ui/`. Allow overwrites if prompted (none should exist except `button.tsx` from Task 1.8 — leave it).
 
-- [ ] **Step 2: Quick visual smoke**
+- [x] **Step 2: Quick visual smoke**
 
 In `app/page.tsx`, briefly add (under the smoke Button):
 ```tsx
@@ -444,13 +444,13 @@ Run `pnpm dev`. Confirm skeleton + badge render. Then remove those two lines (le
 
 ## Task 2.2: Phase 2 green-gate + commit
 
-- [ ] **Step 1: Green gate**
+- [x] **Step 1: Green gate**
 
 ```powershell
 pnpm test ; pnpm typecheck ; pnpm lint ; pnpm build
 ```
 
-- [ ] **Step 2: Commit**
+- [x] **Step 2: Commit**
 
 ```powershell
 git add -A
