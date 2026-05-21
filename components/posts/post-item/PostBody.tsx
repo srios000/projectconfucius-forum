@@ -24,21 +24,31 @@ const PostBody: React.FC<PostBodyProps> = ({
     <>
       <Text fontSize="12pt">{post.body.split(" ").slice(0, 30).join(" ")}</Text>
       {post.imageUrl && (
-        <Flex justify="center" align="center">
-          {loadingImage && (
-            <Skeleton height="300px" width="100%" borderRadius={10} />
-          )}
+        <Flex
+          justify="center"
+          align="center"
+          position="relative"
+          mt={4}
+          width="100%"
+          minHeight={loadingImage ? "300px" : undefined}
+        >
           <Image
-            mt={4}
             src={post.imageUrl}
             alt="Image for post"
             maxHeight="450px"
             maxWidth="100%"
             borderRadius="10px"
-            display={loadingImage ? "none" : "unset"}
+            loading="lazy"
+            decoding="async"
+            opacity={loadingImage ? 0 : 1}
+            transition="opacity 0.3s"
             onLoad={() => setLoadingImage(false)}
+            onError={() => setLoadingImage(false)}
             shadow="md"
           />
+          {loadingImage && (
+            <Skeleton position="absolute" inset={0} borderRadius={10} />
+          )}
         </Flex>
       )}
     </>

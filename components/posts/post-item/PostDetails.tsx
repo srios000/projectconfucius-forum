@@ -43,6 +43,8 @@ const PostDetails: React.FC<PostDetailsProps> = ({
               src={post.communityImageUrl}
               mr={2}
               alt="Community logo"
+              loading="lazy"
+              decoding="async"
             />
           ) : (
             <Icon

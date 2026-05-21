@@ -12,15 +12,29 @@ spec but worth doing later. Each entry: what, why deferred, originating spec.
 - **From:** [Phase A spec §8](specs/2026-05-19-forum-phase-a-postgres-sibling-auth-design.md),
   [Phase C spec §12](specs/2026-05-20-forum-phase-c-tanstack-query-design.md)
 
-## Optimistic UI for vote / join mutations
-- **What:** add `onMutate` / `onError` rollback to `usePostVote`,
-  `useJoinCommunity`, `useLeaveCommunity` so the UI updates immediately
-  rather than waiting for the server round-trip.
-- **Why deferred:** Phase C scope was kept mechanical; optimistic updates
-  introduce rollback complexity (toast on failure, conflict resolution with
-  server's authoritative state) that's better tackled once the cache
-  surfaces are stable.
+## Optimistic UI for join / save mutations
+- **What:** add optimistic UI to `useJoinCommunity`, `useLeaveCommunity`,
+  `useSavePostMutation`, and `useUnsavePostMutation` so the UI updates
+  immediately rather than waiting for the server round-trip. Vote
+  optimistic UI shipped 2026-05-21 (rollback on error + per-post pending
+  state in `hooks/posts/usePostVote.tsx`) — same pattern applies to these
+  remaining mutations.
+- **Why deferred:** the vote case was the primary perceived-lag source.
+  Save/join are less frequent and can ship as small follow-ups.
 - **From:** [Phase C spec §12](specs/2026-05-20-forum-phase-c-tanstack-query-design.md)
+
+## Feed/votes staleTime + drop redundant vote-mutation invalidations
+- **What:** with vote optimistic UI in place, the `usePostVoteMutation`
+  `onSuccess` no longer needs to invalidate `posts.feed.*` /
+  `posts.detail` / `posts.votes` — the visible state is already correct
+  from the optimistic write. Drop those invalidations to stop the 3-way
+  refetch on every vote. Separately, raise `staleTime` on
+  `usePostsFeedQuery` (currently `0`) to ~30s so mount/focus doesn't
+  re-fetch the whole feed.
+- **Why deferred:** small polish; tracked as follow-up after the optimistic
+  vote landing to confirm the cache is genuinely correct without
+  invalidation.
+- **From:** ad-hoc 2026-05-21 perf pass
 
 ## `useInfiniteQuery` migration of feed hooks
 - **What:** convert `usePostsFeed` and `useCommunitiesFeed` from
