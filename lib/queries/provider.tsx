@@ -6,7 +6,6 @@ import { getQueryClient } from "./client";
 
 /**
  * Mounts the TanStack Query client and dev-only devtools.
- * Place inside the root provider tree between Jotai (UI state) and Chakra.
  */
 export function QueryProvider({ children }: { children: React.ReactNode }) {
     const queryClient = getQueryClient();

@@ -184,27 +184,3 @@ body {
 html {
   @apply font-sans;
 }
-
-/* ── Chakra ↔ shadcn coexistence fix (remove in Phase 8) ──────────── */
-/* Chakra's reset layer sets `background-color: transparent` on all
-   <button> elements, overriding Tailwind utilities. This restores
-   shadcn button backgrounds until Chakra is fully removed.            */
-@layer utilities {
-  [data-slot="button"][data-variant] {
-    background-color: var(--color-primary);
-    color: var(--color-primary-foreground);
-  }
-  [data-slot="button"][data-variant="outline"],
-  [data-slot="button"][data-variant="ghost"],
-  [data-slot="button"][data-variant="link"] {
-    background-color: transparent;
-  }
-  [data-slot="button"][data-variant="secondary"] {
-    background-color: var(--color-secondary);
-    color: var(--color-secondary-foreground);
-  }
-  [data-slot="button"][data-variant="destructive"] {
-    background-color: color-mix(in srgb, var(--color-destructive) 10%, transparent);
-    color: var(--color-destructive);
-  }
-}
