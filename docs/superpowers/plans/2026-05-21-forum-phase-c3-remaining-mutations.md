@@ -2503,7 +2503,7 @@ git commit -m "refactor(community): route useCommunityImage through Upload/Delet
 
 Three mutations sharing one file. All invalidate `keys.profile(userId)` per parent spec §6. Upload wraps the `uploadImage` helper for `profile-image`; Remove wraps `removeProfileImageAction`; UpdateName wraps `profileNameAction`. None of the mutations call `router.refresh()` directly — that stays in the shell since the profile data is read from server components, not a TanStack query (see Known Limitation #5).
 
-- [ ] **Step 1: Write the failing test**
+- [x] **Step 1: Write the failing test**
 
 Create `__tests__/lib/queries/profile/use-profile-mutations.test.tsx`:
 
@@ -2596,7 +2596,7 @@ describe("useUpdateProfileNameMutation", () => {
 });
 ```
 
-- [ ] **Step 2: Run test to confirm it fails**
+- [x] **Step 2: Run test to confirm it fails**
 
 ```bash
 pnpm test __tests__/lib/queries/profile/use-profile-mutations.test.tsx
@@ -2604,7 +2604,7 @@ pnpm test __tests__/lib/queries/profile/use-profile-mutations.test.tsx
 
 Expected: FAIL — module not found.
 
-- [ ] **Step 3: Write the primitives**
+- [x] **Step 3: Write the primitives**
 
 Create `lib/queries/profile/use-profile-mutations.ts`:
 
@@ -2664,7 +2664,7 @@ export function useUpdateProfileNameMutation() {
 }
 ```
 
-- [ ] **Step 4: Run test to verify it passes**
+- [x] **Step 4: Run test to verify it passes**
 
 ```bash
 pnpm test __tests__/lib/queries/profile/use-profile-mutations.test.tsx
@@ -2672,7 +2672,7 @@ pnpm test __tests__/lib/queries/profile/use-profile-mutations.test.tsx
 
 Expected: PASS.
 
-- [ ] **Step 5: Commit**
+- [x] **Step 5: Commit**
 
 ```bash
 git add lib/queries/profile/use-profile-mutations.ts __tests__/lib/queries/profile/use-profile-mutations.test.tsx
