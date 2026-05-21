@@ -1139,7 +1139,7 @@ git commit -m "feat(queries): useCreateCommunityMutation with list + snippets in
 
 Preserves `{ createCommunity, loading, error, setError }` surface. Auth gate, validation regex, router.push, and error toast stay in the shell.
 
-- [ ] **Step 1: Replace the shell**
+- [x] **Step 1: Replace the shell**
 
 Replace `hooks/community/useCreateCommunity.ts`:
 
@@ -1200,7 +1200,7 @@ export const useCreateCommunity = () => {
 };
 ```
 
-- [ ] **Step 2: Verify types**
+- [x] **Step 2: Verify types**
 
 ```bash
 pnpm typecheck
@@ -1208,7 +1208,7 @@ pnpm typecheck
 
 Expected: clean.
 
-- [ ] **Step 3: Smoke in browser**
+- [x] **Step 3: Smoke in browser**
 
 Sign in. Open CreateCommunityModal, enter a valid name + type, submit. Expected: community is created, `router.push(/community/<name>)` navigates; on first render the new community is visible (a fresh community-detail mount). Open a separate tab to `/` — the home feed remount includes the new community in any list it renders. Devtools should show `community.list.*` and `community.snippets.<userId>` invalidating.
 
