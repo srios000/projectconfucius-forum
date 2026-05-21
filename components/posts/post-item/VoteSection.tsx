@@ -18,6 +18,7 @@ type VoteSectionProps = {
   ) => void;
   post: Post;
   votingDisabled?: boolean;
+  isVotePending?: boolean;
 };
 
 /**
@@ -33,7 +34,9 @@ const VoteSection: React.FC<VoteSectionProps> = ({
   onVote,
   post,
   votingDisabled,
+  isVotePending,
 }) => {
+  const interactionBlocked = votingDisabled || isVotePending;
   return (
     <>
       <Icon
@@ -45,14 +48,20 @@ const VoteSection: React.FC<VoteSectionProps> = ({
             ? "red.500"
             : "gray.500"
         }
+        opacity={isVotePending ? 0.5 : 1}
         fontSize={22}
-        cursor={votingDisabled ? "not-allowed" : "pointer"}
-        _hover={votingDisabled ? undefined : { color: "red.300" }}
+        cursor={interactionBlocked ? "not-allowed" : "pointer"}
+        _hover={interactionBlocked ? undefined : { color: "red.300" }}
         onClick={(event) =>
-          !votingDisabled && onVote(event, post, 1, post.communityId)
+          !interactionBlocked && onVote(event, post, 1, post.communityId)
         }
       />
-      <Text fontSize="12pt" color={{ base: "gray.600", _dark: "gray.400" }}>
+      <Text
+        fontSize="12pt"
+        color={{ base: "gray.600", _dark: "gray.400" }}
+        opacity={isVotePending ? 0.5 : 1}
+        transition="opacity 0.15s"
+      >
         {post.voteStatus}
       </Text>
       <Icon
@@ -68,11 +77,12 @@ const VoteSection: React.FC<VoteSectionProps> = ({
             ? "red.500"
             : "gray.500"
         }
-        _hover={votingDisabled ? undefined : { color: "red.300" }}
+        opacity={isVotePending ? 0.5 : 1}
+        _hover={interactionBlocked ? undefined : { color: "red.300" }}
         fontSize={22}
-        cursor={votingDisabled ? "not-allowed" : "pointer"}
+        cursor={interactionBlocked ? "not-allowed" : "pointer"}
         onClick={(event) =>
-          !votingDisabled && onVote(event, post, -1, post.communityId)
+          !interactionBlocked && onVote(event, post, -1, post.communityId)
         }
       />
     </>

@@ -33,7 +33,7 @@ export default function HomePageClient() {
     });
 
     const [postVotes, setPostVotes] = useState<PostVote[]>([]);
-    const { onVote, getPostVotes } = usePostVote({
+    const { onVote, getPostVotes, isVotePending } = usePostVote({
         posts,
         setPosts,
         postVotes,
@@ -78,6 +78,7 @@ export default function HomePageClient() {
                                 onSelectPost={onSelectPost}
                                 onDeletePost={onDeletePost}
                                 onVote={onVote}
+                                isVotePending={isVotePending(post.id!)}
                                 userVoteValue={
                                     postVotes.find((item) => item.postId === post.id)
                                         ?.voteValue

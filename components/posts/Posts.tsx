@@ -21,7 +21,12 @@ const Posts: React.FC<PostsProps> = ({ communityData }) => {
     communityId: communityData.id,
   });
   const { postVotes, setPostVotes } = usePostVoteSync();
-  const { onVote } = usePostVote({ posts, setPosts, postVotes, setPostVotes });
+  const { onVote, isVotePending } = usePostVote({
+    posts,
+    setPosts,
+    postVotes,
+    setPostVotes,
+  });
   const { onDeletePost } = usePostDeletion({ posts, setPosts });
   const { isAdmin, canPost } = useCommunityPermissions(communityData);
 
@@ -48,6 +53,7 @@ const Posts: React.FC<PostsProps> = ({ communityData }) => {
               onSelectPost={onSelectPost}
               onDeletePost={onDeletePost}
               votingDisabled={!canPost}
+              isVotePending={isVotePending(item.id!)}
             />
           ))}
           {!noMorePosts ? (

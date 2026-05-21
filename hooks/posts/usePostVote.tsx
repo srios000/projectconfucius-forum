@@ -38,6 +38,9 @@ const usePostVote = ({
   const { communityStateValue } = useCommunityState();
   const setUi = useSetAtom(uiAtom);
   const voteMutation = usePostVoteMutation();
+  const [pendingPostIds, setPendingPostIds] = React.useState<Set<string>>(
+    () => new Set(),
+  );
 
   const onVote = async (
     event: React.MouseEvent<SVGElement, MouseEvent>,
@@ -84,52 +87,119 @@ const usePostVote = ({
       }
     }
 
-    try {
-      const existingVote = postVotes.find((v) => v.postId === post.id);
+    if (pendingPostIds.has(post.id!)) return;
 
-      const { voteChange, newVote, voteIdToDelete } =
-        await voteMutation.mutateAsync({
-          post,
-          vote,
-          communityId,
-          existing: existingVote,
-        });
+    const existingVote = postVotes.find((v) => v.postId === post.id);
 
-      const updatedPost = { ...post, voteStatus: post.voteStatus + voteChange };
+    let optimisticChange: number;
+    let optimisticNewVote: PostVote | undefined;
+    let optimisticIdToDelete: string | undefined;
+    if (!existingVote) {
+      optimisticChange = vote;
+      optimisticNewVote = {
+        id: `optimistic-${post.id}-${Date.now()}`,
+        postId: post.id!,
+        communityId,
+        voteValue: vote,
+      };
+    } else if (existingVote.voteValue === vote) {
+      optimisticChange = -vote;
+      optimisticIdToDelete = existingVote.id;
+    } else {
+      optimisticChange = 2 * vote;
+      optimisticNewVote = { ...existingVote, voteValue: vote };
+    }
 
-      setPosts((prev) =>
-        prev.map((item) => (item.id === post.id ? updatedPost : item)),
-      );
+    const postSnapshot = post;
+    const voteSnapshot = existingVote ? { ...existingVote } : undefined;
+    const updatedPost = {
+      ...post,
+      voteStatus: post.voteStatus + optimisticChange,
+    };
 
-      setPostVotes((prev) => {
-        let updated = [...prev];
-        if (voteIdToDelete) {
-          updated = updated.filter((v) => v.id !== voteIdToDelete);
-        } else if (newVote) {
-          if (existingVote) {
-            const idx = updated.findIndex((v) => v.id === existingVote.id);
-            if (idx >= 0) updated[idx] = newVote;
-          } else {
-            updated = [...updated, newVote];
-          }
+    setPosts((prev) =>
+      prev.map((item) => (item.id === post.id ? updatedPost : item)),
+    );
+    setPostVotes((prev) => {
+      let next = [...prev];
+      if (optimisticIdToDelete) {
+        next = next.filter((v) => v.id !== optimisticIdToDelete);
+      } else if (optimisticNewVote) {
+        if (existingVote) {
+          const idx = next.findIndex((v) => v.id === existingVote.id);
+          if (idx >= 0) next[idx] = optimisticNewVote;
+          else next.push(optimisticNewVote);
+        } else {
+          next.push(optimisticNewVote);
         }
-        return updated;
+      }
+      return next;
+    });
+    setUi((prev) =>
+      prev.selectedPost?.id === post.id
+        ? { ...prev, selectedPost: updatedPost }
+        : prev,
+    );
+    setPendingPostIds((prev) => {
+      const next = new Set(prev);
+      next.add(post.id!);
+      return next;
+    });
+
+    try {
+      const { newVote } = await voteMutation.mutateAsync({
+        post,
+        vote,
+        communityId,
+        existing: existingVote,
       });
 
-      setUi((prev) =>
-        prev.selectedPost?.id === post.id
-          ? { ...prev, selectedPost: updatedPost }
-          : prev,
-      );
+      // Reconcile temp ID with server-assigned ID for newly created votes.
+      if (newVote && optimisticNewVote && newVote.id !== optimisticNewVote.id) {
+        setPostVotes((prev) =>
+          prev.map((v) => (v.id === optimisticNewVote!.id ? newVote : v)),
+        );
+      }
     } catch (error) {
       console.log("Error: onVote", error);
+      setPosts((prev) =>
+        prev.map((item) => (item.id === post.id ? postSnapshot : item)),
+      );
+      setPostVotes((prev) => {
+        let next = [...prev];
+        if (optimisticIdToDelete && voteSnapshot) {
+          next.push(voteSnapshot);
+        } else if (optimisticNewVote) {
+          if (voteSnapshot) {
+            const idx = next.findIndex((v) => v.id === optimisticNewVote!.id);
+            if (idx >= 0) next[idx] = voteSnapshot;
+          } else {
+            next = next.filter((v) => v.id !== optimisticNewVote!.id);
+          }
+        }
+        return next;
+      });
+      setUi((prev) =>
+        prev.selectedPost?.id === post.id
+          ? { ...prev, selectedPost: postSnapshot }
+          : prev,
+      );
       showToast({
         title: "Could not Vote",
         description: "There was an error voting on the post",
         status: "error",
       });
+    } finally {
+      setPendingPostIds((prev) => {
+        if (!prev.has(post.id!)) return prev;
+        const next = new Set(prev);
+        next.delete(post.id!);
+        return next;
+      });
     }
   };
+
+  const isVotePending = (postId: string) => pendingPostIds.has(postId);
 
   const getPostVotes = async (postIds: string[]) => {
     if (!user || !postIds.length) return;
@@ -162,7 +232,7 @@ const usePostVote = ({
 
   void posts;
 
-  return { onVote, getPostVotes, getPost };
+  return { onVote, getPostVotes, getPost, isVotePending };
 };
 
 export default usePostVote;

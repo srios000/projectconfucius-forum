@@ -1108,17 +1108,17 @@ pnpm build
 
 Expected: clean.
 
-- [ ] **Step 5: Smoke checklist (browser, signed in)**
+- [x] **Step 5: Smoke checklist (browser, signed in)**
 
 Run through each manually:
 - [x] Upvote and downvote a post in a community feed — vote count and colour update without page refresh
-- [ ] Submit a new post from `/community/[id]/submit` — `router.back()` lands on the feed and the new post appears at the top after remount
-- [ ] Delete a post (as owner or admin) — disappears from feed; detail URL returns 404
-- [ ] Save a post — toast appears; saved list shows it on next visit
-- [ ] Unsave a post — toast appears; saved list updates on next visit
-- [ ] React Query Devtools shows the expected keys flipping to "fetching/stale" on each action
+- [x] Submit a new post from `/community/[id]/submit` — `router.back()` lands on the feed and the new post appears at the top after remount
+- [x] Delete a post (as owner or admin) — disappears from feed; detail URL returns 404
+- [x] Save a post — toast appears; saved list shows it on next visit
+- [x] Unsave a post — toast appears; saved list updates on next visit
+- [x] React Query Devtools shows the expected keys flipping to "fetching/stale" on each action
 
-- [ ] **Step 6: Commit any test/lint fixes**
+- [x] **Step 6: Commit any test/lint fixes**
 
 If steps 1–4 surfaced issues that required code tweaks, commit them with a descriptive message. If no fixes were needed, skip this step.
 

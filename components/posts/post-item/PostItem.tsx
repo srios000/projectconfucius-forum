@@ -39,6 +39,7 @@ type PostItemProps = {
   onSelectPost?: (post: Post) => void;
   showCommunityImage?: boolean;
   votingDisabled?: boolean;
+  isVotePending?: boolean;
 };
 
 /**
@@ -57,6 +58,7 @@ const PostItem: React.FC<PostItemProps> = ({
   onSelectPost,
   showCommunityImage,
   votingDisabled,
+  isVotePending,
 }) => {
   const [loadingImage, setLoadingImage] = useState(true);
   const [error, setError] = useState(false);
@@ -154,6 +156,8 @@ const PostItem: React.FC<PostItemProps> = ({
           userVoteValue={userVoteValue}
           onVote={onVote}
           post={post}
+          votingDisabled={votingDisabled}
+          isVotePending={isVotePending}
         />
       </Flex>
 

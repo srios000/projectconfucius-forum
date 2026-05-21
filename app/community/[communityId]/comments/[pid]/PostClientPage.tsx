@@ -34,7 +34,12 @@ const PostPage: React.FC<PostPageProps> = ({ communityId, postId }) => {
 
   const [posts, setPosts] = useState<Post[]>([]);
   const { postVotes, setPostVotes } = usePostVoteSync();
-  const { onVote } = usePostVote({ posts, setPosts, postVotes, setPostVotes });
+  const { onVote, isVotePending } = usePostVote({
+    posts,
+    setPosts,
+    postVotes,
+    setPostVotes,
+  });
   const { onDeletePost } = usePostDeletion({ posts, setPosts });
 
   const { communityStateValue, setCommunityStateValue } = useCommunityState();
@@ -90,6 +95,7 @@ const PostPage: React.FC<PostPageProps> = ({ communityId, postId }) => {
             <PostItem
               post={selectedPost}
               onVote={onVote}
+              isVotePending={isVotePending(selectedPost.id!)}
               onDeletePost={onDeletePost}
               userVoteValue={
                 postVotes.find((item) => item.postId === selectedPost.id)
