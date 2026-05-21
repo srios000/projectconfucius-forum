@@ -1,6 +1,5 @@
 "use client";
 
-import CreatePostLink from "@/components/community/CreatePostLink";
 import PersonalHome from "@/components/community/PersonalHome";
 import Recommendations from "@/components/community/recommendations/Recommendations";
 import PageContent from "@/components/layout/PageContent";
@@ -53,7 +52,6 @@ export default function HomePageClient() {
     return (
         <PageContent>
             <>
-                <CreatePostLink />
                 {loading && posts.length === 0 ? (
                     <PostLoader />
                 ) : (

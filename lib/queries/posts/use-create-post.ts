@@ -5,17 +5,30 @@ import { createPostAction } from "@/app/actions/posts";
 
 export type CreatePostArgs = {
     communityId: string;
-    communityImageUrl: string | undefined;
-    postData: { title: string; body: string };
+    communityImageUrl?: string;
+    postData?: { title: string; body: string };
     imageUrl?: string;
+    title?: string;
+    body?: string;
 };
 
 export function useCreatePostMutation() {
     const qc = useQueryClient();
     return useMutation({
-        mutationFn: ({ communityId, communityImageUrl, postData, imageUrl }: CreatePostArgs) =>
-            createPostAction(communityId, communityImageUrl, postData, imageUrl),
-        onSuccess: () => {
+        mutationFn: async (vars: CreatePostArgs) => {
+            const title = vars.title ?? vars.postData?.title ?? "";
+            const body = vars.body ?? vars.postData?.body ?? "";
+            return createPostAction(
+                vars.communityId,
+                vars.communityImageUrl,
+                { title, body },
+                vars.imageUrl
+            );
+        },
+        onSuccess: (id: string) => {
+            if (id) {
+                sessionStorage.setItem("pcf:newPost", id);
+            }
             void qc.invalidateQueries({
                 predicate: (q) =>
                     q.queryKey[0] === "posts" && q.queryKey[1] === "feed",

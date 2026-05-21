@@ -1,7 +1,6 @@
 "use client";
 
 import { useState } from "react";
-import CreatePostLink from "@/components/community/CreatePostLink";
 import PageContent from "@/components/layout/PageContent";
 import Posts from "@/components/posts/Posts";
 import useCommunityPermissions from "@/hooks/community/useCommunityPermissions";
@@ -14,6 +13,8 @@ import CommunityHeader from "@/components/community/CommunityHeader";
 import useCommunityState from "@/hooks/community/useCommunityState";
 import useCommunityMembershipActions from "@/hooks/community/useCommunityMembershipActions";
 import ConfirmationDialog from "@/components/modal/ConfirmationDialog";
+import InlineComposer from "@/components/posts/composer/InlineComposer";
+import RestrictedComposerNotice from "@/components/posts/composer/RestrictedComposerNotice";
 
 type CommunityPageProps = {
   communityId: string;
@@ -22,7 +23,7 @@ type CommunityPageProps = {
 export default function CommunityClient({ communityId }: CommunityPageProps) {
   const { data: communityData } = useCommunityDataQuery({ communityId });
   const currentCommunity = (communityData ?? { id: communityId }) as Community;
-  const { canView, loading } = useCommunityPermissions(currentCommunity);
+  const { canView, canPost, loading } = useCommunityPermissions(currentCommunity);
 
   const { communityStateValue } = useCommunityState();
   const { onJoinOrLeaveCommunity, loading: membershipLoading } = useCommunityMembershipActions();
@@ -65,7 +66,11 @@ export default function CommunityClient({ communityId }: CommunityPageProps) {
             <PostLoader />
           ) : canView ? (
             <>
-              <CreatePostLink />
+              {canPost ? (
+                <InlineComposer communityId={communityId} />
+              ) : (
+                <RestrictedComposerNotice communityId={communityId} />
+              )}
               <Posts communityData={currentCommunity} />
             </>
           ) : (
