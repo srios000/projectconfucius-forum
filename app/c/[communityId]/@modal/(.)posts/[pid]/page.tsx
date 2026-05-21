@@ -9,14 +9,14 @@ import PostDetail from "@/components/posts/post-detail/PostDetail";
 export default function PostOverlayRoute() {
   const router = useRouter();
   const params = useParams<{ communityId: string; pid: string }>();
-  
+
   if (!params.communityId || !params.pid) {
     return null;
   }
 
   return (
     <Dialog open onOpenChange={(v) => { if (!v) router.back(); }}>
-      <DialogContent className="max-w-[760px] max-h-[88vh] overflow-y-auto p-0">
+      <DialogContent className="max-w-190 max-h-[88vh] overflow-y-auto p-0">
         <VisuallyHidden><DialogTitle>Post detail</DialogTitle></VisuallyHidden>
         <PostDetail
           communityId={params.communityId}

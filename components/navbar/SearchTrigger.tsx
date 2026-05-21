@@ -20,7 +20,7 @@ export default function SearchTrigger() {
     <>
       <button
         onClick={() => setOpen(true)}
-        className="flex-1 max-w-[360px] hidden md:flex items-center gap-2 px-3.5 py-2 rounded-full
+        className="flex-1 max-w-90 hidden md:flex items-center gap-2 px-3.5 py-2 rounded-full
           bg-muted border border-border text-muted-foreground text-xs
           hover:border-primary-soft hover:bg-card transition-colors"
       >

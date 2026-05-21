@@ -30,10 +30,10 @@ const UserImageSection: React.FC<UserImageSectionProps> = ({
           <img
             src={selectedFile || (user?.image as string)}
             alt="User Photo"
-            className="size-[120px] rounded-full object-cover shadow-md"
+            className="size-30 rounded-full object-cover shadow-md"
           />
         ) : (
-          <MdAccountCircle className="size-[120px] text-muted-foreground/45" />
+          <MdAccountCircle className="size-30 text-muted-foreground/45" />
         )}
         <span className="text-xl font-bold text-foreground">
           {user?.name}
@@ -41,7 +41,7 @@ const UserImageSection: React.FC<UserImageSectionProps> = ({
       </div>
 
       {isEditing && (
-        <div className="flex gap-2 w-full max-w-[300px]">
+        <div className="flex gap-2 w-full max-w-75">
           <Button
             type="button"
             className="flex-1"

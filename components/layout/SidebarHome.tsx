@@ -39,7 +39,7 @@ export default function SidebarHome() {
 function Card({ title, children }: { title: string; children: React.ReactNode }) {
   return (
     <div className="bg-card border border-border rounded-xl p-3.5">
-      <div className="text-[10.5px] tracking-[0.1em] uppercase font-bold text-muted-foreground mb-2.5">{title}</div>
+      <div className="text-[10.5px] tracking-widest uppercase font-bold text-muted-foreground mb-2.5">{title}</div>
       {children}
     </div>
   );
@@ -47,7 +47,7 @@ function Card({ title, children }: { title: string; children: React.ReactNode })
 
 function CommunityQuoteCard() {
   return (
-    <div className="rounded-xl border border-primary/20 bg-gradient-to-br from-primary-mute to-card p-4 text-center">
+    <div className="rounded-xl border border-primary/20 bg-linear-to-br from-primary-mute to-card p-4 text-center">
       <p className="font-serif italic text-primary text-sm leading-snug">
         &ldquo;The unexamined life<br />is not worth living.&rdquo;
       </p>

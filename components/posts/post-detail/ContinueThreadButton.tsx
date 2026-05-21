@@ -7,7 +7,7 @@ export default function ContinueThreadButton({ communityId, postId, commentId, h
   return (
     <Link
       href={buildCommentUrl(communityId, postId, commentId)}
-      className="mt-1.5 flex items-center justify-between rounded-lg px-3 py-2 border border-dashed border-primary-soft bg-gradient-to-br from-primary-mute to-primary-mute/50 hover:border-primary group transition-all"
+      className="mt-1.5 flex items-center justify-between rounded-lg px-3 py-2 border border-dashed border-primary-soft bg-linear-to-br from-primary-mute to-primary-mute/50 hover:border-primary group transition-all"
     >
       <div>
         <div className="text-[11.5px] font-semibold text-primary">Continue this thread</div>

@@ -50,7 +50,7 @@ export default function MembersList({ communityId }: MembersListProps) {
 
   if (loading || communityLoading) {
     return (
-      <div className="space-y-4 max-w-[760px] mx-auto px-3 py-6">
+      <div className="space-y-4 max-w-190 mx-auto px-3 py-6">
         <Skeleton className="h-8 w-48" />
         <Skeleton className="h-12 w-full" />
         <Skeleton className="h-12 w-full" />
@@ -60,7 +60,7 @@ export default function MembersList({ communityId }: MembersListProps) {
   }
 
   return (
-    <div className="mx-auto max-w-[760px] px-3 py-6 space-y-6">
+    <div className="mx-auto max-w-190 px-3 py-6 space-y-6">
       <div>
         <h1 className="font-serif text-2xl font-bold tracking-tight text-foreground">
           {memberCount} Community Member{memberCount === 1 ? "" : "s"}

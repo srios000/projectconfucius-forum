@@ -32,7 +32,7 @@ export default function CommentNode({
         aria-label={collapsed ? "Expand thread" : "Collapse thread"}
         className="group/spine w-4 shrink-0 flex justify-center pt-7 cursor-pointer border-0 bg-transparent"
       >
-        <span className="block w-0.5 flex-1 rounded bg-primary/20 group-hover/spine:bg-primary group-hover/spine:w-[3px] transition-all" />
+        <span className="block w-0.5 flex-1 rounded bg-primary/20 group-hover/spine:bg-primary group-hover/spine:w-0.75 transition-all" />
       </button>
       <div className="flex-1 min-w-0">
         <div className="flex items-center gap-2 text-[11px] mb-0.5">

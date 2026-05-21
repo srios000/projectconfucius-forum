@@ -20,7 +20,7 @@ export default function UserMenu({ user }: { user: SessionUser }) {
             {user.image && <AvatarImage src={user.image} alt="" />}
             <AvatarFallback className="text-[10px]">{initials}</AvatarFallback>
           </Avatar>
-          <span className="hidden md:inline max-w-[120px] truncate">{user.name ?? user.email}</span>
+          <span className="hidden md:inline max-w-30 truncate">{user.name ?? user.email}</span>
         </Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent align="end" className="w-52">

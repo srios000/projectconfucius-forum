@@ -12,7 +12,7 @@ export default function ModalComposer({ open, onOpenChange }: Props) {
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="max-w-[520px] p-0">
+      <DialogContent className="max-w-130 p-0">
         <DialogHeader className="px-4 py-3 border-b border-border">
           <DialogTitle className="text-sm font-bold">New post</DialogTitle>
           <select

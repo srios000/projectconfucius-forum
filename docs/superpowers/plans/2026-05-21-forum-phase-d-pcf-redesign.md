@@ -543,7 +543,7 @@ export default function AppShell({
       <Navbar />
       <main
         className={cn(
-          "mx-auto max-w-[1080px] px-3 pb-12 pt-4",
+          "mx-auto max-w-270 px-3 pb-12 pt-4",
           withSidebar
             ? "grid grid-cols-1 gap-4 md:grid-cols-[minmax(0,1fr)_280px]"
             : "grid grid-cols-1"
@@ -654,7 +654,7 @@ export default function SidebarHome() {
 function Card({ title, children }: { title: string; children: React.ReactNode }) {
   return (
     <div className="bg-card border border-border rounded-xl p-3.5">
-      <div className="text-[10.5px] tracking-[0.1em] uppercase font-bold text-muted-foreground mb-2.5">{title}</div>
+      <div className="text-[10.5px] tracking-widest uppercase font-bold text-muted-foreground mb-2.5">{title}</div>
       {children}
     </div>
   );
@@ -662,7 +662,7 @@ function Card({ title, children }: { title: string; children: React.ReactNode })
 
 function CommunityQuoteCard() {
   return (
-    <div className="rounded-xl border border-primary/20 bg-gradient-to-br from-primary-mute to-card p-4 text-center">
+    <div className="rounded-xl border border-primary/20 bg-linear-to-br from-primary-mute to-card p-4 text-center">
       <p className="font-serif italic text-primary text-sm leading-snug">
         "The unexamined life<br />is not worth living."
       </p>
@@ -737,13 +737,13 @@ export default function Navbar() {
 
   return (
     <header className="sticky top-1 z-50 mx-1.5 mt-1.5 rounded-2xl border border-border bg-card shadow-lg">
-      <div className="flex h-[62px] items-center gap-3 px-3">
+      <div className="flex h-15.5 items-center gap-3 px-3">
         <Link href="/" className="flex items-center gap-2 shrink-0">
           <div
             className="size-7 rounded-lg relative shadow-[0_2px_6px_-2px_hsl(var(--primary)/0.5),inset_0_1px_0_rgba(255,255,255,0.2)]"
             style={{ background: "linear-gradient(135deg, hsl(var(--primary)), hsl(var(--primary-deep)))" }}
           >
-            <div className="absolute inset-[6px] border-[1.5px] border-white/85 rounded" />
+            <div className="absolute inset-1.5 border-[1.5px] border-white/85 rounded" />
           </div>
           <span className="hidden md:inline font-extrabold tracking-tight text-base">PCF</span>
         </Link>
@@ -830,7 +830,7 @@ export default function UserMenu({ user }: { user: SessionUser }) {
             {user.image && <AvatarImage src={user.image} alt="" />}
             <AvatarFallback className="text-[10px]">{initials}</AvatarFallback>
           </Avatar>
-          <span className="hidden md:inline max-w-[120px] truncate">{user.name ?? user.email}</span>
+          <span className="hidden md:inline max-w-30 truncate">{user.name ?? user.email}</span>
         </Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent align="end" className="w-52">
@@ -1003,7 +1003,7 @@ export default function SearchTrigger() {
     <>
       <button
         onClick={() => setOpen(true)}
-        className="flex-1 max-w-[360px] hidden md:flex items-center gap-2 px-3.5 py-2 rounded-full
+        className="flex-1 max-w-90 hidden md:flex items-center gap-2 px-3.5 py-2 rounded-full
           bg-muted border border-border text-muted-foreground text-xs
           hover:border-primary-soft hover:bg-card transition-colors"
       >
@@ -1096,7 +1096,7 @@ export default function MobileSidebarSheet() {
           <Menu className="size-5" />
         </Button>
       </SheetTrigger>
-      <SheetContent side="left" className="w-[300px]">
+      <SheetContent side="left" className="w-75">
         <SheetHeader>
           <SheetTitle>Navigation</SheetTitle>
         </SheetHeader>
@@ -1878,7 +1878,7 @@ export default function PostOverlayRoute() {
   const params = useParams<{ communityId: string; pid: string }>();
   return (
     <Dialog open onOpenChange={(v) => { if (!v) router.back(); }}>
-      <DialogContent className="max-w-[760px] max-h-[88vh] overflow-y-auto p-0">
+      <DialogContent className="max-w-190 max-h-[88vh] overflow-y-auto p-0">
         <VisuallyHidden><DialogTitle>Post detail</DialogTitle></VisuallyHidden>
         <PostDetail
           communityId={params.communityId}
@@ -2158,7 +2158,7 @@ export default function ContinueThreadButton({ communityId, postId, commentId, h
   return (
     <Link
       href={buildCommentUrl(communityId, postId, commentId)}
-      className="mt-1.5 flex items-center justify-between rounded-lg px-3 py-2 border border-dashed border-primary-soft bg-gradient-to-br from-primary-mute to-primary-mute/50 hover:border-primary group transition-all"
+      className="mt-1.5 flex items-center justify-between rounded-lg px-3 py-2 border border-dashed border-primary-soft bg-linear-to-br from-primary-mute to-primary-mute/50 hover:border-primary group transition-all"
     >
       <div>
         <div className="text-[11.5px] font-semibold text-primary">Continue this thread</div>
@@ -2252,7 +2252,7 @@ export default function CommentNode({
         aria-label={collapsed ? "Expand thread" : "Collapse thread"}
         className="group/spine w-4 shrink-0 flex justify-center pt-7"
       >
-        <span className="block w-0.5 flex-1 rounded bg-primary/20 group-hover/spine:bg-primary group-hover/spine:w-[3px] transition-all" />
+        <span className="block w-0.5 flex-1 rounded bg-primary/20 group-hover/spine:bg-primary group-hover/spine:w-0.75 transition-all" />
       </button>
       <div className="flex-1 min-w-0">
         <div className="flex items-center gap-2 text-[11px] mb-0.5">
@@ -2858,7 +2858,7 @@ export default function ModalComposer({ open, onOpenChange }: Props) {
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="max-w-[520px] p-0">
+      <DialogContent className="max-w-130 p-0">
         <DialogHeader className="px-4 py-3 border-b border-border">
           <DialogTitle className="text-sm font-bold">New post</DialogTitle>
           <select
@@ -3113,7 +3113,7 @@ import Link from "next/link";
 
 export default function SettingsLayout({ children }: { children: React.ReactNode }) {
   return (
-    <div className="mx-auto max-w-[900px] px-3 py-4 grid grid-cols-1 md:grid-cols-[200px_1fr] gap-4">
+    <div className="mx-auto max-w-225 px-3 py-4 grid grid-cols-1 md:grid-cols-[200px_1fr] gap-4">
       <nav className="space-y-1 text-sm font-medium">
         <Link href="/settings/profile" className="block px-3 py-2 rounded-md hover:bg-muted">Profile</Link>
         <Link href="/saved" className="block px-3 py-2 rounded-md hover:bg-muted">Saved posts</Link>
@@ -3190,7 +3190,7 @@ import Danger from "./Danger";
 
 export default function CommunitySettingsTabs({ communityId }: { communityId: string }) {
   return (
-    <div className="mx-auto max-w-[760px] px-3 py-4">
+    <div className="mx-auto max-w-190 px-3 py-4">
       <h1 className="font-serif text-2xl mb-3">Community settings — c/{communityId}</h1>
       <Tabs defaultValue="privacy">
         <TabsList>

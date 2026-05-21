@@ -16,7 +16,7 @@ export default function AppShell({
       <Navbar />
       <main
         className={cn(
-          "mx-auto max-w-[1080px] px-3 pb-12 pt-4",
+          "mx-auto max-w-270 px-3 pb-12 pt-4",
           withSidebar
             ? "grid grid-cols-1 gap-4 md:grid-cols-[minmax(0,1fr)_280px]"
             : "grid grid-cols-1"

@@ -16,7 +16,7 @@ export default function MobileSidebarSheet() {
           <Menu className="size-5" />
         </Button>
       </SheetTrigger>
-      <SheetContent side="left" className="w-[300px]">
+      <SheetContent side="left" className="w-75">
         <SheetHeader>
           <SheetTitle>Navigation</SheetTitle>
         </SheetHeader>

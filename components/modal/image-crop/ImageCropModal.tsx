@@ -93,11 +93,11 @@ const ImageCropModal: React.FC<ImageCropModalProps> = ({
 
   return (
     <Dialog open={open} onOpenChange={(v) => !v && onCancel()}>
-      <DialogContent className="max-w-[520px] p-0 overflow-hidden" onClick={(e) => e.stopPropagation()}>
+      <DialogContent className="max-w-130 p-0 overflow-hidden" onClick={(e) => e.stopPropagation()}>
         <DialogHeader className="px-5 pt-5 pb-3 border-b border-border">
           <DialogTitle className="text-center font-serif text-lg">{title}</DialogTitle>
         </DialogHeader>
-        <div className="p-5 flex justify-center min-h-[200px]">
+        <div className="p-5 flex justify-center min-h-50">
           {imgSrc ? (
             <ReactCrop
               crop={crop}
