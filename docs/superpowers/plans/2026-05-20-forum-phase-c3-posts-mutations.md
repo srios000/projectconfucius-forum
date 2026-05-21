@@ -1111,7 +1111,7 @@ Expected: clean.
 - [ ] **Step 5: Smoke checklist (browser, signed in)**
 
 Run through each manually:
-- [ ] Upvote and downvote a post in a community feed — vote count and colour update without page refresh
+- [x] Upvote and downvote a post in a community feed — vote count and colour update without page refresh
 - [ ] Submit a new post from `/community/[id]/submit` — `router.back()` lands on the feed and the new post appears at the top after remount
 - [ ] Delete a post (as owner or admin) — disappears from feed; detail URL returns 404
 - [ ] Save a post — toast appears; saved list shows it on next visit
