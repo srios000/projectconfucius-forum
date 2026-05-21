@@ -1212,7 +1212,7 @@ Expected: clean.
 
 Sign in. Open CreateCommunityModal, enter a valid name + type, submit. Expected: community is created, `router.push(/community/<name>)` navigates; on first render the new community is visible (a fresh community-detail mount). Open a separate tab to `/` — the home feed remount includes the new community in any list it renders. Devtools should show `community.list.*` and `community.snippets.<userId>` invalidating.
 
-- [ ] **Step 4: Commit**
+- [x] **Step 4: Commit**
 
 ```bash
 git add hooks/community/useCreateCommunity.ts
@@ -1229,7 +1229,7 @@ git commit -m "refactor(community): route useCreateCommunity through useCreateCo
 
 Wraps `deleteCommunityAction`. Invalidates `keys.community.list.*` (predicate), `keys.community.detail(id)`, `keys.community.snippets(userId)`.
 
-- [ ] **Step 1: Write the failing test**
+- [x] **Step 1: Write the failing test**
 
 Create `__tests__/lib/queries/community/use-delete-community-mutation.test.tsx`:
 
@@ -1284,7 +1284,7 @@ describe("useDeleteCommunityMutation", () => {
 });
 ```
 
-- [ ] **Step 2: Run test to confirm it fails**
+- [x] **Step 2: Run test to confirm it fails**
 
 ```bash
 pnpm test __tests__/lib/queries/community/use-delete-community-mutation.test.tsx
@@ -1292,7 +1292,7 @@ pnpm test __tests__/lib/queries/community/use-delete-community-mutation.test.tsx
 
 Expected: FAIL — module not found.
 
-- [ ] **Step 3: Write the primitive**
+- [x] **Step 3: Write the primitive**
 
 Create `lib/queries/community/use-delete-community-mutation.ts`:
 
@@ -1326,7 +1326,7 @@ export function useDeleteCommunityMutation() {
 }
 ```
 
-- [ ] **Step 4: Run test to verify it passes**
+- [x] **Step 4: Run test to verify it passes**
 
 ```bash
 pnpm test __tests__/lib/queries/community/use-delete-community-mutation.test.tsx
@@ -1334,7 +1334,7 @@ pnpm test __tests__/lib/queries/community/use-delete-community-mutation.test.tsx
 
 Expected: PASS.
 
-- [ ] **Step 5: Commit**
+- [x] **Step 5: Commit**
 
 ```bash
 git add lib/queries/community/use-delete-community-mutation.ts __tests__/lib/queries/community/use-delete-community-mutation.test.tsx
