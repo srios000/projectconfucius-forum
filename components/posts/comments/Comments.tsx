@@ -43,16 +43,9 @@ const Comments: React.FC<CommentsProps> = ({
   communityId,
   isCommunityAdmin,
 }) => {
-  const { comments, setComments, commentFetchLoading } =
-    useCommentList(selectedPost);
-  const { createComment, createLoading } = useCreateComment(
-    selectedPost,
-    setComments
-  );
-  const { deleteComment, deleteLoadingId } = useDeleteComment(
-    comments,
-    setComments
-  );
+  const { comments, commentFetchLoading } = useCommentList(selectedPost);
+  const { createComment, createLoading } = useCreateComment(selectedPost);
+  const { deleteComment, deleteLoadingId } = useDeleteComment();
   const { communityStateValue } = useCommunityState();
   const { canComment } = useCommunityPermissions(
     communityStateValue.currentCommunity

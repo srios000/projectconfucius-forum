@@ -355,7 +355,7 @@ git commit -m "feat(queries): useDeleteCommentMutation with comments + post-deta
 
 Single task because the three files form one tightly coupled surface — drop `setComments` from `useCommentList` and the consumer drops the plumbing in one move. Validation: typecheck + smoke.
 
-- [ ] **Step 1: Replace `hooks/comments/useCommentList.ts`**
+- [x] **Step 1: Replace `hooks/comments/useCommentList.ts`**
 
 Replace with:
 
@@ -414,7 +414,7 @@ This useEffect calls `showToast` only — no setState — so `react-hooks/set-st
 
 The previous file had `// eslint-disable-next-line react-hooks/set-state-in-effect -- mirror query data into local list to support optimistic insert via setComments`. The mirror is gone, so the suppression is gone.
 
-- [ ] **Step 2: Replace `hooks/comments/useCreateComment.ts`**
+- [x] **Step 2: Replace `hooks/comments/useCreateComment.ts`**
 
 Replace with:
 
@@ -500,7 +500,7 @@ const useCreateComment = (selectedPost: Post | null) => {
 export default useCreateComment;
 ```
 
-- [ ] **Step 3: Replace `hooks/comments/useDeleteComment.ts`**
+- [x] **Step 3: Replace `hooks/comments/useDeleteComment.ts`**
 
 Replace with:
 
@@ -560,7 +560,7 @@ export default useDeleteComment;
 
 Note: surface change — the hook now takes no arguments (was `(comments, setComments)`). Caller updates in next step.
 
-- [ ] **Step 4: Update `components/posts/comments/Comments.tsx`**
+- [x] **Step 4: Update `components/posts/comments/Comments.tsx`**
 
 Replace lines 46-55 (the three hook destructures) with:
 
@@ -572,7 +572,7 @@ Replace lines 46-55 (the three hook destructures) with:
 
 Everything else in `Comments.tsx` stays — `comments` is still consumed for the tree collection, `deleteLoadingId` still drives per-row spinners.
 
-- [ ] **Step 5: Verify types**
+- [x] **Step 5: Verify types**
 
 ```bash
 pnpm typecheck
@@ -580,7 +580,7 @@ pnpm typecheck
 
 Expected: clean.
 
-- [ ] **Step 6: Run comments-related tests**
+- [x] **Step 6: Run comments-related tests**
 
 ```bash
 pnpm test __tests__/lib/queries/comments
@@ -588,7 +588,7 @@ pnpm test __tests__/lib/queries/comments
 
 Expected: PASS (the two new mutation tests from Tasks 1–2).
 
-- [ ] **Step 7: Smoke in browser**
+- [x] **Step 7: Smoke in browser**
 
 Sign in, open a post detail page in a community where you can comment. Type a comment, submit. Expected: comment appears in the list within one round trip; numberOfComments in the post header increments. Reply to a comment — same. Delete a comment with replies — the comment and its descendants disappear (server cascades); the count decrements. Open React Query Devtools and confirm `comments.<postId>` and `posts.detail.<postId>` flip to fetching/stale on each action.
 

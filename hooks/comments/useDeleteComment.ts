@@ -1,55 +1,41 @@
-import { Dispatch, SetStateAction, useState } from "react";
 import { uiAtom } from "@/atoms/uiAtom";
 import { useSetAtom } from "jotai";
+import { useState } from "react";
 import useCustomToast from "@/hooks/useCustomToast";
 import { Comment } from "../../types/comment";
-import { deleteCommentAction } from "@/app/actions/comments";
+import { useDeleteCommentMutation } from "@/lib/queries/comments/use-delete-comment-mutation";
 
+/**
+ * Shell over useDeleteCommentMutation. Preserves the public `deleteComment` /
+ * `deleteLoadingId` surface. The server cascades descendant deletes; the
+ * post-detail count refreshes via posts.detail invalidation. The uiAtom
+ * mirror decrements by 1 (best-effort header update) and is corrected by the
+ * invalidated query.
+ */
 /**
  * A custom hook that provides functionality for deleting comments and their threaded replies.
  * It calculates all descendant comment IDs to ensure a clean cascading delete and updates the post's comment count.
- * @param comments - The current list of comments for the post.
- * @param setComments - A state setter function to update the local comments list.
  * @returns An object containing the `onDeleteComment` function and the ID of the comment currently being deleted.
  */
-const useDeleteComment = (
-  comments: Comment[],
-  setComments: Dispatch<SetStateAction<Comment[]>>
-) => {
+const useDeleteComment = () => {
   const setUi = useSetAtom(uiAtom);
   const showToast = useCustomToast();
   const [deleteLoadingId, setDeleteLoadingId] = useState("");
+  const mutation = useDeleteCommentMutation();
 
   const onDeleteComment = async (comment: Comment) => {
     setDeleteLoadingId(comment.id);
     try {
-      const getDescendantIds = (parentId: string): string[] => {
-        const children = comments.filter((c) => c.parentId === parentId);
-        let ids = children.map((c) => c.id);
-        children.forEach((child) => {
-          ids = [...ids, ...getDescendantIds(child.id)];
-        });
-        return ids;
-      };
-
-      const descendantIds = getDescendantIds(comment.id);
-      const allIdsToDelete = [comment.id, ...descendantIds];
-
-      await deleteCommentAction(comment.id, comment.postId);
-
-      setComments((prev) =>
-        prev.filter((item) => !allIdsToDelete.includes(item.id))
-      );
+      await mutation.mutateAsync({ commentId: comment.id, postId: comment.postId });
       setUi((prev) =>
         prev.selectedPost
           ? {
-              ...prev,
-              selectedPost: {
-                ...prev.selectedPost,
-                numberOfComments:
-                  prev.selectedPost.numberOfComments - allIdsToDelete.length,
-              },
-            }
+            ...prev,
+            selectedPost: {
+              ...prev.selectedPost,
+              numberOfComments: Math.max(0, prev.selectedPost.numberOfComments - 1),
+            },
+          }
           : prev,
       );
     } catch (error: any) {
@@ -64,10 +50,7 @@ const useDeleteComment = (
     }
   };
 
-  return {
-    deleteComment: onDeleteComment,
-    deleteLoadingId,
-  };
+  return { deleteComment: onDeleteComment, deleteLoadingId };
 };
 
 export default useDeleteComment;
