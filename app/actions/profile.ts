@@ -18,6 +18,11 @@ export async function profileNameAction(name: string) {
   return { userId };
 }
 
+export async function getMeAction() {
+  const { user } = await requireUser();
+  return { id: user.id, username: user.username ?? null };
+}
+
 export async function removeProfileImageAction() {
   const { userId } = await requireUser();
   const result = await deleteProfileImage(userId);

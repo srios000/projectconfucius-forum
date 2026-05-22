@@ -11,6 +11,7 @@ import { useSession } from "@/lib/auth-client";
 import { usePostsInfiniteQuery } from "@/lib/queries/posts/use-posts-infinite";
 import { useUserPostVotesQuery } from "@/lib/queries/posts/use-user-post-votes";
 import { useUserProfileQuery } from "@/lib/queries/users/use-user-profile";
+import { useMeQuery } from "@/lib/queries/profile/use-me";
 import usePostSelection from "@/hooks/posts/usePostSelection";
 import usePostVote from "@/hooks/posts/usePostVote";
 import usePostDeletion from "@/hooks/posts/usePostDeletion";
@@ -18,6 +19,7 @@ import usePostDeletion from "@/hooks/posts/usePostDeletion";
 export default function WallClient({ userId }: { userId: string }) {
   const { data: session } = useSession();
   const user = session?.user ?? null;
+  const { data: me } = useMeQuery();
   const { data: profile, isLoading: loadingProfile } = useUserProfileQuery({ idOrUsername: userId });
   const ownerId = profile?.id ?? userId;
 
@@ -92,7 +94,7 @@ export default function WallClient({ userId }: { userId: string }) {
                   onVote={onVote}
                   isVotePending={isVotePending(post.id!)}
                   userVoteValue={postVotes.find((v) => v.postId === post.id)?.voteValue}
-                  userIsCreator={user?.id === post.creatorId}
+                  userIsCreator={!!me?.id && me.id === post.creatorId}
                 />
               ))}
               {posts.length === 0 && (

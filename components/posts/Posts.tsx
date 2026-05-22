@@ -6,6 +6,7 @@ import usePostDeletion from "@/hooks/posts/usePostDeletion";
 import { usePostsInfiniteQuery } from "@/lib/queries/posts/use-posts-infinite";
 import { useUserPostVotesQuery } from "@/lib/queries/posts/use-user-post-votes";
 import { useSession } from "@/lib/auth-client";
+import { useMeQuery } from "@/lib/queries/profile/use-me";
 import { Button } from "@/components/ui/button";
 import React, { useMemo } from "react";
 import PostLoader from "../loaders/post-loader/PostLoader";
@@ -16,6 +17,7 @@ type PostsProps = { communityData: Community };
 const Posts: React.FC<PostsProps> = ({ communityData }) => {
   const { data: session } = useSession();
   const user = session?.user ?? null;
+  const { data: me } = useMeQuery();
   const { onSelectPost } = usePostSelection();
 
   const feed = usePostsInfiniteQuery({ scope: { communityId: communityData.id } });
@@ -41,7 +43,7 @@ const Posts: React.FC<PostsProps> = ({ communityData }) => {
             <PostItem
               key={item.id}
               post={item}
-              userIsCreator={user?.id === item.creatorId}
+              userIsCreator={!!me?.id && me.id === item.creatorId}
               userIsAdmin={isAdmin}
               userVoteValue={postVotes.find((v) => v.postId === item.id)?.voteValue}
               onVote={onVote}

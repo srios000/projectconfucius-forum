@@ -27,11 +27,30 @@ if (fs.existsSync(envPath)) {
 
 async function main() {
   const { db } = await import("../lib/db");
-  const { sql } = await import("drizzle-orm");
+  const { authDb } = await import("../lib/db/auth-db");
+  const { user: authUser } = await import("../lib/db/auth-schema");
+  const { users } = await import("../lib/db/schema");
+  const { sql, isNotNull } = await import("drizzle-orm");
 
   console.log("Starting backfill script...");
 
-  // Update posts where creatorUsername is null
+  // Stage 1: sync forum.users.username from auth.user.username
+  const rows = await authDb
+    .select({ id: authUser.id, username: authUser.username })
+    .from(authUser)
+    .where(isNotNull(authUser.username));
+  console.log(`Found ${rows.length} auth users with username; syncing into forum.users…`);
+  let syncedUsers = 0;
+  for (const row of rows) {
+    const result = await db
+      .update(users)
+      .set({ username: row.username, updatedAt: new Date() })
+      .where(sql`${users.authUserId} = ${row.id} AND (${users.username} IS NULL OR ${users.username} <> ${row.username})`);
+    syncedUsers += (result as { count?: number }).count ?? 0;
+  }
+  console.log("Forum users synced:", syncedUsers);
+
+  // Stage 2: backfill posts where creatorUsername is null
   const updatedPosts = await db.execute(sql`
     UPDATE posts
     SET creator_username = users.username
@@ -42,7 +61,7 @@ async function main() {
   `);
   console.log("Posts backfilled:", updatedPosts.count);
 
-  // Update comments where creatorDisplayText is null
+  // Stage 3: backfill comments where creatorDisplayText is null
   const updatedComments = await db.execute(sql`
     UPDATE comments
     SET creator_display_text = users.username
@@ -56,5 +75,6 @@ async function main() {
   console.log("Backfill complete.");
   process.exit(0);
 }
+
 
 main().catch(console.error);

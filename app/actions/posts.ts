@@ -4,6 +4,9 @@ import { requireUser } from "@/lib/auth/session";
 import { handlePostVote } from "@/lib/posts/handlePostVote";
 import { createPost } from "@/lib/posts/createPost";
 import { deletePost } from "@/lib/posts/deletePost";
+import { db } from "@/lib/db";
+import { posts, communityMembers } from "@/lib/db/schema";
+import { and, eq } from "drizzle-orm";
 import { getPostVotes } from "@/lib/posts/getPostVotes";
 import { getCommunityPostVotes } from "@/lib/posts/getCommunityPostVotes";
 import { getSavedPosts } from "@/lib/posts/getSavedPosts";
@@ -40,7 +43,25 @@ export async function createPostAction(
 }
 
 export async function deletePostAction(postId: string) {
-  await requireUser();
+  const { userId } = await requireUser();
+  const post = await db.query.posts.findFirst({
+    where: eq(posts.id, postId),
+    columns: { creatorId: true, communityId: true },
+  });
+  if (!post) throw new Error("Post not found");
+  const isCreator = post.creatorId === userId;
+  let isModerator = false;
+  if (!isCreator && post.communityId) {
+    const mem = await db.query.communityMembers.findFirst({
+      where: and(
+        eq(communityMembers.userId, userId),
+        eq(communityMembers.communityId, post.communityId),
+      ),
+      columns: { isModerator: true },
+    });
+    isModerator = !!mem?.isModerator;
+  }
+  if (!isCreator && !isModerator) throw new Error("Forbidden");
   return deletePost(postId);
 }
 

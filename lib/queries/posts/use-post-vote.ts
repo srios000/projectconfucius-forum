@@ -37,11 +37,8 @@ export function usePostVoteMutation() {
     const qc = useQueryClient();
     return useMutation<PostVoteResult, Error, PostVoteArgs, Ctx>({
         mutationKey: ["posts", "vote"],
-        mutationFn: async ({ post, vote, communityId }) => {
-            console.log("[VOTE 4/5 mutationFn -> server]", { postId: post.id, vote, communityId });
-            const result = await voteAction(post, vote, communityId);
-            console.log("[VOTE 5/5 server result]", { postId: post.id, ...result });
-            return result;
+        mutationFn: ({ post, vote, communityId }) => {
+            return voteAction(post, vote, communityId);
         },
         onMutate: async (vars) => {
             await Promise.all([
@@ -73,18 +70,6 @@ export function usePostVoteMutation() {
 
             const basePost = prevDetail ?? vars.post;
             const optimisticPost: Post = { ...basePost, voteStatus: basePost.voteStatus + delta };
-            console.log("[VOTE 3/5 onMutate optimistic]", {
-                postId: vars.post.id,
-                incomingVote: vars.vote,
-                existingVoteValueArg: vars.existingVoteValue,
-                existingValueResolved: existingValue,
-                existingFromPrevVotesCache: prevVotes.find((v) => v.postId === vars.post.id)?.voteValue,
-                delta,
-                basePostVoteStatus: basePost.voteStatus,
-                optimisticVoteStatus: optimisticPost.voteStatus,
-                deletedVoteId,
-                nextVoteValue: nextVote?.voteValue,
-            });
             qc.setQueryData<Post>(keys.posts.detail(vars.post.id!), optimisticPost);
 
             qc.setQueryData<PostVote[]>(keys.posts.votes(vars.communityId), (old = []) => {

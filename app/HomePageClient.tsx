@@ -10,12 +10,14 @@ import usePostSelection from "@/hooks/posts/usePostSelection";
 import usePostVote from "@/hooks/posts/usePostVote";
 import { usePostsInfiniteQuery } from "@/lib/queries/posts/use-posts-infinite";
 import { useUserPostVotesQuery } from "@/lib/queries/posts/use-user-post-votes";
+import { useMeQuery } from "@/lib/queries/profile/use-me";
 import { Button } from "@/components/ui/button";
 import { useMemo } from "react";
 
 export default function HomePageClient() {
     const { data: session, isPending: loadingUser } = useSession();
     const user = session?.user ?? null;
+    const { data: me } = useMeQuery();
     const { communityStateValue } = useCommunityState();
     const { onSelectPost } = usePostSelection();
 
@@ -63,7 +65,7 @@ export default function HomePageClient() {
                                 onVote={onVote}
                                 isVotePending={isVotePending(post.id!)}
                                 userVoteValue={postVotes.find((v) => v.postId === post.id)?.voteValue}
-                                userIsCreator={user?.id === post.creatorId}
+                                userIsCreator={!!me?.id && me.id === post.creatorId}
                                 userIsAdmin={
                                     !!communityStateValue.mySnippets.find((s) => s.communityId === post.communityId)?.isModerator
                                 }

@@ -18,13 +18,6 @@ export const handlePostVote = async (
       .limit(1);
     
     const existingVote = existingRows[0] as PostVote | undefined;
-    console.log("[VOTE SERVER handlePostVote]", {
-      userId,
-      postId: post.id,
-      incomingVote: vote,
-      existingVoteInDb: existingVote?.voteValue ?? null,
-      postVoteStatusInArg: post.voteStatus,
-    });
     if (!existingVote) {
       const id = randomUUID();
       await tx.insert(postVotes).values({ id, userId, postId: post.id!, communityId, voteValue: vote });
@@ -43,11 +36,5 @@ export const handlePostVote = async (
       .where(eq(posts.id, post.id!));
   });
 
-  console.log("[VOTE SERVER handlePostVote -> result]", {
-    postId: post.id,
-    voteChange,
-    newVoteValue: newVote?.voteValue ?? null,
-    voteIdToDelete: voteIdToDelete ?? null,
-  });
   return { voteChange, newVote, voteIdToDelete };
 };

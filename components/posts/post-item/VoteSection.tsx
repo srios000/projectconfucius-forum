@@ -26,13 +26,6 @@ export default function VoteSection({
 
   const handle = (e: React.MouseEvent<SVGElement>, value: 1 | -1) => {
     if (blocked) return;
-    console.log("[VOTE 1/5 VoteSection.handle]", {
-      postId: post.id,
-      clickedValue: value,
-      currentUserVoteValue: userVoteValue,
-      currentDisplayedVoteStatus: post.voteStatus,
-      communityId: post.communityId,
-    });
     onVote(e, post, value, post.communityId, userVoteValue);
     if (userVoteValue !== value) setBurst({ at: Date.now(), value });
   };

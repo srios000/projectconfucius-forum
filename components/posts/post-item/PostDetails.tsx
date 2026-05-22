@@ -26,7 +26,7 @@ export default function PostDetails({ post, showCommunityImage }: Props) {
           <span className="text-primary font-semibold">u/{post.wallUserId}&apos;s wall</span>
         </Link>
       )}
-      <span>· {moment(post.createdAt).fromNow()} ·</span>
+      <span>{showCommunityImage ? "· " : ""}{moment(post.createdAt).fromNow()} ·</span>
       <span className="font-serif italic">{formatUserHandle(post.creatorUsername)}</span>
     </div>
   );
