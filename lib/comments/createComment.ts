@@ -6,8 +6,8 @@ import { randomUUID } from "crypto";
 
 /**
  * Creates a comment on a post and increments the post's comment count.
- * Threading is limited to a maximum depth of 2; `depth` is derived from the
- * parent comment rather than passed in.
+ * Threads can nest indefinitely (Reddit-style); UI may collapse deep branches
+ * behind a "continue this thread" link, but the data model has no depth cap.
  * @param author - The comment creator: `{ id, username }` (local user id).
  * @param communityId - The community the post belongs to.
  * @param postId - The post being commented on.
@@ -15,7 +15,6 @@ import { randomUUID } from "crypto";
  * @param commentText - The comment body.
  * @param parentId - The parent comment id when this is a reply.
  * @returns A promise that resolves to the newly created comment.
- * @throws Error if the maximum comment depth is exceeded.
  */
 export const createComment = async (
   author: { id: string; username: string | null },
@@ -32,12 +31,6 @@ export const createComment = async (
       columns: { depth: true },
     });
     depth = (parent?.depth ?? 0) + 1;
-  }
-
-  if (depth > 2) {
-    throw new Error(
-      "Maximum comment depth reached. You cannot reply to this comment."
-    );
   }
 
   const id = randomUUID();

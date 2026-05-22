@@ -15,14 +15,21 @@ export default function CommunityHeader({ community, isJoined, onToggleJoin }: P
       className="relative overflow-hidden rounded-2xl p-5 text-white mb-3"
       style={{
         background:
-          "linear-gradient(135deg, hsl(var(--primary-deep)) 0%, hsl(var(--primary)) 100%)",
+          "linear-gradient(135deg, hsl(var(--primary-deep)) 0%, hsl(var(--primary-deep)) 40%, hsl(var(--primary)) 100%)",
       }}
     >
       <div
         className="absolute inset-0 pointer-events-none"
         style={{
           background:
-            "radial-gradient(circle at 90% 30%, rgba(255,255,255,0.18), transparent 50%)",
+            "linear-gradient(180deg, rgba(0,0,0,0.25) 0%, rgba(0,0,0,0.1) 100%)",
+        }}
+      />
+      <div
+        className="absolute inset-0 pointer-events-none"
+        style={{
+          background:
+            "radial-gradient(circle at 90% 30%, rgba(255,255,255,0.12), transparent 50%)",
         }}
       />
       <div className="relative flex items-center justify-between gap-4">
@@ -42,10 +49,10 @@ export default function CommunityHeader({ community, isJoined, onToggleJoin }: P
               {community.id.slice(0, 1).toUpperCase()}
             </div>
           )}
-          <div className="min-w-0">
-            <h1 className="font-serif text-lg font-semibold tracking-tight truncate drop-shadow-sm">c/{community.id}</h1>
-            <p className="text-xs text-white/95 mt-0.5 drop-shadow-sm">A place for considered discussion.</p>
-            <div className="text-[11px] text-white/90 mt-2.5 flex gap-3 drop-shadow-sm">
+          <div className="min-w-0" style={{ textShadow: "0 1px 2px rgba(0,0,0,0.4)" }}>
+            <h1 className="font-serif text-lg font-semibold tracking-tight truncate text-white">c/{community.id}</h1>
+            <p className="text-xs text-white mt-0.5">A place for considered discussion.</p>
+            <div className="text-[11px] text-white mt-2.5 flex gap-3">
               <span>{community.numberOfMembers ?? 0} members</span>
             </div>
           </div>

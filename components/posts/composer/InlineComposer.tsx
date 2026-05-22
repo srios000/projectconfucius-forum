@@ -88,6 +88,7 @@ export default function InlineComposer({ communityId, wallUserId }: Props) {
               onChange={(html) => dispatch({ type: "SET_BODY", body: html })}
               placeholder="What's on your mind?"
               autoFocus={false}
+              onSubmit={() => { if (s.title.trim() && s.phase === "open") submit(); }}
             />
             <div className="px-3.5 pb-2 flex items-center justify-between text-[11px] text-muted-foreground">
               <span>Posting to <strong className="text-primary">{target}</strong></span>

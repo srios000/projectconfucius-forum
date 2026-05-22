@@ -19,7 +19,7 @@ import {
   ListOrdered,
   Quote,
 } from "lucide-react";
-import { useEffect } from "react";
+import { useEffect, useRef } from "react";
 
 type Props = {
   /** Stringified Tiptap JSON doc. */
@@ -28,6 +28,8 @@ type Props = {
   onChange: (json: string) => void;
   placeholder?: string;
   autoFocus?: boolean;
+  /** Fires when the user presses Ctrl/Cmd+Enter inside the editor. */
+  onSubmit?: () => void;
 };
 
 type ToolbarButtonProps = {
@@ -149,6 +151,7 @@ export default function RichTextEditor({
   onChange,
   placeholder = "What's on your mind?",
   autoFocus = false,
+  onSubmit,
 }: Props) {
   const initialContent = (() => {
     if (!value) return "";
@@ -162,6 +165,9 @@ export default function RichTextEditor({
       return "";
     }
   })();
+
+  const onSubmitRef = useRef(onSubmit);
+  useEffect(() => { onSubmitRef.current = onSubmit; }, [onSubmit]);
 
   const editor = useEditor({
     immediatelyRender: false,
@@ -181,6 +187,14 @@ export default function RichTextEditor({
       attributes: {
         class:
           "prose-editor min-h-32 w-full bg-muted border border-border rounded-md px-3 py-2.5 text-[13px] outline-none focus:border-primary focus:bg-card transition-colors",
+      },
+      handleKeyDown(_view, event) {
+        if (event.key === "Enter" && (event.ctrlKey || event.metaKey) && onSubmitRef.current) {
+          event.preventDefault();
+          onSubmitRef.current();
+          return true;
+        }
+        return false;
       },
     },
     onUpdate({ editor }) {

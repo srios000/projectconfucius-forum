@@ -44,14 +44,21 @@ export default function InlineReplyComposer({ postId, parentId, onDone }: Props)
         onChange={setText}
         placeholder="What are your thoughts?"
         autoFocus={shouldFocus}
+        onSubmit={submit}
       />
-      <div className="flex justify-end gap-2 bg-muted/20 px-3.5 py-2.5 border-t border-border">
-        {onDone && (
-          <Button variant="ghost" size="sm" onClick={onDone}>Cancel</Button>
-        )}
-        <Button size="sm" disabled={!text.trim() || submitting || !post} onClick={submit}>
-          {submitting ? "Replying…" : "Reply"}
-        </Button>
+      <div className="flex justify-between items-center gap-2 bg-muted/20 px-3.5 py-2.5 border-t border-border">
+        <div className="text-[11px] text-muted-foreground">
+          <kbd className="bg-card border border-border rounded px-1 py-px font-mono text-[10px]">Ctrl</kbd>+
+          <kbd className="bg-card border border-border rounded px-1 py-px font-mono text-[10px]">Enter</kbd> to reply
+        </div>
+        <div className="flex gap-2">
+          {onDone && (
+            <Button variant="ghost" size="sm" onClick={onDone}>Cancel</Button>
+          )}
+          <Button size="sm" disabled={!text.trim() || submitting || !post} onClick={submit}>
+            {submitting ? "Replying…" : "Reply"}
+          </Button>
+        </div>
       </div>
     </div>
   );
