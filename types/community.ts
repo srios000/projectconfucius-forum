@@ -9,6 +9,7 @@ export interface Community {
   privacyType: "public" | "restricted" | "private";
   createdAt: Date;
   imageUrl?: string;
+  bannerUrl?: string;
 }
 
 /**

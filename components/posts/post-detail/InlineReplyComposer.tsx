@@ -1,5 +1,5 @@
 "use client";
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { useCreateCommentMutation } from "@/lib/queries/comments/use-create-comment-mutation";
 import { usePostQuery } from "@/lib/queries/posts/use-post";
@@ -9,16 +9,17 @@ type Props = { postId: string; parentId: string | null; onDone?: () => void };
 
 export default function InlineReplyComposer({ postId, parentId, onDone }: Props) {
   const [text, setText] = useState("");
-  const [shouldFocus, setShouldFocus] = useState(!!parentId);
+  // Lazy initial state covers both cases: nested replies always focus, and a
+  // top-level composer focuses when the URL has #reply. No effect needed —
+  // the hash is known at first render. `useState` only runs the initializer
+  // once, so subsequent hash changes are intentionally ignored (matches the
+  // prior behaviour).
+  const [shouldFocus] = useState(
+    () => !!parentId || (typeof window !== "undefined" && window.location.hash === "#reply"),
+  );
   const create = useCreateCommentMutation();
   const { data: post } = usePostQuery({ postId });
   const submitting = create.isPending;
-
-  useEffect(() => {
-    if (typeof window !== "undefined" && window.location.hash === "#reply") {
-      setShouldFocus(true);
-    }
-  }, []);
 
   const submit = async () => {
     if (!text.trim() || !post) return;

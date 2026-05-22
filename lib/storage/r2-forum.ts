@@ -45,6 +45,10 @@ export function communityImageKey(communityId: string, fileId: string, ext: stri
     return `communities/${communityId}/${fileId}.${ext}`;
 }
 
+export function communityBannerKey(communityId: string, fileId: string, ext: string): string {
+    return `communities/${communityId}/banner/${fileId}.${ext}`;
+}
+
 export function userImageKey(userId: string, fileId: string, ext: string): string {
     return `users/${userId}/${fileId}.${ext}`;
 }

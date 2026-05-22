@@ -3,7 +3,7 @@
 import { useInfiniteQuery } from "@tanstack/react-query";
 import { getPostsAction } from "@/app/actions/reads";
 import { keys } from "@/lib/queries/keys";
-import type { PostCursor } from "@/lib/posts/getPosts";
+import type { PostCursor, PostSort } from "@/lib/posts/getPosts";
 import type { Post } from "@/types/post";
 
 export type PostsFeedScope = {
@@ -11,6 +11,7 @@ export type PostsFeedScope = {
     communityIds?: string[];
     isGenericHome?: boolean;
     wallUserId?: string;
+    sort?: PostSort;
 };
 
 export type FeedPage = { posts: Post[]; newLastVisible: PostCursor };
@@ -26,7 +27,7 @@ export function usePostsInfiniteQuery({
         queryKey: keys.posts.infiniteFeed(scope),
         initialPageParam: null,
         queryFn: ({ pageParam }) =>
-            getPostsAction(scope.communityId, scope.communityIds, scope.isGenericHome, pageParam, scope.wallUserId) as Promise<FeedPage>,
+            getPostsAction(scope.communityId, scope.communityIds, scope.isGenericHome, pageParam, scope.wallUserId, scope.sort) as Promise<FeedPage>,
         getNextPageParam: (last) => (last.newLastVisible ?? undefined) as PostCursor | undefined,
         enabled,
         staleTime: 0,

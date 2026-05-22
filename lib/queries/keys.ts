@@ -3,6 +3,7 @@ type FeedScope = {
     communityIds?: string[];
     isGenericHome?: boolean;
     wallUserId?: string;
+    sort?: string;
 };
 
 
@@ -17,7 +18,7 @@ export const keys = {
     },
     community: {
         all: ["community"] as const,
-        list: (args: { limit: number; cursor: unknown }) =>
+        list: (args: { limit: number; cursor: unknown; sort?: string }) =>
             ["community", "list", args] as const,
         detail: (id: string) => ["community", "detail", id] as const,
         snippets: (userId: string) => ["community", "snippets", userId] as const,

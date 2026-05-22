@@ -12,7 +12,14 @@ import { usePostsInfiniteQuery } from "@/lib/queries/posts/use-posts-infinite";
 import { useUserPostVotesQuery } from "@/lib/queries/posts/use-user-post-votes";
 import { useMeQuery } from "@/lib/queries/profile/use-me";
 import { Button } from "@/components/ui/button";
-import { useMemo } from "react";
+import { useMemo, useState } from "react";
+import type { PostSort } from "@/lib/posts/getPosts";
+
+const SORTS: { value: PostSort; label: string }[] = [
+    { value: "top", label: "Top" },
+    { value: "new", label: "New" },
+    { value: "controversial", label: "Controversial" },
+];
 
 export default function HomePageClient() {
     const { data: session, isPending: loadingUser } = useSession();
@@ -20,6 +27,7 @@ export default function HomePageClient() {
     const { data: me } = useMeQuery();
     const { communityStateValue } = useCommunityState();
     const { onSelectPost } = usePostSelection();
+    const [sort, setSort] = useState<PostSort>("top");
 
     const communityIds = useMemo(
         () => communityStateValue.mySnippets.map((s) => s.communityId),
@@ -31,6 +39,7 @@ export default function HomePageClient() {
         scope: {
             communityIds: hasSubs ? communityIds : undefined,
             isGenericHome: !user || communityIds.length === 0,
+            sort,
         },
         enabled: user ? communityStateValue.snippetFetched : !loadingUser,
     });
@@ -52,6 +61,23 @@ export default function HomePageClient() {
     return (
         <PageContent>
             <>
+                <div className="flex items-center gap-1 mb-3 bg-card border border-border rounded-lg px-2 py-1.5">
+                    {SORTS.map((s) => (
+                        <button
+                            key={s.value}
+                            type="button"
+                            onClick={() => setSort(s.value)}
+                            className={
+                                "text-[11px] font-semibold px-2.5 py-1 rounded transition-colors " +
+                                (sort === s.value
+                                    ? "bg-primary-mute text-primary"
+                                    : "text-muted-foreground hover:bg-muted")
+                            }
+                        >
+                            {s.label}
+                        </button>
+                    ))}
+                </div>
                 {loading && posts.length === 0 ? (
                     <PostLoader />
                 ) : (

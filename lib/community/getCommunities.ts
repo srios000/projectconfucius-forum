@@ -3,41 +3,57 @@ import { communities } from "@/lib/db/schema";
 import { Community } from "@/types/community";
 import { and, desc, eq, lt, or } from "drizzle-orm";
 
-export type CommunityCursor = { createdAt: Date; id: string } | null;
+export type CommunityCursorRecent = { createdAt: Date; id: string };
+export type CommunityCursorTop = { numberOfMembers: number; id: string };
+export type CommunityCursor = CommunityCursorRecent | CommunityCursorTop | null;
 
-/**
- * Fetches a paginated list of communities using keyset pagination on
- * (createdAt, id) — the same cursor pattern as `getPosts`.
- * @param limitValue - The maximum number of communities to retrieve.
- * @param lastVisible - The keyset cursor returned by the previous page (or null/undefined for the first page).
- * @returns A promise that resolves to the communities and the next pagination cursor.
- */
+export type CommunitySort = "recent" | "top";
+
 export const getCommunities = async (
   limitValue: number,
-  lastVisible?: CommunityCursor
+  lastVisible?: CommunityCursor,
+  sort: CommunitySort = "recent",
 ) => {
-  const where = lastVisible
-    ? or(
-        lt(communities.createdAt, lastVisible.createdAt),
-        and(
-          eq(communities.createdAt, lastVisible.createdAt),
-          lt(communities.id, lastVisible.id)
-        )
-      )
-    : undefined;
+  const where =
+    sort === "top"
+      ? lastVisible && "numberOfMembers" in lastVisible
+        ? or(
+            lt(communities.numberOfMembers, lastVisible.numberOfMembers),
+            and(
+              eq(communities.numberOfMembers, lastVisible.numberOfMembers),
+              lt(communities.id, lastVisible.id),
+            ),
+          )
+        : undefined
+      : lastVisible && "createdAt" in lastVisible
+        ? or(
+            lt(communities.createdAt, lastVisible.createdAt),
+            and(
+              eq(communities.createdAt, lastVisible.createdAt),
+              lt(communities.id, lastVisible.id),
+            ),
+          )
+        : undefined;
+
+  const orderBy =
+    sort === "top"
+      ? [desc(communities.numberOfMembers), desc(communities.id)]
+      : [desc(communities.createdAt), desc(communities.id)];
 
   const rows = await db
     .select()
     .from(communities)
     .where(where)
-    .orderBy(desc(communities.createdAt), desc(communities.id))
+    .orderBy(...orderBy)
     .limit(limitValue);
 
   const result = rows as unknown as Community[];
-  const newLastVisible =
-    rows.length > 0
-      ? { createdAt: rows[rows.length - 1].createdAt, id: rows[rows.length - 1].id }
-      : null;
+  const last = rows[rows.length - 1];
+  const newLastVisible: CommunityCursor = last
+    ? sort === "top"
+      ? { numberOfMembers: last.numberOfMembers, id: last.id }
+      : { createdAt: last.createdAt, id: last.id }
+    : null;
 
   return { communities: result, newLastVisible };
 };

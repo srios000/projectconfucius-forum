@@ -2,12 +2,16 @@
 import Link from "next/link";
 import { ArrowLeft } from "lucide-react";
 import { useCommentByIdQuery } from "@/lib/queries/comments/use-comment-by-id";
+import { useCommentVotesQuery } from "@/lib/queries/comments/use-comment-votes";
+import { usePostQuery } from "@/lib/queries/posts/use-post";
 import CommentNode from "./CommentNode";
 
 type Props = { communityId: string; postId: string; rootCommentId: string };
 
 export default function SubThreadView({ communityId, postId, rootCommentId }: Props) {
   const { data: rootComment } = useCommentByIdQuery({ postId, commentId: rootCommentId });
+  const { data: votes } = useCommentVotesQuery(postId);
+  const { data: post } = usePostQuery({ postId });
 
   return (
     <div className="bg-background min-h-screen">
@@ -36,6 +40,8 @@ export default function SubThreadView({ communityId, postId, rootCommentId }: Pr
               depth={0}
               communityId={communityId}
               postId={postId}
+              postAuthorId={post?.creatorId}
+              votes={votes}
             />
           </div>
         )}

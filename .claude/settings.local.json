@@ -12,7 +12,8 @@
       "Bash(pnpm db:migrate)",
       "Bash(git push *)",
       "Bash(git branch *)",
-      "Bash(git reset *)"
+      "Bash(git reset *)",
+      "Bash(grep -E \"\\\\.ts$\")"
     ]
   }
 }

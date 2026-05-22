@@ -1,5 +1,5 @@
 import { sql } from "drizzle-orm";
-import { pgTable, text, integer, smallint, boolean, timestamp, pgEnum, uniqueIndex, index, primaryKey, check } from "drizzle-orm/pg-core";
+import { pgTable, text, integer, smallint, boolean, timestamp, pgEnum, uniqueIndex, index, primaryKey, check, jsonb } from "drizzle-orm/pg-core";
 
 export const privacyEnum = pgEnum("privacy_type", ["public", "restricted", "private"]);
 
@@ -19,6 +19,7 @@ export const communities = pgTable("communities", {
     creatorId: text("creator_id").notNull().references(() => users.id),
     privacyType: privacyEnum("privacy_type").notNull().default("public"),
     imageUrl: text("image_url"),
+    bannerUrl: text("banner_url"),
     numberOfMembers: integer("number_of_members").notNull().default(1),
     createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
 });
@@ -27,6 +28,8 @@ export const communityMembers = pgTable("community_members", {
     userId: text("user_id").notNull().references(() => users.id, { onDelete: "cascade" }),
     communityId: text("community_id").notNull().references(() => communities.id, { onDelete: "cascade" }),
     isModerator: boolean("is_moderator").notNull().default(false),
+    bannedAt: timestamp("banned_at", { withTimezone: true }),
+    bannedById: text("banned_by_id").references(() => users.id),
     createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
 }, (t) => [primaryKey({ columns: [t.userId, t.communityId] })]);
 
@@ -42,6 +45,9 @@ export const posts = pgTable("posts", {
     communityImageUrl: text("community_image_url"),
     numberOfComments: integer("number_of_comments").notNull().default(0),
     voteStatus: integer("vote_status").notNull().default(0),
+    editedAt: timestamp("edited_at", { withTimezone: true }),
+    editedById: text("edited_by_id").references(() => users.id),
+    editedByRole: text("edited_by_role"),
     createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
 }, (t) => [
     index("posts_community_created_idx").on(t.communityId, t.createdAt.desc()),
@@ -64,6 +70,9 @@ export const comments = pgTable("comments", {
     text: text("text").notNull(),
     depth: integer("depth").notNull().default(0),
     voteStatus: integer("vote_status").notNull().default(0),
+    editedAt: timestamp("edited_at", { withTimezone: true }),
+    editedById: text("edited_by_id").references(() => users.id),
+    editedByRole: text("edited_by_role"),
     createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
 }, (t) => [
     index("comments_post_created_idx").on(t.postId, t.createdAt.desc()),
@@ -93,3 +102,34 @@ export const savedPosts = pgTable("saved_posts", {
     communityImageUrl: text("community_image_url"),
     createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
 }, (t) => [primaryKey({ columns: [t.userId, t.postId] })]);
+
+export const notifications = pgTable("notifications", {
+    id: text("id").primaryKey(),
+    userId: text("user_id").notNull().references(() => users.id, { onDelete: "cascade" }),
+    kind: text("kind").notNull(),
+    title: text("title").notNull(),
+    body: text("body"),
+    href: text("href"),
+    payload: jsonb("payload"),
+    readAt: timestamp("read_at", { withTimezone: true }),
+    createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
+}, (t) => [
+    index("notifications_user_created_idx").on(t.userId, t.createdAt.desc()),
+    index("notifications_user_unread_idx").on(t.userId, t.readAt),
+]);
+
+export const communityInvitations = pgTable("community_invitations", {
+    id: text("id").primaryKey(),
+    communityId: text("community_id").notNull().references(() => communities.id, { onDelete: "cascade" }),
+    invitedUserId: text("invited_user_id").notNull().references(() => users.id, { onDelete: "cascade" }),
+    invitedById: text("invited_by_id").notNull().references(() => users.id),
+    role: text("role").notNull().default("moderator"),
+    status: text("status").notNull().default("pending"),
+    createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
+    respondedAt: timestamp("responded_at", { withTimezone: true }),
+}, (t) => [
+    uniqueIndex("community_invitations_unique_pending")
+        .on(t.communityId, t.invitedUserId)
+        .where(sql`status = 'pending'`),
+    index("community_invitations_invitee_idx").on(t.invitedUserId, t.status),
+]);

@@ -5,12 +5,22 @@ import { toast } from "sonner";
 import { useCommunityMembersListQuery } from "@/lib/queries/community/use-community-members-list";
 import { useCommunityDataQuery } from "@/lib/queries/community/use-community-data";
 import useCommunityPermissions from "@/hooks/community/useCommunityPermissions";
-import useRemoveCommunityMember from "@/hooks/community/useRemoveCommunityMember";
+import useCurrentRole from "@/hooks/useCurrentRole";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { LuTrash } from "react-icons/lu";
+import { MoreVertical, ShieldPlus, ShieldOff, UserMinus, Ban, Undo2 } from "lucide-react";
 import ConfirmationDialog from "@/components/modal/ConfirmationDialog";
+import {
+  DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import {
+  usePromoteMemberMutation,
+  useDemoteMemberMutation,
+  useKickMemberMutation,
+  useBanMemberMutation,
+  useUnbanMemberMutation,
+} from "@/lib/queries/community/use-member-actions";
 
 type MembersListProps = {
   communityId: string;
@@ -30,22 +40,30 @@ export default function MembersList({ communityId }: MembersListProps) {
     communityId,
   });
   const { isAdmin } = useCommunityPermissions(communityDataForPerms ?? undefined);
-  const { removeMember, loading: removeLoading } = useRemoveCommunityMember();
-  const [memberToRemove, setMemberToRemove] = useState<string | null>(null);
+  const { userId: currentUserId, isSuperadmin } = useCurrentRole();
+  const isOwner = !!currentUserId && communityDataForPerms?.creatorId === currentUserId;
+  const promote = usePromoteMemberMutation();
+  const demote = useDemoteMemberMutation();
+  const kick = useKickMemberMutation();
+  const ban = useBanMemberMutation();
+  const unban = useUnbanMemberMutation();
+  const [pendingAction, setPendingAction] = useState<
+    | { kind: "kick" | "ban" | "demote"; userId: string; label: string }
+    | null
+  >(null);
+  const busy = promote.isPending || demote.isPending || kick.isPending || ban.isPending || unban.isPending;
 
-  const confirmRemoveMember = async () => {
-    if (!memberToRemove) return;
+  const runConfirm = async () => {
+    if (!pendingAction) return;
     try {
-      await removeMember(communityId, memberToRemove);
-      toast.success("Member Removed", {
-        description: "The user has been removed from this community.",
-      });
-    } catch (err) {
-      toast.error("Error", {
-        description: "Failed to remove user from this community.",
-      });
+      if (pendingAction.kind === "kick") await kick.mutateAsync({ communityId, targetUserId: pendingAction.userId });
+      if (pendingAction.kind === "ban") await ban.mutateAsync({ communityId, targetUserId: pendingAction.userId });
+      if (pendingAction.kind === "demote") await demote.mutateAsync({ communityId, targetUserId: pendingAction.userId });
+      toast.success(`${pendingAction.label} done`);
+    } catch (e) {
+      toast.error("Action failed", { description: e instanceof Error ? e.message : "Unknown error" });
     } finally {
-      setMemberToRemove(null);
+      setPendingAction(null);
     }
   };
 
@@ -94,21 +112,60 @@ export default function MembersList({ communityId }: MembersListProps) {
                     {member.imageUrl && <AvatarImage src={member.imageUrl} alt="" />}
                     <AvatarFallback>{initials}</AvatarFallback>
                   </Avatar>
-                  <div className="font-semibold text-sm text-foreground truncate">
-                    {member.displayName?.trim() ? member.displayName : "No Name"}
+                  <div className="flex items-center gap-2 min-w-0">
+                    <div className="font-semibold text-sm text-foreground truncate">
+                      {member.displayName?.trim() ? member.displayName : "No Name"}
+                    </div>
+                    {member.isModerator && (
+                      <span className="text-[9.5px] font-bold uppercase tracking-wider px-1.5 py-0.5 rounded bg-primary-mute text-primary">
+                        MOD
+                      </span>
+                    )}
+                    {member.bannedAt && (
+                      <span className="text-[9.5px] font-bold uppercase tracking-wider px-1.5 py-0.5 rounded bg-destructive/10 text-destructive">
+                        BANNED
+                      </span>
+                    )}
                   </div>
                 </div>
 
-                {isAdmin && (
-                  <Button
-                    size="icon"
-                    variant="ghost"
-                    className="text-muted-foreground hover:text-destructive hover:bg-destructive/10 shrink-0"
-                    onClick={() => setMemberToRemove(member.id)}
-                    aria-label="Remove member"
-                  >
-                    <LuTrash className="size-4" />
-                  </Button>
+                {isAdmin && member.id !== currentUserId && member.id !== communityDataForPerms?.creatorId && (
+                  <DropdownMenu>
+                    <DropdownMenuTrigger asChild>
+                      <Button size="icon" variant="ghost" aria-label="Member actions" disabled={busy}>
+                        <MoreVertical className="size-4" />
+                      </Button>
+                    </DropdownMenuTrigger>
+                    <DropdownMenuContent align="end" className="text-xs">
+                      {(isOwner || isSuperadmin) && !member.isModerator && !member.bannedAt && (
+                        <DropdownMenuItem onClick={() => promote.mutateAsync({ communityId, targetUserId: member.id }).then(() => toast.success("Promoted to mod"))}>
+                          <ShieldPlus className="size-3.5 mr-1.5" /> Promote to mod
+                        </DropdownMenuItem>
+                      )}
+                      {(isOwner || isSuperadmin) && member.isModerator && (
+                        <DropdownMenuItem onClick={() => setPendingAction({ kind: "demote", userId: member.id, label: "Demoted" })}>
+                          <ShieldOff className="size-3.5 mr-1.5" /> Demote
+                        </DropdownMenuItem>
+                      )}
+                      {!member.bannedAt && (
+                        <DropdownMenuItem onClick={() => setPendingAction({ kind: "kick", userId: member.id, label: "Kicked" })}>
+                          <UserMinus className="size-3.5 mr-1.5" /> Kick
+                        </DropdownMenuItem>
+                      )}
+                      {!member.bannedAt ? (
+                        <DropdownMenuItem
+                          onClick={() => setPendingAction({ kind: "ban", userId: member.id, label: "Banned" })}
+                          className="text-destructive focus:text-destructive"
+                        >
+                          <Ban className="size-3.5 mr-1.5" /> Ban
+                        </DropdownMenuItem>
+                      ) : (
+                        <DropdownMenuItem onClick={() => unban.mutateAsync({ communityId, targetUserId: member.id }).then(() => toast.success("Unbanned"))}>
+                          <Undo2 className="size-3.5 mr-1.5" /> Unban
+                        </DropdownMenuItem>
+                      )}
+                    </DropdownMenuContent>
+                  </DropdownMenu>
                 )}
               </div>
               );
@@ -118,13 +175,27 @@ export default function MembersList({ communityId }: MembersListProps) {
       </div>
 
       <ConfirmationDialog
-        open={!!memberToRemove}
-        onClose={() => setMemberToRemove(null)}
-        onConfirm={confirmRemoveMember}
-        title="Remove Member"
-        body="Are you sure you want to remove this member from the community?"
-        confirmButtonText="Remove Member"
-        isLoading={removeLoading}
+        open={!!pendingAction}
+        onClose={() => setPendingAction(null)}
+        onConfirm={runConfirm}
+        title={
+          pendingAction?.kind === "ban"
+            ? "Ban this member?"
+            : pendingAction?.kind === "kick"
+              ? "Kick this member?"
+              : "Demote this moderator?"
+        }
+        body={
+          pendingAction?.kind === "ban"
+            ? "They will be removed and prevented from rejoining until unbanned."
+            : pendingAction?.kind === "kick"
+              ? "They will be removed but can rejoin the community."
+              : "They will lose moderator privileges."
+        }
+        confirmButtonText={
+          pendingAction?.kind === "ban" ? "Ban" : pendingAction?.kind === "kick" ? "Kick" : "Demote"
+        }
+        isLoading={busy}
       />
     </div>
   );

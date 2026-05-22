@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useEffect, useMemo, useState } from "react";
+import React, { useMemo, useState } from "react";
 import { useForm, useWatch } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { toast } from "sonner";
@@ -15,6 +15,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Skeleton } from "@/components/ui/skeleton";
 import ConfirmationDialog from "@/components/modal/ConfirmationDialog";
+import InviteModeratorsSection from "./InviteModeratorsSection";
 
 type AdminsProps = {
   communityId: string;
@@ -50,10 +51,22 @@ export default function Admins({ communityId }: AdminsProps) {
   const usernameValue = useWatch({ control, name: "username" });
 
   const [addingAdmin, setAddingAdmin] = useState(false);
-  const [searchResults, setSearchResults] = useState<CommunityMember[]>([]);
   const [showResults, setShowResults] = useState(false);
   const [adminToRemove, setAdminToRemove] = useState<string | null>(null);
   const [removingAdmin, setRemovingAdmin] = useState(false);
+
+  // Derived during render: filter community members by the current input,
+  // excluding existing admins. No effect needed.
+  const searchResults = useMemo<CommunityMember[]>(() => {
+    if (!usernameValue || usernameValue.length < 3) return [];
+    const q = usernameValue.toLowerCase();
+    return members.filter(
+      (m) =>
+        m.username
+        && m.username.toLowerCase().includes(q)
+        && !admins.some((a) => a.uid === m.id),
+    );
+  }, [usernameValue, members, admins]);
 
   const onAddAdmin = async (data: AddAdminInput) => {
     if (!communityData) return;
@@ -111,23 +124,6 @@ export default function Admins({ communityId }: AdminsProps) {
     }
   };
 
-  useEffect(() => {
-    if (!usernameValue || usernameValue.length < 3) {
-      setSearchResults([]);
-      setShowResults(false);
-      return;
-    }
-    
-    const query = usernameValue.toLowerCase();
-    const results = members.filter((m) => 
-      m.username && m.username.toLowerCase().includes(query)
-    );
-    // Filter out existing admins
-    const filtered = results.filter((u) => !admins.some((a) => a.uid === u.id));
-    setSearchResults(filtered);
-    setShowResults(true);
-  }, [usernameValue, admins, members]);
-
   if (communityLoading || !communityData) {
     return (
       <div className="space-y-4">
@@ -150,13 +146,19 @@ export default function Admins({ communityId }: AdminsProps) {
       <div className="relative">
         <form onSubmit={handleSubmit(onAddAdmin)} className="flex gap-2">
           <div className="relative flex-1">
-            <Input
-              placeholder="Enter username to add admin"
-              {...register("username")}
-              onFocus={() => usernameValue && usernameValue.length >= 3 && setShowResults(true)}
-              onBlur={() => setTimeout(() => setShowResults(false), 200)}
-              className="w-full"
-            />
+            {(() => {
+              const reg = register("username");
+              return (
+                <Input
+                  placeholder="Enter username to add admin"
+                  {...reg}
+                  onChange={(e) => { void reg.onChange(e); setShowResults(true); }}
+                  onFocus={() => setShowResults(true)}
+                  onBlur={() => setTimeout(() => setShowResults(false), 200)}
+                  className="w-full"
+                />
+              );
+            })()}
             {showResults && searchResults.length > 0 && (
               <div className="absolute top-full left-0 right-0 z-50 bg-popover text-popover-foreground border border-border shadow-lg rounded-xl mt-1 max-h-48 overflow-y-auto divide-y divide-border">
                 {searchResults.map((user) => (
@@ -226,6 +228,10 @@ export default function Admins({ communityId }: AdminsProps) {
             ))}
           </div>
         )}
+      </div>
+
+      <div className="pt-4 border-t border-border">
+        <InviteModeratorsSection communityId={communityId} />
       </div>
 
       <ConfirmationDialog

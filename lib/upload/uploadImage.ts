@@ -1,4 +1,4 @@
-export type UploadSurface = "post-image" | "community-image" | "profile-image";
+export type UploadSurface = "post-image" | "community-image" | "community-banner" | "profile-image";
 
 type PresignResponse = {
     presignedUrl: string;
@@ -26,7 +26,7 @@ export async function uploadImage(
     surfaceId?: string,
 ): Promise<{ imageUrl: string }> {
     const presignBody: Record<string, unknown> = { contentType: blob.type };
-    if (surface === "community-image") presignBody.communityId = surfaceId;
+    if (surface === "community-image" || surface === "community-banner") presignBody.communityId = surfaceId;
 
     const presignRes = await fetch(`/api/upload/${surface}/presign`, {
         method: "POST",
@@ -44,7 +44,7 @@ export async function uploadImage(
     if (!putRes.ok) throw new Error(`upload to R2 failed (HTTP ${putRes.status})`);
 
     const confirmBody: Record<string, unknown> = { key };
-    if (surface === "community-image") confirmBody.communityId = surfaceId;
+    if (surface === "community-image" || surface === "community-banner") confirmBody.communityId = surfaceId;
 
     const confirmRes = await fetch(`/api/upload/${surface}/confirm`, {
         method: "POST",
@@ -52,5 +52,6 @@ export async function uploadImage(
         body: JSON.stringify(confirmBody),
     });
     if (!confirmRes.ok) throw new Error(`confirm: ${await readErr(confirmRes)}`);
-    return (await confirmRes.json()) as { imageUrl: string };
+    const json = (await confirmRes.json()) as { imageUrl?: string; bannerUrl?: string };
+    return { imageUrl: (json.imageUrl ?? json.bannerUrl) as string };
 }

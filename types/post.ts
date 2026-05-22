@@ -15,6 +15,9 @@ export type Post = {
   imageUrl?: string;
   communityImageUrl?: string;
   createdAt: Date;
+  editedAt?: Date | null;
+  editedById?: string | null;
+  editedByRole?: string | null;
 };
 
 /**

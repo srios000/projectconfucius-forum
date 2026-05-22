@@ -15,7 +15,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 const Recommendations: React.FC = () => {
   const { communityStateValue } = useCommunityState();
   const { onJoinOrLeaveCommunity } = useCommunityMembershipActions();
-  const { communities, loading } = useCommunitiesFeed({ limitValue: 5 });
+  const { communities, loading } = useCommunitiesFeed({ limitValue: 5, sort: "top" });
   const router = useRouter();
 
   return (

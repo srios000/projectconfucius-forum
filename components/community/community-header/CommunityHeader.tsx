@@ -42,7 +42,16 @@ const CommunityHeader: React.FC<HeaderProps> = ({ communityData }) => {
 
   return (
     <div className="flex flex-col w-full h-[120px]">
-      <div className="h-[30%] bg-primary" />
+      <div className="h-[30%] bg-primary overflow-hidden">
+        {communityData.bannerUrl && (
+          // eslint-disable-next-line @next/next/no-img-element
+          <img
+            src={communityData.bannerUrl}
+            alt=""
+            className="size-full object-cover"
+          />
+        )}
+      </div>
       <div className="flex justify-center bg-card flex-grow shadow-sm">
         <div className="flex w-[95%] max-w-[1200px] items-center">
           <CommunityIcon imageURL={communityData.imageUrl} />

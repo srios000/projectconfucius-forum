@@ -78,6 +78,7 @@ export default function WallClient({ userId }: { userId: string }) {
             <InlineComposer wallUserId={ownerId} />
           ) : (
             <div className="bg-muted/40 border border-border rounded-xl px-3.5 py-3 text-[12.5px] text-muted-foreground">
+              {/* eslint-disable-next-line @next/next/no-html-link-for-pages -- /api/auth/start is a server route handler, not a page; needs full-page navigation */}
               <a href="/api/auth/start" className="text-primary font-semibold">Sign in</a> to post on this wall.
             </div>
           )}

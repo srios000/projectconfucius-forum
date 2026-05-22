@@ -1,7 +1,7 @@
 "use server";
 
-import { getPosts, type PostCursor } from "@/lib/posts/getPosts";
-import { getCommunities, type CommunityCursor } from "@/lib/community/getCommunities";
+import { getPosts, type PostCursor, type PostSort } from "@/lib/posts/getPosts";
+import { getCommunities, type CommunityCursor, type CommunitySort } from "@/lib/community/getCommunities";
 import { getCommunityData } from "@/lib/community/getCommunityData";
 import { getComments } from "@/lib/comments/getComments";
 import { getSearchData } from "@/lib/search/getSearchData";
@@ -20,16 +20,18 @@ export async function getPostsAction(
   communityIds?: string[],
   isGenericHome?: boolean,
   lastVisible?: PostCursor,
-  wallUserId?: string
+  wallUserId?: string,
+  sort?: PostSort,
 ) {
-  return getPosts(communityId, communityIds, isGenericHome, lastVisible, wallUserId);
+  return getPosts(communityId, communityIds, isGenericHome, lastVisible, wallUserId, sort);
 }
 
 export async function getCommunitiesAction(
   limitValue: number,
-  lastVisible?: CommunityCursor
+  lastVisible?: CommunityCursor,
+  sort: CommunitySort = "recent",
 ) {
-  return getCommunities(limitValue, lastVisible);
+  return getCommunities(limitValue, lastVisible, sort);
 }
 
 export async function getCommunityDataAction(communityId: string) {

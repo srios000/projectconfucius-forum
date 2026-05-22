@@ -6,4 +6,6 @@ export type CommunityMember = {
   displayName: string | null;
   username: string | null;
   imageUrl: string | null;
+  isModerator?: boolean;
+  bannedAt?: Date | null;
 };

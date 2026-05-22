@@ -14,4 +14,7 @@ export type Comment = {
   parentId?: string;
   depth: number;
   voteStatus?: number;
+  editedAt?: Date | null;
+  editedById?: string | null;
+  editedByRole?: string | null;
 };

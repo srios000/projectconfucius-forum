@@ -32,13 +32,13 @@ describe("usePostsInfiniteQuery", () => {
 
         await waitFor(() => expect(result.current.data?.pages.length).toBe(1));
         expect(result.current.hasNextPage).toBe(true);
-        expect(getPostsAction).toHaveBeenLastCalledWith("c1", undefined, undefined, null, undefined);
+        expect(getPostsAction).toHaveBeenLastCalledWith("c1", undefined, undefined, null, undefined, undefined);
 
         await act(async () => { await result.current.fetchNextPage(); });
 
         await waitFor(() => expect(result.current.data?.pages.length).toBe(2));
         expect(result.current.hasNextPage).toBe(false);
-        expect(getPostsAction).toHaveBeenLastCalledWith("c1", undefined, undefined, "cursor1", undefined);
+        expect(getPostsAction).toHaveBeenLastCalledWith("c1", undefined, undefined, "cursor1", undefined, undefined);
     });
 
     it("respects enabled=false (does not call action)", async () => {

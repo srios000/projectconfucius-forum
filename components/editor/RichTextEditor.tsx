@@ -211,6 +211,16 @@ export default function RichTextEditor({
     editor.commands.focus("end");
   }, [editor, autoFocus]);
 
+  // When the parent clears `value` (e.g. after a successful submit), wipe the
+  // editor view. Tiptap state is internal; setting React state alone doesn't
+  // touch it. Only act on the empty→reset case so we don't fight ongoing edits.
+  useEffect(() => {
+    if (!editor) return;
+    if (value === "" && !editor.isEmpty) {
+      editor.commands.clearContent(false);
+    }
+  }, [editor, value]);
+
   return (
     <div className="flex flex-col">
       <Toolbar editor={editor} />

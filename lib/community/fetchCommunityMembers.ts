@@ -13,7 +13,14 @@ export const fetchCommunityMembers = async (
   communityId: string
 ): Promise<CommunityMember[]> => {
   const rows = await db
-    .select({ id: users.id, name: users.name, username: users.username, imageUrl: users.imageUrl })
+    .select({
+      id: users.id,
+      name: users.name,
+      username: users.username,
+      imageUrl: users.imageUrl,
+      isModerator: communityMembers.isModerator,
+      bannedAt: communityMembers.bannedAt,
+    })
     .from(communityMembers)
     .innerJoin(users, eq(communityMembers.userId, users.id))
     .where(eq(communityMembers.communityId, communityId));
@@ -23,6 +30,8 @@ export const fetchCommunityMembers = async (
     displayName: r.name ?? null,
     username: r.username ?? null,
     imageUrl: r.imageUrl ?? null,
+    isModerator: !!r.isModerator,
+    bannedAt: r.bannedAt ?? null,
   }));
 
   members.sort((a, b) => {

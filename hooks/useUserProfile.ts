@@ -1,4 +1,4 @@
-import { useSession } from "@/lib/auth-client";
+import { authClient, useSession } from "@/lib/auth-client";
 import { useRouter } from "next/navigation";
 import useCustomToast from "./useCustomToast";
 import {
@@ -6,6 +6,15 @@ import {
   useRemoveProfileImageMutation,
   useUpdateProfileNameMutation,
 } from "@/lib/queries/profile/use-profile-mutations";
+
+// Better-auth caches the session client-side. After we mutate the user (image,
+// name), `router.refresh()` re-runs server components but the `useSession()`
+// store stays stale, so the navbar avatar doesn't update until full reload.
+// Calling getSession with cookie cache disabled forces a fresh fetch and the
+// store notifies all `useSession()` consumers.
+const refreshAuthSession = () => {
+  void authClient.getSession({ query: { disableCookieCache: true } });
+};
 
 /**
  * Shell over the three profile mutations. Preserves the
@@ -37,6 +46,7 @@ const useUserProfile = () => {
     try {
       await uploadMutation.mutateAsync({ blob });
       router.refresh();
+      refreshAuthSession();
       showToast({
         title: "Profile updated",
         description: "Your profile image has been updated",
@@ -59,6 +69,7 @@ const useUserProfile = () => {
     try {
       await removeMutation.mutateAsync();
       router.refresh();
+      refreshAuthSession();
       showToast({
         title: "Profile updated",
         description: "Your profile image has been removed",
@@ -81,6 +92,7 @@ const useUserProfile = () => {
     try {
       await nameMutation.mutateAsync({ name: userName });
       router.refresh();
+      refreshAuthSession();
       return true;
     } catch (error) {
       console.error("Error: updateName: ", error);

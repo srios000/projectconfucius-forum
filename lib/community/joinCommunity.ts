@@ -1,7 +1,7 @@
 import { db } from "@/lib/db";
 import { communities, communityMembers } from "@/lib/db/schema";
 import { CommunitySnippet } from "@/types/community";
-import { eq, sql } from "drizzle-orm";
+import { and, eq, isNotNull, sql } from "drizzle-orm";
 
 /**
  * Joins a user to a community and increments the member count.
@@ -18,6 +18,17 @@ export const joinCommunity = async (
   communityImageURL?: string,
   isCreatorOrAdmin?: boolean
 ): Promise<CommunitySnippet> => {
+  // Block rejoin if a ban tombstone exists for this user in this community.
+  const banned = await db.query.communityMembers.findFirst({
+    where: and(
+      eq(communityMembers.userId, userId),
+      eq(communityMembers.communityId, communityId),
+      isNotNull(communityMembers.bannedAt),
+    ),
+    columns: { userId: true },
+  });
+  if (banned) throw new Error("You are banned from this community");
+
   await db.transaction(async (tx) => {
     await tx
       .insert(communityMembers)

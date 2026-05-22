@@ -8,6 +8,7 @@ import { getCommunitySnippets } from "@/lib/community/getCommunitySnippets";
 import { deleteCommunity } from "@/lib/community/deleteCommunity";
 import { updateCommunityPrivacy } from "@/lib/community/updateCommunityPrivacy";
 import { deleteCommunityImage } from "@/lib/community/deleteCommunityImage";
+import { deleteCommunityBanner } from "@/lib/community/deleteCommunityBanner";
 import { removeCommunityMember } from "@/lib/community/removeCommunityMember";
 import type { Community, CommunitySnippet } from "@/types/community";
 
@@ -58,6 +59,11 @@ export async function updateCommunityPrivacyAction(
 export async function deleteCommunityImageAction(communityId: string) {
   await requireUser();
   return deleteCommunityImage(communityId);
+}
+
+export async function deleteCommunityBannerAction(communityId: string) {
+  await requireUser();
+  return deleteCommunityBanner(communityId);
 }
 
 export async function removeCommunityMemberAction(

@@ -1,6 +1,7 @@
 "use server";
 
 import { requireUser } from "@/lib/auth/session";
+import { resolvePostActor } from "@/lib/auth/permissions";
 import { handlePostVote } from "@/lib/posts/handlePostVote";
 import { createPost } from "@/lib/posts/createPost";
 import { deletePost } from "@/lib/posts/deletePost";
@@ -63,6 +64,27 @@ export async function deletePostAction(postId: string) {
   }
   if (!isCreator && !isModerator) throw new Error("Forbidden");
   return deletePost(postId);
+}
+
+export async function editPostAction(
+  postId: string,
+  data: { title?: string; body?: string },
+) {
+  const actor = await resolvePostActor(postId);
+  if (!actor.role) throw new Error("Forbidden");
+  const patch: Record<string, unknown> = {
+    editedAt: new Date(),
+    editedById: actor.userId,
+    editedByRole: actor.role,
+  };
+  if (typeof data.title === "string") {
+    const t = data.title.trim();
+    if (!t) throw new Error("Title required");
+    patch.title = t;
+  }
+  if (typeof data.body === "string") patch.body = data.body;
+  const [updated] = await db.update(posts).set(patch).where(eq(posts.id, postId)).returning();
+  return updated;
 }
 
 export async function getPostVotesAction(postIds?: string[]) {

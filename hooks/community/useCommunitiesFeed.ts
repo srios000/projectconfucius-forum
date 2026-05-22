@@ -5,12 +5,13 @@ import { useCallback, useEffect, useState } from "react";
 import { useQueryClient } from "@tanstack/react-query";
 import { Community } from "@/types/community";
 import { getCommunitiesAction } from "@/app/actions/reads";
-import type { CommunityCursor } from "@/lib/community/getCommunities";
+import type { CommunityCursor, CommunitySort } from "@/lib/community/getCommunities";
 import { keys } from "@/lib/queries/keys";
 
 type UseCommunitiesFeedProps = {
   limitValue?: number;
   isPagination?: boolean;
+  sort?: CommunitySort;
 };
 
 /**
@@ -23,6 +24,7 @@ type UseCommunitiesFeedProps = {
 const useCommunitiesFeed = ({
   limitValue = 10,
   isPagination = false,
+  sort = "recent",
 }: UseCommunitiesFeedProps) => {
   const [loading, setLoading] = useState(false);
   const [communities, setCommunities] = useState<Community[]>([]);
@@ -43,8 +45,8 @@ const useCommunitiesFeed = ({
         const cursor: CommunityCursor = initial ? null : lastVisible;
         const { communities: fetched, newLastVisible } =
           await queryClient.fetchQuery({
-            queryKey: keys.community.list({ limit: limitValue, cursor }),
-            queryFn: () => getCommunitiesAction(limitValue, cursor),
+            queryKey: keys.community.list({ limit: limitValue, cursor, sort }),
+            queryFn: () => getCommunitiesAction(limitValue, cursor, sort),
           });
 
         if (fetched.length < limitValue) setNoMoreCommunities(true);
@@ -64,7 +66,7 @@ const useCommunitiesFeed = ({
         setLoading(false);
       }
     },
-    [loading, lastVisible, isPagination, limitValue, queryClient, showToast],
+    [loading, lastVisible, isPagination, limitValue, queryClient, showToast, sort],
   );
 
   useEffect(() => {
