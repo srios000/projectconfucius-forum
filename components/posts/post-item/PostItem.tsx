@@ -17,7 +17,7 @@ type Props = {
   userIsCreator: boolean;
   userIsAdmin?: boolean;
   userVoteValue?: number;
-  onVote: (e: React.MouseEvent<SVGElement>, post: Post, vote: number, communityId: string) => void;
+  onVote: (e: React.MouseEvent<SVGElement>, post: Post, vote: number, communityId: string | null) => void;
   onDeletePost: (post: Post) => Promise<boolean>;
   onSelectPost?: (post: Post) => void;
   showCommunityImage?: boolean;
@@ -37,7 +37,9 @@ export default function PostItem({
   const { onSavePost, isPostSaved } = useSavedPosts();
   const isSaved = isPostSaved(post.id!);
   const singlePostPage = !onSelectPost;
-  const href = `/c/${post.communityId}/posts/${post.id}`;
+  const href = post.wallUserId
+    ? `/u/${post.wallUserId}/posts/${post.id}`
+    : `/c/${post.communityId}/posts/${post.id}`;
 
   const [glow, setGlow] = useState(false);
   useEffect(() => {

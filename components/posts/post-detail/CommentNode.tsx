@@ -10,7 +10,7 @@ import InlineReplyComposer from "./InlineReplyComposer";
 type Props = {
   comment: Comment & { children?: Comment[] };
   depth: number;
-  communityId: string;
+  communityId: string | null;
   postId: string;
   postAuthorId?: string;
 };

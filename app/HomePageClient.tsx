@@ -1,7 +1,5 @@
 "use client";
 
-import PersonalHome from "@/components/community/PersonalHome";
-import Recommendations from "@/components/community/recommendations/Recommendations";
 import PageContent from "@/components/layout/PageContent";
 import PostLoader from "@/components/loaders/post-loader/PostLoader";
 import PostItem from "@/components/posts/post-item/PostItem";
@@ -89,10 +87,6 @@ export default function HomePageClient() {
                     </div>
                 )}
             </>
-            <div className="space-y-2">
-                <Recommendations />
-                <PersonalHome />
-            </div>
         </PageContent>
     );
 }

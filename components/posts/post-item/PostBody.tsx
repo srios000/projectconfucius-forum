@@ -2,6 +2,7 @@
 import Image from "next/image";
 import { Post } from "@/types/post";
 import { Skeleton } from "@/components/ui/skeleton";
+import RichTextView from "@/components/editor/RichTextView";
 
 type Props = {
   post: Post;
@@ -13,9 +14,11 @@ export default function PostBody({ post, loadingImage, setLoadingImage }: Props)
   return (
     <>
       {post.body && (
-        <p className="text-[12.5px] text-muted-foreground leading-relaxed mt-1 line-clamp-3">
-          {post.body}
-        </p>
+        <RichTextView
+          body={post.body}
+          clamp
+          className="text-[12.5px] text-muted-foreground leading-relaxed mt-1"
+        />
       )}
       {post.imageUrl && (
         <div className="mt-2 relative">

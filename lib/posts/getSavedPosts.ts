@@ -11,4 +11,4 @@ import { eq } from "drizzle-orm";
  */
 export const getSavedPosts = async (userId: string): Promise<SavedPost[]> =>
   (await db.select().from(savedPosts).where(eq(savedPosts.userId, userId)))
-    .map((r) => ({ id: r.postId, postId: r.postId, communityId: r.communityId, postTitle: r.postTitle, communityImageUrl: r.communityImageUrl ?? undefined }));
+    .map((r) => ({ id: r.postId, postId: r.postId, communityId: r.communityId ?? "", postTitle: r.postTitle, communityImageUrl: r.communityImageUrl ?? undefined }));

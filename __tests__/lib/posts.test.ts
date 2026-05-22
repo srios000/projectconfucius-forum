@@ -36,8 +36,7 @@ describe("createPost", () => {
         insertValues.mockResolvedValueOnce(undefined);
         await createPost(
             { id: "u1", username: "alice" },
-            "c1",
-            undefined,
+            { kind: "community", communityId: "c1" },
             { title: "t", body: "b" },
         );
         expect(insertValues).toHaveBeenCalledTimes(1);
@@ -45,6 +44,7 @@ describe("createPost", () => {
             creatorId: "u1",
             creatorUsername: "alice",
             communityId: "c1",
+            wallUserId: null,
             communityImageUrl: null,
             title: "t",
             body: "b",
@@ -58,10 +58,23 @@ describe("createPost", () => {
         insertValues.mockResolvedValueOnce(undefined);
         await createPost(
             { id: "u1", username: null },
-            "c1",
-            undefined,
+            { kind: "community", communityId: "c1" },
             { title: "t", body: "b" },
         );
         expect(insertValues.mock.calls[0][0]).toMatchObject({ creatorUsername: null });
+    });
+
+    it("writes wallUserId and null communityId for wall posts", async () => {
+        insertValues.mockResolvedValueOnce(undefined);
+        await createPost(
+            { id: "u1", username: "alice" },
+            { kind: "wall", wallUserId: "u2" },
+            { title: "hi", body: "b" },
+        );
+        expect(insertValues.mock.calls[0][0]).toMatchObject({
+            communityId: null,
+            wallUserId: "u2",
+            communityImageUrl: null,
+        });
     });
 });

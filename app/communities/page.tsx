@@ -1,7 +1,6 @@
 "use client";
 
 import CommunityItem from "@/components/community/community-item/CommunityItem";
-import PersonalHome from "@/components/community/PersonalHome";
 import PageContent from "@/components/layout/PageContent";
 import CommunityLoader from "@/components/loaders/CommunityLoader";
 import useCommunitiesFeed from "@/hooks/community/useCommunitiesFeed";
@@ -129,9 +128,6 @@ const Communities: React.FC = () => {
             No more communities
           </p>
         )}
-      </div>
-      <div className="flex flex-col gap-2">
-        <PersonalHome />
       </div>
     </PageContent>
   );

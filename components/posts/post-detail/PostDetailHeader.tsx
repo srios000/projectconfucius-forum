@@ -8,14 +8,15 @@ import { useUserPostVotesQuery } from "@/lib/queries/posts/use-user-post-votes";
 import { useSession } from "@/lib/auth-client";
 import { useCommunityDataQuery } from "@/lib/queries/community/use-community-data";
 import useCommunityPermissions from "@/hooks/community/useCommunityPermissions";
+import RichTextView from "@/components/editor/RichTextView";
 
 export default function PostDetailHeader({ post }: { post: Post }) {
   const { data: session } = useSession();
   const user = session?.user ?? null;
   const { onVote, isVotePending } = usePostVote();
-  const { data: community } = useCommunityDataQuery({ communityId: post.communityId });
+  const { data: community } = useCommunityDataQuery({ communityId: post.communityId ?? undefined });
   const permissions = useCommunityPermissions(community ?? undefined);
-  const votingDisabled = !permissions.canPost;
+  const votingDisabled = post.communityId ? !permissions.canPost : !user;
 
   const votes = useUserPostVotesQuery({ postIds: [post.id!], enabled: !!user });
   const userVoteValue = votes.data?.find((v) => v.postId === post.id)?.voteValue;
@@ -36,7 +37,11 @@ export default function PostDetailHeader({ post }: { post: Post }) {
       </div>
       <div className="flex-1 min-w-0">
         <div className="text-[10.5px] text-muted-foreground mb-1">
-          <span className="text-primary font-semibold">c/{post.communityId}</span>
+          {post.communityId ? (
+            <span className="text-primary font-semibold">c/{post.communityId}</span>
+          ) : (
+            <span className="text-primary font-semibold">u/{post.wallUserId}&apos;s wall</span>
+          )}
           {" · "}{moment(post.createdAt).fromNow()}{" · "}
           <span className="font-serif italic">u/{post.creatorUsername}</span>
         </div>
@@ -47,7 +52,7 @@ export default function PostDetailHeader({ post }: { post: Post }) {
           {post.title}
         </h1>
         {post.body && (
-          <p className="text-[13px] leading-relaxed whitespace-pre-wrap">{post.body}</p>
+          <RichTextView body={post.body} className="text-[13px] leading-relaxed" />
         )}
         {post.imageUrl && (
           <div className="mt-3 relative">

@@ -10,6 +10,7 @@ export type PostsFeedScope = {
     communityId?: string;
     communityIds?: string[];
     isGenericHome?: boolean;
+    wallUserId?: string;
 };
 
 export type FeedPage = { posts: Post[]; newLastVisible: PostCursor };
@@ -25,7 +26,7 @@ export function usePostsInfiniteQuery({
         queryKey: keys.posts.infiniteFeed(scope),
         initialPageParam: null,
         queryFn: ({ pageParam }) =>
-            getPostsAction(scope.communityId, scope.communityIds, scope.isGenericHome, pageParam) as Promise<FeedPage>,
+            getPostsAction(scope.communityId, scope.communityIds, scope.isGenericHome, pageParam, scope.wallUserId) as Promise<FeedPage>,
         getNextPageParam: (last) => (last.newLastVisible ?? undefined) as PostCursor | undefined,
         enabled,
         staleTime: 0,

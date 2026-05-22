@@ -2,28 +2,31 @@ import { db } from "@/lib/db";
 import { posts } from "@/lib/db/schema";
 import { randomUUID } from "crypto";
 
-/**
- * Creates a new post within a community and optionally uploads an associated image.
- * This function handles the creation of the post document in Firestore and the image upload to Firebase Storage.
- * @param user - The Firebase Auth user object of the post creator.
- * @param communityId - The unique identifier of the community where the post is being created.
- * @param communityImageURL - The current image URL of the community, used for display in feeds.
- * @param postData - An object containing the title and body text of the post.
- * @param selectedFile - An optional base64 encoded image string to be uploaded with the post.
- * @returns A promise that resolves to the unique identifier of the newly created post.
- */
+type CommunityTarget = {
+  kind: "community";
+  communityId: string;
+  communityImageUrl?: string;
+};
+
+type WallTarget = {
+  kind: "wall";
+  wallUserId: string;
+};
+
+export type CreatePostTarget = CommunityTarget | WallTarget;
+
 export const createPost = async (
   author: { id: string; username: string | null },
-  communityId: string,
-  communityImageUrl: string | undefined,
+  target: CreatePostTarget,
   postData: { title: string; body: string },
   imageUrl?: string,
 ) => {
   const id = randomUUID();
   await db.insert(posts).values({
     id,
-    communityId,
-    communityImageUrl: communityImageUrl ?? null,
+    communityId: target.kind === "community" ? target.communityId : null,
+    wallUserId: target.kind === "wall" ? target.wallUserId : null,
+    communityImageUrl: target.kind === "community" ? target.communityImageUrl ?? null : null,
     creatorId: author.id,
     creatorUsername: author.username,
     title: postData.title,

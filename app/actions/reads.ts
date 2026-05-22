@@ -10,6 +10,7 @@ import { fetchCommunityAdmins } from "@/lib/community/fetchCommunityAdmins";
 import { fetchCommunityMembers } from "@/lib/community/fetchCommunityMembers";
 import { findUserByEmail } from "@/lib/community/findUserByEmail";
 import { searchUsersByEmail } from "@/lib/community/searchUsersByEmail";
+import { getUserProfile } from "@/lib/users/getUserProfile";
 
 // Public reads — no auth required (guest feed, search, community pages).
 // Wrapped as server actions so client hooks never import `@/lib/db`.
@@ -18,9 +19,10 @@ export async function getPostsAction(
   communityId?: string,
   communityIds?: string[],
   isGenericHome?: boolean,
-  lastVisible?: PostCursor
+  lastVisible?: PostCursor,
+  wallUserId?: string
 ) {
-  return getPosts(communityId, communityIds, isGenericHome, lastVisible);
+  return getPosts(communityId, communityIds, isGenericHome, lastVisible, wallUserId);
 }
 
 export async function getCommunitiesAction(
@@ -60,4 +62,8 @@ export async function findUserByEmailAction(email: string) {
 
 export async function searchUsersByEmailAction(emailQuery: string) {
   return searchUsersByEmail(emailQuery);
+}
+
+export async function getUserProfileAction(idOrUsername: string) {
+  return getUserProfile(idOrUsername);
 }

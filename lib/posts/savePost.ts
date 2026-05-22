@@ -8,7 +8,7 @@ import { savedPosts } from "@/lib/db/schema";
  * @param post - The post object to be saved.
  * @returns A promise that resolves to the newly created saved post object.
  */
-export const savePost = async (userId: string, p: { id: string; communityId: string; title: string; communityImageUrl?: string }) => {
+export const savePost = async (userId: string, p: { id: string; communityId: string | null; title: string; communityImageUrl?: string }) => {
   await db.insert(savedPosts).values({ userId, postId: p.id, communityId: p.communityId, postTitle: p.title, communityImageUrl: p.communityImageUrl ?? null })
     .onConflictDoNothing();
 };

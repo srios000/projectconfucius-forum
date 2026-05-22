@@ -7,7 +7,7 @@ import CommentNode from "./CommentNode";
 import CommentsSortBar, { Sort } from "./CommentsSortBar";
 import InlineReplyComposer from "./InlineReplyComposer";
 
-export default function Comments({ postId, communityId }: { postId: string; communityId: string }) {
+export default function Comments({ postId, communityId }: { postId: string; communityId: string | null }) {
   const [sort, setSort] = useState<Sort>("best");
   const { data: flatComments } = useCommentsForPostQuery({ postId });
   const { data: post } = usePostQuery({ postId });

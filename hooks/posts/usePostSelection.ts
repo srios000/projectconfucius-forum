@@ -9,7 +9,10 @@ const usePostSelection = () => {
 
   const onSelectPost = (post: Post) => {
     qc.setQueryData(keys.posts.detail(post.id!), post);
-    router.push(`/community/${post.communityId}/comments/${post.id}`);
+    const href = post.wallUserId
+      ? `/u/${post.wallUserId}/posts/${post.id}`
+      : `/c/${post.communityId}/posts/${post.id}`;
+    router.push(href);
   };
 
   return { onSelectPost };

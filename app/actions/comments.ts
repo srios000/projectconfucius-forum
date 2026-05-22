@@ -10,7 +10,7 @@ function displayName(user: { name?: string | null; email: string }) {
 }
 
 export async function createCommentAction(
-  communityId: string,
+  communityId: string | null,
   postId: string,
   postTitle: string,
   commentText: string,

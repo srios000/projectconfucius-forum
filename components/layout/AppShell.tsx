@@ -3,14 +3,14 @@
 import Navbar from "@/components/navbar/Navbar";
 import Sidebar from "@/components/layout/Sidebar";
 import { cn } from "@/lib/utils";
+import { usePathname } from "next/navigation";
 
-export default function AppShell({
-  children,
-  withSidebar = true,
-}: {
-  children: React.ReactNode;
-  withSidebar?: boolean;
-}) {
+const NO_SIDEBAR_PREFIXES = ["/settings", "/saved"];
+
+export default function AppShell({ children }: { children: React.ReactNode }) {
+  const pathname = usePathname() ?? "/";
+  const withSidebar = !NO_SIDEBAR_PREFIXES.some((p) => pathname === p || pathname.startsWith(p + "/"));
+
   return (
     <div className="min-h-screen bg-background font-sans text-foreground">
       <Navbar />

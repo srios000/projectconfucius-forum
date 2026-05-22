@@ -1,9 +1,10 @@
 import Link from "next/link";
 import { buildCommentUrl } from "@/lib/utils/comment-url";
 
-type Props = { communityId: string; postId: string; commentId: string; hiddenCount: number };
+type Props = { communityId: string | null; postId: string; commentId: string; hiddenCount: number };
 
 export default function ContinueThreadButton({ communityId, postId, commentId, hiddenCount }: Props) {
+  if (!communityId) return null;
   return (
     <Link
       href={buildCommentUrl(communityId, postId, commentId)}

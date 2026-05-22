@@ -8,6 +8,7 @@ import useCommunityPermissions from "@/hooks/community/useCommunityPermissions";
 import useRemoveCommunityMember from "@/hooks/community/useRemoveCommunityMember";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { LuTrash } from "react-icons/lu";
 import ConfirmationDialog from "@/components/modal/ConfirmationDialog";
 
@@ -79,10 +80,21 @@ export default function MembersList({ communityId }: MembersListProps) {
           </div>
         ) : (
           <div className="divide-y divide-border border border-border rounded-xl bg-card overflow-hidden">
-            {members.map((member) => (
+            {members.map((member) => {
+              const initials = (member.displayName ?? "?")
+                .split(/\s+/)
+                .map((p) => p[0])
+                .slice(0, 2)
+                .join("")
+                .toUpperCase();
+              return (
               <div key={member.id} className="flex items-center justify-between p-3.5">
-                <div className="min-w-0">
-                  <div className="font-semibold text-sm text-foreground">
+                <div className="flex items-center gap-3 min-w-0">
+                  <Avatar className="size-9 shrink-0">
+                    {member.imageUrl && <AvatarImage src={member.imageUrl} alt="" />}
+                    <AvatarFallback>{initials}</AvatarFallback>
+                  </Avatar>
+                  <div className="font-semibold text-sm text-foreground truncate">
                     {member.displayName?.trim() ? member.displayName : "No Name"}
                   </div>
                 </div>
@@ -99,7 +111,8 @@ export default function MembersList({ communityId }: MembersListProps) {
                   </Button>
                 )}
               </div>
-            ))}
+              );
+            })}
           </div>
         )}
       </div>

@@ -10,7 +10,7 @@ type Props = {
     event: React.MouseEvent<SVGElement, MouseEvent>,
     post: Post,
     vote: number,
-    communityId: string,
+    communityId: string | null,
   ) => void;
   post: Post;
   votingDisabled?: boolean;

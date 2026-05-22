@@ -20,21 +20,24 @@ const useCreateComment = (selectedPost: Post | null) => {
     if (!selectedPost) return;
     setCreateLoading(true);
 
-    const cachedCommunity = qc.getQueryData<Community>(keys.community.detail(selectedPost.communityId));
-    const community = cachedCommunity ?? (await qc.fetchQuery({
-      queryKey: keys.community.detail(selectedPost.communityId),
-      queryFn: () => getCommunityDataAction(selectedPost.communityId),
-    }));
-    if (community) {
-      const hasPermission = checkCommunityPermission(community as Community, snippets.data ?? []);
-      if (!hasPermission) {
-        showToast({
-          title: "Restricted Community",
-          description: "You must be a member to comment in this community.",
-          status: "error",
-        });
-        setCreateLoading(false);
-        return;
+    if (selectedPost.communityId) {
+      const communityId = selectedPost.communityId;
+      const cachedCommunity = qc.getQueryData<Community>(keys.community.detail(communityId));
+      const community = cachedCommunity ?? (await qc.fetchQuery({
+        queryKey: keys.community.detail(communityId),
+        queryFn: () => getCommunityDataAction(communityId),
+      }));
+      if (community) {
+        const hasPermission = checkCommunityPermission(community as Community, snippets.data ?? []);
+        if (!hasPermission) {
+          showToast({
+            title: "Restricted Community",
+            description: "You must be a member to comment in this community.",
+            status: "error",
+          });
+          setCreateLoading(false);
+          return;
+        }
       }
     }
 

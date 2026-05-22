@@ -2,6 +2,7 @@ type FeedScope = {
     communityId?: string;
     communityIds?: string[];
     isGenericHome?: boolean;
+    wallUserId?: string;
 };
 
 
@@ -10,7 +11,7 @@ export const keys = {
         all: ["posts"] as const,
         infiniteFeed: (scope: FeedScope) => ["posts", "feed", scope] as const,
         detail: (id: string) => ["posts", "detail", id] as const,
-        votes: (communityId: string) => ["posts", "votes", communityId] as const,
+        votes: (communityId: string | null) => ["posts", "votes", communityId ?? "__wall__"] as const,
         userVotes: (postIds: string[]) => ["posts", "user-votes", [...postIds].sort().join(",")] as const,
         saved: (userId: string) => ["posts", "saved", userId] as const,
     },

@@ -1,4 +1,5 @@
-import { pgTable, text, integer, smallint, boolean, timestamp, pgEnum, uniqueIndex, index, primaryKey } from "drizzle-orm/pg-core";
+import { sql } from "drizzle-orm";
+import { pgTable, text, integer, smallint, boolean, timestamp, pgEnum, uniqueIndex, index, primaryKey, check } from "drizzle-orm/pg-core";
 
 export const privacyEnum = pgEnum("privacy_type", ["public", "restricted", "private"]);
 
@@ -31,7 +32,8 @@ export const communityMembers = pgTable("community_members", {
 
 export const posts = pgTable("posts", {
     id: text("id").primaryKey(),
-    communityId: text("community_id").notNull().references(() => communities.id, { onDelete: "cascade" }),
+    communityId: text("community_id").references(() => communities.id, { onDelete: "cascade" }),
+    wallUserId: text("wall_user_id").references(() => users.id, { onDelete: "cascade" }),
     creatorId: text("creator_id").notNull().references(() => users.id),
     creatorUsername: text("creator_username"),
     title: text("title").notNull(),
@@ -43,14 +45,19 @@ export const posts = pgTable("posts", {
     createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
 }, (t) => [
     index("posts_community_created_idx").on(t.communityId, t.createdAt.desc()),
+    index("posts_wall_created_idx").on(t.wallUserId, t.createdAt.desc()),
     index("posts_vote_idx").on(t.voteStatus.desc()),
+    check(
+        "posts_target_exclusive",
+        sql`(${t.communityId} IS NULL) <> (${t.wallUserId} IS NULL)`,
+    ),
 ]);
 
 export const comments = pgTable("comments", {
     id: text("id").primaryKey(),
     postId: text("post_id").notNull().references(() => posts.id, { onDelete: "cascade" }),
     parentId: text("parent_id"),
-    communityId: text("community_id").notNull(),
+    communityId: text("community_id"),
     postTitle: text("post_title").notNull(),
     creatorId: text("creator_id").notNull().references(() => users.id),
     creatorDisplayText: text("creator_display_text"),
@@ -63,14 +70,14 @@ export const postVotes = pgTable("post_votes", {
     id: text("id").primaryKey(),
     userId: text("user_id").notNull().references(() => users.id, { onDelete: "cascade" }),
     postId: text("post_id").notNull().references(() => posts.id, { onDelete: "cascade" }),
-    communityId: text("community_id").notNull(),
+    communityId: text("community_id"),
     voteValue: smallint("vote_value").notNull(),
 }, (t) => [uniqueIndex("post_votes_user_post_idx").on(t.userId, t.postId)]);
 
 export const savedPosts = pgTable("saved_posts", {
     userId: text("user_id").notNull().references(() => users.id, { onDelete: "cascade" }),
     postId: text("post_id").notNull().references(() => posts.id, { onDelete: "cascade" }),
-    communityId: text("community_id").notNull(),
+    communityId: text("community_id"),
     postTitle: text("post_title").notNull(),
     communityImageUrl: text("community_image_url"),
     createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),

@@ -26,6 +26,6 @@ describe("usePostSelection", () => {
         const post = { id: "p1", communityId: "c1", title: "t", voteStatus: 0 } as Post;
         act(() => { result.current.onSelectPost(post); });
         expect(client.getQueryData<Post>(keys.posts.detail("p1"))).toEqual(post);
-        expect(pushSpy).toHaveBeenCalledWith("/community/c1/comments/p1");
+        expect(pushSpy).toHaveBeenCalledWith("/c/c1/posts/p1");
     });
 });

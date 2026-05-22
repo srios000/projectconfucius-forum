@@ -15,6 +15,13 @@
       "when": 1779347873402,
       "tag": "0001_youthful_dreaming_celestial",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1779417662753,
+      "tag": "0002_busy_sersi",
+      "breakpoints": true
     }
   ]
 }

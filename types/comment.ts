@@ -6,7 +6,7 @@ export type Comment = {
   id: string;
   creatorId: string;
   creatorDisplayText: string | null;
-  communityId: string;
+  communityId: string | null;
   postId: string;
   postTitle: string;
   text: string;

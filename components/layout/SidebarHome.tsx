@@ -3,10 +3,15 @@
 import { useSession } from "@/lib/auth-client";
 import { useCommunitySnippetsQuery } from "@/lib/queries/community/use-community-snippets";
 import Link from "next/link";
+import { usePathname } from "next/navigation";
+import Recommendations from "@/components/community/recommendations/Recommendations";
+import PersonalHome from "@/components/community/PersonalHome";
 
 export default function SidebarHome() {
   const { data: session } = useSession();
   const { data: snippets } = useCommunitySnippetsQuery();
+  const pathname = usePathname() ?? "/";
+  const isHome = pathname === "/";
 
   return (
     <div className="space-y-3">
@@ -31,6 +36,8 @@ export default function SidebarHome() {
           ))}
         </Card>
       )}
+      <Recommendations />
+      {isHome && <PersonalHome />}
       <CommunityQuoteCard />
     </div>
   );

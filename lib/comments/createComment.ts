@@ -19,7 +19,7 @@ import { randomUUID } from "crypto";
  */
 export const createComment = async (
   author: { id: string; username: string | null },
-  communityId: string,
+  communityId: string | null,
   postId: string,
   postTitle: string,
   commentText: string,

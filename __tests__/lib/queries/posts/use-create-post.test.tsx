@@ -36,8 +36,7 @@ describe("useCreatePostMutation", () => {
         });
 
         expect(createPostAction).toHaveBeenCalledWith(
-            "c1",
-            undefined,
+            { kind: "community", communityId: "c1", communityImageUrl: undefined },
             { title: "t", body: "b" },
             undefined,
         );

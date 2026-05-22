@@ -15,16 +15,19 @@ import type { SavedPost } from "@/types/savedPost";
 export async function voteAction(
   post: Post,
   vote: number,
-  communityId: string,
+  communityId: string | null,
   existing?: PostVote
 ) {
   const { userId } = await requireUser();
   return handlePostVote(userId, post, vote, communityId, existing);
 }
 
+type CreatePostTargetInput =
+  | { kind: "community"; communityId: string; communityImageUrl?: string }
+  | { kind: "wall"; wallUserId: string };
+
 export async function createPostAction(
-  communityId: string,
-  communityImageUrl: string | undefined,
+  target: CreatePostTargetInput,
   postData: { title: string; body: string },
   imageUrl?: string
 ) {
@@ -32,8 +35,7 @@ export async function createPostAction(
   const u = session.user as typeof session.user & { username?: string | null };
   return createPost(
     { id: userId, username: u.username ?? null },
-    communityId,
-    communityImageUrl,
+    target,
     postData,
     imageUrl
   );
@@ -70,7 +72,7 @@ export async function savePostAction(post: Post): Promise<SavedPost> {
   return {
     id: post.id!,
     postId: post.id!,
-    communityId: post.communityId,
+    communityId: post.communityId ?? "",
     postTitle: post.title,
     communityImageUrl: post.communityImageUrl,
   };

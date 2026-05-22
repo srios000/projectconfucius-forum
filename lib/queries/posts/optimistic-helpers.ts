@@ -3,7 +3,7 @@ import type { Post, PostVote } from "@/types/post";
 export type VoteDeltaArgs = {
     vote: number;
     postId: string;
-    communityId: string;
+    communityId: string | null;
     existing?: PostVote;
 };
 

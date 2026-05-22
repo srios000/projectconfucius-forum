@@ -4,4 +4,5 @@
 export type CommunityMember = {
   id: string;
   displayName: string | null;
+  imageUrl: string | null;
 };

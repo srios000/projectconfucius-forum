@@ -14,7 +14,7 @@ import type { FeedPage } from "@/lib/queries/posts/use-posts-infinite";
 export type PostVoteArgs = {
     post: Post;
     vote: number;
-    communityId: string;
+    communityId: string | null;
     existing?: PostVote;
 };
 

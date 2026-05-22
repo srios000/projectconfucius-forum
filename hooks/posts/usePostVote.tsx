@@ -28,33 +28,35 @@ const usePostVote = () => {
     event: React.MouseEvent<SVGElement, MouseEvent>,
     post: Post,
     vote: number,
-    communityId: string,
+    communityId: string | null,
   ) => {
     event.stopPropagation();
     if (!user) {
       window.location.assign("/api/auth/start");
       return;
     }
-    const isMember = !!mySnippets.find((s) => s.communityId === communityId);
-    if (!isMember) {
-      let community = qc.getQueryData<Community>(keys.community.detail(communityId));
-      if (!community) {
-        try {
-          community = (await qc.fetchQuery({
-            queryKey: keys.community.detail(communityId),
-            queryFn: () => getCommunityDataAction(communityId),
-          })) ?? undefined;
-        } catch (error) {
-          console.log("Error fetching community data for vote permission", error);
+    if (communityId) {
+      const isMember = !!mySnippets.find((s) => s.communityId === communityId);
+      if (!isMember) {
+        let community = qc.getQueryData<Community>(keys.community.detail(communityId));
+        if (!community) {
+          try {
+            community = (await qc.fetchQuery({
+              queryKey: keys.community.detail(communityId),
+              queryFn: () => getCommunityDataAction(communityId),
+            })) ?? undefined;
+          } catch (error) {
+            console.log("Error fetching community data for vote permission", error);
+          }
         }
-      }
-      if (community && (community.privacyType === "restricted" || community.privacyType === "private")) {
-        showToast({
-          title: "Restricted Community",
-          description: "You must be a member to vote in this community.",
-          status: "error",
-        });
-        return;
+        if (community && (community.privacyType === "restricted" || community.privacyType === "private")) {
+          showToast({
+            title: "Restricted Community",
+            description: "You must be a member to vote in this community.",
+            status: "error",
+          });
+          return;
+        }
       }
     }
 

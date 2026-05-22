@@ -4,7 +4,8 @@
  */
 export type Post = {
   id?: string;
-  communityId: string;
+  communityId: string | null;
+  wallUserId?: string | null;
   creatorId: string;
   creatorUsername: string | null;
   title: string;
@@ -23,6 +24,6 @@ export type Post = {
 export type PostVote = {
   id: string;
   postId: string;
-  communityId: string;
+  communityId: string | null;
   voteValue: number;
 };

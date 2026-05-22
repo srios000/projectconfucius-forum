@@ -5,7 +5,7 @@ import { createCommentAction } from "@/app/actions/comments";
 import { keys } from "@/lib/queries/keys";
 
 export type CreateCommentArgs = {
-    communityId: string;
+    communityId: string | null;
     postId: string;
     postTitle: string;
     commentText: string;

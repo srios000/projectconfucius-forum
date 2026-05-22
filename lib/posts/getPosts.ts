@@ -1,31 +1,29 @@
 import { db } from "@/lib/db";
 import { posts } from "@/lib/db/schema";
 import { Post } from "@/types/post";
-import { and, desc, eq, inArray, lt, or } from "drizzle-orm";
+import { and, desc, eq, inArray, isNull, lt, or } from "drizzle-orm";
 
 export type PostCursor = { createdAt: Date; id: string } | { voteStatus: number; id: string } | null;
 
-/**
- * Fetches a paginated list of posts based on various filtering criteria.
- * Supports fetching posts for a specific community, a personalized home feed for subscribed users,
- * or a generic home feed for guest users.
- * @param communityId - Optional identifier to fetch posts from a single community.
- * @param communityIds - Optional array of identifiers to fetch posts from multiple subscribed communities.
- * @param isGenericHome - Optional flag to fetch posts for the generic home feed (sorted by vote status).
- * @param lastVisible - Optional Firestore document snapshot for pagination.
- * @returns A promise that resolves to an object containing the array of posts and the next pagination cursor.
- */
 export const getPosts = async (
   communityId?: string,
   communityIds?: string[],
   isGenericHome?: boolean,
   lastVisible?: PostCursor,
+  wallUserId?: string,
 ) => {
   const where = [];
-  if (communityId) where.push(eq(posts.communityId, communityId));
-  else if (communityIds && communityIds.length > 0) where.push(inArray(posts.communityId, communityIds));
+  if (wallUserId) {
+    where.push(eq(posts.wallUserId, wallUserId));
+  } else if (communityId) {
+    where.push(eq(posts.communityId, communityId));
+  } else if (communityIds && communityIds.length > 0) {
+    where.push(inArray(posts.communityId, communityIds));
+  } else {
+    where.push(isNull(posts.wallUserId));
+  }
 
-  const orderByVote = isGenericHome && !communityId && !(communityIds && communityIds.length);
+  const orderByVote = isGenericHome && !communityId && !wallUserId && !(communityIds && communityIds.length);
 
   if (lastVisible) {
     if (orderByVote && "voteStatus" in lastVisible) {
