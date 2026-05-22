@@ -20,11 +20,14 @@ type Props = {
   votes?: CommentVote[];
 };
 
+const FOLD_AT_DEPTH = 1;
+
 export default function CommentNode({
   comment, depth, communityId, postId, postAuthorId, votes,
 }: Props) {
   const [collapsed, setCollapsed] = useState(false);
   const [replyOpen, setReplyOpen] = useState(false);
+  const [childrenExpanded, setChildrenExpanded] = useState(depth < FOLD_AT_DEPTH);
   const isOP = !!postAuthorId && comment.creatorId === postAuthorId;
   const hiddenCount = collapsed ? countDescendants(comment) : 0;
   const cutoff = depth >= MAX_INLINE_DEPTH;
@@ -42,7 +45,28 @@ export default function CommentNode({
         <span className="block w-px flex-1 rounded bg-border/60 group-hover/spine:bg-primary transition-colors" />
       </button>
       <div className="flex-1 min-w-0">
-        <div className="flex items-center gap-2 text-[11px] mb-0.5">
+        <div
+          role="button"
+          tabIndex={0}
+          onClick={() => {
+            if ((comment.children?.length ?? 0) > 0 && !cutoff) {
+              setChildrenExpanded((v) => !v);
+            } else {
+              setCollapsed((v) => !v);
+            }
+          }}
+          onKeyDown={(e) => {
+            if (e.key === "Enter" || e.key === " ") {
+              e.preventDefault();
+              if ((comment.children?.length ?? 0) > 0 && !cutoff) {
+                setChildrenExpanded((v) => !v);
+              } else {
+                setCollapsed((v) => !v);
+              }
+            }
+          }}
+          className="flex items-center gap-2 text-[11px] mb-0.5 cursor-pointer select-none -mx-1 px-1 py-0.5 rounded hover:bg-muted/40 transition-colors"
+        >
           <span className={isOP ? "font-bold text-primary" : "font-bold text-foreground"}>
             u/{comment.creatorDisplayText}
           </span>
@@ -53,6 +77,9 @@ export default function CommentNode({
           )}
           <span className="text-muted-foreground text-[10.5px]">{moment(comment.createdAt).fromNow()}</span>
           {collapsed && <RepliesSummary count={hiddenCount} />}
+          {!collapsed && !childrenExpanded && (comment.children?.length ?? 0) > 0 && !cutoff && (
+            <span className="text-muted-foreground text-[10px]">· {countDescendants(comment)} hidden</span>
+          )}
         </div>
         {!collapsed && (
           <>
@@ -90,6 +117,14 @@ export default function CommentNode({
                     commentId={comment.id!}
                     hiddenCount={countDescendants(comment)}
                   />
+                ) : !childrenExpanded ? (
+                  <button
+                    type="button"
+                    onClick={() => setChildrenExpanded(true)}
+                    className="mt-1.5 text-[11px] font-semibold text-primary hover:underline cursor-pointer border-0 bg-transparent px-0"
+                  >
+                    Show {countDescendants(comment)} {countDescendants(comment) === 1 ? "reply" : "replies"} ▾
+                  </button>
                 ) : (
                   <div className="ml-1 pl-1 mt-1.5 space-y-1">
                     {comment.children!.map((child) => (
@@ -103,6 +138,15 @@ export default function CommentNode({
                         votes={votes}
                       />
                     ))}
+                    {depth >= FOLD_AT_DEPTH && (
+                      <button
+                        type="button"
+                        onClick={() => setChildrenExpanded(false)}
+                        className="text-[10.5px] text-muted-foreground hover:text-primary cursor-pointer border-0 bg-transparent px-0"
+                      >
+                        Hide replies ▴
+                      </button>
+                    )}
                   </div>
                 )}
               </>
