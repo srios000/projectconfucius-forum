@@ -9,7 +9,9 @@ import { channelFor, notificationBus } from "@/lib/notifications/bus";
 // Hold a long-lived response open and push events as they arrive.
 // Vercel Fluid Compute supports long requests; cap at 800s and let the
 // client EventSource auto-reconnect.
-export const maxDuration = 800;
+// Hobby plan caps Serverless Function maxDuration at 300s; the client
+// EventSource auto-reconnects after the connection ends.
+export const maxDuration = 300;
 
 export async function GET(req: NextRequest) {
     const session = await auth.api.getSession({ headers: req.headers });
