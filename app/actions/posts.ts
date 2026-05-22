@@ -15,11 +15,10 @@ import type { SavedPost } from "@/types/savedPost";
 export async function voteAction(
   post: Post,
   vote: number,
-  communityId: string | null,
-  existing?: PostVote
+  communityId: string | null
 ) {
   const { userId } = await requireUser();
-  return handlePostVote(userId, post, vote, communityId, existing);
+  return handlePostVote(userId, post, vote, communityId);
 }
 
 type CreatePostTargetInput =
@@ -31,10 +30,9 @@ export async function createPostAction(
   postData: { title: string; body: string },
   imageUrl?: string
 ) {
-  const { session, userId } = await requireUser();
-  const u = session.user as typeof session.user & { username?: string | null };
+  const { user } = await requireUser();
   return createPost(
-    { id: userId, username: u.username ?? null },
+    { id: user.id, username: user.username ?? null },
     target,
     postData,
     imageUrl

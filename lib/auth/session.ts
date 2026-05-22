@@ -19,5 +19,5 @@ export const requireUser = cache(async () => {
         username: u.username ?? null,
         image: u.image ?? null,
     });
-    return { session, userId: local.id };
+    return { session, userId: local.id, user: local };
 });

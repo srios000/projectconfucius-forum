@@ -23,25 +23,16 @@ const PersonalHome: React.FC = () => {
         />
         <div className="flex flex-col p-3">
           <div className="flex items-center mb-2">
-            <img
-              src="/images/logo.svg"
-              className="h-[50px] mr-2"
-              alt="Website logo"
-            />
-            <span className="font-semibold text-sm">Home</span>
+            <span className="font-semibold text-sm">Create Community</span>
           </div>
           <div className="flex flex-col gap-3">
             <p className="text-xs text-muted-foreground">
-              Home page personalized based on your subscribed communities.
+              Your personal community where you can share and discuss topics with others.
             </p>
-            <Button size="sm" onClick={onClick} className="h-8">
-              Create Post
-            </Button>
             <Button
-              variant="outline"
               size="sm"
               onClick={() => setOpen(true)}
-              className="h-8"
+              className="h-8 w-full"
             >
               Create Community
             </Button>

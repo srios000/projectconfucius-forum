@@ -63,8 +63,12 @@ export const comments = pgTable("comments", {
     creatorDisplayText: text("creator_display_text"),
     text: text("text").notNull(),
     depth: integer("depth").notNull().default(0),
+    voteStatus: integer("vote_status").notNull().default(0),
     createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
-}, (t) => [index("comments_post_created_idx").on(t.postId, t.createdAt.desc())]);
+}, (t) => [
+    index("comments_post_created_idx").on(t.postId, t.createdAt.desc()),
+    index("comments_vote_idx").on(t.voteStatus.desc()),
+]);
 
 export const postVotes = pgTable("post_votes", {
     id: text("id").primaryKey(),
@@ -73,6 +77,13 @@ export const postVotes = pgTable("post_votes", {
     communityId: text("community_id"),
     voteValue: smallint("vote_value").notNull(),
 }, (t) => [uniqueIndex("post_votes_user_post_idx").on(t.userId, t.postId)]);
+
+export const commentVotes = pgTable("comment_votes", {
+    id: text("id").primaryKey(),
+    userId: text("user_id").notNull().references(() => users.id, { onDelete: "cascade" }),
+    commentId: text("comment_id").notNull().references(() => comments.id, { onDelete: "cascade" }),
+    voteValue: smallint("vote_value").notNull(),
+}, (t) => [uniqueIndex("comment_votes_user_comment_idx").on(t.userId, t.commentId)]);
 
 export const savedPosts = pgTable("saved_posts", {
     userId: text("user_id").notNull().references(() => users.id, { onDelete: "cascade" }),

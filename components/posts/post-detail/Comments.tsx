@@ -1,8 +1,10 @@
 "use client";
 import { useState, useMemo } from "react";
 import { useCommentsForPostQuery } from "@/lib/queries/comments/use-comments";
+import { useCommentVotesQuery } from "@/lib/queries/comments/use-comment-votes";
 import { usePostQuery } from "@/lib/queries/posts/use-post";
 import { buildCommentTree } from "@/lib/utils/comment-tree";
+import { CommentVote } from "@/lib/comments/getCommentVotes";
 import CommentNode from "./CommentNode";
 import CommentsSortBar, { Sort } from "./CommentsSortBar";
 import InlineReplyComposer from "./InlineReplyComposer";
@@ -10,6 +12,7 @@ import InlineReplyComposer from "./InlineReplyComposer";
 export default function Comments({ postId, communityId }: { postId: string; communityId: string | null }) {
   const [sort, setSort] = useState<Sort>("best");
   const { data: flatComments } = useCommentsForPostQuery({ postId });
+  const { data: votes } = useCommentVotesQuery(postId);
   const { data: post } = usePostQuery({ postId });
 
   const comments = useMemo(() => {
@@ -40,6 +43,7 @@ export default function Comments({ postId, communityId }: { postId: string; comm
               communityId={communityId}
               postId={postId}
               postAuthorId={post?.creatorId}
+              votes={votes}
             />
           </div>
         ))}

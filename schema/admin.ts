@@ -5,10 +5,9 @@ import { z } from "zod";
  * Validates that a properly formatted email address is provided for the search.
  */
 export const addAdminSchema = z.object({
-  email: z
+  username: z
     .string()
-    .email("Invalid email address")
-    .min(3, "Email must be at least 3 characters"),
+    .min(3, "Username must be at least 3 characters"),
 });
 
 export type AddAdminInput = z.infer<typeof addAdminSchema>;

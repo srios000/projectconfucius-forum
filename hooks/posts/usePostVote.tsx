@@ -29,6 +29,7 @@ const usePostVote = () => {
     post: Post,
     vote: number,
     communityId: string | null,
+    existingVoteValue?: number
   ) => {
     event.stopPropagation();
     if (!user) {
@@ -61,7 +62,14 @@ const usePostVote = () => {
     }
 
     try {
-      await voteMutation.mutateAsync({ post, vote, communityId });
+      console.log("[VOTE 2/5 usePostVote.onVote]", {
+        postId: post.id,
+        vote,
+        communityId,
+        existingVoteValue,
+        postVoteStatus: post.voteStatus,
+      });
+      await voteMutation.mutateAsync({ post, vote, communityId, existingVoteValue });
     } catch (error) {
       console.log("Error: onVote", error);
       showToast({

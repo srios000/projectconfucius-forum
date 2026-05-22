@@ -15,7 +15,7 @@ export default function CommunityHeader({ community, isJoined, onToggleJoin }: P
       className="relative overflow-hidden rounded-2xl p-5 text-white mb-3"
       style={{
         background:
-          "linear-gradient(135deg, hsl(var(--primary-deep)) 0%, hsl(var(--primary)) 60%, hsl(var(--primary-soft)) 100%)",
+          "linear-gradient(135deg, hsl(var(--primary-deep)) 0%, hsl(var(--primary)) 100%)",
       }}
     >
       <div

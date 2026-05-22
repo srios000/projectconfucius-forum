@@ -22,10 +22,11 @@ export default function SearchPalette({
   }, [open]);
 
   const communitiesList = results?.communities ?? [];
+  const postsList = results?.posts ?? [];
 
   return (
     <CommandDialog open={open} onOpenChange={onOpenChange}>
-      <CommandInput placeholder="Search communities…" value={q} onValueChange={setQ} />
+      <CommandInput placeholder="Search communities and posts…" value={q} onValueChange={setQ} />
       <CommandList>
         <CommandEmpty>No results.</CommandEmpty>
         {communitiesList.length > 0 && (
@@ -36,6 +37,23 @@ export default function SearchPalette({
                 onSelect={() => { router.push(`/c/${c.id}`); onOpenChange(false); }}
               >
                 c/{c.id}
+              </CommandItem>
+            ))}
+          </CommandGroup>
+        )}
+        {postsList.length > 0 && (
+          <CommandGroup heading="Posts">
+            {postsList.map((p) => (
+              <CommandItem
+                key={p.id}
+                onSelect={() => { router.push(`/post/${p.id}`); onOpenChange(false); }}
+              >
+                <div className="flex flex-col truncate">
+                  <span className="truncate">{p.title}</span>
+                  <span className="text-xs text-muted-foreground">
+                    {p.communityId ? `c/${p.communityId}` : `u/${p.creatorUsername}`}
+                  </span>
+                </div>
               </CommandItem>
             ))}
           </CommandGroup>

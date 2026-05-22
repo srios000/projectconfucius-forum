@@ -15,7 +15,7 @@ export type PostVoteArgs = {
     post: Post;
     vote: number;
     communityId: string | null;
-    existing?: PostVote;
+    existingVoteValue?: number;
 };
 
 type PostVoteResult = {
@@ -37,13 +37,11 @@ export function usePostVoteMutation() {
     const qc = useQueryClient();
     return useMutation<PostVoteResult, Error, PostVoteArgs, Ctx>({
         mutationKey: ["posts", "vote"],
-        mutationFn: ({ post, vote, communityId, existing }) => {
-            const resolved =
-                existing ??
-                qc
-                    .getQueryData<PostVote[]>(keys.posts.votes(communityId))
-                    ?.find((v) => v.postId === post.id);
-            return voteAction(post, vote, communityId, resolved);
+        mutationFn: async ({ post, vote, communityId }) => {
+            console.log("[VOTE 4/5 mutationFn -> server]", { postId: post.id, vote, communityId });
+            const result = await voteAction(post, vote, communityId);
+            console.log("[VOTE 5/5 server result]", { postId: post.id, ...result });
+            return result;
         },
         onMutate: async (vars) => {
             await Promise.all([
@@ -56,19 +54,57 @@ export function usePostVoteMutation() {
             const prevVotes = qc.getQueryData<PostVote[]>(keys.posts.votes(vars.communityId)) ?? [];
             const prevFeeds = qc.getQueriesData<InfiniteData<FeedPage>>({ predicate: feedPredicate });
 
-            const existing = vars.existing ?? prevVotes.find((v) => v.postId === vars.post.id);
+            // Use existingVoteValue passed from UI, or fallback to query cache
+            const existingValue = vars.existingVoteValue ?? prevVotes.find((v) => v.postId === vars.post.id)?.voteValue;
+            
+            const existingMock = existingValue ? {
+                id: `mock-${vars.post.id}`,
+                postId: vars.post.id!,
+                communityId: vars.communityId,
+                voteValue: existingValue
+            } as PostVote : undefined;
+
             const { delta, nextVote, deletedVoteId }: VoteDeltaResult = computeVoteDelta({
                 vote: vars.vote,
                 postId: vars.post.id!,
                 communityId: vars.communityId,
-                existing,
+                existing: existingMock,
             });
 
             const basePost = prevDetail ?? vars.post;
             const optimisticPost: Post = { ...basePost, voteStatus: basePost.voteStatus + delta };
+            console.log("[VOTE 3/5 onMutate optimistic]", {
+                postId: vars.post.id,
+                incomingVote: vars.vote,
+                existingVoteValueArg: vars.existingVoteValue,
+                existingValueResolved: existingValue,
+                existingFromPrevVotesCache: prevVotes.find((v) => v.postId === vars.post.id)?.voteValue,
+                delta,
+                basePostVoteStatus: basePost.voteStatus,
+                optimisticVoteStatus: optimisticPost.voteStatus,
+                deletedVoteId,
+                nextVoteValue: nextVote?.voteValue,
+            });
             qc.setQueryData<Post>(keys.posts.detail(vars.post.id!), optimisticPost);
 
             qc.setQueryData<PostVote[]>(keys.posts.votes(vars.communityId), (old = []) => {
+                let next = [...old];
+                if (deletedVoteId) {
+                    next = next.filter((v) => v.id !== deletedVoteId);
+                } else if (nextVote) {
+                    const idx = next.findIndex((v) => v.postId === vars.post.id);
+                    if (idx >= 0) next[idx] = nextVote;
+                    else next.push(nextVote);
+                }
+                return next;
+            });
+
+            // Optimistic update for userVotes cache used in the feed
+            const userVotesKey = keys.posts.userVotes([vars.post.id!]);
+            // This is a bit tricky since userVotes is keyed by array of postIds.
+            // A simpler approach for the feed is to let the invalidation handle it,
+            // but since we want optimistic updates, let's update it if we find the exact key.
+            qc.setQueryData<PostVote[]>(userVotesKey, (old = []) => {
                 let next = [...old];
                 if (deletedVoteId) {
                     next = next.filter((v) => v.id !== deletedVoteId);
@@ -100,6 +136,7 @@ export function usePostVoteMutation() {
         onSettled: (_data, _err, vars) => {
             void qc.invalidateQueries({ queryKey: keys.posts.detail(vars.post.id!) });
             void qc.invalidateQueries({ queryKey: keys.posts.votes(vars.communityId) });
+            void qc.invalidateQueries({ queryKey: ["posts", "user-votes"] }); // Invalidate all userVotes arrays
             void qc.invalidateQueries({ predicate: feedPredicate });
         },
     });

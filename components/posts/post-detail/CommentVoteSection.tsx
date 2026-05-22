@@ -1,44 +1,37 @@
 "use client";
 import { useState } from "react";
-import MotionArrow from "./MotionArrow";
-import VoteBurst from "./VoteBurst";
-import { Post } from "@/types/post";
+import MotionArrow from "@/components/posts/post-item/MotionArrow";
+import VoteBurst from "@/components/posts/post-item/VoteBurst";
+import { Comment } from "@/types/comment";
 
 type Props = {
   userVoteValue?: number;
   onVote: (
     event: React.MouseEvent<SVGElement, MouseEvent>,
-    post: Post,
+    commentId: string,
+    postId: string,
     vote: number,
-    communityId: string | null,
     existingVoteValue?: number
   ) => void;
-  post: Post;
+  comment: Comment;
   votingDisabled?: boolean;
   isVotePending?: boolean;
 };
 
-export default function VoteSection({
-  userVoteValue, onVote, post, votingDisabled, isVotePending,
+export default function CommentVoteSection({
+  userVoteValue, onVote, comment, votingDisabled, isVotePending,
 }: Props) {
   const blocked = votingDisabled || isVotePending;
   const [burst, setBurst] = useState<{ at: number; value: 1 | -1 } | null>(null);
 
   const handle = (e: React.MouseEvent<SVGElement>, value: 1 | -1) => {
     if (blocked) return;
-    console.log("[VOTE 1/5 VoteSection.handle]", {
-      postId: post.id,
-      clickedValue: value,
-      currentUserVoteValue: userVoteValue,
-      currentDisplayedVoteStatus: post.voteStatus,
-      communityId: post.communityId,
-    });
-    onVote(e, post, value, post.communityId, userVoteValue);
+    onVote(e, comment.id, comment.postId, value, userVoteValue);
     if (userVoteValue !== value) setBurst({ at: Date.now(), value });
   };
 
   return (
-    <div className="relative flex flex-col items-center gap-1 w-8 py-1.5 rounded-md bg-muted group-hover:bg-primary-mute transition-colors">
+    <div className="flex items-center gap-1 group">
       <VoteBurst show={!!burst} value={burst?.value ?? 1} id={burst?.at} />
       <MotionArrow
         filled={userVoteValue === 1}
@@ -52,10 +45,10 @@ export default function VoteSection({
           "font-bold text-xs tabular-nums transition-colors " +
           (userVoteValue === 1 ? "text-primary"
             : userVoteValue === -1 ? "text-destructive"
-            : "text-foreground")
+            : "text-muted-foreground")
         }
       >
-        {post.voteStatus}
+        {comment.voteStatus || 0}
       </span>
       <MotionArrow
         filled={userVoteValue === -1}

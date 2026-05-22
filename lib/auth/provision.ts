@@ -14,7 +14,7 @@ export async function provisionLocalUser(input: {
     name: string;
     username: string | null;
     image: string | null;
-}): Promise<{ id: string }> {
+}): Promise<{ id: string; username: string | null }> {
     const email = input.email.trim().toLowerCase();
     const name = input.name.trim() || email;
 
@@ -24,13 +24,13 @@ export async function provisionLocalUser(input: {
     });
     if (byAuth) {
         const patch: Record<string, unknown> = {};
-        if (byAuth.username !== input.username) patch.username = input.username;
+        if (input.username != null && byAuth.username !== input.username) patch.username = input.username;
         if (byAuth.imageUrl == null && input.image != null) patch.imageUrl = input.image;
         if (Object.keys(patch).length > 0) {
             patch.updatedAt = new Date();
-            await db.update(users).set(patch).where(eq(users.id, byAuth.id)).returning({ id: users.id });
+            await db.update(users).set(patch).where(eq(users.id, byAuth.id));
         }
-        return { id: byAuth.id };
+        return { id: byAuth.id, username: (patch.username as string | undefined) ?? byAuth.username };
     }
 
     const byEmail = await db.query.users.findFirst({
@@ -47,8 +47,8 @@ export async function provisionLocalUser(input: {
                 updatedAt: new Date(),
             })
             .where(eq(users.id, byEmail.id))
-            .returning({ id: users.id });
-        return { id: row.id };
+            .returning({ id: users.id, username: users.username });
+        return { id: row.id, username: row.username };
     }
 
     const [row] = await db.insert(users)
@@ -60,6 +60,6 @@ export async function provisionLocalUser(input: {
             username: input.username,
             imageUrl: input.image,
         })
-        .returning({ id: users.id });
-    return { id: row.id };
+        .returning({ id: users.id, username: users.username });
+    return { id: row.id, username: row.username };
 }

@@ -18,7 +18,13 @@ export default function PostActions({
 }: Props) {
   return (
     <div className="flex items-center gap-1 mt-2 text-[11px] text-muted-foreground font-semibold">
-      <button className="px-2 py-1 rounded hover:bg-muted hover:text-foreground inline-flex items-center gap-1.5 transition-colors">
+      <button 
+        onClick={(e) => {
+          e.stopPropagation();
+          window.location.href = `${postLink}#reply`;
+        }}
+        className="px-2 py-1 rounded hover:bg-muted hover:text-foreground inline-flex items-center gap-1.5 transition-colors"
+      >
         <MessageSquare className="size-3.5" /> Comment
       </button>
       <button

@@ -6,11 +6,11 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { toast } from "sonner";
 import { useCommunityDataQuery } from "@/lib/queries/community/use-community-data";
 import { useCommunityAdminsListQuery } from "@/lib/queries/admin/use-admin-list";
-import useAdminSearch from "@/hooks/admin/useAdminSearch";
+import { useCommunityMembersQuery } from "@/lib/queries/community/use-community-members";
 import useAddAdmin from "@/hooks/admin/useAddAdmin";
 import useRemoveAdmin from "@/hooks/admin/useRemoveAdmin";
 import { addAdminSchema, AddAdminInput } from "@/schema/admin";
-import { AdminUser } from "@/types/adminUser";
+import { CommunityMember } from "@/types/communityMember";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Skeleton } from "@/components/ui/skeleton";
@@ -29,7 +29,9 @@ export default function Admins({ communityId }: AdminsProps) {
   const admins = useMemo(() => adminsQuery.data ?? [], [adminsQuery.data]);
   const adminsLoading = adminsQuery.isLoading;
 
-  const { searchUsers, findUser } = useAdminSearch();
+  const membersQuery = useCommunityMembersQuery({ communityId });
+  const members = useMemo(() => membersQuery.data ?? [], [membersQuery.data]);
+
   const { handleAddAdmin } = useAddAdmin();
   const { handleRemoveAdmin } = useRemoveAdmin();
 
@@ -42,13 +44,13 @@ export default function Admins({ communityId }: AdminsProps) {
     reset,
   } = useForm<AddAdminInput>({
     resolver: zodResolver(addAdminSchema),
-    defaultValues: { email: "" },
+    defaultValues: { username: "" },
   });
 
-  const emailValue = useWatch({ control, name: "email" });
+  const usernameValue = useWatch({ control, name: "username" });
 
   const [addingAdmin, setAddingAdmin] = useState(false);
-  const [searchResults, setSearchResults] = useState<AdminUser[]>([]);
+  const [searchResults, setSearchResults] = useState<CommunityMember[]>([]);
   const [showResults, setShowResults] = useState(false);
   const [adminToRemove, setAdminToRemove] = useState<string | null>(null);
   const [removingAdmin, setRemovingAdmin] = useState(false);
@@ -57,17 +59,17 @@ export default function Admins({ communityId }: AdminsProps) {
     if (!communityData) return;
     setAddingAdmin(true);
     try {
-      const newUser = await findUser(data.email);
+      const newUser = members.find((m) => m.username === data.username);
 
       if (!newUser) {
         toast.error("User not found", {
-          description: "No user found with that email address.",
+          description: "No community member found with that username.",
         });
         setAddingAdmin(false);
         return;
       }
 
-      if (admins.some((admin) => admin.uid === newUser.uid)) {
+      if (admins.some((admin) => admin.uid === newUser.id)) {
         toast.warning("Already admin", {
           description: "This user is already an admin of this community.",
         });
@@ -75,10 +77,10 @@ export default function Admins({ communityId }: AdminsProps) {
         return;
       }
 
-      await handleAddAdmin(communityData.id, newUser.uid);
+      await handleAddAdmin(communityData.id, newUser.id);
       reset();
       toast.success("Admin Added", {
-        description: `${newUser.email} is now an admin.`,
+        description: `u/${newUser.username} is now an admin.`,
       });
     } catch (error: any) {
       console.error("Error adding admin", error);
@@ -110,26 +112,21 @@ export default function Admins({ communityId }: AdminsProps) {
   };
 
   useEffect(() => {
-    const searchUsersAsync = async () => {
-      if (!emailValue || emailValue.length < 3) {
-        setSearchResults([]);
-        setShowResults(false);
-        return;
-      }
-      try {
-        const results = await searchUsers(emailValue);
-        // Filter out existing admins
-        const filtered = results.filter((u) => !admins.some((a) => a.uid === u.uid));
-        setSearchResults(filtered);
-        setShowResults(true);
-      } catch (error) {
-        console.error(error);
-      }
-    };
-
-    const timer = setTimeout(searchUsersAsync, 300);
-    return () => clearTimeout(timer);
-  }, [emailValue, admins, searchUsers]);
+    if (!usernameValue || usernameValue.length < 3) {
+      setSearchResults([]);
+      setShowResults(false);
+      return;
+    }
+    
+    const query = usernameValue.toLowerCase();
+    const results = members.filter((m) => 
+      m.username && m.username.toLowerCase().includes(query)
+    );
+    // Filter out existing admins
+    const filtered = results.filter((u) => !admins.some((a) => a.uid === u.id));
+    setSearchResults(filtered);
+    setShowResults(true);
+  }, [usernameValue, admins, members]);
 
   if (communityLoading || !communityData) {
     return (
@@ -154,9 +151,9 @@ export default function Admins({ communityId }: AdminsProps) {
         <form onSubmit={handleSubmit(onAddAdmin)} className="flex gap-2">
           <div className="relative flex-1">
             <Input
-              placeholder="Enter email to add admin"
-              {...register("email")}
-              onFocus={() => emailValue && emailValue.length >= 3 && setShowResults(true)}
+              placeholder="Enter username to add admin"
+              {...register("username")}
+              onFocus={() => usernameValue && usernameValue.length >= 3 && setShowResults(true)}
               onBlur={() => setTimeout(() => setShowResults(false), 200)}
               className="w-full"
             />
@@ -164,15 +161,15 @@ export default function Admins({ communityId }: AdminsProps) {
               <div className="absolute top-full left-0 right-0 z-50 bg-popover text-popover-foreground border border-border shadow-lg rounded-xl mt-1 max-h-48 overflow-y-auto divide-y divide-border">
                 {searchResults.map((user) => (
                   <button
-                    key={user.uid}
+                    key={user.id}
                     type="button"
                     className="w-full text-left p-3 hover:bg-muted/60 transition-colors flex flex-col cursor-pointer"
                     onMouseDown={() => {
-                      setValue("email", user.email);
+                      setValue("username", user.username || "");
                       setShowResults(false);
                     }}
                   >
-                    <span className="text-sm font-medium">{user.email}</span>
+                    <span className="text-sm font-medium">u/{user.username}</span>
                     {user.displayName && (
                       <span className="text-xs text-muted-foreground">{user.displayName}</span>
                     )}
@@ -181,11 +178,11 @@ export default function Admins({ communityId }: AdminsProps) {
               </div>
             )}
           </div>
-          <Button type="submit" disabled={addingAdmin || !emailValue}>
+          <Button type="submit" disabled={addingAdmin || !usernameValue}>
             {addingAdmin ? "Adding…" : "Add"}
           </Button>
         </form>
-        {errors.email && <p className="text-xs text-destructive mt-1.5">{errors.email.message}</p>}
+        {errors.username && <p className="text-xs text-destructive mt-1.5">{errors.username.message}</p>}
       </div>
 
       <div className="space-y-3">

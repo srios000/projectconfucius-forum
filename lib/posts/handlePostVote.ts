@@ -5,13 +5,26 @@ import { eq, sql } from "drizzle-orm";
 import { randomUUID } from "crypto";
 
 export const handlePostVote = async (
-  userId: string, post: Post, vote: number, communityId: string | null, existingVote?: PostVote,
+  userId: string, post: Post, vote: number, communityId: string | null,
 ) => {
   let voteChange = vote;
   let newVote: PostVote | undefined;
   let voteIdToDelete: string | undefined;
 
   await db.transaction(async (tx) => {
+    // 1. Fetch existing vote within the transaction to ensure accuracy
+    const existingRows = await tx.select().from(postVotes)
+      .where(sql`${postVotes.userId} = ${userId} AND ${postVotes.postId} = ${post.id}`)
+      .limit(1);
+    
+    const existingVote = existingRows[0] as PostVote | undefined;
+    console.log("[VOTE SERVER handlePostVote]", {
+      userId,
+      postId: post.id,
+      incomingVote: vote,
+      existingVoteInDb: existingVote?.voteValue ?? null,
+      postVoteStatusInArg: post.voteStatus,
+    });
     if (!existingVote) {
       const id = randomUUID();
       await tx.insert(postVotes).values({ id, userId, postId: post.id!, communityId, voteValue: vote });
@@ -30,5 +43,11 @@ export const handlePostVote = async (
       .where(eq(posts.id, post.id!));
   });
 
+  console.log("[VOTE SERVER handlePostVote -> result]", {
+    postId: post.id,
+    voteChange,
+    newVoteValue: newVote?.voteValue ?? null,
+    voteIdToDelete: voteIdToDelete ?? null,
+  });
   return { voteChange, newVote, voteIdToDelete };
 };

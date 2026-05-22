@@ -1,17 +1,24 @@
 "use client";
-import { useState } from "react";
-import { Textarea } from "@/components/ui/textarea";
+import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { useCreateCommentMutation } from "@/lib/queries/comments/use-create-comment-mutation";
 import { usePostQuery } from "@/lib/queries/posts/use-post";
+import RichTextEditor from "@/components/editor/RichTextEditor";
 
 type Props = { postId: string; parentId: string | null; onDone?: () => void };
 
 export default function InlineReplyComposer({ postId, parentId, onDone }: Props) {
   const [text, setText] = useState("");
+  const [shouldFocus, setShouldFocus] = useState(!!parentId);
   const create = useCreateCommentMutation();
   const { data: post } = usePostQuery({ postId });
   const submitting = create.isPending;
+
+  useEffect(() => {
+    if (typeof window !== "undefined" && window.location.hash === "#reply") {
+      setShouldFocus(true);
+    }
+  }, []);
 
   const submit = async () => {
     if (!text.trim() || !post) return;
@@ -31,15 +38,14 @@ export default function InlineReplyComposer({ postId, parentId, onDone }: Props)
   };
 
   return (
-    <div className="bg-muted/40 border border-border rounded-lg p-2.5 mt-1.5">
-      <Textarea
+    <div className="bg-card border border-border rounded-lg overflow-hidden mt-1.5 shadow-sm">
+      <RichTextEditor
         value={text}
-        onChange={(e) => setText(e.target.value)}
-        placeholder="Reply…"
-        rows={3}
-        className="bg-transparent border-0 focus-visible:ring-0 resize-none p-0 text-[12.5px]"
+        onChange={setText}
+        placeholder="What are your thoughts?"
+        autoFocus={shouldFocus}
       />
-      <div className="flex justify-end gap-2 mt-1.5">
+      <div className="flex justify-end gap-2 bg-muted/20 px-3.5 py-2.5 border-t border-border">
         {onDone && (
           <Button variant="ghost" size="sm" onClick={onDone}>Cancel</Button>
         )}

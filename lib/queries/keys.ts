@@ -26,6 +26,7 @@ export const keys = {
     },
     comments: {
         forPost: (postId: string) => ["comments", postId] as const,
+        votes: (postId: string) => ["comments", "votes", postId] as const,
     },
     admin: {
         search: (q: string) => ["admin", "search", q] as const,

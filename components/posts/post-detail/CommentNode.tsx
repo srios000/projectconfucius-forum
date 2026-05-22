@@ -2,10 +2,14 @@
 import { useState } from "react";
 import moment from "moment";
 import { Comment } from "@/types/comment";
+import { CommentVote } from "@/lib/comments/getCommentVotes";
 import { MAX_INLINE_DEPTH, countDescendants } from "@/lib/utils/comment-tree";
 import ContinueThreadButton from "./ContinueThreadButton";
 import RepliesSummary from "./RepliesSummary";
 import InlineReplyComposer from "./InlineReplyComposer";
+import CommentVoteSection from "./CommentVoteSection";
+import useCommentVote from "@/hooks/comments/useCommentVote";
+import RichTextView from "@/components/editor/RichTextView";
 
 type Props = {
   comment: Comment & { children?: Comment[] };
@@ -13,16 +17,19 @@ type Props = {
   communityId: string | null;
   postId: string;
   postAuthorId?: string;
+  votes?: CommentVote[];
 };
 
 export default function CommentNode({
-  comment, depth, communityId, postId, postAuthorId,
+  comment, depth, communityId, postId, postAuthorId, votes,
 }: Props) {
   const [collapsed, setCollapsed] = useState(false);
   const [replyOpen, setReplyOpen] = useState(false);
   const isOP = !!postAuthorId && comment.creatorId === postAuthorId;
   const hiddenCount = collapsed ? countDescendants(comment) : 0;
   const cutoff = depth >= MAX_INLINE_DEPTH;
+  const { onVote, isVotePending } = useCommentVote();
+  const userVoteValue = votes?.find(v => v.commentId === comment.id)?.voteValue;
 
   return (
     <div className="flex gap-2 py-1">
@@ -32,7 +39,7 @@ export default function CommentNode({
         aria-label={collapsed ? "Expand thread" : "Collapse thread"}
         className="group/spine w-4 shrink-0 flex justify-center pt-7 cursor-pointer border-0 bg-transparent"
       >
-        <span className="block w-0.5 flex-1 rounded bg-primary/20 group-hover/spine:bg-primary group-hover/spine:w-0.75 transition-all" />
+        <span className="block w-[1px] flex-1 rounded bg-border group-hover/spine:bg-primary transition-colors" />
       </button>
       <div className="flex-1 min-w-0">
         <div className="flex items-center gap-2 text-[11px] mb-0.5">
@@ -49,11 +56,20 @@ export default function CommentNode({
         </div>
         {!collapsed && (
           <>
-            <p className="text-[12.5px] leading-relaxed text-foreground whitespace-pre-wrap">{comment.text}</p>
-            <div className="flex items-center gap-1 mt-1 text-muted-foreground text-[10.5px] font-semibold">
+            <RichTextView
+              body={comment.text}
+              className="text-[12.5px] leading-relaxed text-foreground whitespace-pre-wrap mt-1 mb-2"
+            />
+            <div className="flex items-center gap-4 mt-1">
+              <CommentVoteSection
+                comment={comment}
+                onVote={onVote}
+                userVoteValue={userVoteValue}
+                isVotePending={isVotePending(comment.id)}
+              />
               <button
                 onClick={() => setReplyOpen((v) => !v)}
-                className="px-2 py-1 rounded hover:bg-primary-mute hover:text-primary transition-colors cursor-pointer border-0 bg-transparent font-semibold"
+                className="flex items-center gap-1.5 text-muted-foreground text-[10.5px] font-semibold px-2 py-1 rounded hover:bg-primary-mute hover:text-primary transition-colors cursor-pointer border-0 bg-transparent"
               >
                 Reply
               </button>
@@ -75,7 +91,7 @@ export default function CommentNode({
                     hiddenCount={countDescendants(comment)}
                   />
                 ) : (
-                  <div className="ml-4 border-l border-primary/20 pl-2 mt-1.5 space-y-1">
+                  <div className="ml-4 border-l border-border pl-2 mt-1.5 space-y-1">
                     {comment.children!.map((child) => (
                       <CommentNode
                         key={child.id}
@@ -84,6 +100,7 @@ export default function CommentNode({
                         communityId={communityId}
                         postId={postId}
                         postAuthorId={postAuthorId}
+                        votes={votes}
                       />
                     ))}
                   </div>

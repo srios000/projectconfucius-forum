@@ -9,7 +9,10 @@
       "Bash(npm test *)",
       "Bash(pnpm remove *)",
       "Bash(pnpm db:generate)",
-      "Bash(pnpm db:migrate)"
+      "Bash(pnpm db:migrate)",
+      "Bash(git push *)",
+      "Bash(git branch *)",
+      "Bash(git reset *)"
     ]
   }
 }

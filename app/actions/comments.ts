@@ -3,6 +3,8 @@
 import { requireUser } from "@/lib/auth/session";
 import { createComment } from "@/lib/comments/createComment";
 import { deleteComment } from "@/lib/comments/deleteComment";
+import { handleCommentVote } from "@/lib/comments/handleCommentVote";
+import { getCommentVotes } from "@/lib/comments/getCommentVotes";
 import type { Comment } from "@/types/comment";
 
 function displayName(user: { name?: string | null; email: string }) {
@@ -16,10 +18,9 @@ export async function createCommentAction(
   commentText: string,
   parentId?: string
 ): Promise<Comment> {
-  const { session, userId } = await requireUser();
-  const u = session.user as typeof session.user & { username?: string | null };
+  const { user } = await requireUser();
   return createComment(
-    { id: userId, username: u.username ?? null },
+    { id: user.id, username: user.username ?? null },
     communityId,
     postId,
     postTitle,
@@ -31,4 +32,14 @@ export async function createCommentAction(
 export async function deleteCommentAction(commentId: string, postId: string) {
   await requireUser();
   return deleteComment(commentId, postId);
+}
+
+export async function voteCommentAction(commentId: string, vote: number) {
+  const { user } = await requireUser();
+  return handleCommentVote(user.id, commentId, vote);
+}
+
+export async function getCommentVotesAction(postId: string) {
+  const { user } = await requireUser();
+  return getCommentVotes(user.id, postId);
 }
