@@ -37,8 +37,14 @@ export function usePostVoteMutation() {
     const qc = useQueryClient();
     return useMutation<PostVoteResult, Error, PostVoteArgs, Ctx>({
         mutationKey: ["posts", "vote"],
-        mutationFn: ({ post, vote, communityId, existing }) =>
-            voteAction(post, vote, communityId, existing),
+        mutationFn: ({ post, vote, communityId, existing }) => {
+            const resolved =
+                existing ??
+                qc
+                    .getQueryData<PostVote[]>(keys.posts.votes(communityId))
+                    ?.find((v) => v.postId === post.id);
+            return voteAction(post, vote, communityId, resolved);
+        },
         onMutate: async (vars) => {
             await Promise.all([
                 qc.cancelQueries({ queryKey: keys.posts.detail(vars.post.id!) }),

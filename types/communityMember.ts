@@ -3,6 +3,5 @@
  */
 export type CommunityMember = {
   id: string;
-  email: string;
   displayName: string | null;
 };

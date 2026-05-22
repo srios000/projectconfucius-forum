@@ -4,7 +4,6 @@ import { composerReducer, initialComposerState } from "@/lib/composer/state";
 describe("composerReducer", () => {
   it("starts closed", () => {
     expect(initialComposerState.phase).toBe("closed");
-    expect(initialComposerState.tab).toBe("text");
   });
 
   it("OPEN → open", () => {
@@ -38,9 +37,8 @@ describe("composerReducer", () => {
     expect(s.error).toBe("nope");
   });
 
-  it("SET_TAB updates tab", () => {
-    let s = composerReducer(initialComposerState, { type: "OPEN" });
-    s = composerReducer(s, { type: "SET_TAB", tab: "image" });
-    expect(s.tab).toBe("image");
+  it("SET_BODY updates body", () => {
+    const s = composerReducer(initialComposerState, { type: "SET_BODY", body: "**hi**" });
+    expect(s.body).toBe("**hi**");
   });
 });

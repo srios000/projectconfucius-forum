@@ -14,14 +14,7 @@ export function useCommunityAdminsListQuery({
 }) {
     return useQuery<AdminUser[]>({
         queryKey: keys.community.admins(communityId),
-        queryFn: async () => {
-            const r = await fetchCommunityAdminsAction(communityId);
-            return r.map((m) => ({
-                uid: m.id,
-                email: m.email,
-                displayName: m.displayName ?? undefined,
-            }));
-        },
+        queryFn: () => fetchCommunityAdminsAction(communityId),
         enabled: enabled && !!communityId,
         staleTime: 0, // matches the per-key override in parent spec §5 (admin = security-relevant, always re-validate)
     });

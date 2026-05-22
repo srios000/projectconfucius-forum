@@ -14,14 +14,7 @@ export function useCommunityAdminsQuery({
 }) {
     return useQuery<AdminUser[]>({
         queryKey: keys.community.admins(communityId),
-        queryFn: async () => {
-            const result = await fetchCommunityAdminsAction(communityId);
-            return result.map((m) => ({
-                uid: m.id,
-                email: m.email,
-                displayName: m.displayName ?? undefined,
-            }));
-        },
+        queryFn: () => fetchCommunityAdminsAction(communityId),
         enabled: enabled && !!communityId,
         staleTime: 0,
     });

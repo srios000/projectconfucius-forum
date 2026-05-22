@@ -1,8 +1,12 @@
 "use client";
-import { useReducer, useRef, useEffect } from "react";
+import { useReducer, useRef, useEffect, useLayoutEffect, useState } from "react";
 import { motion, AnimatePresence } from "motion/react";
-import { ImageIcon, Link as LinkIcon, FileText } from "lucide-react";
-import { composerReducer, initialComposerState, type ComposerTab } from "@/lib/composer/state";
+import {
+  Bold, Italic, Underline, Strikethrough,
+  Code, Link as LinkIcon, Unlink, Image as ImageIcon,
+  List, Quote,
+} from "lucide-react";
+import { composerReducer, initialComposerState } from "@/lib/composer/state";
 import { useCreatePostMutation } from "@/lib/queries/posts/use-create-post";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
@@ -10,15 +14,31 @@ import { useSession } from "@/lib/auth-client";
 
 type Props = { communityId: string };
 
-const TABS: { id: ComposerTab; label: string; Icon: React.ComponentType<{ className?: string }> }[] = [
-  { id: "text",  label: "Text",  Icon: FileText },
-  { id: "image", label: "Image", Icon: ImageIcon },
-  { id: "link",  label: "Link",  Icon: LinkIcon },
-];
+type ToolbarButtonProps = {
+  label: string;
+  Icon: React.ComponentType<{ className?: string }>;
+  onClick: () => void;
+};
+
+function ToolbarButton({ label, Icon, onClick }: ToolbarButtonProps) {
+  return (
+    <button
+      type="button"
+      title={label}
+      aria-label={label}
+      onClick={onClick}
+      className="size-7 rounded hover:bg-primary-mute hover:text-primary inline-flex items-center justify-center text-muted-foreground transition-colors"
+    >
+      <Icon className="size-3.5" />
+    </button>
+  );
+}
 
 export default function InlineComposer({ communityId }: Props) {
   const [s, dispatch] = useReducer(composerReducer, initialComposerState);
   const titleRef = useRef<HTMLInputElement>(null);
+  const bodyRef = useRef<HTMLTextAreaElement>(null);
+  const [pendingSelection, setPendingSelection] = useState<[number, number] | null>(null);
   const { data: session } = useSession();
   const create = useCreatePostMutation();
 
@@ -35,6 +55,14 @@ export default function InlineComposer({ communityId }: Props) {
 
   useEffect(() => { if (s.phase === "open") titleRef.current?.focus(); }, [s.phase]);
 
+  useLayoutEffect(() => {
+    if (pendingSelection && bodyRef.current) {
+      bodyRef.current.focus();
+      bodyRef.current.setSelectionRange(pendingSelection[0], pendingSelection[1]);
+      setPendingSelection(null);
+    }
+  }, [pendingSelection, s.body]);
+
   useEffect(() => {
     const fn = (e: KeyboardEvent) => {
       if (e.key === "Escape" && s.phase !== "closed") dispatch({ type: "CANCEL" });
@@ -47,7 +75,85 @@ export default function InlineComposer({ communityId }: Props) {
     return () => window.removeEventListener("keydown", fn);
   });
 
+  const wrap = (left: string, right: string = left) => {
+    const ta = bodyRef.current;
+    if (!ta) return;
+    const start = ta.selectionStart;
+    const end = ta.selectionEnd;
+    const sel = s.body.slice(start, end);
+    const next = s.body.slice(0, start) + left + sel + right + s.body.slice(end);
+    dispatch({ type: "SET_BODY", body: next });
+    setPendingSelection([start + left.length, end + left.length]);
+  };
+
+  const prefixLines = (prefix: string) => {
+    const ta = bodyRef.current;
+    if (!ta) return;
+    const start = ta.selectionStart;
+    const end = ta.selectionEnd;
+    const lineStart = s.body.lastIndexOf("\n", start - 1) + 1;
+    const before = s.body.slice(0, lineStart);
+    const block = s.body.slice(lineStart, end);
+    const after = s.body.slice(end);
+    const prefixed = block.length === 0 ? prefix : block.replace(/^/gm, prefix);
+    const next = before + prefixed + after;
+    dispatch({ type: "SET_BODY", body: next });
+    const added = prefixed.length - block.length;
+    setPendingSelection([start + prefix.length, end + added]);
+  };
+
+  const insertLink = () => {
+    const url = window.prompt("URL");
+    if (!url) return;
+    const ta = bodyRef.current;
+    if (!ta) return;
+    const start = ta.selectionStart;
+    const end = ta.selectionEnd;
+    const text = s.body.slice(start, end) || "link";
+    const inserted = `[${text}](${url})`;
+    const next = s.body.slice(0, start) + inserted + s.body.slice(end);
+    dispatch({ type: "SET_BODY", body: next });
+    setPendingSelection([start + 1, start + 1 + text.length]);
+  };
+
+  const removeLink = () => {
+    const ta = bodyRef.current;
+    if (!ta) return;
+    const cursor = ta.selectionStart;
+    const re = /\[([^\]]+)\]\(([^)]+)\)/g;
+    let m: RegExpExecArray | null;
+    while ((m = re.exec(s.body))) {
+      if (cursor >= m.index && cursor <= m.index + m[0].length) {
+        const next = s.body.slice(0, m.index) + m[1] + s.body.slice(m.index + m[0].length);
+        dispatch({ type: "SET_BODY", body: next });
+        setPendingSelection([m.index, m.index + m[1].length]);
+        return;
+      }
+    }
+  };
+
+  const insertImage = () => {
+    const url = window.prompt("Image URL");
+    if (!url) return;
+    const ta = bodyRef.current;
+    if (!ta) return;
+    const start = ta.selectionStart;
+    const end = ta.selectionEnd;
+    const alt = s.body.slice(start, end) || "image";
+    const inserted = `![${alt}](${url})`;
+    const next = s.body.slice(0, start) + inserted + s.body.slice(end);
+    dispatch({ type: "SET_BODY", body: next });
+    setPendingSelection([start + 2, start + 2 + alt.length]);
+  };
+
   const initials = (session?.user?.name ?? "?").split(/\s+/).map(p => p[0]).slice(0, 2).join("").toUpperCase();
+
+  const onBodyKeyDown = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
+    if (!(e.metaKey || e.ctrlKey)) return;
+    if (e.key === "b") { e.preventDefault(); wrap("**"); }
+    else if (e.key === "i") { e.preventDefault(); wrap("*"); }
+    else if (e.key === "k") { e.preventDefault(); insertLink(); }
+  };
 
   return (
     <motion.div
@@ -68,14 +174,6 @@ export default function InlineComposer({ communityId }: Props) {
         <span className="flex-1 text-[12.5px] text-muted-foreground">
           Start a discussion in <strong className="text-foreground">c/{communityId}</strong>…
         </span>
-        <div className="flex gap-1 text-muted-foreground">
-          <button className="size-8 rounded-md hover:bg-primary-mute hover:text-primary inline-flex items-center justify-center transition-colors">
-            <ImageIcon className="size-4" />
-          </button>
-          <button className="size-8 rounded-md hover:bg-primary-mute hover:text-primary inline-flex items-center justify-center transition-colors">
-            <LinkIcon className="size-4" />
-          </button>
-        </div>
       </div>
 
       <AnimatePresence initial={false}>
@@ -86,23 +184,7 @@ export default function InlineComposer({ communityId }: Props) {
             exit={{ height: 0 }}
             transition={{ duration: 0.32, ease: [0.2, 0.7, 0.3, 1] }}
           >
-            <div className="flex gap-1 px-3.5 border-b border-border">
-              {TABS.map(({ id, label, Icon }) => (
-                <button
-                  key={id}
-                  onClick={() => dispatch({ type: "SET_TAB", tab: id })}
-                  className={
-                    "px-3.5 py-2 text-[12px] font-semibold flex items-center gap-1.5 border-b-2 -mb-px transition-colors " +
-                    (s.tab === id
-                      ? "text-primary border-primary"
-                      : "text-muted-foreground border-transparent hover:text-foreground")
-                  }
-                >
-                  <Icon className="size-3.5" /> {label}
-                </button>
-              ))}
-            </div>
-            <div className="px-3.5 py-3">
+            <div className="px-3.5 pt-3">
               <input
                 ref={titleRef}
                 value={s.title}
@@ -111,12 +193,28 @@ export default function InlineComposer({ communityId }: Props) {
                 maxLength={300}
                 className="w-full bg-transparent border-0 outline-none font-serif text-[16px] font-semibold py-1.5"
               />
+            </div>
+            <div className="flex flex-wrap items-center gap-0.5 px-3 py-1.5 border-y border-border bg-muted/30">
+              <ToolbarButton label="Bold (Ctrl+B)"   Icon={Bold}          onClick={() => wrap("**")} />
+              <ToolbarButton label="Italic (Ctrl+I)" Icon={Italic}        onClick={() => wrap("*")} />
+              <ToolbarButton label="Underline"       Icon={Underline}     onClick={() => wrap("<u>", "</u>")} />
+              <ToolbarButton label="Strikethrough"   Icon={Strikethrough} onClick={() => wrap("~~")} />
+              <ToolbarButton label="Inline code"     Icon={Code}          onClick={() => wrap("`")} />
+              <ToolbarButton label="Link (Ctrl+K)"   Icon={LinkIcon}      onClick={insertLink} />
+              <ToolbarButton label="Remove link"     Icon={Unlink}        onClick={removeLink} />
+              <ToolbarButton label="Image"           Icon={ImageIcon}     onClick={insertImage} />
+              <ToolbarButton label="Bulleted list"   Icon={List}          onClick={() => prefixLines("- ")} />
+              <ToolbarButton label="Quote"           Icon={Quote}         onClick={() => prefixLines("> ")} />
+            </div>
+            <div className="px-3.5 py-3">
               <textarea
+                ref={bodyRef}
                 value={s.body}
                 onChange={(e) => dispatch({ type: "SET_BODY", body: e.target.value })}
+                onKeyDown={onBodyKeyDown}
                 placeholder="What's on your mind? Markdown supported."
-                rows={5}
-                className="w-full mt-1 bg-muted border border-border rounded-md px-3 py-2.5 text-[13px] outline-none focus:border-primary focus:bg-card transition-colors resize-none"
+                rows={6}
+                className="w-full bg-muted border border-border rounded-md px-3 py-2.5 text-[13px] outline-none focus:border-primary focus:bg-card transition-colors resize-none font-mono"
               />
               <div className="flex items-center justify-between mt-1 text-[11px] text-muted-foreground">
                 <span>Posting to <strong className="text-primary">c/{communityId}</strong></span>

@@ -85,7 +85,6 @@ export default function MembersList({ communityId }: MembersListProps) {
                   <div className="font-semibold text-sm text-foreground">
                     {member.displayName?.trim() ? member.displayName : "No Name"}
                   </div>
-                  <div className="text-xs text-muted-foreground truncate">{member.email}</div>
                 </div>
 
                 {isAdmin && (
