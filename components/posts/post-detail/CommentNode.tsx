@@ -32,14 +32,14 @@ export default function CommentNode({
   const userVoteValue = votes?.find(v => v.commentId === comment.id)?.voteValue;
 
   return (
-    <div className="flex gap-2 py-1">
+    <div className="flex gap-1 py-1">
       <button
         type="button"
         onClick={() => setCollapsed((v) => !v)}
         aria-label={collapsed ? "Expand thread" : "Collapse thread"}
-        className="group/spine w-4 shrink-0 flex justify-center pt-7 cursor-pointer border-0 bg-transparent"
+        className="group/spine w-2 shrink-0 flex justify-center pt-7 cursor-pointer border-0 bg-transparent"
       >
-        <span className="block w-[1px] flex-1 rounded bg-border group-hover/spine:bg-primary transition-colors" />
+        <span className="block w-px flex-1 rounded bg-border/60 group-hover/spine:bg-primary transition-colors" />
       </button>
       <div className="flex-1 min-w-0">
         <div className="flex items-center gap-2 text-[11px] mb-0.5">
@@ -91,7 +91,7 @@ export default function CommentNode({
                     hiddenCount={countDescendants(comment)}
                   />
                 ) : (
-                  <div className="ml-4 border-l border-border pl-2 mt-1.5 space-y-1">
+                  <div className="ml-1 pl-1 mt-1.5 space-y-1">
                     {comment.children!.map((child) => (
                       <CommentNode
                         key={child.id}

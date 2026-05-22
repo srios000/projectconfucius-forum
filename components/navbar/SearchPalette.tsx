@@ -25,7 +25,7 @@ export default function SearchPalette({
   const postsList = results?.posts ?? [];
 
   return (
-    <CommandDialog open={open} onOpenChange={onOpenChange}>
+    <CommandDialog open={open} onOpenChange={onOpenChange} shouldFilter={false}>
       <CommandInput placeholder="Search communities and posts…" value={q} onValueChange={setQ} />
       <CommandList>
         <CommandEmpty>No results.</CommandEmpty>

@@ -5,5 +5,6 @@
 export type AdminUser = {
   uid: string;
   email: string;
+  username?: string | null;
   displayName?: string;
 };

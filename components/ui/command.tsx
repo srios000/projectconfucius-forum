@@ -39,12 +39,16 @@ function CommandDialog({
   children,
   className,
   showCloseButton = false,
+  shouldFilter,
+  filter,
   ...props
 }: React.ComponentProps<typeof Dialog> & {
   title?: string
   description?: string
   className?: string
   showCloseButton?: boolean
+  shouldFilter?: boolean
+  filter?: (value: string, search: string, keywords?: string[]) => number
 }) {
   return (
     <Dialog {...props}>
@@ -59,7 +63,11 @@ function CommandDialog({
           <DialogTitle>{title}</DialogTitle>
           <DialogDescription>{description}</DialogDescription>
         </DialogHeader>
-        <Command className="[&_[cmdk-group-heading]]:text-muted-foreground [&_[cmdk-group-heading]]:px-2 [&_[cmdk-group-heading]]:font-medium">
+        <Command
+          shouldFilter={shouldFilter}
+          filter={filter}
+          className="[&_[cmdk-group-heading]]:text-muted-foreground [&_[cmdk-group-heading]]:px-2 [&_[cmdk-group-heading]]:font-medium"
+        >
           {children}
         </Command>
       </DialogContent>

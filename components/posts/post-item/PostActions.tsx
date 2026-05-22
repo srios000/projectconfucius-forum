@@ -1,5 +1,6 @@
 "use client";
 import { MessageSquare, Share2, Bookmark, Trash2 } from "lucide-react";
+import { useRouter } from "next/navigation";
 
 type Props = {
   handleDelete: (e: React.MouseEvent<HTMLButtonElement>) => void;
@@ -16,12 +17,13 @@ export default function PostActions({
   handleDelete, loadingDelete, userIsCreator, userIsAdmin,
   postLink, handleSave, isSaved, showToast,
 }: Props) {
+  const router = useRouter();
   return (
     <div className="flex items-center gap-1 mt-2 text-[11px] text-muted-foreground font-semibold">
-      <button 
+      <button
         onClick={(e) => {
           e.stopPropagation();
-          window.location.href = `${postLink}#reply`;
+          router.push(`${postLink}#reply`);
         }}
         className="px-2 py-1 rounded hover:bg-muted hover:text-foreground inline-flex items-center gap-1.5 transition-colors"
       >

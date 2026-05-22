@@ -43,9 +43,9 @@ export default function CommunityHeader({ community, isJoined, onToggleJoin }: P
             </div>
           )}
           <div className="min-w-0">
-            <h1 className="font-serif text-lg font-semibold tracking-tight truncate">c/{community.id}</h1>
-            <p className="text-xs opacity-85 mt-0.5">A place for considered discussion.</p>
-            <div className="text-[11px] opacity-75 mt-2.5 flex gap-3">
+            <h1 className="font-serif text-lg font-semibold tracking-tight truncate drop-shadow-sm">c/{community.id}</h1>
+            <p className="text-xs text-white/95 mt-0.5 drop-shadow-sm">A place for considered discussion.</p>
+            <div className="text-[11px] text-white/90 mt-2.5 flex gap-3 drop-shadow-sm">
               <span>{community.numberOfMembers ?? 0} members</span>
             </div>
           </div>

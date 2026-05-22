@@ -200,10 +200,12 @@ export default function Admins({ communityId }: AdminsProps) {
             {admins.map((admin) => (
               <div key={admin.uid} className="flex items-center justify-between p-3.5">
                 <div className="min-w-0">
-                  <div className="font-semibold text-sm text-foreground">
-                    {admin.displayName || "No Name"}
+                  <div className="font-semibold text-sm text-foreground truncate">
+                    u/{admin.username ?? "deleted"}
                   </div>
-                  <div className="text-xs text-muted-foreground truncate">{admin.email}</div>
+                  {admin.displayName && (
+                    <div className="text-xs text-muted-foreground truncate">{admin.displayName}</div>
+                  )}
                 </div>
 
                 {admin.uid !== communityData.creatorId ? (

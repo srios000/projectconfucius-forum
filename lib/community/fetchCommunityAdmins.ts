@@ -14,7 +14,7 @@ export const fetchCommunityAdmins = async (
   communityId: string
 ): Promise<AdminUser[]> => {
   const rows = await db
-    .select({ id: users.id, email: users.email, name: users.name })
+    .select({ id: users.id, email: users.email, name: users.name, username: users.username })
     .from(communityMembers)
     .innerJoin(users, eq(communityMembers.userId, users.id))
     .where(
@@ -27,6 +27,7 @@ export const fetchCommunityAdmins = async (
   return rows.map((r) => ({
     uid: r.id,
     email: r.email || "Unknown email",
+    username: r.username ?? null,
     displayName: r.name ?? undefined,
   }));
 };
