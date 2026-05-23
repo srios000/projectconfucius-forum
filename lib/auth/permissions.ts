@@ -8,9 +8,9 @@ export type ActorRole = "author" | "moderator" | "superadmin";
 const SUPERADMIN_ROLE = "forum-superadmin";
 
 function rolesFromSession(session: Awaited<ReturnType<typeof getAppSession>>): string[] {
-    const raw = (session?.user as { roles?: unknown } | undefined)?.roles;
+    const raw = (session?.user as { role?: unknown } | undefined)?.role;
     if (typeof raw !== "string" || !raw) return [];
-    // Auth DB stores roles as a comma-separated string per better-auth conventions.
+    // better-auth admin plugin stores roles as a comma-separated string on `user.role`.
     return raw.split(",").map((r) => r.trim()).filter(Boolean);
 }
 

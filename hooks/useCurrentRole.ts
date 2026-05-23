@@ -11,7 +11,7 @@ const SUPERADMIN_ROLE = "forum-superadmin";
  * server actions; this is just for UI gating (showing/hiding controls).
  *
  * - userId: local users.id (from /me)
- * - isSuperadmin: derived from session.user.roles (comma-separated)
+ * - isSuperadmin: derived from session.user.role (comma-separated)
  * - isModeratorOf(communityId): from community snippets
  */
 export default function useCurrentRole() {
@@ -19,9 +19,9 @@ export default function useCurrentRole() {
     const { data: me } = useMeQuery();
     const { communityStateValue } = useCommunityState();
 
-    const rolesRaw = (session?.user as { roles?: unknown } | undefined)?.roles;
-    const roles = typeof rolesRaw === "string" && rolesRaw
-        ? rolesRaw.split(",").map((r) => r.trim())
+    const roleRaw = (session?.user as { role?: unknown } | undefined)?.role;
+    const roles = typeof roleRaw === "string" && roleRaw
+        ? roleRaw.split(",").map((r) => r.trim())
         : [];
     const isSuperadmin = roles.includes(SUPERADMIN_ROLE);
 
