@@ -56,9 +56,9 @@ function CommunityQuoteCard() {
   return (
     <div className="rounded-xl border border-primary/20 bg-linear-to-br from-primary-mute to-card p-4 text-center">
       <p className="font-serif italic text-primary text-sm leading-snug">
-        &ldquo;The unexamined life<br />is not worth living.&rdquo;
+        &lt;quote&gt;
       </p>
-      <p className="text-[10px] text-muted-foreground mt-1.5">— rotating community quote</p>
+      <p className="text-[10px] text-muted-foreground mt-1.5">— &lt;author&gt;</p>
     </div>
   );
 }
