@@ -1,5 +1,5 @@
 import { redirect } from "next/navigation";
-import { getPost } from "@/lib/posts/getPost";
+import { getPostCommunityId } from "@/lib/posts/getPostCommunityId";
 import ContentNotAvailable from "@/components/common/ContentNotAvailable";
 
 type Props = { params: Promise<{ pid: string }> };
@@ -12,10 +12,10 @@ type Props = { params: Promise<{ pid: string }> };
  */
 export default async function PostRedirectRoute({ params }: Props) {
   const { pid } = await params;
-  const post = await getPost(pid);
+  const communityId = await getPostCommunityId(pid);
 
-  if (post?.communityId) {
-    redirect(`/c/${post.communityId}/posts/${pid}`);
+  if (communityId) {
+    redirect(`/c/${communityId}/posts/${pid}`);
   }
 
   return (
