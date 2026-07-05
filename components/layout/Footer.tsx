@@ -49,9 +49,6 @@ export default function Footer() {
             <p className="mt-3 text-xs text-muted-foreground leading-relaxed max-w-60">
               Project Confucius Forum — a space for considered discussion.
             </p>
-            <p className="mt-3 font-serif text-lg text-primary" lang="zh">
-              礼楽
-            </p>
           </div>
 
           {/* Link columns */}
@@ -78,7 +75,7 @@ export default function Footer() {
 
         <div className="mt-7 flex flex-col gap-2 border-t border-border pt-4 text-xs text-muted-foreground sm:flex-row sm:items-center sm:justify-between">
           <span>© {new Date().getFullYear()} Project Confucius Forum. All rights reserved.</span>
-          <span className="font-serif italic">礼楽 · Rites &amp; Music</span>
+          <span className="font-serif italic">Rites &amp; Music</span>
         </div>
       </div>
     </footer>

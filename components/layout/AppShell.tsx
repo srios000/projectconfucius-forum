@@ -13,11 +13,11 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
   const withSidebar = !NO_SIDEBAR_PREFIXES.some((p) => pathname === p || pathname.startsWith(p + "/"));
 
   return (
-    <div className="min-h-screen bg-background font-sans text-foreground">
+    <div className="flex min-h-screen flex-col bg-background font-sans text-foreground">
       <Navbar />
       <main
         className={cn(
-          "mx-auto max-w-270 px-3 pb-12 pt-4",
+          "mx-auto w-full max-w-270 flex-1 px-3 pb-12 pt-4",
           withSidebar
             ? "grid grid-cols-1 gap-4 md:grid-cols-[minmax(0,1fr)_280px]"
             : "grid grid-cols-1"
