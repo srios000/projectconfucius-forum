@@ -6,7 +6,7 @@ import Footer from "@/components/layout/Footer";
 import { cn } from "@/lib/utils";
 import { usePathname } from "next/navigation";
 
-const NO_SIDEBAR_PREFIXES = ["/settings", "/saved", "/guidelines", "/privacy", "/terms"];
+const NO_SIDEBAR_PREFIXES = ["/settings", "/saved", "/guidelines", "/privacy", "/terms", "/posts"];
 
 export default function AppShell({ children }: { children: React.ReactNode }) {
   const pathname = usePathname() ?? "/";
