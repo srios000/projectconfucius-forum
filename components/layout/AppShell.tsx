@@ -2,10 +2,11 @@
 
 import Navbar from "@/components/navbar/Navbar";
 import Sidebar from "@/components/layout/Sidebar";
+import Footer from "@/components/layout/Footer";
 import { cn } from "@/lib/utils";
 import { usePathname } from "next/navigation";
 
-const NO_SIDEBAR_PREFIXES = ["/settings", "/saved"];
+const NO_SIDEBAR_PREFIXES = ["/settings", "/saved", "/guidelines", "/privacy", "/terms"];
 
 export default function AppShell({ children }: { children: React.ReactNode }) {
   const pathname = usePathname() ?? "/";
@@ -29,6 +30,7 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
           </aside>
         )}
       </main>
+      <Footer />
     </div>
   );
 }
