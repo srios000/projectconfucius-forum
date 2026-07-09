@@ -46,7 +46,7 @@ export default function SearchPalette({
             {postsList.map((p) => (
               <CommandItem
                 key={p.id}
-                onSelect={() => { router.push(`/post/${p.id}`); onOpenChange(false); }}
+                onSelect={() => { router.push(`/posts/${p.id}`); onOpenChange(false); }}
               >
                 <div className="flex flex-col truncate">
                   <span className="truncate">{p.title}</span>
