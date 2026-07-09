@@ -3,6 +3,7 @@
 import Navbar from "@/components/navbar/Navbar";
 import Sidebar from "@/components/layout/Sidebar";
 import Footer from "@/components/layout/Footer";
+import ImpersonationBanner from "@/components/layout/ImpersonationBanner";
 import { cn } from "@/lib/utils";
 import { usePathname } from "next/navigation";
 
@@ -14,6 +15,7 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
 
   return (
     <div className="flex min-h-screen flex-col bg-background font-sans text-foreground">
+      <ImpersonationBanner />
       <Navbar />
       <main
         className={cn(

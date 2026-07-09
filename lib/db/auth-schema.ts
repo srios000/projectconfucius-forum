@@ -25,6 +25,10 @@ export const session = pgTable("session", {
     expiresAt: timestamp("expires_at", { withTimezone: true }).notNull(),
     ipAddress: text("ip_address"),
     userAgent: text("user_agent"),
+    // Set by the hub's admin plugin when a superadmin impersonates this user.
+    // Present in the shared auth DB already; the forum only reads it (to render
+    // the impersonation banner and let the 1h timebox expire naturally).
+    impersonatedBy: text("impersonated_by"),
     createdAt: timestamp("created_at", { withTimezone: true }),
     updatedAt: timestamp("updated_at", { withTimezone: true }),
 });
